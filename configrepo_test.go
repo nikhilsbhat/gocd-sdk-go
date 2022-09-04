@@ -1,14 +1,16 @@
-package main
+package gocd_test
 
 import (
 	"testing"
+
+	"github.com/nikhilsbhat/gocd-sdk-go"
 
 	"github.com/stretchr/testify/assert"
 )
 
 func TestConfig_GetConfigRepoInfo(t *testing.T) {
 	t.Run("should be able retrieve config repo information", func(t *testing.T) {
-		client := NewClient(
+		client := gocd.NewClient(
 			"http://localhost:8153/go",
 			"",
 			"",

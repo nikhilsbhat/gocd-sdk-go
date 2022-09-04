@@ -1,0 +1,9 @@
+#! /usr/bin/env bash
+
+SRC_DIR=$(pwd)
+TARGET_DIR=${1:-$SRC_DIR}
+
+echo "generating mock for '$SRC_DIR/$GOFILE' at '$TARGET_DIR/$GOFILE'"
+
+mkdir -p "$TARGET_DIR"
+mockgen -destination "$TARGET_DIR/$GOFILE" -package "mock${GOPACKAGE^}" -source "$SRC_DIR/$GOFILE"

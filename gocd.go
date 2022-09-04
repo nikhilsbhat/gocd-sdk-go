@@ -1,4 +1,4 @@
-package main
+package gocd
 
 import (
 	"crypto/tls"
@@ -10,13 +10,15 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
+//go:generate $PWD/scripts/mocks $PWD/internal/mocks
+
 // client holds resty.Client which could be used for interacting with GoCD and other information.
 type client struct {
 	httpClient *resty.Client
 	logger     *log.Logger
 }
 
-// GoCd implements methods to get various information regarding GoCD.
+// GoCd implements methods to get various information from GoCD.
 type GoCd interface {
 	GetAgentsInfo() ([]Agent, error)
 	GetAgentJobRunHistory(agents []string) ([]AgentJobHistory, error)

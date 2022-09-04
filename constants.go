@@ -1,4 +1,4 @@
-package main
+package gocd
 
 const (
 	GoCdAgentsEndpoint          = "/api/agents"

@@ -1,15 +1,17 @@
-package main
+package gocd_test
 
 import (
 	"log"
 	"testing"
+
+	"github.com/nikhilsbhat/gocd-sdk-go"
 
 	"github.com/stretchr/testify/assert"
 )
 
 func TestConfig_GetHealthInfo(t *testing.T) {
 	t.Run("should be able to fetch the server health status", func(t *testing.T) {
-		client := NewClient(
+		client := gocd.NewClient(
 			"http://localhost:8153/go",
 			"",
 			"",

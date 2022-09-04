@@ -14,6 +14,8 @@ linters:
     - paralleltest
     - cyclop
     - ireturn
+    - wrapcheck
+    - interfacebloat
 
 issues:
   exclude-rules:

@@ -2,6 +2,7 @@ GOFMT_FILES?=$(shell find . -not -path "./vendor/*" -type f -name '*.go')
 BUILD_ENVIRONMENT?=${ENVIRONMENT}
 GOVERSION?=$(shell go version | awk '{printf $$3}')
 APP_DIR?=$(shell git rev-parse --show-toplevel)
+SOURCE_PACKAGES?=$(shell go list -mod=vendor ./... | grep -v "vendor" | grep -v "mocks")
 
 # Get the currently used golang install path (in GOPATH/bin, unless GOBIN is set)
 ifeq (,$(shell go env GOBIN))
@@ -40,3 +41,6 @@ report: ## Publishes the go-report of the appliction (uses go-reportcard)
 
 test: ## runs test cases
 	@go test ./... -mod=vendor -coverprofile cover.out && go tool cover -html=cover.out -o cover.html && open cover.html
+
+generate.mocks:  ## Generates mocks to those methods that has comments //go:generate
+	@go generate ${SOURCE_PACKAGES}

@@ -1,14 +1,16 @@
-package main
+package gocd_test
 
 import (
 	"testing"
+
+	"github.com/nikhilsbhat/gocd-sdk-go"
 
 	"github.com/stretchr/testify/assert"
 )
 
 func Test_client_GetAgentJobRunHistory(t *testing.T) {
 	t.Run("should be able to fetch the agent job run history", func(t *testing.T) {
-		client := NewClient(
+		client := gocd.NewClient(
 			"http://localhost:8153/go",
 			"",
 			"",

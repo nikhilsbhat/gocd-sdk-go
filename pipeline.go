@@ -1,4 +1,4 @@
-package main
+package gocd
 
 import (
 	"fmt"
@@ -8,6 +8,9 @@ import (
 
 	"github.com/jinzhu/copier"
 )
+
+// Groups implements methods that help in fetching several other information from PipelineGroup.
+type Groups []PipelineGroup
 
 // GetPipelineGroupInfo fetches information of backup configured in GoCD server.
 func (conf *client) GetPipelineGroupInfo() ([]PipelineGroup, error) {
@@ -59,6 +62,7 @@ func (conf *client) GetPipelines() (PipelinesInfo, error) {
 	return pipelinesInfo, nil
 }
 
+// GetPipelineState fetches status of selected pipelines.
 func (conf *client) GetPipelineState(pipelines []string) ([]PipelineState, error) {
 	newClient := &client{}
 	if err := copier.CopyWithOption(newClient, conf, copier.Option{IgnoreEmpty: true, DeepCopy: true}); err != nil {
@@ -87,15 +91,17 @@ func (conf *client) GetPipelineState(pipelines []string) ([]PipelineState, error
 	return pipelinesStatus, nil
 }
 
-func (conf *client) getPipelineCount(groups []PipelineGroup) int {
+// Count return the number of pipelines present.
+func (conf Groups) Count() int {
 	var pipelines int
-	for _, i := range groups {
+	for _, i := range conf {
 		pipelines += i.PipelineCount
 	}
 
 	return pipelines
 }
 
+// GetPipelineName parses pipeline url to fetch the pipeline name.
 func GetPipelineName(link string) (string, error) {
 	parsedURL, err := url.Parse(link)
 	if err != nil {
