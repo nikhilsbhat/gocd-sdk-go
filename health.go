@@ -25,7 +25,7 @@ func (conf *client) GetHealthMessages() ([]ServerHealth, error) {
 		return nil, fmt.Errorf("call made to get health info errored with %w", err)
 	}
 	if resp.StatusCode() != http.StatusOK {
-		return nil, ApiWithCodeError(resp.StatusCode())
+		return nil, APIWithCodeError(resp.StatusCode())
 	}
 
 	if err := json.Unmarshal(resp.Body(), &health); err != nil {

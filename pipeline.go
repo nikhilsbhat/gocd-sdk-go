@@ -31,7 +31,7 @@ func (conf *client) GetPipelineGroupInfo() ([]PipelineGroup, error) {
 		return nil, fmt.Errorf("call made to get pipeline group information errored with %w", err)
 	}
 	if resp.StatusCode() != http.StatusOK {
-		return nil, ApiWithCodeError(resp.StatusCode())
+		return nil, APIWithCodeError(resp.StatusCode())
 	}
 
 	if err := json.Unmarshal(resp.Body(), &groupConf); err != nil {
@@ -63,7 +63,7 @@ func (conf *client) GetPipelines() (PipelinesInfo, error) {
 		return PipelinesInfo{}, fmt.Errorf("call made to get pipelines errored with %w", err)
 	}
 	if resp.StatusCode() != http.StatusOK {
-		return PipelinesInfo{}, ApiWithCodeError(resp.StatusCode())
+		return PipelinesInfo{}, APIWithCodeError(resp.StatusCode())
 	}
 
 	if err := xml.Unmarshal(resp.Body(), &pipelinesInfo); err != nil {
@@ -90,7 +90,7 @@ func (conf *client) GetPipelineState(pipeline string) (PipelineState, error) {
 		return PipelineState{}, fmt.Errorf("call made to get pipeline state errored with %w", err)
 	}
 	if resp.StatusCode() != http.StatusOK {
-		return PipelineState{}, ApiWithCodeError(resp.StatusCode())
+		return PipelineState{}, APIWithCodeError(resp.StatusCode())
 	}
 
 	if err := json.Unmarshal(resp.Body(), &pipelinesStatus); err != nil {

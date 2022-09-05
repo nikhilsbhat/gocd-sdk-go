@@ -11,7 +11,7 @@ import (
 )
 
 //go:embed internal/fixtures/backup.json
-var backupJson string
+var backupJSON string
 
 func TestConfig_GetBackupInfo(t *testing.T) {
 	t.Run("should error out while fetching latest backup configuration information from server", func(t *testing.T) {
@@ -26,12 +26,13 @@ func TestConfig_GetBackupInfo(t *testing.T) {
 		client.SetRetryWaitTime(1)
 
 		actual, err := client.GetBackupInfo()
-		assert.EqualError(t, err, "call made to get backup information errored with Get \"http://localhost:8153/go/api/config/backup\": dial tcp 127.0.0.1:8153: connect: connection refused")
+		assert.EqualError(t, err, "call made to get backup information errored with "+
+			"Get \"http://localhost:8153/go/api/config/backup\": dial tcp 127.0.0.1:8153: connect: connection refused")
 		assert.Equal(t, gocd.BackupConfig{}, actual)
 	})
 
 	t.Run("should error out while fetching latest backup configuration information as server returned non 200 status code", func(t *testing.T) {
-		server := mockServer([]byte("backupJson"), http.StatusBadGateway)
+		server := mockServer([]byte("backupJSON"), http.StatusBadGateway)
 		client := gocd.NewClient(
 			server.URL,
 			"admin",
@@ -41,7 +42,7 @@ func TestConfig_GetBackupInfo(t *testing.T) {
 		)
 
 		actual, err := client.GetBackupInfo()
-		assert.EqualError(t, err, gocd.ApiWithCodeError(http.StatusBadGateway).Error())
+		assert.EqualError(t, err, gocd.APIWithCodeError(http.StatusBadGateway).Error())
 		assert.Equal(t, gocd.BackupConfig{}, actual)
 	})
 
@@ -61,7 +62,7 @@ func TestConfig_GetBackupInfo(t *testing.T) {
 	})
 
 	t.Run("should be able to fetch the latest backup configuration information available in GoCD", func(t *testing.T) {
-		server := mockServer([]byte(backupJson), http.StatusOK)
+		server := mockServer([]byte(backupJSON), http.StatusOK)
 
 		client := gocd.NewClient(
 			server.URL,

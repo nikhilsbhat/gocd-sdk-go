@@ -32,12 +32,13 @@ func Test_client_GetPipelines(t *testing.T) {
 		client.SetRetryWaitTime(1)
 
 		actual, err := client.GetPipelines()
-		assert.EqualError(t, err, "call made to get pipelines errored with Get \"http://localhost:8153/go/api/feed/pipelines.xml\": dial tcp 127.0.0.1:8153: connect: connection refused")
+		assert.EqualError(t, err, "call made to get pipelines errored with "+
+			"Get \"http://localhost:8153/go/api/feed/pipelines.xml\": dial tcp 127.0.0.1:8153: connect: connection refused")
 		assert.Equal(t, gocd.PipelinesInfo{}, actual)
 	})
 
 	t.Run("should error out while fetching pipelines as server returned non 200 status code", func(t *testing.T) {
-		server := mockServer([]byte("backupJson"), http.StatusBadGateway)
+		server := mockServer([]byte("backupJSON"), http.StatusBadGateway)
 		client := gocd.NewClient(
 			server.URL,
 			"admin",
@@ -47,7 +48,7 @@ func Test_client_GetPipelines(t *testing.T) {
 		)
 
 		actual, err := client.GetPipelines()
-		assert.EqualError(t, err, gocd.ApiWithCodeError(http.StatusBadGateway).Error())
+		assert.EqualError(t, err, gocd.APIWithCodeError(http.StatusBadGateway).Error())
 		assert.Equal(t, gocd.PipelinesInfo{}, actual)
 	})
 
@@ -104,7 +105,8 @@ func Test_client_getPipelineName(t *testing.T) {
 	t.Run("should fail while fetching pipeline name from malformed/invalid href", func(t *testing.T) {
 		pipelineLink := "://localhost:8153/go/api/feed/pipelines/animation-and-action-movies/stages.xml"
 		name, err := gocd.GetPipelineName(pipelineLink)
-		assert.EqualError(t, err, "parsing URL errored with parse \"://localhost:8153/go/api/feed/pipelines/animation-and-action-movies/stages.xml\": missing protocol scheme")
+		assert.EqualError(t, err, "parsing URL errored with parse "+
+			"\"://localhost:8153/go/api/feed/pipelines/animation-and-action-movies/stages.xml\": missing protocol scheme")
 		assert.Equal(t, "", name)
 	})
 }
@@ -124,12 +126,13 @@ func Test_client_GetPipelineStatus(t *testing.T) {
 		client.SetRetryWaitTime(1)
 
 		actual, err := client.GetPipelineState(pipeline)
-		assert.EqualError(t, err, "call made to get pipeline state errored with Get \"http://localhost:8153/go/api/pipelines/action-movies-manual/status\": dial tcp 127.0.0.1:8153: connect: connection refused")
+		assert.EqualError(t, err, "call made to get pipeline state errored with Get "+
+			"\"http://localhost:8153/go/api/pipelines/action-movies-manual/status\": dial tcp 127.0.0.1:8153: connect: connection refused")
 		assert.Equal(t, gocd.PipelineState{}, actual)
 	})
 
 	t.Run("should error out while fetching pipeline statuses information as server returned non 200 status code", func(t *testing.T) {
-		server := mockServer([]byte("backupJson"), http.StatusBadGateway)
+		server := mockServer([]byte("backupJSON"), http.StatusBadGateway)
 		client := gocd.NewClient(
 			server.URL,
 			"admin",
@@ -139,7 +142,7 @@ func Test_client_GetPipelineStatus(t *testing.T) {
 		)
 
 		actual, err := client.GetPipelineState(pipeline)
-		assert.EqualError(t, err, gocd.ApiWithCodeError(http.StatusBadGateway).Error())
+		assert.EqualError(t, err, gocd.APIWithCodeError(http.StatusBadGateway).Error())
 		assert.Equal(t, gocd.PipelineState{}, actual)
 	})
 
@@ -196,12 +199,13 @@ func Test_client_GetPipelineGroupInfo(t *testing.T) {
 		client.SetRetryWaitTime(1)
 
 		actual, err := client.GetPipelineGroupInfo()
-		assert.EqualError(t, err, "call made to get pipeline group information errored with Get \"http://localhost:8153/go/api/admin/pipeline_groups\": dial tcp 127.0.0.1:8153: connect: connection refused")
+		assert.EqualError(t, err, "call made to get pipeline group information errored with "+
+			"Get \"http://localhost:8153/go/api/admin/pipeline_groups\": dial tcp 127.0.0.1:8153: connect: connection refused")
 		assert.Nil(t, actual)
 	})
 
 	t.Run("should error out while fetching all pipeline groups information as server returned non 200 status code", func(t *testing.T) {
-		server := mockServer([]byte("backupJson"), http.StatusBadGateway)
+		server := mockServer([]byte("backupJSON"), http.StatusBadGateway)
 		client := gocd.NewClient(
 			server.URL,
 			"admin",
@@ -211,7 +215,7 @@ func Test_client_GetPipelineGroupInfo(t *testing.T) {
 		)
 
 		actual, err := client.GetPipelineGroupInfo()
-		assert.EqualError(t, err, gocd.ApiWithCodeError(http.StatusBadGateway).Error())
+		assert.EqualError(t, err, gocd.APIWithCodeError(http.StatusBadGateway).Error())
 		assert.Nil(t, actual)
 	})
 

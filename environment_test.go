@@ -10,7 +10,7 @@ import (
 )
 
 //go:embed internal/fixtures/environments.json
-var environmentJson string
+var environmentJSON string
 
 func Test_client_GetEnvironmentInfo(t *testing.T) {
 	t.Run("should error out while fetching all config repos present from server", func(t *testing.T) {
@@ -25,12 +25,13 @@ func Test_client_GetEnvironmentInfo(t *testing.T) {
 		client.SetRetryWaitTime(1)
 
 		actual, err := client.GetEnvironmentInfo()
-		assert.EqualError(t, err, "call made to get environment errored with Get \"http://localhost:8153/go/api/admin/environments\": dial tcp 127.0.0.1:8153: connect: connection refused")
+		assert.EqualError(t, err, "call made to get environment errored with "+
+			"Get \"http://localhost:8153/go/api/admin/environments\": dial tcp 127.0.0.1:8153: connect: connection refused")
 		assert.Nil(t, actual)
 	})
 
 	t.Run("should error out while fetching all config repos present as server returned non 200 status code", func(t *testing.T) {
-		server := mockServer([]byte("backupJson"), http.StatusBadGateway)
+		server := mockServer([]byte("backupJSON"), http.StatusBadGateway)
 		client := gocd.NewClient(
 			server.URL,
 			"admin",
@@ -40,7 +41,7 @@ func Test_client_GetEnvironmentInfo(t *testing.T) {
 		)
 
 		actual, err := client.GetEnvironmentInfo()
-		assert.EqualError(t, err, gocd.ApiWithCodeError(http.StatusBadGateway).Error())
+		assert.EqualError(t, err, gocd.APIWithCodeError(http.StatusBadGateway).Error())
 		assert.Nil(t, actual)
 	})
 
@@ -60,7 +61,7 @@ func Test_client_GetEnvironmentInfo(t *testing.T) {
 	})
 
 	t.Run("should be able to fetch all config repos present in GoCD server", func(t *testing.T) {
-		server := mockServer([]byte(environmentJson), http.StatusOK)
+		server := mockServer([]byte(environmentJSON), http.StatusOK)
 		client := gocd.NewClient(
 			server.URL,
 			"",

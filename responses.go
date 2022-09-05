@@ -4,7 +4,7 @@ import (
 	"fmt"
 )
 
-func ApiWithCodeError(code int) error {
+func APIWithCodeError(code int) error {
 	return fmt.Errorf("goCd server returned code %d with message", code) //nolint:goerr113
 }
 

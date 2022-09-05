@@ -25,11 +25,12 @@ func (conf *client) GetBackupInfo() (BackupConfig, error) {
 		return BackupConfig{}, fmt.Errorf("call made to get backup information errored with %w", err)
 	}
 	if resp.StatusCode() != http.StatusOK {
-		return BackupConfig{}, ApiWithCodeError(resp.StatusCode())
+		return BackupConfig{}, APIWithCodeError(resp.StatusCode())
 	}
 
 	if err := json.Unmarshal(resp.Body(), &backUpConf); err != nil {
 		return BackupConfig{}, ResponseReadError(err.Error())
 	}
+
 	return backUpConf, nil
 }

@@ -25,7 +25,7 @@ func (conf *client) GetConfigRepoInfo() ([]ConfigRepo, error) {
 		return nil, fmt.Errorf("call made to get config repo errored with %w", err)
 	}
 	if resp.StatusCode() != http.StatusOK {
-		return nil, ApiWithCodeError(resp.StatusCode())
+		return nil, APIWithCodeError(resp.StatusCode())
 	}
 
 	if err := json.Unmarshal(resp.Body(), &reposConf); err != nil {

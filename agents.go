@@ -25,12 +25,13 @@ func (conf *client) GetAgentsInfo() ([]Agent, error) {
 	}
 
 	if resp.StatusCode() != http.StatusOK {
-		return nil, ApiWithCodeError(resp.StatusCode())
+		return nil, APIWithCodeError(resp.StatusCode())
 	}
 
 	if err := json.Unmarshal(resp.Body(), &agentsConf); err != nil {
 		return nil, ResponseReadError(err.Error())
 	}
+
 	return agentsConf.Config.Config, nil
 }
 
@@ -52,7 +53,7 @@ func (conf *client) GetAgentJobRunHistory(agentID string) (AgentJobHistory, erro
 		return AgentJobHistory{}, fmt.Errorf("call made to get agent job run history errored with %w", err)
 	}
 	if resp.StatusCode() != http.StatusOK {
-		return AgentJobHistory{}, ApiWithCodeError(resp.StatusCode())
+		return AgentJobHistory{}, APIWithCodeError(resp.StatusCode())
 	}
 
 	if err := json.Unmarshal(resp.Body(), &jobHistoryConf); err != nil {

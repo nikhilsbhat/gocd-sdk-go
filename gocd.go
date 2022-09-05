@@ -54,7 +54,7 @@ func NewClient(baseURL, userName, passWord, logLevel string,
 	}
 
 	logger := log.New()
-	logger.SetLevel(getLoglevel(logLevel))
+	logger.SetLevel(GetLoglevel(logLevel))
 	logger.WithField(goCdAPILoggerName, true)
 	logger.SetFormatter(&log.JSONFormatter{})
 
@@ -64,7 +64,7 @@ func NewClient(baseURL, userName, passWord, logLevel string,
 	}
 }
 
-func getLoglevel(level string) log.Level {
+func GetLoglevel(level string) log.Level {
 	switch strings.ToLower(level) {
 	case log.WarnLevel.String():
 		return log.WarnLevel

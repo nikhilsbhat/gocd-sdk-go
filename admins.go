@@ -25,7 +25,7 @@ func (conf *client) GetAdminsInfo() (SystemAdmins, error) {
 		return SystemAdmins{}, fmt.Errorf("call made to get system admin errored with: %w", err)
 	}
 	if resp.StatusCode() != http.StatusOK {
-		return SystemAdmins{}, ApiWithCodeError(resp.StatusCode())
+		return SystemAdmins{}, APIWithCodeError(resp.StatusCode())
 	}
 
 	if err := json.Unmarshal(resp.Body(), &adminsConf); err != nil {

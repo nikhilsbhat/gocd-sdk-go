@@ -25,12 +25,13 @@ func Test_config_GetVersionInfo(t *testing.T) {
 		client.SetRetryWaitTime(1)
 
 		actual, err := client.GetVersionInfo()
-		assert.EqualError(t, err, "call made to get version information errored with: Get \"http://localhost:8153/go/api/version\": dial tcp 127.0.0.1:8153: connect: connection refused")
+		assert.EqualError(t, err, "call made to get version information errored with: "+
+			"Get \"http://localhost:8153/go/api/version\": dial tcp 127.0.0.1:8153: connect: connection refused")
 		assert.Equal(t, gocd.VersionInfo{}, actual)
 	})
 
 	t.Run("should error out while fetching version information as server returned non 200 status code", func(t *testing.T) {
-		server := mockServer([]byte("backupJson"), http.StatusBadGateway)
+		server := mockServer([]byte("backupJSON"), http.StatusBadGateway)
 		client := gocd.NewClient(
 			server.URL,
 			"admin",
@@ -40,7 +41,7 @@ func Test_config_GetVersionInfo(t *testing.T) {
 		)
 
 		actual, err := client.GetVersionInfo()
-		assert.EqualError(t, err, gocd.ApiWithCodeError(http.StatusBadGateway).Error())
+		assert.EqualError(t, err, gocd.APIWithCodeError(http.StatusBadGateway).Error())
 		assert.Equal(t, gocd.VersionInfo{}, actual)
 	})
 
