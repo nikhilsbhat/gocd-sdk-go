@@ -165,25 +165,29 @@ func Test_client_CreateConfigRepoInfo(t *testing.T) {
 }
 
 func configRepoServer(request interface{}) *httptest.Server {
-	return httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, t *http.Request) {
+	return httptest.NewServer(http.HandlerFunc(func(writer http.ResponseWriter, t *http.Request) {
 		var configRepo gocd.ConfigRepo
 		requestByte, err := json.Marshal(request)
 		if err != nil {
-			w.WriteHeader(http.StatusInternalServerError)
-			if _, err = w.Write([]byte(fmt.Sprintf("%s %s", string(requestByte), err.Error()))); err != nil {
+			writer.WriteHeader(http.StatusInternalServerError)
+			if _, err = writer.Write([]byte(fmt.Sprintf("%s %s", string(requestByte), err.Error()))); err != nil {
 				log.Fatalln(err)
 			}
+
 			return
 		}
 
 		if err = json.Unmarshal(requestByte, &configRepo); err != nil {
-			w.WriteHeader(http.StatusInternalServerError)
-			if _, err = w.Write([]byte(err.Error())); err != nil {
+			writer.WriteHeader(http.StatusInternalServerError)
+			if _, err = writer.Write([]byte(err.Error())); err != nil {
 				log.Fatalln(err)
 			}
 		}
 
-		w.WriteHeader(http.StatusOK)
-		return
+		writer.WriteHeader(http.StatusOK)
+		writer.WriteHeader(http.StatusInternalServerError)
+		if _, err = writer.Write([]byte("OK")); err != nil {
+			log.Fatalln(err)
+		}
 	}))
 }

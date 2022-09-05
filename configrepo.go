@@ -49,7 +49,7 @@ func (conf *client) CreateConfigRepoInfo(repoObj ConfigRepo) error {
 
 	resp, err := newClient.httpClient.R().SetBody(repoObj).Post(ConfigReposEndpoint)
 	if err != nil {
-		return fmt.Errorf("post call made to create config repo errored with: %s", err.Error())
+		return fmt.Errorf("post call made to create config repo errored with: %w", err)
 	}
 
 	if resp.StatusCode() != http.StatusOK {
