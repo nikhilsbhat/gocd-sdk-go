@@ -1,0 +1,6 @@
+{
+  "email_on_failure": false,
+  "email_on_success": false,
+  "post_backup_script": "/usr/local/bin/copy-gocd-backup-to-s3",
+  "schedule": "0 0 2 * * ?"
+}

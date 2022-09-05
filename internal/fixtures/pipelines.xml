@@ -1,0 +1,6 @@
+<pipelines>
+    <link rel="self" href="https://build.gocd.org/go/api/feed/pipelines.xml" />
+    <pipeline href="https://build.gocd.org/go/api/feed/pipelines/build-linux/stages.xml" />
+    <pipeline href="https://build.gocd.org/go/api/feed/pipelines/build-windows/stages.xml" />
+    <pipeline href="https://build.gocd.org/go/api/feed/pipelines/plugins/stages.xml" />
+</pipelines>

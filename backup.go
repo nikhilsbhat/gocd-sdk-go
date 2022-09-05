@@ -1,6 +1,7 @@
 package gocd
 
 import (
+	"encoding/json"
 	"fmt"
 	"net/http"
 
@@ -19,13 +20,16 @@ func (conf *client) GetBackupInfo() (BackupConfig, error) {
 	})
 
 	var backUpConf BackupConfig
-	resp, err := newClient.httpClient.R().SetResult(&backUpConf).Get(GoCdBackupConfigEndpoint)
+	resp, err := newClient.httpClient.R().Get(GoCdBackupConfigEndpoint)
 	if err != nil {
 		return BackupConfig{}, fmt.Errorf("call made to get backup information errored with %w", err)
 	}
 	if resp.StatusCode() != http.StatusOK {
-		return BackupConfig{}, apiWithCodeError(resp.StatusCode())
+		return BackupConfig{}, ApiWithCodeError(resp.StatusCode())
 	}
 
+	if err := json.Unmarshal(resp.Body(), &backUpConf); err != nil {
+		return BackupConfig{}, ResponseReadError(err.Error())
+	}
 	return backUpConf, nil
 }

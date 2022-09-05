@@ -1,0 +1,30 @@
+{
+  "_embedded": {
+    "config_repos": [
+      {
+        "id": "repo1",
+        "plugin_id": "json.config.plugin",
+        "material": {
+          "type": "git",
+          "attributes": {
+            "url": "https://github.com/config-repo/gocd-json-config-example.git",
+            "username": "bob",
+            "encrypted_password": "aSdiFgRRZ6A=",
+            "branch": "master",
+            "auto_update": true
+          }
+        },
+        "configuration": [
+        ],
+        "rules": [
+          {
+            "directive": "allow",
+            "action": "refer",
+            "type": "pipeline_group",
+            "resource": "*"
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,41 @@
+{
+  "uuid": "adb9540a-b954-4571-9d9b-2f330739d4da",
+  "jobs": [
+    {
+      "job_state_transitions": [
+        {
+          "state_change_time": "2019-11-12T00:20:56Z",
+          "state": "Scheduled"
+        },
+        {
+          "state_change_time": "2019-11-12T00:21:06Z",
+          "state": "Assigned"
+        },
+        {
+          "state_change_time": "2019-11-12T00:21:17Z",
+          "state": "Preparing"
+        },
+        {
+          "state_change_time": "2019-11-12T00:22:19Z",
+          "state": "Building"
+        },
+        {
+          "state_change_time": "2019-11-12T00:37:42Z",
+          "state": "Rescheduled"
+        }
+      ],
+      "job_name": "jasmine",
+      "stage_name": "build-non-server",
+      "stage_counter": "1",
+      "pipeline_name": "build-windows-PR",
+      "pipeline_counter": 5282,
+      "result": "Unknown",
+      "rerun": false
+    }
+  ],
+  "pagination": {
+    "page_size": 50,
+    "offset": 812,
+    "total": 813
+  }
+}

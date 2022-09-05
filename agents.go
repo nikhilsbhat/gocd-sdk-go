@@ -1,6 +1,7 @@
 package gocd
 
 import (
+	"encoding/json"
 	"fmt"
 	"net/http"
 
@@ -18,21 +19,26 @@ func (conf *client) GetAgentsInfo() ([]Agent, error) {
 	})
 
 	var agentsConf AgentsConfig
-	resp, err := newClient.httpClient.R().SetResult(&agentsConf).Get(GoCdAgentsEndpoint)
+	resp, err := newClient.httpClient.R().Get(GoCdAgentsEndpoint)
 	if err != nil {
 		return nil, fmt.Errorf("call made to get agents information errored with: %w", err)
 	}
+
 	if resp.StatusCode() != http.StatusOK {
-		return nil, apiWithCodeError(resp.StatusCode())
+		return nil, ApiWithCodeError(resp.StatusCode())
 	}
 
+	if err := json.Unmarshal(resp.Body(), &agentsConf); err != nil {
+		return nil, ResponseReadError(err.Error())
+	}
 	return agentsConf.Config.Config, nil
 }
 
-func (conf *client) GetAgentJobRunHistory(agents []string) ([]AgentJobHistory, error) {
+// GetAgentJobRunHistory implements method that fetches job run history from selected agents.
+func (conf *client) GetAgentJobRunHistory(agentID string) (AgentJobHistory, error) {
 	newClient := &client{}
 	if err := copier.CopyWithOption(newClient, conf, copier.Option{IgnoreEmpty: true, DeepCopy: true}); err != nil {
-		return nil, err
+		return AgentJobHistory{}, err
 	}
 
 	newClient.httpClient.SetHeaders(map[string]string{
@@ -40,18 +46,18 @@ func (conf *client) GetAgentJobRunHistory(agents []string) ([]AgentJobHistory, e
 	})
 	newClient.httpClient.SetQueryParam("sort_order", "DESC")
 
-	jobHistory := make([]AgentJobHistory, 0)
-	for _, agent := range agents {
-		var jobHistoryConf AgentJobHistory
-		resp, err := newClient.httpClient.R().SetResult(&jobHistoryConf).Get(fmt.Sprintf(GoCdJobRunHistoryEndpoint, agent))
-		if err != nil {
-			return nil, fmt.Errorf("call made to get agent job run history errored with %w", err)
-		}
-		if resp.StatusCode() != http.StatusOK {
-			return nil, apiWithCodeError(resp.StatusCode())
-		}
-		jobHistory = append(jobHistory, jobHistoryConf)
+	var jobHistoryConf AgentJobHistory
+	resp, err := newClient.httpClient.R().Get(fmt.Sprintf(GoCdJobRunHistoryEndpoint, agentID))
+	if err != nil {
+		return AgentJobHistory{}, fmt.Errorf("call made to get agent job run history errored with %w", err)
+	}
+	if resp.StatusCode() != http.StatusOK {
+		return AgentJobHistory{}, ApiWithCodeError(resp.StatusCode())
 	}
 
-	return jobHistory, nil
+	if err := json.Unmarshal(resp.Body(), &jobHistoryConf); err != nil {
+		return AgentJobHistory{}, ResponseReadError(err.Error())
+	}
+
+	return jobHistoryConf, nil
 }

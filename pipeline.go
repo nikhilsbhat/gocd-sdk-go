@@ -1,6 +1,8 @@
 package gocd
 
 import (
+	"encoding/json"
+	"encoding/xml"
 	"fmt"
 	"net/http"
 	"net/url"
@@ -24,12 +26,16 @@ func (conf *client) GetPipelineGroupInfo() ([]PipelineGroup, error) {
 	})
 
 	var groupConf PipelineGroupsConfig
-	resp, err := newClient.httpClient.R().SetResult(&groupConf).Get(GoCdPipelineGroupEndpoint)
+	resp, err := newClient.httpClient.R().Get(GoCdPipelineGroupEndpoint)
 	if err != nil {
 		return nil, fmt.Errorf("call made to get pipeline group information errored with %w", err)
 	}
 	if resp.StatusCode() != http.StatusOK {
-		return nil, apiWithCodeError(resp.StatusCode())
+		return nil, ApiWithCodeError(resp.StatusCode())
+	}
+
+	if err := json.Unmarshal(resp.Body(), &groupConf); err != nil {
+		return nil, ResponseReadError(err.Error())
 	}
 
 	updatedGroupConf := make([]PipelineGroup, 0)
@@ -37,6 +43,7 @@ func (conf *client) GetPipelineGroupInfo() ([]PipelineGroup, error) {
 		updatedGroupConf = append(updatedGroupConf, PipelineGroup{
 			Name:          group.Name,
 			PipelineCount: len(group.Pipelines),
+			Pipelines:     group.Pipelines,
 		})
 	}
 
@@ -51,47 +58,50 @@ func (conf *client) GetPipelines() (PipelinesInfo, error) {
 	}
 
 	var pipelinesInfo PipelinesInfo
-	resp, err := newClient.httpClient.R().SetResult(&pipelinesInfo).Get(GoCdAPIFeedPipelineEndpoint)
+	resp, err := newClient.httpClient.R().Get(GoCdAPIFeedPipelineEndpoint)
 	if err != nil {
 		return PipelinesInfo{}, fmt.Errorf("call made to get pipelines errored with %w", err)
 	}
 	if resp.StatusCode() != http.StatusOK {
-		return PipelinesInfo{}, apiWithCodeError(resp.StatusCode())
+		return PipelinesInfo{}, ApiWithCodeError(resp.StatusCode())
+	}
+
+	if err := xml.Unmarshal(resp.Body(), &pipelinesInfo); err != nil {
+		return PipelinesInfo{}, ResponseReadError(err.Error())
 	}
 
 	return pipelinesInfo, nil
 }
 
 // GetPipelineState fetches status of selected pipelines.
-func (conf *client) GetPipelineState(pipelines []string) ([]PipelineState, error) {
+func (conf *client) GetPipelineState(pipeline string) (PipelineState, error) {
 	newClient := &client{}
 	if err := copier.CopyWithOption(newClient, conf, copier.Option{IgnoreEmpty: true, DeepCopy: true}); err != nil {
-		return nil, err
+		return PipelineState{}, err
 	}
 
 	newClient.httpClient.SetHeaders(map[string]string{
 		"Accept": GoCdHeaderVersionOne,
 	})
 
-	pipelinesStatus := make([]PipelineState, 0)
-	for _, pipeline := range pipelines {
-		var pipelineState PipelineState
-		resp, err := newClient.httpClient.R().SetResult(&pipelineState).Get(fmt.Sprintf(GoCdPipelineStatus, pipeline))
-		if err != nil {
-			return nil, fmt.Errorf("call made to get pipeline state errored with %w", err)
-		}
-		if resp.StatusCode() != http.StatusOK {
-			return nil, apiWithCodeError(resp.StatusCode())
-		}
-
-		pipelineState.Name = pipeline
-		pipelinesStatus = append(pipelinesStatus, pipelineState)
+	var pipelinesStatus PipelineState
+	resp, err := newClient.httpClient.R().Get(fmt.Sprintf(GoCdPipelineStatus, pipeline))
+	if err != nil {
+		return PipelineState{}, fmt.Errorf("call made to get pipeline state errored with %w", err)
 	}
+	if resp.StatusCode() != http.StatusOK {
+		return PipelineState{}, ApiWithCodeError(resp.StatusCode())
+	}
+
+	if err := json.Unmarshal(resp.Body(), &pipelinesStatus); err != nil {
+		return PipelineState{}, ResponseReadError(err.Error())
+	}
+	pipelinesStatus.Name = pipeline
 
 	return pipelinesStatus, nil
 }
 
-// Count return the number of pipelines present.
+// Count return the total number of pipelines present.
 func (conf Groups) Count() int {
 	var pipelines int
 	for _, i := range conf {

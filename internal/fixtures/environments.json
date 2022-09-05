@@ -1,0 +1,46 @@
+{
+  "_embedded": {
+    "environments": [
+      {
+        "name": "foobar1",
+        "pipelines": [
+          {
+            "name": "pipeline1"
+          }
+        ],
+        "environment_variables": [
+          {
+            "secure": false,
+            "name": "username",
+            "value": "admin"
+          },
+          {
+            "secure": true,
+            "name": "password",
+            "encrypted_value": "LSd1TI0eLa+DjytHjj0qjA=="
+          }
+        ]
+      },
+      {
+        "name": "foobar2",
+        "pipelines": [
+          {
+            "name": "pipeline2"
+          }
+        ],
+        "environment_variables": [
+          {
+            "secure": false,
+            "name": "username",
+            "value": "admin"
+          },
+          {
+            "secure": true,
+            "name": "password",
+            "encrypted_value": "LSd1TI0eLa+DjytHjj0qjA=="
+          }
+        ]
+      }
+    ]
+  }
+}

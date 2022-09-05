@@ -10,8 +10,6 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-//go:generate $PWD/scripts/mocks $PWD/internal/mocks
-
 // client holds resty.Client which could be used for interacting with GoCD and other information.
 type client struct {
 	httpClient *resty.Client
@@ -21,8 +19,8 @@ type client struct {
 // GoCd implements methods to get various information from GoCD.
 type GoCd interface {
 	GetAgentsInfo() ([]Agent, error)
-	GetAgentJobRunHistory(agents []string) ([]AgentJobHistory, error)
-	GetHealthInfo() ([]ServerHealth, error)
+	GetAgentJobRunHistory(agent string) (AgentJobHistory, error)
+	GetHealthMessages() ([]ServerHealth, error)
 	GetConfigRepoInfo() ([]ConfigRepo, error)
 	GetAdminsInfo() (SystemAdmins, error)
 	GetPipelineGroupInfo() ([]PipelineGroup, error)
@@ -30,17 +28,19 @@ type GoCd interface {
 	GetVersionInfo() (VersionInfo, error)
 	GetBackupInfo() (BackupConfig, error)
 	GetPipelines() (PipelinesInfo, error)
-	GetPipelineState(pipelines []string) ([]PipelineState, error)
+	GetPipelineState(pipeline string) (PipelineState, error)
+	SetRetryCount(count int)
+	SetRetryWaitTime(count int)
 }
 
 // NewClient returns new instance of httpClient when invoked.
-func NewClient(baseURL, userName, passWord, loglevel string,
-	caContent []byte, logLevel string,
+func NewClient(baseURL, userName, passWord, logLevel string,
+	caContent []byte,
 ) GoCd {
 	newClient := resty.New()
 	newClient.SetRetryCount(defaultRetryCount)
 	newClient.SetRetryWaitTime(defaultRetryWaitTime * time.Second)
-	if loglevel == "debug" {
+	if logLevel == "debug" {
 		newClient.SetDebug(true)
 	}
 	newClient.SetBaseURL(baseURL)
@@ -72,7 +72,19 @@ func getLoglevel(level string) log.Level {
 		return log.DebugLevel
 	case log.TraceLevel.String():
 		return log.TraceLevel
+	case log.FatalLevel.String():
+		return log.FatalLevel
+	case log.ErrorLevel.String():
+		return log.ErrorLevel
 	default:
 		return log.InfoLevel
 	}
+}
+
+func (conf *client) SetRetryCount(count int) {
+	conf.httpClient.SetRetryCount(count)
+}
+
+func (conf *client) SetRetryWaitTime(count int) {
+	conf.httpClient.SetRetryWaitTime(time.Duration(count) * time.Second)
 }

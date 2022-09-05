@@ -1,6 +1,7 @@
 package gocd
 
 import (
+	"encoding/json"
 	"fmt"
 	"net/http"
 
@@ -19,12 +20,16 @@ func (conf *client) GetAdminsInfo() (SystemAdmins, error) {
 	})
 
 	var adminsConf SystemAdmins
-	resp, err := newClient.httpClient.R().SetResult(&adminsConf).Get(GoCdSystemAdminEndpoint)
+	resp, err := newClient.httpClient.R().Get(GoCdSystemAdminEndpoint)
 	if err != nil {
 		return SystemAdmins{}, fmt.Errorf("call made to get system admin errored with: %w", err)
 	}
 	if resp.StatusCode() != http.StatusOK {
-		return SystemAdmins{}, apiWithCodeError(resp.StatusCode())
+		return SystemAdmins{}, ApiWithCodeError(resp.StatusCode())
+	}
+
+	if err := json.Unmarshal(resp.Body(), &adminsConf); err != nil {
+		return adminsConf, ResponseReadError(err.Error())
 	}
 
 	return adminsConf, nil

@@ -1,0 +1,7 @@
+{
+  "paused": true,
+  "paused_cause": "Reason for pausing this pipeline goes here",
+  "paused_by": "admin",
+  "locked": false,
+  "schedulable": false
+}

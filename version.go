@@ -25,10 +25,10 @@ func (conf *client) GetVersionInfo() (VersionInfo, error) {
 		return VersionInfo{}, fmt.Errorf("call made to get version information errored with: %w", err)
 	}
 	if resp.StatusCode() != http.StatusOK {
-		return VersionInfo{}, apiWithCodeError(resp.StatusCode())
+		return VersionInfo{}, ApiWithCodeError(resp.StatusCode())
 	}
 	if err := json.Unmarshal(resp.Body(), &version); err != nil {
-		return VersionInfo{}, responseReadError(err.Error())
+		return VersionInfo{}, ResponseReadError(err.Error())
 	}
 
 	return version, nil

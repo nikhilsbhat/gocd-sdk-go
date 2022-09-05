@@ -1,0 +1,67 @@
+{
+  "_links": {
+    "self": {
+      "href": "https://ci.example.com/go/api/admin/pipeline_groups"
+    },
+    "doc": {
+      "href": "https://api.go.cd/current/#pipeline-group-config"
+    },
+    "find": {
+      "href": "https://ci.example.com/go/api/admin/pipeline_groups/:group"
+    }
+  },
+  "_embedded": {
+    "groups": [
+      {
+        "name": "action-movies",
+        "authorization": {
+          "view": {
+            "users": [
+              "operate"
+            ],
+            "roles": []
+          },
+          "admins": {
+            "users": [
+              "operate"
+            ],
+            "roles": []
+          }
+        },
+        "pipelines": [
+          {
+            "name": "action-movies-auto"
+          },
+          {
+            "name": "action-movies-manual"
+          }
+        ]
+      },
+      {
+        "name": "infrastructure",
+        "authorization": {
+          "view": {
+            "users": [
+              "operate"
+            ],
+            "roles": []
+          },
+          "admins": {
+            "users": [
+              "operate"
+            ],
+            "roles": []
+          }
+        },
+        "pipelines": [
+          {
+            "name": "gocd-prometheus-exporter"
+          },
+          {
+            "name": "helm-images"
+          }
+        ]
+      }
+    ]
+  }
+}

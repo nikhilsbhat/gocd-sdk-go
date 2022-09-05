@@ -1,6 +1,7 @@
 package gocd
 
 import (
+	"encoding/json"
 	"fmt"
 	"net/http"
 
@@ -19,12 +20,16 @@ func (conf *client) GetConfigRepoInfo() ([]ConfigRepo, error) {
 	})
 
 	var reposConf ConfigRepoConfig
-	resp, err := newClient.httpClient.R().SetResult(&reposConf).Get(GoCdConfigReposEndpoint)
+	resp, err := newClient.httpClient.R().Get(GoCdConfigReposEndpoint)
 	if err != nil {
 		return nil, fmt.Errorf("call made to get config repo errored with %w", err)
 	}
 	if resp.StatusCode() != http.StatusOK {
-		return nil, apiWithCodeError(resp.StatusCode())
+		return nil, ApiWithCodeError(resp.StatusCode())
+	}
+
+	if err := json.Unmarshal(resp.Body(), &reposConf); err != nil {
+		return nil, ResponseReadError(err.Error())
 	}
 
 	return reposConf.ConfigRepos.ConfigRepos, nil

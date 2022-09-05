@@ -1,0 +1,8 @@
+[
+  {
+    "message": "Job 'Security-Checks/test/dependency-check' is not responding",
+    "detail": "Job <a href='/go/tab/build/detail/Security-Checks/847/test/1/dependency-check'>Security-Checks/test/dependency-check</a> is currently running but has not shown any console activity in the last 26 minute(s). This job may be hung.",
+    "level": "WARNING",
+    "time": "2018-02-27T07:36:30Z"
+  }
+]

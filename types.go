@@ -2,35 +2,6 @@ package gocd
 
 import "encoding/xml"
 
-var (
-	// CurrentAgentsConfig holds updated GoCD agent config information.
-	CurrentAgentsConfig []Agent
-	// CurrentAgentJobRunHistory holds updated GoCD agent config information.
-	CurrentAgentJobRunHistory = make([]AgentJobHistory, 0)
-	// CurrentServerHealth holds updated GoCD server health information.
-	CurrentServerHealth []ServerHealth
-	// CurrentConfigRepos holds updated config repo information present GoCD server.
-	CurrentConfigRepos []ConfigRepo
-	// CurrentPipelineGroup holds updated pipeline group information present GoCD server.
-	CurrentPipelineGroup []PipelineGroup
-	// CurrentEnvironments holds updated environment information present GoCD server.
-	CurrentEnvironments []Environment
-	// CurrentPipelineCount holds updated pipeline count present in GoCD server.
-	CurrentPipelineCount int
-	// CurrentSystemAdmins holds updated information of the system admins present in GoCD server.
-	CurrentSystemAdmins SystemAdmins
-	// CurrentBackupConfig holds updated information of backups configured in GoCD server.
-	CurrentBackupConfig BackupConfig
-	// CurrentVersion holds updated GoCD server version information.
-	CurrentVersion VersionInfo
-	// CurrentPipelineSize holds updated information of disk sizes occupied by various GoCD pipelines.
-	CurrentPipelineSize = make(map[string]PipelineSize)
-	// CurrentPipelines holds updated list of pipeline names that are present in GoCD.
-	CurrentPipelines []string
-	// CurrentPipelineState holds the information of the latest state of pipelines available in GoCD.
-	CurrentPipelineState []PipelineState
-)
-
 const (
 	defaultRetryCount    = 5
 	defaultRetryWaitTime = 5
@@ -48,6 +19,7 @@ type Agents struct {
 
 // Agent holds information of a particular agent.
 type Agent struct {
+	IPAddress          string      `json:"ip_address,omitempty"`
 	Name               string      `json:"hostname,omitempty"`
 	ID                 string      `json:"uuid,omitempty"`
 	Version            string      `json:"agent_version,omitempty"`
@@ -70,6 +42,8 @@ type ServerVersion struct {
 type ServerHealth struct {
 	Level   string `json:"level,omitempty"`
 	Message string `json:"message,omitempty"`
+	Time    string `json:"time,omitempty"`
+	Detail  string `json:"detail,omitempty"`
 }
 
 // ConfigRepoConfig holds information of all config-repos present in GoCD.
@@ -84,6 +58,7 @@ type ConfigRepos struct {
 
 // ConfigRepo holds information of the specified config-repo.
 type ConfigRepo struct {
+	PluginID string `json:"plugin_id"`
 	ID       string `json:"config_repos,omitempty"`
 	Material struct {
 		Type       string `json:"type,omitempty"`
@@ -93,6 +68,8 @@ type ConfigRepo struct {
 			AutoUpdate bool   `json:"auto_update,omitempty"`
 		}
 	}
+	Configuration []map[string]interface{} `json:"configuration,omitempty"`
+	Rules         []map[string]interface{} `json:",omitempty"`
 }
 
 // PipelineGroupsConfig holds information on the various pipeline groups present in GoCD.
@@ -107,11 +84,9 @@ type PipelineGroups struct {
 
 // PipelineGroup holds information of a specific pipeline group instance.
 type PipelineGroup struct {
-	Name          string `json:"name,omitempty"`
-	PipelineCount int    `json:"pipeline_count,omitempty"`
-	Pipelines     []struct {
-		Name string `json:"name,omitempty"`
-	}
+	Name          string     `json:"name,omitempty"`
+	PipelineCount int        `json:"pipeline_count,omitempty"`
+	Pipelines     []Pipeline `json:"pipelines,omitempty"`
 }
 
 // SystemAdmins holds information of the system admins present.
@@ -122,9 +97,10 @@ type SystemAdmins struct {
 
 // BackupConfig holds information of the backup configured.
 type BackupConfig struct {
-	EmailOnSuccess bool   `json:"email_on_success,omitempty"`
-	EmailOnFailure bool   `json:"email_on_failure,omitempty"`
-	Schedule       string `json:"schedule,omitempty"`
+	EmailOnSuccess   bool   `json:"email_on_success,omitempty"`
+	EmailOnFailure   bool   `json:"email_on_failure,omitempty"`
+	Schedule         string `json:"schedule,omitempty"`
+	PostBackupScript string `json:"post_backup_script,omitempty"`
 }
 
 // PipelineSize holds information of the pipeline size.
@@ -151,6 +127,7 @@ type PipelineState struct {
 	Locked      bool   `json:"locked,omitempty"`
 	Schedulable bool   `json:"schedulable,omitempty"`
 	PausedBy    string `json:"paused_by,omitempty"`
+	PausedCause string `json:"paused_cause,omitempty"`
 }
 
 // Pipelines holds information of the pipelines present in GoCD.
