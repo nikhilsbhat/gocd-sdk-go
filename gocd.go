@@ -22,6 +22,7 @@ type GoCd interface {
 	GetAgentJobRunHistory(agent string) (AgentJobHistory, error)
 	GetHealthMessages() ([]ServerHealth, error)
 	GetConfigRepoInfo() ([]ConfigRepo, error)
+	CreateConfigRepoInfo(repoObj ConfigRepo) error
 	GetAdminsInfo() (SystemAdmins, error)
 	GetPipelineGroupInfo() ([]PipelineGroup, error)
 	GetEnvironmentInfo() ([]Environment, error)
@@ -64,6 +65,7 @@ func NewClient(baseURL, userName, passWord, logLevel string,
 	}
 }
 
+// GetLoglevel sets the loglevel to the kind of log asked for.
 func GetLoglevel(level string) log.Level {
 	switch strings.ToLower(level) {
 	case log.WarnLevel.String():
@@ -81,10 +83,12 @@ func GetLoglevel(level string) log.Level {
 	}
 }
 
+// SetRetryCount sets retry count for the go-resty client.
 func (conf *client) SetRetryCount(count int) {
 	conf.httpClient.SetRetryCount(count)
 }
 
+// SetRetryWaitTime sets retry wait time for the go-resty client.
 func (conf *client) SetRetryWaitTime(count int) {
 	conf.httpClient.SetRetryWaitTime(time.Duration(count) * time.Second)
 }

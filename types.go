@@ -63,9 +63,12 @@ type ConfigRepo struct {
 	Material struct {
 		Type       string `json:"type,omitempty"`
 		Attributes struct {
-			URL        string `json:"url,omitempty"`
-			Branch     string `json:"branch,omitempty"`
-			AutoUpdate bool   `json:"auto_update,omitempty"`
+			URL               string `json:"url,omitempty"`
+			Username          string `json:"username,omitempty"`
+			Password          string `json:"password,omitempty"`
+			EncryptedPassword string `json:"encrypted_password,omitempty"`
+			Branch            string `json:"branch,omitempty"`
+			AutoUpdate        bool   `json:"auto_update,omitempty"`
 		}
 	}
 	Configuration []map[string]interface{} `json:"configuration,omitempty"`

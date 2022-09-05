@@ -16,11 +16,11 @@ func (conf *client) GetBackupInfo() (BackupConfig, error) {
 	}
 
 	newClient.httpClient.SetHeaders(map[string]string{
-		"Accept": GoCdHeaderVersionOne,
+		"Accept": HeaderVersionOne,
 	})
 
 	var backUpConf BackupConfig
-	resp, err := newClient.httpClient.R().Get(GoCdBackupConfigEndpoint)
+	resp, err := newClient.httpClient.R().Get(BackupConfigEndpoint)
 	if err != nil {
 		return BackupConfig{}, fmt.Errorf("call made to get backup information errored with %w", err)
 	}

@@ -16,11 +16,11 @@ func (conf *client) GetAdminsInfo() (SystemAdmins, error) {
 	}
 
 	newClient.httpClient.SetHeaders(map[string]string{
-		"Accept": GoCdHeaderVersionTwo,
+		"Accept": HeaderVersionTwo,
 	})
 
 	var adminsConf SystemAdmins
-	resp, err := newClient.httpClient.R().Get(GoCdSystemAdminEndpoint)
+	resp, err := newClient.httpClient.R().Get(SystemAdminEndpoint)
 	if err != nil {
 		return SystemAdmins{}, fmt.Errorf("call made to get system admin errored with: %w", err)
 	}

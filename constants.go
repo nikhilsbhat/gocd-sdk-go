@@ -1,24 +1,25 @@
 package gocd
 
 const (
-	GoCdAgentsEndpoint          = "/api/agents"
-	GoCdVersionEndpoint         = "/api/version"
-	GoCdServerHealthEndpoint    = "/api/server_health_messages"
-	GoCdConfigReposEndpoint     = "/api/admin/config_repos"
-	GoCdSystemAdminEndpoint     = "/api/admin/security/system_admins"
-	GoCdBackupConfigEndpoint    = "/api/config/backup"
-	GoCdPipelineGroupEndpoint   = "/api/admin/pipeline_groups"
-	GoCdEnvironmentEndpoint     = "/api/admin/environments"
-	GoCdJobRunHistoryEndpoint   = "/api/agents/%s/job_run_history"
-	GoCdAPIFeedPipelineEndpoint = "/api/feed/pipelines.xml"
-	GoCdPipelineStatus          = "/api/pipelines/%s/status"
-	GoCdHeaderVersionOne        = "application/vnd.go.cd.v1+json"
-	GoCdHeaderVersionTwo        = "application/vnd.go.cd.v2+json"
-	GoCdHeaderVersionThree      = "application/vnd.go.cd.v3+json"
-	GoCdHeaderVersionFour       = "application/vnd.go.cd.v4+json"
-	GoCdHeaderVersionSeven      = "application/vnd.go.cd.v7+json"
+	AgentsEndpoint          = "/api/agents"
+	VersionEndpoint         = "/api/version"
+	ServerHealthEndpoint    = "/api/server_health_messages"
+	ConfigReposEndpoint     = "/api/admin/config_repos"
+	SystemAdminEndpoint     = "/api/admin/security/system_admins"
+	BackupConfigEndpoint    = "/api/config/backup"
+	PipelineGroupEndpoint   = "/api/admin/pipeline_groups"
+	EnvironmentEndpoint     = "/api/admin/environments"
+	JobRunHistoryEndpoint   = "/api/agents/%s/job_run_history"
+	APIFeedPipelineEndpoint = "/api/feed/pipelines.xml"
+	PipelineStatus          = "/api/pipelines/%s/status"
+	HeaderVersionOne        = "application/vnd.go.cd.v1+json"
+	HeaderVersionTwo        = "application/vnd.go.cd.v2+json"
+	HeaderVersionThree      = "application/vnd.go.cd.v3+json"
+	HeaderVersionFour       = "application/vnd.go.cd.v4+json"
+	HeaderVersionSeven      = "application/vnd.go.cd.v7+json"
 )
 
 const (
 	goCdAPILoggerName = "gocd-sdk-go"
+	contentJSON       = "application/json"
 )

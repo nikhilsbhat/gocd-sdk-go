@@ -16,11 +16,11 @@ func (conf *client) GetHealthMessages() ([]ServerHealth, error) {
 	}
 
 	newClient.httpClient.SetHeaders(map[string]string{
-		"Accept": GoCdHeaderVersionOne,
+		"Accept": HeaderVersionOne,
 	})
 
 	var health []ServerHealth
-	resp, err := newClient.httpClient.R().SetResult(&health).Get(GoCdServerHealthEndpoint)
+	resp, err := newClient.httpClient.R().SetResult(&health).Get(ServerHealthEndpoint)
 	if err != nil {
 		return nil, fmt.Errorf("call made to get health info errored with %w", err)
 	}

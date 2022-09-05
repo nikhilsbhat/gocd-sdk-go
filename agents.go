@@ -15,11 +15,11 @@ func (conf *client) GetAgentsInfo() ([]Agent, error) {
 		return nil, err
 	}
 	newClient.httpClient.SetHeaders(map[string]string{
-		"Accept": GoCdHeaderVersionSeven,
+		"Accept": HeaderVersionSeven,
 	})
 
 	var agentsConf AgentsConfig
-	resp, err := newClient.httpClient.R().Get(GoCdAgentsEndpoint)
+	resp, err := newClient.httpClient.R().Get(AgentsEndpoint)
 	if err != nil {
 		return nil, fmt.Errorf("call made to get agents information errored with: %w", err)
 	}
@@ -43,12 +43,12 @@ func (conf *client) GetAgentJobRunHistory(agentID string) (AgentJobHistory, erro
 	}
 
 	newClient.httpClient.SetHeaders(map[string]string{
-		"Accept": GoCdHeaderVersionOne,
+		"Accept": HeaderVersionOne,
 	})
 	newClient.httpClient.SetQueryParam("sort_order", "DESC")
 
 	var jobHistoryConf AgentJobHistory
-	resp, err := newClient.httpClient.R().Get(fmt.Sprintf(GoCdJobRunHistoryEndpoint, agentID))
+	resp, err := newClient.httpClient.R().Get(fmt.Sprintf(JobRunHistoryEndpoint, agentID))
 	if err != nil {
 		return AgentJobHistory{}, fmt.Errorf("call made to get agent job run history errored with %w", err)
 	}

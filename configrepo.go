@@ -16,11 +16,11 @@ func (conf *client) GetConfigRepoInfo() ([]ConfigRepo, error) {
 	}
 
 	newClient.httpClient.SetHeaders(map[string]string{
-		"Accept": GoCdHeaderVersionFour,
+		"Accept": HeaderVersionFour,
 	})
 
 	var reposConf ConfigRepoConfig
-	resp, err := newClient.httpClient.R().Get(GoCdConfigReposEndpoint)
+	resp, err := newClient.httpClient.R().Get(ConfigReposEndpoint)
 	if err != nil {
 		return nil, fmt.Errorf("call made to get config repo errored with %w", err)
 	}
@@ -33,4 +33,28 @@ func (conf *client) GetConfigRepoInfo() ([]ConfigRepo, error) {
 	}
 
 	return reposConf.ConfigRepos.ConfigRepos, nil
+}
+
+// CreateConfigRepoInfo fetches information of all config-repos in GoCD server.
+func (conf *client) CreateConfigRepoInfo(repoObj ConfigRepo) error {
+	newClient := &client{}
+	if err := copier.CopyWithOption(newClient, conf, copier.Option{IgnoreEmpty: true, DeepCopy: true}); err != nil {
+		return err
+	}
+
+	newClient.httpClient.SetHeaders(map[string]string{
+		"Accept":       HeaderVersionFour,
+		"Content-Type": contentJSON,
+	})
+
+	resp, err := newClient.httpClient.R().SetBody(repoObj).Post(ConfigReposEndpoint)
+	if err != nil {
+		return fmt.Errorf("post call made to create config repo errored with: %s", err.Error())
+	}
+
+	if resp.StatusCode() != http.StatusOK {
+		return APIErrorWithBody(resp.String(), resp.StatusCode())
+	}
+
+	return nil
 }

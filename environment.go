@@ -16,11 +16,11 @@ func (conf *client) GetEnvironmentInfo() ([]Environment, error) {
 	}
 
 	newClient.httpClient.SetHeaders(map[string]string{
-		"Accept": GoCdHeaderVersionThree,
+		"Accept": HeaderVersionThree,
 	})
 
 	var envConf EnvironmentInfo
-	resp, err := newClient.httpClient.R().Get(GoCdEnvironmentEndpoint)
+	resp, err := newClient.httpClient.R().Get(EnvironmentEndpoint)
 	if err != nil {
 		return nil, fmt.Errorf("call made to get environment errored with %w", err)
 	}
