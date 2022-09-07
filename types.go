@@ -72,7 +72,8 @@ type ConfigRepo struct {
 		}
 	}
 	Configuration []map[string]interface{} `json:"configuration,omitempty"`
-	Rules         []map[string]interface{} `json:",omitempty"`
+	Rules         []map[string]interface{} `json:"rules,omitempty"`
+	ETAG          string
 }
 
 // PipelineGroupsConfig holds information on the various pipeline groups present in GoCD.

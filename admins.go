@@ -21,7 +21,6 @@ func (conf *client) GetAdminsInfo() (SystemAdmins, error) {
 			"Accept": HeaderVersionTwo,
 		}).
 		Get(SystemAdminEndpoint)
-
 	if err != nil {
 		return SystemAdmins{}, fmt.Errorf("call made to get system admin errored with: %w", err)
 	}

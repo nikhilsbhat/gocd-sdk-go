@@ -9,8 +9,40 @@ import (
 	"github.com/jinzhu/copier"
 )
 
-// GetConfigRepo fetches information of all config-repos in GoCD server.
-func (conf *client) GetConfigRepo() ([]ConfigRepo, error) {
+// GetConfigRepo fetches information of a specific config-repo from GoCD server
+func (conf *client) GetConfigRepo(repo string) (ConfigRepo, error) {
+	newClient := &client{}
+	if err := copier.CopyWithOption(newClient, conf, copier.Option{IgnoreEmpty: true, DeepCopy: true}); err != nil {
+		return ConfigRepo{}, err
+	}
+
+	var repoConf ConfigRepo
+	resp, err := newClient.httpClient.R().
+		SetHeaders(map[string]string{
+			"Accept": HeaderVersionFour,
+		}).
+		Get(filepath.Join(ConfigReposEndpoint, repo))
+	if err != nil {
+		return ConfigRepo{}, fmt.Errorf("call made to get config repo errored with %w", err)
+	}
+	if resp.StatusCode() != http.StatusOK {
+		return ConfigRepo{}, APIErrorWithBody(resp.String(), resp.StatusCode())
+	}
+
+	if err := json.Unmarshal(resp.Body(), &repoConf); err != nil {
+		return ConfigRepo{}, ResponseReadError(err.Error())
+	}
+
+	if len(resp.Header().Get("ETag")) == 0 {
+		return repoConf, fmt.Errorf("header ETag not set, this will impact while updating configrepo")
+	}
+
+	repoConf.ETAG = resp.Header().Get("ETag")
+	return repoConf, nil
+}
+
+// GetConfigRepos fetches information of all config-repos from GoCD server.
+func (conf *client) GetConfigRepos() ([]ConfigRepo, error) {
 	newClient := &client{}
 	if err := copier.CopyWithOption(newClient, conf, copier.Option{IgnoreEmpty: true, DeepCopy: true}); err != nil {
 		return nil, err
@@ -22,12 +54,11 @@ func (conf *client) GetConfigRepo() ([]ConfigRepo, error) {
 			"Accept": HeaderVersionFour,
 		}).
 		Get(ConfigReposEndpoint)
-
 	if err != nil {
-		return nil, fmt.Errorf("call made to get config repo errored with %w", err)
+		return nil, fmt.Errorf("call made to get config repos errored with %w", err)
 	}
 	if resp.StatusCode() != http.StatusOK {
-		return nil, APIWithCodeError(resp.StatusCode())
+		return nil, APIErrorWithBody(resp.String(), resp.StatusCode())
 	}
 
 	if err := json.Unmarshal(resp.Body(), &reposConf); err != nil {
@@ -47,11 +78,10 @@ func (conf *client) CreateConfigRepo(repoObj ConfigRepo) error {
 	resp, err := newClient.httpClient.R().
 		SetHeaders(map[string]string{
 			"Accept":       HeaderVersionFour,
-			"Content-Type": contentJSON,
+			"Content-Type": ContentJSON,
 		}).
 		SetBody(repoObj).
 		Post(ConfigReposEndpoint)
-
 	if err != nil {
 		return fmt.Errorf("post call made to create config repo errored with: %w", err)
 	}
@@ -73,10 +103,9 @@ func (conf *client) DeleteConfigRepo(repo string) error {
 	resp, err := newClient.httpClient.R().
 		SetHeaders(map[string]string{
 			"Accept":       HeaderVersionFour,
-			"Content-Type": contentJSON,
+			"Content-Type": ContentJSON,
 		}).
 		Delete(filepath.Join(ConfigReposEndpoint, repo))
-
 	if err != nil {
 		return fmt.Errorf("post call made to create config repo errored with: %w", err)
 	}

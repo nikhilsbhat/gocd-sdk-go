@@ -21,5 +21,5 @@ const (
 
 const (
 	goCdAPILoggerName = "gocd-sdk-go"
-	contentJSON       = "application/json"
+	ContentJSON       = "application/json"
 )
