@@ -22,7 +22,7 @@ var (
 func Test_client_GetPipelines(t *testing.T) {
 	t.Run("should error out while fetching pipelines from server", func(t *testing.T) {
 		client := gocd.NewClient(
-			"http://localhost:8153/go",
+			"http://localhost:8156/go",
 			"admin",
 			"admin",
 			"info",
@@ -33,12 +33,12 @@ func Test_client_GetPipelines(t *testing.T) {
 
 		actual, err := client.GetPipelines()
 		assert.EqualError(t, err, "call made to get pipelines errored with "+
-			"Get \"http://localhost:8153/go/api/feed/pipelines.xml\": dial tcp 127.0.0.1:8153: connect: connection refused")
+			"Get \"http://localhost:8156/go/api/feed/pipelines.xml\": dial tcp [::1]:8156: connect: connection refused")
 		assert.Equal(t, gocd.PipelinesInfo{}, actual)
 	})
 
 	t.Run("should error out while fetching pipelines as server returned non 200 status code", func(t *testing.T) {
-		server := mockServer([]byte("backupJSON"), http.StatusBadGateway)
+		server := mockServer([]byte("backupJSON"), http.StatusBadGateway, nil)
 		client := gocd.NewClient(
 			server.URL,
 			"admin",
@@ -53,7 +53,7 @@ func Test_client_GetPipelines(t *testing.T) {
 	})
 
 	t.Run("should error out while fetching pipelines as server returned malformed response", func(t *testing.T) {
-		server := mockServer([]byte(`{"email_on_failure"}`), http.StatusOK)
+		server := mockServer([]byte(`{"email_on_failure"}`), http.StatusOK, nil)
 		client := gocd.NewClient(
 			server.URL,
 			"admin",
@@ -68,7 +68,7 @@ func Test_client_GetPipelines(t *testing.T) {
 	})
 
 	t.Run("should be able to fetch the pipelines present in GoCD", func(t *testing.T) {
-		server := mockServer([]byte(pipelines), http.StatusOK)
+		server := mockServer([]byte(pipelines), http.StatusOK, nil)
 		client := gocd.NewClient(
 			server.URL,
 			"admin",
@@ -85,19 +85,19 @@ func Test_client_GetPipelines(t *testing.T) {
 
 func Test_client_getPipelineName(t *testing.T) {
 	t.Run("should be able to fetch pipeline name from the href passed", func(t *testing.T) {
-		pipelineLink := "http://localhost:8153/go/api/feed/pipelines/animation-and-action-movies/stages.xml"
+		pipelineLink := "http://localhost:8156/go/api/feed/pipelines/animation-and-action-movies/stages.xml"
 		name, err := gocd.GetPipelineName(pipelineLink)
 		assert.NoError(t, err)
 		assert.Equal(t, "animation-and-action-movies", name)
 	})
 	t.Run("should fetch malformed pipeline name as malformed/invalid (prefix) href passed", func(t *testing.T) {
-		pipelineLink := "http://localhost:8153/go/api/feed/pipelinesss/animation-and-action-movies/stages.xml"
+		pipelineLink := "http://localhost:8156/go/api/feed/pipelinesss/animation-and-action-movies/stages.xml"
 		name, err := gocd.GetPipelineName(pipelineLink)
 		assert.NoError(t, err)
 		assert.Equal(t, "/go/api/feed/pipelinesss/animation-and-action-movies", name)
 	})
 	t.Run("should fetch malformed pipeline name as malformed/invalid (suffix) href passed", func(t *testing.T) {
-		pipelineLink := "http://localhost:8153/go/api/feed/pipelines/animation-and-action-movies/test/stages.xml"
+		pipelineLink := "http://localhost:8156/go/api/feed/pipelines/animation-and-action-movies/test/stages.xml"
 		name, err := gocd.GetPipelineName(pipelineLink)
 		assert.NoError(t, err)
 		assert.Equal(t, "animation-and-action-movies/test", name)
@@ -116,7 +116,7 @@ func Test_client_GetPipelineStatus(t *testing.T) {
 
 	t.Run("should error out while fetching pipeline statuses information from server", func(t *testing.T) {
 		client := gocd.NewClient(
-			"http://localhost:8153/go",
+			"http://localhost:8156/go",
 			"admin",
 			"admin",
 			"info",
@@ -127,12 +127,12 @@ func Test_client_GetPipelineStatus(t *testing.T) {
 
 		actual, err := client.GetPipelineState(pipeline)
 		assert.EqualError(t, err, "call made to get pipeline state errored with Get "+
-			"\"http://localhost:8153/go/api/pipelines/action-movies-manual/status\": dial tcp 127.0.0.1:8153: connect: connection refused")
+			"\"http://localhost:8156/go/api/pipelines/action-movies-manual/status\": dial tcp [::1]:8156: connect: connection refused")
 		assert.Equal(t, gocd.PipelineState{}, actual)
 	})
 
 	t.Run("should error out while fetching pipeline statuses information as server returned non 200 status code", func(t *testing.T) {
-		server := mockServer([]byte("backupJSON"), http.StatusBadGateway)
+		server := mockServer([]byte("backupJSON"), http.StatusBadGateway, nil)
 		client := gocd.NewClient(
 			server.URL,
 			"admin",
@@ -147,7 +147,7 @@ func Test_client_GetPipelineStatus(t *testing.T) {
 	})
 
 	t.Run("should error out while fetching pipeline statuses information as server returned malformed response", func(t *testing.T) {
-		server := mockServer([]byte(`{"email_on_failure"}`), http.StatusOK)
+		server := mockServer([]byte(`{"email_on_failure"}`), http.StatusOK, nil)
 		client := gocd.NewClient(
 			server.URL,
 			"admin",
@@ -162,7 +162,7 @@ func Test_client_GetPipelineStatus(t *testing.T) {
 	})
 
 	t.Run("should be able to get pipeline statuses of all pipeline present in GoCD", func(t *testing.T) {
-		server := mockServer([]byte(pipelineState), http.StatusOK)
+		server := mockServer([]byte(pipelineState), http.StatusOK, nil)
 		client := gocd.NewClient(
 			server.URL,
 			"admin",
@@ -189,7 +189,7 @@ func Test_client_GetPipelineStatus(t *testing.T) {
 func Test_client_GetPipelineGroupInfo(t *testing.T) {
 	t.Run("should error out while fetching all pipeline groups information from server", func(t *testing.T) {
 		client := gocd.NewClient(
-			"http://localhost:8153/go",
+			"http://localhost:8156/go",
 			"admin",
 			"admin",
 			"info",
@@ -200,12 +200,12 @@ func Test_client_GetPipelineGroupInfo(t *testing.T) {
 
 		actual, err := client.GetPipelineGroupInfo()
 		assert.EqualError(t, err, "call made to get pipeline group information errored with "+
-			"Get \"http://localhost:8153/go/api/admin/pipeline_groups\": dial tcp 127.0.0.1:8153: connect: connection refused")
+			"Get \"http://localhost:8156/go/api/admin/pipeline_groups\": dial tcp [::1]:8156: connect: connection refused")
 		assert.Nil(t, actual)
 	})
 
 	t.Run("should error out while fetching all pipeline groups information as server returned non 200 status code", func(t *testing.T) {
-		server := mockServer([]byte("backupJSON"), http.StatusBadGateway)
+		server := mockServer([]byte("backupJSON"), http.StatusBadGateway, nil)
 		client := gocd.NewClient(
 			server.URL,
 			"admin",
@@ -220,7 +220,7 @@ func Test_client_GetPipelineGroupInfo(t *testing.T) {
 	})
 
 	t.Run("should error out while fetching all pipeline groups information as server returned malformed response", func(t *testing.T) {
-		server := mockServer([]byte(`{"email_on_failure"}`), http.StatusOK)
+		server := mockServer([]byte(`{"email_on_failure"}`), http.StatusOK, nil)
 		client := gocd.NewClient(
 			server.URL,
 			"admin",
@@ -235,7 +235,7 @@ func Test_client_GetPipelineGroupInfo(t *testing.T) {
 	})
 
 	t.Run("should be able to get information of all pipeline groups present in GoCD", func(t *testing.T) {
-		server := mockServer([]byte(pipelineGroups), http.StatusOK)
+		server := mockServer([]byte(pipelineGroups), http.StatusOK, nil)
 		client := gocd.NewClient(
 			server.URL,
 			"admin",

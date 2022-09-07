@@ -15,7 +15,7 @@ var versionInfo string
 func Test_config_GetVersionInfo(t *testing.T) {
 	t.Run("should error out while fetching version information from server", func(t *testing.T) {
 		client := gocd.NewClient(
-			"http://localhost:8153/go",
+			"http://localhost:8156/go",
 			"admin",
 			"admin",
 			"info",
@@ -26,12 +26,12 @@ func Test_config_GetVersionInfo(t *testing.T) {
 
 		actual, err := client.GetVersionInfo()
 		assert.EqualError(t, err, "call made to get version information errored with: "+
-			"Get \"http://localhost:8153/go/api/version\": dial tcp 127.0.0.1:8153: connect: connection refused")
+			"Get \"http://localhost:8156/go/api/version\": dial tcp [::1]:8156: connect: connection refused")
 		assert.Equal(t, gocd.VersionInfo{}, actual)
 	})
 
 	t.Run("should error out while fetching version information as server returned non 200 status code", func(t *testing.T) {
-		server := mockServer([]byte("backupJSON"), http.StatusBadGateway)
+		server := mockServer([]byte("backupJSON"), http.StatusBadGateway, nil)
 		client := gocd.NewClient(
 			server.URL,
 			"admin",
@@ -46,7 +46,7 @@ func Test_config_GetVersionInfo(t *testing.T) {
 	})
 
 	t.Run("should error out while fetching version information as server returned malformed response", func(t *testing.T) {
-		server := mockServer([]byte(`{"email_on_failure"}`), http.StatusOK)
+		server := mockServer([]byte(`{"email_on_failure"}`), http.StatusOK, nil)
 		client := gocd.NewClient(
 			server.URL,
 			"admin",
@@ -61,7 +61,7 @@ func Test_config_GetVersionInfo(t *testing.T) {
 	})
 
 	t.Run("should be able to fetch the version info", func(t *testing.T) {
-		server := mockServer([]byte(versionInfo), http.StatusOK)
+		server := mockServer([]byte(versionInfo), http.StatusOK, nil)
 		client := gocd.NewClient(
 			server.URL,
 			"",

@@ -4,23 +4,25 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"path/filepath"
 
 	"github.com/jinzhu/copier"
 )
 
-// GetConfigRepoInfo fetches information of all config-repos in GoCD server.
-func (conf *client) GetConfigRepoInfo() ([]ConfigRepo, error) {
+// GetConfigRepo fetches information of all config-repos in GoCD server.
+func (conf *client) GetConfigRepo() ([]ConfigRepo, error) {
 	newClient := &client{}
 	if err := copier.CopyWithOption(newClient, conf, copier.Option{IgnoreEmpty: true, DeepCopy: true}); err != nil {
 		return nil, err
 	}
 
-	newClient.httpClient.SetHeaders(map[string]string{
-		"Accept": HeaderVersionFour,
-	})
-
 	var reposConf ConfigRepoConfig
-	resp, err := newClient.httpClient.R().Get(ConfigReposEndpoint)
+	resp, err := newClient.httpClient.R().
+		SetHeaders(map[string]string{
+			"Accept": HeaderVersionFour,
+		}).
+		Get(ConfigReposEndpoint)
+
 	if err != nil {
 		return nil, fmt.Errorf("call made to get config repo errored with %w", err)
 	}
@@ -35,19 +37,46 @@ func (conf *client) GetConfigRepoInfo() ([]ConfigRepo, error) {
 	return reposConf.ConfigRepos.ConfigRepos, nil
 }
 
-// CreateConfigRepoInfo fetches information of all config-repos in GoCD server.
-func (conf *client) CreateConfigRepoInfo(repoObj ConfigRepo) error {
+// CreateConfigRepo fetches information of all config-repos in GoCD server.
+func (conf *client) CreateConfigRepo(repoObj ConfigRepo) error {
 	newClient := &client{}
 	if err := copier.CopyWithOption(newClient, conf, copier.Option{IgnoreEmpty: true, DeepCopy: true}); err != nil {
 		return err
 	}
 
-	newClient.httpClient.SetHeaders(map[string]string{
-		"Accept":       HeaderVersionFour,
-		"Content-Type": contentJSON,
-	})
+	resp, err := newClient.httpClient.R().
+		SetHeaders(map[string]string{
+			"Accept":       HeaderVersionFour,
+			"Content-Type": contentJSON,
+		}).
+		SetBody(repoObj).
+		Post(ConfigReposEndpoint)
 
-	resp, err := newClient.httpClient.R().SetBody(repoObj).Post(ConfigReposEndpoint)
+	if err != nil {
+		return fmt.Errorf("post call made to create config repo errored with: %w", err)
+	}
+
+	if resp.StatusCode() != http.StatusOK {
+		return APIErrorWithBody(resp.String(), resp.StatusCode())
+	}
+
+	return nil
+}
+
+// DeleteConfigRepo deletes a specific config repo.
+func (conf *client) DeleteConfigRepo(repo string) error {
+	newClient := &client{}
+	if err := copier.CopyWithOption(newClient, conf, copier.Option{IgnoreEmpty: true, DeepCopy: true}); err != nil {
+		return err
+	}
+
+	resp, err := newClient.httpClient.R().
+		SetHeaders(map[string]string{
+			"Accept":       HeaderVersionFour,
+			"Content-Type": contentJSON,
+		}).
+		Delete(filepath.Join(ConfigReposEndpoint, repo))
+
 	if err != nil {
 		return fmt.Errorf("post call made to create config repo errored with: %w", err)
 	}

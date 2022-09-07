@@ -19,7 +19,7 @@ var agentRunHistoryJSON string
 func Test_client_GetAgentsInfo(t *testing.T) {
 	t.Run("should error out as call made to server while fetching agents", func(t *testing.T) {
 		client := gocd.NewClient(
-			"http://localhost:8153/go",
+			"http://localhost:8156/go",
 			"admin",
 			"admin",
 			"info",
@@ -30,12 +30,12 @@ func Test_client_GetAgentsInfo(t *testing.T) {
 
 		actual, err := client.GetAgentsInfo()
 		assert.EqualError(t, err, "call made to get agents information errored with: "+
-			"Get \"http://localhost:8153/go/api/agents\": dial tcp 127.0.0.1:8153: connect: connection refused")
+			"Get \"http://localhost:8156/go/api/agents\": dial tcp [::1]:8156: connect: connection refused")
 		assert.Nil(t, actual)
 	})
 
 	t.Run("should error out while fetching agents information as server returned non 200 status code", func(t *testing.T) {
-		server := mockServer([]byte("agentsJson"), http.StatusBadGateway)
+		server := mockServer([]byte("agentsJson"), http.StatusBadGateway, nil)
 		client := gocd.NewClient(
 			server.URL,
 			"admin",
@@ -50,7 +50,7 @@ func Test_client_GetAgentsInfo(t *testing.T) {
 	})
 
 	t.Run("should error out while fetching agents information as server returned malformed response", func(t *testing.T) {
-		server := mockServer([]byte(`{"_embedded": {"agents": [{`), http.StatusOK)
+		server := mockServer([]byte(`{"_embedded": {"agents": [{`), http.StatusOK, nil)
 		client := gocd.NewClient(
 			server.URL,
 			"admin",
@@ -65,7 +65,7 @@ func Test_client_GetAgentsInfo(t *testing.T) {
 	})
 
 	t.Run("should be able to fetch the agents information from GoCD server", func(t *testing.T) {
-		server := mockServer([]byte(agentsJSON), http.StatusOK)
+		server := mockServer([]byte(agentsJSON), http.StatusOK, nil)
 		client := gocd.NewClient(
 			server.URL,
 			"admin",
@@ -99,7 +99,7 @@ func Test_client_GetAgentJobRunHistory1(t *testing.T) {
 
 	t.Run("should error out as call made to server while fetching job run", func(t *testing.T) {
 		client := gocd.NewClient(
-			"http://localhost:8153/go",
+			"http://localhost:8156/go",
 			"admin",
 			"admin",
 			"info",
@@ -110,13 +110,13 @@ func Test_client_GetAgentJobRunHistory1(t *testing.T) {
 
 		actual, err := client.GetAgentJobRunHistory(agentID)
 		assert.EqualError(t, err, "call made to get agent job run history errored with "+
-			"Get \"http://localhost:8153/go/api/agents/adb9540a-b954-4571-9d9b-2f330739d4da/job_run_history?sort_order=DESC\": "+
-			"dial tcp 127.0.0.1:8153: connect: connection refused")
+			"Get \"http://localhost:8156/go/api/agents/adb9540a-b954-4571-9d9b-2f330739d4da/job_run_history?sort_order=DESC\": "+
+			"dial tcp [::1]:8156: connect: connection refused")
 		assert.Equal(t, gocd.AgentJobHistory{}, actual)
 	})
 
 	t.Run("should error out while fetching job run history as server returned non 200 status code", func(t *testing.T) {
-		server := mockServer([]byte("agentRunHistoryJSON"), http.StatusBadGateway)
+		server := mockServer([]byte("agentRunHistoryJSON"), http.StatusBadGateway, nil)
 		client := gocd.NewClient(
 			server.URL,
 			"admin",
@@ -131,7 +131,7 @@ func Test_client_GetAgentJobRunHistory1(t *testing.T) {
 	})
 
 	t.Run("should error out while fetching agent job run history as server returned malformed response", func(t *testing.T) {
-		server := mockServer([]byte(`{"_embedded": {"agents": [{`), http.StatusOK)
+		server := mockServer([]byte(`{"_embedded": {"agents": [{`), http.StatusOK, nil)
 		client := gocd.NewClient(
 			server.URL,
 			"admin",
@@ -146,7 +146,7 @@ func Test_client_GetAgentJobRunHistory1(t *testing.T) {
 	})
 
 	t.Run("should be able to fetch the agent job run history", func(t *testing.T) {
-		server := mockServer([]byte(agentRunHistoryJSON), http.StatusOK)
+		server := mockServer([]byte(agentRunHistoryJSON), http.StatusOK, nil)
 		client := gocd.NewClient(
 			server.URL,
 			"admin",

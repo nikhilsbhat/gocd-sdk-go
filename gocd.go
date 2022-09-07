@@ -21,8 +21,9 @@ type GoCd interface {
 	GetAgentsInfo() ([]Agent, error)
 	GetAgentJobRunHistory(agent string) (AgentJobHistory, error)
 	GetHealthMessages() ([]ServerHealth, error)
-	GetConfigRepoInfo() ([]ConfigRepo, error)
-	CreateConfigRepoInfo(repoObj ConfigRepo) error
+	GetConfigRepo() ([]ConfigRepo, error)
+	CreateConfigRepo(repoObj ConfigRepo) error
+	DeleteConfigRepo(repo string) error
 	GetAdminsInfo() (SystemAdmins, error)
 	GetPipelineGroupInfo() ([]PipelineGroup, error)
 	GetEnvironmentInfo() ([]Environment, error)

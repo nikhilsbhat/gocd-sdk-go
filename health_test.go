@@ -16,7 +16,7 @@ var healthMessages string
 func TestConfig_GetHealthInfo(t *testing.T) {
 	t.Run("should error out while fetching health status information from server", func(t *testing.T) {
 		client := gocd.NewClient(
-			"http://localhost:8153/go",
+			"http://localhost:8156/go",
 			"admin",
 			"admin",
 			"info",
@@ -27,12 +27,12 @@ func TestConfig_GetHealthInfo(t *testing.T) {
 
 		actual, err := client.GetHealthMessages()
 		assert.EqualError(t, err, "call made to get health info errored with "+
-			"Get \"http://localhost:8153/go/api/server_health_messages\": dial tcp 127.0.0.1:8153: connect: connection refused")
+			"Get \"http://localhost:8156/go/api/server_health_messages\": dial tcp [::1]:8156: connect: connection refused")
 		assert.Nil(t, actual)
 	})
 
 	t.Run("should error out while fetching health status information as server returned non 200 status code", func(t *testing.T) {
-		server := mockServer([]byte("backupJSON"), http.StatusBadGateway)
+		server := mockServer([]byte("backupJSON"), http.StatusBadGateway, nil)
 		client := gocd.NewClient(
 			server.URL,
 			"admin",
@@ -47,7 +47,7 @@ func TestConfig_GetHealthInfo(t *testing.T) {
 	})
 
 	t.Run("should error out while fetching health status information as server returned malformed response", func(t *testing.T) {
-		server := mockServer([]byte(`{"email_on_failure"}`), http.StatusOK)
+		server := mockServer([]byte(`{"email_on_failure"}`), http.StatusOK, nil)
 		client := gocd.NewClient(
 			server.URL,
 			"admin",
@@ -62,7 +62,7 @@ func TestConfig_GetHealthInfo(t *testing.T) {
 	})
 
 	t.Run("should be able to fetch the server health status", func(t *testing.T) {
-		server := mockServer([]byte(healthMessages), http.StatusOK)
+		server := mockServer([]byte(healthMessages), http.StatusOK, nil)
 		client := gocd.NewClient(
 			server.URL,
 			"",
