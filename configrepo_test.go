@@ -18,6 +18,8 @@ var (
 	//go:embed internal/fixtures/config_repos.json
 	configReposJSON string
 	eTag            = "05548388f7ef5042cd39f7fe42e85735"
+	correctHeader   = map[string]string{"Accept": gocd.HeaderVersionFour}
+	configRepo      = testGetConfigRepoObj()
 )
 
 func TestConfig_GetConfigRepoInfo(t *testing.T) {
@@ -86,7 +88,7 @@ func TestConfig_GetConfigRepoInfo(t *testing.T) {
 
 func Test_client_CreateConfigRepoInfo(t *testing.T) {
 	t.Run("server should return internal server error as malformed json passed while creating config repo", func(t *testing.T) {
-		server := configRepoServer(configReposJSON, http.MethodPost, map[string]string{"Accept": gocd.HeaderVersionFour, "Content-Type": gocd.ContentJSON}, false)
+		server := mockConfigRepoServer(configReposJSON, http.MethodPost, map[string]string{"Accept": gocd.HeaderVersionFour, "Content-Type": gocd.ContentJSON}, false)
 		client := gocd.NewClient(
 			server.URL,
 			"",
@@ -95,8 +97,7 @@ func Test_client_CreateConfigRepoInfo(t *testing.T) {
 			nil,
 		)
 
-		configRepo := &gocd.ConfigRepo{}
-		err := client.CreateConfigRepo(*configRepo)
+		err := client.CreateConfigRepo(gocd.ConfigRepo{})
 		assert.EqualError(t, err, "body: json: cannot unmarshal string into Go value of type gocd.ConfigRepo httpcode: 500")
 	})
 
@@ -112,48 +113,13 @@ func Test_client_CreateConfigRepoInfo(t *testing.T) {
 		client.SetRetryCount(1)
 		client.SetRetryWaitTime(1)
 
-		configRepo := &gocd.ConfigRepo{}
-		err := client.CreateConfigRepo(*configRepo)
+		err := client.CreateConfigRepo(gocd.ConfigRepo{})
 		assert.EqualError(t, err, "post call made to create config repo errored with: "+
 			"Post \"http://localhost:8156/go/api/admin/config_repos\": dial tcp [::1]:8156: connect: connection refused")
 	})
 
 	t.Run("should create config repo successfully", func(t *testing.T) {
-		configRepo := &gocd.ConfigRepo{
-			PluginID:      "json.config.plugin",
-			ID:            "repo1",
-			Configuration: nil,
-			Rules:         nil,
-		}
-		configRepo.Material.Type = "git"
-		configRepo.Material.Attributes.URL = "https://github.com/config-repo/gocd-json-config-example.git"
-		configRepo.Material.Attributes.AutoUpdate = false
-		configRepo.Material.Attributes.Branch = "master"
-		configRepo.Rules = []map[string]interface{}{
-			{
-				"directive": "allow",
-				"action":    "refer",
-				"type":      "pipeline_group",
-				"resource":  "*",
-			},
-		}
-		configRepo.Configuration = []map[string]interface{}{
-			{
-				"key":   "username",
-				"value": "admin",
-			},
-			{
-				"key":             "password",
-				"encrypted_value": "1f3rrs9uhn63hd",
-			},
-			{
-				"key":       "url",
-				"value":     "https://github.com/sample/example.git",
-				"is_secure": true,
-			},
-		}
-
-		server := configRepoServer(configRepo, http.MethodPost, map[string]string{"Accept": gocd.HeaderVersionFour, "Content-Type": gocd.ContentJSON}, false)
+		server := mockConfigRepoServer(configRepo, http.MethodPost, map[string]string{"Accept": gocd.HeaderVersionFour, "Content-Type": gocd.ContentJSON}, false)
 		client := gocd.NewClient(
 			server.URL,
 			"",
@@ -187,7 +153,7 @@ func Test_client_DeleteConfigRepo(t *testing.T) {
 	})
 
 	t.Run("server should return 404 due to wrong header set while deleting config repo", func(t *testing.T) {
-		server := configRepoServer(nil, http.MethodDelete, map[string]string{"Accept": gocd.HeaderVersionOne}, false)
+		server := mockConfigRepoServer(nil, http.MethodDelete, map[string]string{"Accept": gocd.HeaderVersionOne}, false)
 		client := gocd.NewClient(
 			server.URL,
 			"",
@@ -201,7 +167,7 @@ func Test_client_DeleteConfigRepo(t *testing.T) {
 	})
 
 	t.Run("should be able to delete config repo successfully", func(t *testing.T) {
-		server := configRepoServer(nil, http.MethodDelete, map[string]string{"Accept": gocd.HeaderVersionFour}, false)
+		server := mockConfigRepoServer(nil, http.MethodDelete, map[string]string{"Accept": gocd.HeaderVersionFour}, false)
 		client := gocd.NewClient(
 			server.URL,
 			"",
@@ -217,9 +183,8 @@ func Test_client_DeleteConfigRepo(t *testing.T) {
 
 func Test_client_GetConfigRepo(t *testing.T) {
 	repoName := "repo1"
-	correctHeader := map[string]string{"Accept": gocd.HeaderVersionFour}
 	t.Run("should error out while fetching config repo information as server returned non 200 status code", func(t *testing.T) {
-		server := configRepoServer(configReposJSON, http.MethodPost, correctHeader, false)
+		server := mockConfigRepoServer(configReposJSON, http.MethodPost, correctHeader, false)
 		client := gocd.NewClient(
 			server.URL,
 			"",
@@ -266,7 +231,7 @@ func Test_client_GetConfigRepo(t *testing.T) {
 	})
 
 	t.Run("server should return 404 due to wrong header set while fetching config repo", func(t *testing.T) {
-		server := configRepoServer(nil, http.MethodGet, map[string]string{"Accept": gocd.HeaderVersionOne}, false)
+		server := mockConfigRepoServer(nil, http.MethodGet, map[string]string{"Accept": gocd.HeaderVersionOne}, false)
 		client := gocd.NewClient(
 			server.URL,
 			"",
@@ -281,7 +246,7 @@ func Test_client_GetConfigRepo(t *testing.T) {
 	})
 
 	t.Run("server should return 404 no header set while fetching config repo", func(t *testing.T) {
-		server := configRepoServer(nil, http.MethodGet, nil, false)
+		server := mockConfigRepoServer(nil, http.MethodGet, nil, false)
 		client := gocd.NewClient(
 			server.URL,
 			"",
@@ -296,41 +261,7 @@ func Test_client_GetConfigRepo(t *testing.T) {
 	})
 
 	t.Run("should error when header ETag is not set by server", func(t *testing.T) {
-		configRepo := &gocd.ConfigRepo{
-			PluginID:      "json.config.plugin",
-			ID:            "repo1",
-			Configuration: nil,
-			Rules:         nil,
-		}
-		configRepo.Material.Type = "git"
-		configRepo.Material.Attributes.URL = "https://github.com/config-repo/gocd-json-config-example.git"
-		configRepo.Material.Attributes.AutoUpdate = false
-		configRepo.Material.Attributes.Branch = "master"
-		configRepo.Rules = []map[string]interface{}{
-			{
-				"directive": "allow",
-				"action":    "refer",
-				"type":      "pipeline_group",
-				"resource":  "*",
-			},
-		}
-		configRepo.Configuration = []map[string]interface{}{
-			{
-				"key":   "username",
-				"value": "admin",
-			},
-			{
-				"key":             "password",
-				"encrypted_value": "1f3rrs9uhn63hd",
-			},
-			{
-				"key":       "url",
-				"value":     "https://github.com/sample/example.git",
-				"is_secure": true,
-			},
-		}
-
-		server := configRepoServer(configRepo, http.MethodGet, correctHeader, false)
+		server := mockConfigRepoServer(configRepo, http.MethodGet, correctHeader, false)
 		client := gocd.NewClient(
 			server.URL,
 			"",
@@ -345,41 +276,8 @@ func Test_client_GetConfigRepo(t *testing.T) {
 	})
 
 	t.Run("should be able to get config repo successfully", func(t *testing.T) {
-		configRepo := &gocd.ConfigRepo{
-			PluginID:      "json.config.plugin",
-			ID:            "repo1",
-			Configuration: nil,
-			Rules:         nil,
-		}
-		configRepo.Material.Type = "git"
-		configRepo.Material.Attributes.URL = "https://github.com/config-repo/gocd-json-config-example.git"
-		configRepo.Material.Attributes.AutoUpdate = false
-		configRepo.Material.Attributes.Branch = "master"
-		configRepo.Rules = []map[string]interface{}{
-			{
-				"directive": "allow",
-				"action":    "refer",
-				"type":      "pipeline_group",
-				"resource":  "*",
-			},
-		}
-		configRepo.Configuration = []map[string]interface{}{
-			{
-				"key":   "username",
-				"value": "admin",
-			},
-			{
-				"key":             "password",
-				"encrypted_value": "1f3rrs9uhn63hd",
-			},
-			{
-				"key":       "url",
-				"value":     "https://github.com/sample/example.git",
-				"is_secure": true,
-			},
-		}
-
-		server := configRepoServer(configRepo, http.MethodGet, correctHeader, true)
+		newConfigRepo := configRepo
+		server := mockConfigRepoServer(newConfigRepo, http.MethodGet, correctHeader, true)
 		client := gocd.NewClient(
 			server.URL,
 			"",
@@ -388,16 +286,127 @@ func Test_client_GetConfigRepo(t *testing.T) {
 			nil,
 		)
 
-		configRepo.ETAG = eTag
+		newConfigRepo.ETAG = eTag
 		actual, err := client.GetConfigRepo(repoName)
 		assert.Nil(t, err)
-		assert.Equal(t, configRepo.ID, actual.ID)
-		assert.Equal(t, *configRepo, actual)
+		assert.Equal(t, newConfigRepo.ID, actual.ID)
+		assert.Equal(t, *newConfigRepo, actual)
 	})
 }
 
-func configRepoServer(request interface{}, method string, header map[string]string, etag bool) *httptest.Server {
-	return httptest.NewServer(http.HandlerFunc(func(writer http.ResponseWriter, r *http.Request) {
+func Test_client_UpdateConfigRepo(t *testing.T) {
+	t.Run("should error out while updating config repo information as server returned non 200 status code", func(t *testing.T) {
+		newConfigRepo := configRepo
+		newConfigRepo.ETAG = eTag
+		newCorrectHeader := correctHeader
+		newCorrectHeader["If-Match"] = eTag
+		server := mockConfigRepoServer(configReposJSON, http.MethodPut, newCorrectHeader, false)
+		client := gocd.NewClient(
+			server.URL,
+			"",
+			"",
+			"info",
+			nil,
+		)
+
+		client.SetRetryCount(1)
+		client.SetRetryWaitTime(1)
+		actual, err := client.UpdateConfigRepo(*configRepo, eTag)
+
+		assert.EqualError(t, err, "body: json: cannot unmarshal string into Go value of type gocd.ConfigRepo httpcode: 500")
+		assert.Equal(t, "", actual)
+	})
+
+	t.Run("should error out while updating config repo since server is not reachable", func(t *testing.T) {
+		client := gocd.NewClient(
+			"http://localhost:8156/go",
+			"admin",
+			"admin",
+			"info",
+			nil,
+		)
+		client.SetRetryCount(1)
+		client.SetRetryWaitTime(1)
+
+		actual, err := client.UpdateConfigRepo(*configRepo, eTag)
+		assert.EqualError(t, err, "put call made to update config repo errored with: Put "+
+			"\"http://localhost:8156/go/api/admin/config_repos/repo1\": dial tcp [::1]:8156: connect: connection refused")
+		assert.Equal(t, "", actual)
+	})
+
+	t.Run("server should return 404 due to wrong header set while updating config repo", func(t *testing.T) {
+		newConfigRepo := configRepo
+		newConfigRepo.ETAG = eTag
+		server := mockConfigRepoServer(newConfigRepo, http.MethodPut, map[string]string{"If-Match": eTag, "Accept": gocd.HeaderVersionOne}, false)
+		client := gocd.NewClient(
+			server.URL,
+			"",
+			"",
+			"info",
+			nil,
+		)
+
+		client.SetRetryCount(1)
+		client.SetRetryWaitTime(1)
+
+		actual, err := client.UpdateConfigRepo(*newConfigRepo, eTag)
+		assert.EqualError(t, err, "body: <html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html> httpcode: 404")
+		assert.Equal(t, "", actual)
+	})
+
+	t.Run("server should return 404 no header set while updating config repo", func(t *testing.T) {
+		server := mockConfigRepoServer(nil, http.MethodPut, nil, false)
+		client := gocd.NewClient(
+			server.URL,
+			"",
+			"",
+			"info",
+			nil,
+		)
+
+		actual, err := client.UpdateConfigRepo(*configRepo, eTag)
+		assert.EqualError(t, err, "body: <html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html> httpcode: 404")
+		assert.Equal(t, "", actual)
+	})
+
+	t.Run("should error since wrong ETag was specified while updating config repo", func(t *testing.T) {
+		newConfigRepo := configRepo
+		newConfigRepo.ETAG = eTag
+		newCorrectHeader := correctHeader
+		newCorrectHeader["If-Match"] = "eTag"
+		server := mockConfigRepoServer(newConfigRepo, http.MethodPut, newCorrectHeader, true)
+		client := gocd.NewClient(
+			server.URL,
+			"",
+			"",
+			"info",
+			nil,
+		)
+		actual, err := client.UpdateConfigRepo(*newConfigRepo, eTag)
+		assert.EqualError(t, err, "body: lost update httpcode: 406")
+		assert.Equal(t, "", actual)
+	})
+
+	t.Run("should update config repo successfully", func(t *testing.T) {
+		newConfigRepo := configRepo
+		newConfigRepo.ETAG = eTag
+		correctHeader["If-Match"] = eTag
+		server := mockConfigRepoServer(newConfigRepo, http.MethodPut, correctHeader, true)
+		client := gocd.NewClient(
+			server.URL,
+			"",
+			"",
+			"info",
+			nil,
+		)
+		actual, err := client.UpdateConfigRepo(*newConfigRepo, eTag)
+		assert.NoError(t, err)
+		assert.Equal(t, eTag, actual)
+	})
+}
+
+func mockConfigRepoServer(request interface{}, method string, header map[string]string, etag bool) *httptest.Server {
+	return httptest.NewServer(http.HandlerFunc(func(writer http.ResponseWriter, req *http.Request) {
 		if header == nil {
 			writer.WriteHeader(http.StatusNotFound)
 			if _, err := writer.Write([]byte(`<html>
@@ -408,29 +417,7 @@ func configRepoServer(request interface{}, method string, header map[string]stri
 </html>`)); err != nil {
 				log.Fatalln(err)
 			}
-			return
-		}
 
-		for key, value := range header {
-			if r.Header.Get(key) != value {
-				writer.WriteHeader(http.StatusNotFound)
-				if _, err := writer.Write([]byte(`<html>
-<body>
-	<h2>404 Not found</h2>
-</body>
-
-</html>`)); err != nil {
-					log.Fatalln(err)
-				}
-				return
-			}
-		}
-
-		if method == http.MethodDelete {
-			writer.WriteHeader(http.StatusOK)
-			if _, err := writer.Write([]byte(`{"message": "The config repo 'repo-1' was deleted successfully."}`)); err != nil {
-				log.Fatalln(err)
-			}
 			return
 		}
 
@@ -450,11 +437,49 @@ func configRepoServer(request interface{}, method string, header map[string]stri
 			if _, err = writer.Write([]byte(err.Error())); err != nil {
 				log.Fatalln(err)
 			}
+
+			return
+		}
+
+		for key, value := range header {
+			if len(req.Header.Get("If-Match")) != 0 {
+				if header["If-Match"] != request.(*gocd.ConfigRepo).ETAG {
+					writer.WriteHeader(http.StatusNotAcceptable)
+					if _, err := writer.Write([]byte(`lost update`)); err != nil {
+						log.Fatalln(err)
+					}
+
+					return
+				}
+			}
+			if req.Header.Get(key) != value {
+				writer.WriteHeader(http.StatusNotFound)
+				if _, err := writer.Write([]byte(`<html>
+<body>
+	<h2>404 Not found</h2>
+</body>
+
+</html>`)); err != nil {
+					log.Fatalln(err)
+				}
+
+				return
+			}
+		}
+
+		if method == http.MethodDelete {
+			writer.WriteHeader(http.StatusOK)
+			if _, err := writer.Write([]byte(`{"message": "The config repo 'repo-1' was deleted successfully."}`)); err != nil {
+				log.Fatalln(err)
+			}
+
+			return
 		}
 
 		if etag {
 			writer.Header().Set("ETag", eTag)
 		}
+
 		writer.WriteHeader(http.StatusOK)
 
 		if method == http.MethodGet {
@@ -463,4 +488,43 @@ func configRepoServer(request interface{}, method string, header map[string]stri
 			}
 		}
 	}))
+}
+
+func testGetConfigRepoObj() *gocd.ConfigRepo {
+	configRepo := &gocd.ConfigRepo{
+		PluginID:      "json.config.plugin",
+		ID:            "repo1",
+		Configuration: nil,
+		Rules:         nil,
+	}
+
+	configRepo.Material.Type = "git"
+	configRepo.Material.Attributes.URL = "https://github.com/config-repo/gocd-json-config-example.git"
+	configRepo.Material.Attributes.AutoUpdate = false
+	configRepo.Material.Attributes.Branch = "master"
+	configRepo.Rules = []map[string]interface{}{
+		{
+			"directive": "allow",
+			"action":    "refer",
+			"type":      "pipeline_group",
+			"resource":  "*",
+		},
+	}
+	configRepo.Configuration = []map[string]interface{}{
+		{
+			"key":   "username",
+			"value": "admin",
+		},
+		{
+			"key":             "password",
+			"encrypted_value": "1f3rrs9uhn63hd",
+		},
+		{
+			"key":       "url",
+			"value":     "https://github.com/sample/example.git",
+			"is_secure": true,
+		},
+	}
+
+	return configRepo
 }

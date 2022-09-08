@@ -9,7 +9,7 @@ import (
 	"github.com/jinzhu/copier"
 )
 
-// GetConfigRepo fetches information of a specific config-repo from GoCD server
+// GetConfigRepo fetches information of a specific config-repo from GoCD server.
 func (conf *client) GetConfigRepo(repo string) (ConfigRepo, error) {
 	newClient := &client{}
 	if err := copier.CopyWithOption(newClient, conf, copier.Option{IgnoreEmpty: true, DeepCopy: true}); err != nil {
@@ -34,10 +34,11 @@ func (conf *client) GetConfigRepo(repo string) (ConfigRepo, error) {
 	}
 
 	if len(resp.Header().Get("ETag")) == 0 {
-		return repoConf, fmt.Errorf("header ETag not set, this will impact while updating configrepo")
+		return repoConf, fmt.Errorf("header ETag not set, this will impact while updating configrepo") //nolint:goerr113
 	}
 
 	repoConf.ETAG = resp.Header().Get("ETag")
+
 	return repoConf, nil
 }
 
@@ -91,6 +92,32 @@ func (conf *client) CreateConfigRepo(repoObj ConfigRepo) error {
 	}
 
 	return nil
+}
+
+// UpdateConfigRepo updates the config repo configurations with the latest configurations provided.
+func (conf *client) UpdateConfigRepo(repoObj ConfigRepo, etag string) (string, error) {
+	newClient := &client{}
+	if err := copier.CopyWithOption(newClient, conf, copier.Option{IgnoreEmpty: true, DeepCopy: true}); err != nil {
+		return "", err
+	}
+
+	resp, err := newClient.httpClient.R().
+		SetHeaders(map[string]string{
+			"Accept":       HeaderVersionFour,
+			"Content-Type": ContentJSON,
+			"If-Match":     etag,
+		}).
+		SetBody(repoObj).
+		Put(filepath.Join(ConfigReposEndpoint, repoObj.ID))
+	if err != nil {
+		return "", fmt.Errorf("put call made to update config repo errored with: %w", err)
+	}
+
+	if resp.StatusCode() != http.StatusOK {
+		return "", APIErrorWithBody(resp.String(), resp.StatusCode())
+	}
+
+	return resp.Header().Get("ETag"), nil
 }
 
 // DeleteConfigRepo deletes a specific config repo.

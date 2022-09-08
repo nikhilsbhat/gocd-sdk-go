@@ -24,6 +24,7 @@ type GoCd interface {
 	GetConfigRepos() ([]ConfigRepo, error)
 	GetConfigRepo(repo string) (ConfigRepo, error)
 	CreateConfigRepo(repoObj ConfigRepo) error
+	UpdateConfigRepo(repo ConfigRepo, etag string) (string, error)
 	DeleteConfigRepo(repo string) error
 	GetAdminsInfo() (SystemAdmins, error)
 	GetPipelineGroupInfo() ([]PipelineGroup, error)

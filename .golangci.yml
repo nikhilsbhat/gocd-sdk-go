@@ -16,6 +16,7 @@ linters:
     - ireturn
     - wrapcheck
     - interfacebloat
+    - forcetypeassert
 
 issues:
   exclude-rules:
@@ -30,7 +31,7 @@ issues:
 
 linters-settings:
   funlen:
-    lines: 100
+    lines: 160
 
   lll:
     line-length: 165

@@ -7,11 +7,11 @@ import (
 )
 
 func mockServer(body []byte, statusCode int, header map[string]string) *httptest.Server {
-	return httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	return httptest.NewServer(http.HandlerFunc(func(writer http.ResponseWriter, req *http.Request) {
 		for key, value := range header {
-			if r.Header.Get(key) != value {
-				w.WriteHeader(http.StatusNotFound)
-				if _, err := w.Write([]byte(`<html>
+			if req.Header.Get(key) != value {
+				writer.WriteHeader(http.StatusNotFound)
+				if _, err := writer.Write([]byte(`<html>
 <body>
 	<h2>404 Not found</h2>
 </body>
@@ -19,12 +19,13 @@ func mockServer(body []byte, statusCode int, header map[string]string) *httptest
 </html>`)); err != nil {
 					log.Fatalln(err)
 				}
+
 				return
 			}
 		}
 
-		w.WriteHeader(statusCode)
-		_, err := w.Write(body)
+		writer.WriteHeader(statusCode)
+		_, err := writer.Write(body)
 		if err != nil {
 			log.Fatalln(err)
 		}
