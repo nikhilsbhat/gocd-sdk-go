@@ -10,6 +10,7 @@ const (
 	PipelineGroupEndpoint   = "/api/admin/pipeline_groups"
 	EnvironmentEndpoint     = "/api/admin/environments"
 	JobRunHistoryEndpoint   = "/api/agents/%s/job_run_history"
+	MaintenanceEndpoint     = "/api/admin/maintenance_mode"
 	APIFeedPipelineEndpoint = "/api/feed/pipelines.xml"
 	PipelineStatus          = "/api/pipelines/%s/status"
 	HeaderVersionOne        = "application/vnd.go.cd.v1+json"

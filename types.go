@@ -189,3 +189,14 @@ type Pagination struct {
 	Offset   int64 `json:"offset,omitempty"`
 	Total    int64 `json:"total,omitempty"`
 }
+
+// Maintenance holds latest information available in server about maintenance mode.
+type Maintenance struct {
+	MaintenanceInfo struct {
+		Enabled  bool `json:"is_maintenance_mode,omitempty"`
+		Metadata struct {
+			UpdatedBy string `json:"updated_by,omitempty"`
+			UpdatedOn string `json:"updated_on,omitempty"`
+		} `json:"metadata,omitempty"`
+	} `json:"_embedded,omitempty"`
+}
