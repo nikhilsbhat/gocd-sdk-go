@@ -20,6 +20,10 @@ type client struct {
 type GoCd interface {
 	GetAgentsInfo() ([]Agent, error)
 	GetAgentJobRunHistory(agent string) (AgentJobHistory, error)
+	UpdateAgent(id string, agent Agent) error
+	UpdateAgentBulk(agent Agent) error
+	DeleteAgent(id string) (string, error)
+	DeleteAgentBulk(agent Agent) (string, error)
 	GetHealthMessages() ([]ServerHealth, error)
 	GetConfigRepos() ([]ConfigRepo, error)
 	GetConfigRepo(repo string) (ConfigRepo, error)

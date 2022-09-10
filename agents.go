@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"path/filepath"
 
 	"github.com/jinzhu/copier"
 )
@@ -61,4 +62,97 @@ func (conf *client) GetAgentJobRunHistory(agentID string) (AgentJobHistory, erro
 	}
 
 	return jobHistoryConf, nil
+}
+
+// UpdateAgent updates specific agent with updated configuration passed.
+func (conf *client) UpdateAgent(agentID string, agent Agent) error {
+	newClient := &client{}
+	if err := copier.CopyWithOption(newClient, conf, copier.Option{IgnoreEmpty: true, DeepCopy: true}); err != nil {
+		return err
+	}
+
+	resp, err := newClient.httpClient.R().
+		SetHeaders(map[string]string{
+			"Accept":       HeaderVersionSeven,
+			"Content-Type": ContentJSON,
+		}).
+		SetBody(agent).
+		Patch(filepath.Join(AgentsEndpoint, agentID))
+	if err != nil {
+		return fmt.Errorf("call made to update %s agent information errored with: %w", agent.Name, err)
+	}
+
+	if resp.StatusCode() != http.StatusOK {
+		return APIErrorWithBody(resp.String(), resp.StatusCode())
+	}
+
+	return nil
+}
+
+func (conf *client) UpdateAgentBulk(agent Agent) error {
+	newClient := &client{}
+	if err := copier.CopyWithOption(newClient, conf, copier.Option{IgnoreEmpty: true, DeepCopy: true}); err != nil {
+		return err
+	}
+
+	resp, err := newClient.httpClient.R().
+		SetHeaders(map[string]string{
+			"Accept":       HeaderVersionSeven,
+			"Content-Type": ContentJSON,
+		}).
+		SetBody(agent).
+		Patch(AgentsEndpoint)
+	if err != nil {
+		return fmt.Errorf("call made to bulk update %v agents information errored with: %w", agent.UUIDS, err)
+	}
+
+	if resp.StatusCode() != http.StatusOK {
+		return APIErrorWithBody(resp.String(), resp.StatusCode())
+	}
+
+	return nil
+}
+
+func (conf *client) DeleteAgent(agentID string) (string, error) {
+	newClient := &client{}
+	if err := copier.CopyWithOption(newClient, conf, copier.Option{IgnoreEmpty: true, DeepCopy: true}); err != nil {
+		return "", err
+	}
+
+	resp, err := newClient.httpClient.R().
+		SetHeaders(map[string]string{
+			"Accept": HeaderVersionSeven,
+		}).Delete(filepath.Join(AgentsEndpoint, agentID))
+	if err != nil {
+		return "", fmt.Errorf("call made delete agent %s errored with: %w", agentID, err)
+	}
+
+	if resp.StatusCode() != http.StatusOK {
+		return "", APIErrorWithBody(resp.String(), resp.StatusCode())
+	}
+
+	return resp.String(), nil
+}
+
+func (conf *client) DeleteAgentBulk(agent Agent) (string, error) {
+	newClient := &client{}
+	if err := copier.CopyWithOption(newClient, conf, copier.Option{IgnoreEmpty: true, DeepCopy: true}); err != nil {
+		return "", err
+	}
+
+	resp, err := newClient.httpClient.R().
+		SetHeaders(map[string]string{
+			"Accept": HeaderVersionSeven,
+		}).
+		SetBody(agent).
+		Delete(AgentsEndpoint)
+	if err != nil {
+		return "", fmt.Errorf("call made delete agents %s errored with: %w", agent.UUIDS, err)
+	}
+
+	if resp.StatusCode() != http.StatusOK {
+		return "", APIErrorWithBody(resp.String(), resp.StatusCode())
+	}
+
+	return resp.String(), nil
 }

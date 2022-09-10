@@ -19,15 +19,27 @@ type Agents struct {
 
 // Agent holds information of a particular agent.
 type Agent struct {
-	IPAddress          string      `json:"ip_address,omitempty"`
-	Name               string      `json:"hostname,omitempty"`
-	ID                 string      `json:"uuid,omitempty"`
-	Version            string      `json:"agent_version,omitempty"`
-	CurrentState       string      `json:"agent_state,omitempty"`
-	OS                 string      `json:"operating_system,omitempty"`
-	ConfigState        string      `json:"agent_config_state,omitempty"`
-	Sandbox            string      `json:"sandbox,omitempty"`
-	DiskSpaceAvailable interface{} `json:"free_space,omitempty"`
+	IPAddress          string        `json:"ip_address,omitempty"`
+	Name               string        `json:"hostname,omitempty"`
+	ID                 string        `json:"uuid,omitempty"`
+	Version            string        `json:"agent_version,omitempty"`
+	CurrentState       string        `json:"agent_state,omitempty"`
+	OS                 string        `json:"operating_system,omitempty"`
+	ConfigState        string        `json:"agent_config_state,omitempty"`
+	Sandbox            string        `json:"sandbox,omitempty"`
+	DiskSpaceAvailable interface{}   `json:"free_space,omitempty"`
+	Resources          []string      `json:"resources,omitempty"`
+	Environments       []interface{} `json:"environments,omitempty"`
+	Operations         struct {
+		Resources    AddRemoves `json:"resources,omitempty"`
+		Environments AddRemoves `json:"environments,omitempty"`
+	} `json:"operations,omitempty"`
+	UUIDS []string `json:"uuids,omitempty"`
+}
+
+type AddRemoves struct {
+	Add    []string `json:"add,omitempty"`
+	Remove []string `json:"remove,omitempty"`
 }
 
 // ServerVersion holds version information GoCd server.

@@ -1,0 +1,11 @@
+{
+  "hostname": "agent02.example.com",
+  "agent_config_state": "Enabled",
+  "resources": [
+    "Java",
+    "Linux"
+  ],
+  "environments": [
+    "Dev"
+  ]
+}
