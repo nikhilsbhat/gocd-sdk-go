@@ -14,6 +14,7 @@ import (
 var healthMessages string
 
 func TestConfig_GetHealthInfo(t *testing.T) {
+	correctConfigHeader := map[string]string{"Accept": gocd.HeaderVersionOne}
 	t.Run("should error out while fetching health status information from server", func(t *testing.T) {
 		client := gocd.NewClient(
 			"http://localhost:8156/go",
@@ -32,7 +33,7 @@ func TestConfig_GetHealthInfo(t *testing.T) {
 	})
 
 	t.Run("should error out while fetching health status information as server returned non 200 status code", func(t *testing.T) {
-		server := mockServer([]byte("backupJSON"), http.StatusBadGateway, nil)
+		server := mockServer([]byte("backupJSON"), http.StatusBadGateway, correctConfigHeader, false)
 		client := gocd.NewClient(
 			server.URL,
 			"admin",
@@ -47,7 +48,7 @@ func TestConfig_GetHealthInfo(t *testing.T) {
 	})
 
 	t.Run("should error out while fetching health status information as server returned malformed response", func(t *testing.T) {
-		server := mockServer([]byte(`{"email_on_failure"}`), http.StatusOK, nil)
+		server := mockServer([]byte(`{"email_on_failure"}`), http.StatusOK, correctConfigHeader, false)
 		client := gocd.NewClient(
 			server.URL,
 			"admin",
@@ -62,7 +63,7 @@ func TestConfig_GetHealthInfo(t *testing.T) {
 	})
 
 	t.Run("should be able to fetch the server health status", func(t *testing.T) {
-		server := mockServer([]byte(healthMessages), http.StatusOK, nil)
+		server := mockServer([]byte(healthMessages), http.StatusOK, correctConfigHeader, false)
 		client := gocd.NewClient(
 			server.URL,
 			"",

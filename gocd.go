@@ -37,6 +37,7 @@ type GoCd interface {
 	GetPipelineGroupInfo() ([]PipelineGroup, error)
 	GetEnvironmentInfo() ([]Environment, error)
 	GetVersionInfo() (VersionInfo, error)
+	CreateOrUpdateBackup(backup BackupConfig) error
 	GetBackupInfo() (BackupConfig, error)
 	GetPipelines() (PipelinesInfo, error)
 	GetPipelineState(pipeline string) (PipelineState, error)

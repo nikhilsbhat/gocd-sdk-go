@@ -15,12 +15,12 @@ func (conf *client) GetEnvironmentInfo() ([]Environment, error) {
 		return nil, err
 	}
 
-	newClient.httpClient.SetHeaders(map[string]string{
-		"Accept": HeaderVersionThree,
-	})
-
 	var envConf EnvironmentInfo
-	resp, err := newClient.httpClient.R().Get(EnvironmentEndpoint)
+	resp, err := newClient.httpClient.R().
+		SetHeaders(map[string]string{
+			"Accept": HeaderVersionThree,
+		}).
+		Get(EnvironmentEndpoint)
 	if err != nil {
 		return nil, fmt.Errorf("call made to get environment errored with %w", err)
 	}

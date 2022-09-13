@@ -15,12 +15,13 @@ func (conf *client) GetAgentsInfo() ([]Agent, error) {
 	if err := copier.CopyWithOption(newClient, conf, copier.Option{IgnoreEmpty: true, DeepCopy: true}); err != nil {
 		return nil, err
 	}
-	newClient.httpClient.SetHeaders(map[string]string{
-		"Accept": HeaderVersionSeven,
-	})
 
 	var agentsConf AgentsConfig
-	resp, err := newClient.httpClient.R().Get(AgentsEndpoint)
+	resp, err := newClient.httpClient.R().
+		SetHeaders(map[string]string{
+			"Accept": HeaderVersionSeven,
+		}).
+		Get(AgentsEndpoint)
 	if err != nil {
 		return nil, fmt.Errorf("call made to get agents information errored with: %w", err)
 	}
@@ -43,13 +44,14 @@ func (conf *client) GetAgentJobRunHistory(agentID string) (AgentJobHistory, erro
 		return AgentJobHistory{}, err
 	}
 
-	newClient.httpClient.SetHeaders(map[string]string{
-		"Accept": HeaderVersionOne,
-	})
 	newClient.httpClient.SetQueryParam("sort_order", "DESC")
 
 	var jobHistoryConf AgentJobHistory
-	resp, err := newClient.httpClient.R().Get(fmt.Sprintf(JobRunHistoryEndpoint, agentID))
+	resp, err := newClient.httpClient.R().
+		SetHeaders(map[string]string{
+			"Accept": HeaderVersionOne,
+		}).
+		Get(fmt.Sprintf(JobRunHistoryEndpoint, agentID))
 	if err != nil {
 		return AgentJobHistory{}, fmt.Errorf("call made to get agent job run history errored with %w", err)
 	}
@@ -89,6 +91,7 @@ func (conf *client) UpdateAgent(agentID string, agent Agent) error {
 	return nil
 }
 
+// UpdateAgentBulk will bulk update the specified agents with updated configurations.
 func (conf *client) UpdateAgentBulk(agent Agent) error {
 	newClient := &client{}
 	if err := copier.CopyWithOption(newClient, conf, copier.Option{IgnoreEmpty: true, DeepCopy: true}); err != nil {
@@ -113,6 +116,7 @@ func (conf *client) UpdateAgentBulk(agent Agent) error {
 	return nil
 }
 
+// DeleteAgent deletes the specified agent.
 func (conf *client) DeleteAgent(agentID string) (string, error) {
 	newClient := &client{}
 	if err := copier.CopyWithOption(newClient, conf, copier.Option{IgnoreEmpty: true, DeepCopy: true}); err != nil {
@@ -134,6 +138,7 @@ func (conf *client) DeleteAgent(agentID string) (string, error) {
 	return resp.String(), nil
 }
 
+// DeleteAgentBulk bulk deletes the specified agents.
 func (conf *client) DeleteAgentBulk(agent Agent) (string, error) {
 	newClient := &client{}
 	if err := copier.CopyWithOption(newClient, conf, copier.Option{IgnoreEmpty: true, DeepCopy: true}); err != nil {

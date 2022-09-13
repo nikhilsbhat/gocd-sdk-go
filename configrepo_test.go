@@ -41,7 +41,7 @@ func TestConfig_GetConfigRepoInfo(t *testing.T) {
 	})
 
 	t.Run("should error out while fetching config repos information as server returned non 200 status code", func(t *testing.T) {
-		server := mockServer([]byte("backupJSON"), http.StatusBadGateway, nil)
+		server := mockServer([]byte("backupJSON"), http.StatusBadGateway, correctHeader, false)
 		client := gocd.NewClient(
 			server.URL,
 			"admin",
@@ -56,7 +56,7 @@ func TestConfig_GetConfigRepoInfo(t *testing.T) {
 	})
 
 	t.Run("should error out while fetching config repos information as server returned malformed response", func(t *testing.T) {
-		server := mockServer([]byte(`{"email_on_failure"}`), http.StatusOK, nil)
+		server := mockServer([]byte(`{"email_on_failure"}`), http.StatusOK, correctHeader, false)
 		client := gocd.NewClient(
 			server.URL,
 			"admin",
@@ -71,7 +71,7 @@ func TestConfig_GetConfigRepoInfo(t *testing.T) {
 	})
 
 	t.Run("should be able retrieve config repos information", func(t *testing.T) {
-		server := mockServer([]byte(configReposJSON), http.StatusOK, nil)
+		server := mockServer([]byte(configReposJSON), http.StatusOK, correctHeader, false)
 		client := gocd.NewClient(
 			server.URL,
 			"",
@@ -199,7 +199,7 @@ func Test_client_GetConfigRepo(t *testing.T) {
 	})
 
 	t.Run("should error out while fetching config repo information as server returned malformed response", func(t *testing.T) {
-		server := mockServer([]byte(`{"email_on_failure"}`), http.StatusOK, correctHeader)
+		server := mockServer([]byte(`{"email_on_failure"}`), http.StatusOK, correctHeader, false)
 		client := gocd.NewClient(
 			server.URL,
 			"admin",

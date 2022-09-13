@@ -14,7 +14,7 @@ var maintenanceJSON string
 
 func Test_client_EnableMaintenanceMode(t *testing.T) {
 	t.Run("should enable the maintenance mode successfully", func(t *testing.T) {
-		server := mockServer(nil, http.StatusNoContent, map[string]string{"Accept": gocd.HeaderVersionOne, "X-GoCD-Confirm": "true"})
+		server := mockServer(nil, http.StatusNoContent, map[string]string{"Accept": gocd.HeaderVersionOne, "X-GoCD-Confirm": "true"}, false)
 		client := gocd.NewClient(
 			server.URL,
 			"admin",
@@ -28,7 +28,7 @@ func Test_client_EnableMaintenanceMode(t *testing.T) {
 	})
 
 	t.Run("should error out while enabling maintenance mode as no valid headers set", func(t *testing.T) {
-		server := mockServer(nil, http.StatusNoContent, map[string]string{"Accept": gocd.HeaderVersionTwo, "X-GoCD-Confirm": "true"})
+		server := mockServer(nil, http.StatusNoContent, map[string]string{"Accept": gocd.HeaderVersionTwo, "X-GoCD-Confirm": "true"}, false)
 		client := gocd.NewClient(
 			server.URL,
 			"admin",
@@ -61,7 +61,7 @@ func Test_client_EnableMaintenanceMode(t *testing.T) {
 
 func Test_client_DisableMaintenanceMode(t *testing.T) {
 	t.Run("should disable the maintenance mode successfully", func(t *testing.T) {
-		server := mockServer(nil, http.StatusNoContent, map[string]string{"Accept": gocd.HeaderVersionOne, "X-GoCD-Confirm": "true"})
+		server := mockServer(nil, http.StatusNoContent, map[string]string{"Accept": gocd.HeaderVersionOne, "X-GoCD-Confirm": "true"}, false)
 		client := gocd.NewClient(
 			server.URL,
 			"admin",
@@ -75,7 +75,7 @@ func Test_client_DisableMaintenanceMode(t *testing.T) {
 	})
 
 	t.Run("should error out while disabling maintenance mode as no valid headers set", func(t *testing.T) {
-		server := mockServer(nil, http.StatusNoContent, map[string]string{"Accept": gocd.HeaderVersionTwo, "X-GoCD-Confirm": "true"})
+		server := mockServer(nil, http.StatusNoContent, map[string]string{"Accept": gocd.HeaderVersionTwo, "X-GoCD-Confirm": "true"}, false)
 		client := gocd.NewClient(
 			server.URL,
 			"admin",
@@ -108,7 +108,7 @@ func Test_client_DisableMaintenanceMode(t *testing.T) {
 
 func Test_client_GetMaintenanceModeInfo(t *testing.T) {
 	t.Run("should fetch the maintenance mode information successfully", func(t *testing.T) {
-		server := mockServer([]byte(maintenanceJSON), http.StatusOK, map[string]string{"Accept": gocd.HeaderVersionOne})
+		server := mockServer([]byte(maintenanceJSON), http.StatusOK, map[string]string{"Accept": gocd.HeaderVersionOne}, false)
 		client := gocd.NewClient(
 			server.URL,
 			"admin",
@@ -128,7 +128,7 @@ func Test_client_GetMaintenanceModeInfo(t *testing.T) {
 	})
 
 	t.Run("should error out with 404 while fetching maintenance mode information due to wrong headers", func(t *testing.T) {
-		server := mockServer([]byte("maintenanceJSON"), http.StatusOK, map[string]string{"Accept": gocd.HeaderVersionOne})
+		server := mockServer([]byte("maintenanceJSON"), http.StatusOK, map[string]string{"Accept": gocd.HeaderVersionOne}, false)
 		client := gocd.NewClient(
 			server.URL,
 			"admin",
@@ -143,7 +143,7 @@ func Test_client_GetMaintenanceModeInfo(t *testing.T) {
 	})
 
 	t.Run("should error out with 404 while fetching maintenance mode information due to wrong headers", func(t *testing.T) {
-		server := mockServer([]byte(maintenanceJSON), http.StatusOK, map[string]string{"Accept": gocd.HeaderVersionTwo})
+		server := mockServer([]byte(maintenanceJSON), http.StatusOK, map[string]string{"Accept": gocd.HeaderVersionTwo}, false)
 		client := gocd.NewClient(
 			server.URL,
 			"admin",

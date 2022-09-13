@@ -13,6 +13,7 @@ import (
 var environmentJSON string
 
 func Test_client_GetEnvironmentInfo(t *testing.T) {
+	correctEnvHeader := map[string]string{"Accept": gocd.HeaderVersionThree}
 	t.Run("should error out while fetching all config repos present from server", func(t *testing.T) {
 		client := gocd.NewClient(
 			"http://localhost:8156/go",
@@ -31,7 +32,7 @@ func Test_client_GetEnvironmentInfo(t *testing.T) {
 	})
 
 	t.Run("should error out while fetching all config repos present as server returned non 200 status code", func(t *testing.T) {
-		server := mockServer([]byte("backupJSON"), http.StatusBadGateway, nil)
+		server := mockServer([]byte("backupJSON"), http.StatusBadGateway, correctEnvHeader, false)
 		client := gocd.NewClient(
 			server.URL,
 			"admin",
@@ -46,7 +47,7 @@ func Test_client_GetEnvironmentInfo(t *testing.T) {
 	})
 
 	t.Run("should error out while fetching all config repos present as server returned malformed response", func(t *testing.T) {
-		server := mockServer([]byte(`{"email_on_failure"}`), http.StatusOK, nil)
+		server := mockServer([]byte(`{"email_on_failure"}`), http.StatusOK, correctEnvHeader, false)
 		client := gocd.NewClient(
 			server.URL,
 			"admin",
@@ -61,7 +62,7 @@ func Test_client_GetEnvironmentInfo(t *testing.T) {
 	})
 
 	t.Run("should be able to fetch all config repos present in GoCD server", func(t *testing.T) {
-		server := mockServer([]byte(environmentJSON), http.StatusOK, nil)
+		server := mockServer([]byte(environmentJSON), http.StatusOK, correctEnvHeader, false)
 		client := gocd.NewClient(
 			server.URL,
 			"",
