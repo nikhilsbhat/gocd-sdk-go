@@ -212,3 +212,7 @@ type Maintenance struct {
 		} `json:"metadata,omitempty"`
 	} `json:"_embedded,omitempty"`
 }
+
+type Encrypted struct {
+	EncryptedValue string `json:"encrypted_value,omitempty"`
+}

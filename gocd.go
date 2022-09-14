@@ -43,6 +43,7 @@ type GoCd interface {
 	GetPipelineState(pipeline string) (PipelineState, error)
 	SetRetryCount(count int)
 	SetRetryWaitTime(count int)
+	EncryptText(value string) (Encrypted, error)
 }
 
 // NewClient returns new instance of httpClient when invoked.

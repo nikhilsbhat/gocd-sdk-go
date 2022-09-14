@@ -13,6 +13,7 @@ const (
 	MaintenanceEndpoint     = "/api/admin/maintenance_mode"
 	APIFeedPipelineEndpoint = "/api/feed/pipelines.xml"
 	PipelineStatus          = "/api/pipelines/%s/status"
+	EncryptEndpoint         = "/api/admin/encrypt"
 	HeaderVersionOne        = "application/vnd.go.cd.v1+json"
 	HeaderVersionTwo        = "application/vnd.go.cd.v2+json"
 	HeaderVersionThree      = "application/vnd.go.cd.v3+json"
