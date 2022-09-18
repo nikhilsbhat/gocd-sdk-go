@@ -44,13 +44,21 @@ type GoCd interface {
 	SetRetryCount(count int)
 	SetRetryWaitTime(count int)
 	EncryptText(value string) (Encrypted, error)
+	GetArtifactConfig() (ArtifactInfo, error)
+	UpdateArtifactConfig(ArtifactInfo) (ArtifactInfo, error)
 }
 
 // NewClient returns new instance of httpClient when invoked.
 func NewClient(baseURL, userName, passWord, logLevel string,
 	caContent []byte,
 ) GoCd {
+	logger := log.New()
+	logger.SetLevel(GetLoglevel(logLevel))
+	logger.WithField(goCdAPILoggerName, true)
+	logger.SetFormatter(&log.JSONFormatter{})
+
 	newClient := resty.New()
+	newClient.SetLogger(logger)
 	newClient.SetRetryCount(defaultRetryCount)
 	newClient.SetRetryWaitTime(defaultRetryWaitTime * time.Second)
 	if logLevel == "debug" {
@@ -65,11 +73,6 @@ func NewClient(baseURL, userName, passWord, logLevel string,
 	} else {
 		newClient.SetTLSClientConfig(&tls.Config{InsecureSkipVerify: true}) //nolint:gosec
 	}
-
-	logger := log.New()
-	logger.SetLevel(GetLoglevel(logLevel))
-	logger.WithField(goCdAPILoggerName, true)
-	logger.SetFormatter(&log.JSONFormatter{})
 
 	return &client{
 		httpClient: newClient,

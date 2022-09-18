@@ -213,6 +213,17 @@ type Maintenance struct {
 	} `json:"_embedded,omitempty"`
 }
 
+// Encrypted holds the encrypted value of the passed plain text.
 type Encrypted struct {
 	EncryptedValue string `json:"encrypted_value,omitempty"`
+}
+
+// ArtifactInfo holds the latest information of the artifacts.
+type ArtifactInfo struct {
+	ArtifactsDir  string `json:"artifacts_dir,omitempty"`
+	PurgeSettings struct {
+		PurgeStartDiskSpace float64 `json:"purge_start_disk_space,omitempty"`
+		PurgeUptoDiskSpace  float64 `json:"purge_upto_disk_space,omitempty"`
+	} `json:"purge_settings,omitempty"`
+	ETAG string
 }

@@ -4,7 +4,7 @@ go 1.19
 
 require (
 	github.com/go-resty/resty/v2 v2.7.0
-	github.com/golang/mock v1.4.4
+	github.com/imdario/mergo v0.3.13
 	github.com/jinzhu/copier v0.3.5
 	github.com/sirupsen/logrus v1.6.0
 	github.com/stretchr/testify v1.8.0

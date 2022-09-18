@@ -14,6 +14,7 @@ const (
 	APIFeedPipelineEndpoint = "/api/feed/pipelines.xml"
 	PipelineStatus          = "/api/pipelines/%s/status"
 	EncryptEndpoint         = "/api/admin/encrypt"
+	ArtifactInfoEndpoint    = "/api/admin/config/server/artifact_config"
 	HeaderVersionOne        = "application/vnd.go.cd.v1+json"
 	HeaderVersionTwo        = "application/vnd.go.cd.v2+json"
 	HeaderVersionThree      = "application/vnd.go.cd.v3+json"
