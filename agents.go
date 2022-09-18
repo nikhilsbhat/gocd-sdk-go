@@ -44,13 +44,12 @@ func (conf *client) GetAgentJobRunHistory(agentID string) (AgentJobHistory, erro
 		return AgentJobHistory{}, err
 	}
 
-	newClient.httpClient.SetQueryParam("sort_order", "DESC")
-
 	var jobHistoryConf AgentJobHistory
 	resp, err := newClient.httpClient.R().
 		SetHeaders(map[string]string{
 			"Accept": HeaderVersionOne,
 		}).
+		SetQueryParam("sort_order", "DESC").
 		Get(fmt.Sprintf(JobRunHistoryEndpoint, agentID))
 	if err != nil {
 		return AgentJobHistory{}, fmt.Errorf("call made to get agent job run history errored with %w", err)

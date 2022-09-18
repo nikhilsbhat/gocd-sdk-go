@@ -15,12 +15,12 @@ func (conf *client) GetHealthMessages() ([]ServerHealth, error) {
 		return nil, err
 	}
 
-	newClient.httpClient.SetHeaders(map[string]string{
-		"Accept": HeaderVersionOne,
-	})
-
 	var health []ServerHealth
-	resp, err := newClient.httpClient.R().SetResult(&health).Get(ServerHealthEndpoint)
+	resp, err := newClient.httpClient.R().
+		SetHeaders(map[string]string{
+			"Accept": HeaderVersionOne,
+		}).
+		SetResult(&health).Get(ServerHealthEndpoint)
 	if err != nil {
 		return nil, fmt.Errorf("call made to get health info errored with %w", err)
 	}

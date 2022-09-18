@@ -15,12 +15,12 @@ func (conf *client) GetVersionInfo() (VersionInfo, error) {
 		return VersionInfo{}, err
 	}
 
-	newClient.httpClient.SetHeaders(map[string]string{
-		"Accept": HeaderVersionOne,
-	})
-
 	var version VersionInfo
-	resp, err := newClient.httpClient.R().Get(VersionEndpoint)
+	resp, err := newClient.httpClient.R().
+		SetHeaders(map[string]string{
+			"Accept": HeaderVersionOne,
+		}).
+		Get(VersionEndpoint)
 	if err != nil {
 		return VersionInfo{}, fmt.Errorf("call made to get version information errored with: %w", err)
 	}

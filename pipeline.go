@@ -21,12 +21,12 @@ func (conf *client) GetPipelineGroupInfo() ([]PipelineGroup, error) {
 		return nil, err
 	}
 
-	newClient.httpClient.SetHeaders(map[string]string{
-		"Accept": HeaderVersionOne,
-	})
-
 	var groupConf PipelineGroupsConfig
-	resp, err := newClient.httpClient.R().Get(PipelineGroupEndpoint)
+	resp, err := newClient.httpClient.R().
+		SetHeaders(map[string]string{
+			"Accept": HeaderVersionOne,
+		}).
+		Get(PipelineGroupEndpoint)
 	if err != nil {
 		return nil, fmt.Errorf("call made to get pipeline group information errored with %w", err)
 	}
@@ -34,7 +34,7 @@ func (conf *client) GetPipelineGroupInfo() ([]PipelineGroup, error) {
 		return nil, APIWithCodeError(resp.StatusCode())
 	}
 
-	if err := json.Unmarshal(resp.Body(), &groupConf); err != nil {
+	if err = json.Unmarshal(resp.Body(), &groupConf); err != nil {
 		return nil, ResponseReadError(err.Error())
 	}
 
@@ -80,12 +80,12 @@ func (conf *client) GetPipelineState(pipeline string) (PipelineState, error) {
 		return PipelineState{}, err
 	}
 
-	newClient.httpClient.SetHeaders(map[string]string{
-		"Accept": HeaderVersionOne,
-	})
-
 	var pipelinesStatus PipelineState
-	resp, err := newClient.httpClient.R().Get(fmt.Sprintf(PipelineStatus, pipeline))
+	resp, err := newClient.httpClient.R().
+		SetHeaders(map[string]string{
+			"Accept": HeaderVersionOne,
+		}).
+		Get(fmt.Sprintf(PipelineStatus, pipeline))
 	if err != nil {
 		return PipelineState{}, fmt.Errorf("call made to get pipeline state errored with %w", err)
 	}
