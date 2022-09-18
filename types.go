@@ -170,6 +170,12 @@ type Environments struct {
 type Environment struct {
 	Name      string     `json:"name,omitempty"`
 	Pipelines []Pipeline `json:"pipelines,omitempty"`
+	EnvVars   []struct {
+		Name           string `json:"name,omitempty"`
+		Value          string `json:"value,omitempty"`
+		EncryptedValue string `json:"encrypted_value,omitempty"`
+		Secure         bool   `json:"secure,omitempty"`
+	} `json:"environment_variables,omitempty"`
 }
 
 // VersionInfo holds version information of GoCD server.

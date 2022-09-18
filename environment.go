@@ -8,8 +8,8 @@ import (
 	"github.com/jinzhu/copier"
 )
 
-// GetEnvironmentInfo fetches information of backup configured in GoCD server.
-func (conf *client) GetEnvironmentInfo() ([]Environment, error) {
+// GetEnvironments fetches information of backup configured in GoCD server.
+func (conf *client) GetEnvironments() ([]Environment, error) {
 	newClient := &client{}
 	if err := copier.CopyWithOption(newClient, conf, copier.Option{IgnoreEmpty: true, DeepCopy: true}); err != nil {
 		return nil, err
@@ -33,4 +33,29 @@ func (conf *client) GetEnvironmentInfo() ([]Environment, error) {
 	}
 
 	return envConf.Environments.Environments, nil
+}
+
+// CreateEnvironment creates GoCD environment with the specified configurations.
+func (conf *client) CreateEnvironment(environment Environment) error {
+	newClient := &client{}
+	if err := copier.CopyWithOption(newClient, conf, copier.Option{IgnoreEmpty: true, DeepCopy: true}); err != nil {
+		return err
+	}
+
+	resp, err := newClient.httpClient.R().
+		SetHeaders(map[string]string{
+			"Accept":       HeaderVersionThree,
+			"Content-Type": ContentJSON,
+		}).
+		SetBody(environment).
+		Post(EnvironmentEndpoint)
+	if err != nil {
+		return fmt.Errorf("call made to create environment errored with %w", err)
+	}
+
+	if resp.StatusCode() != http.StatusOK {
+		return APIErrorWithBody(resp.String(), resp.StatusCode())
+	}
+
+	return nil
 }

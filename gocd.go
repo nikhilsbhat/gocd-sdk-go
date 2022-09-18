@@ -35,7 +35,8 @@ type GoCd interface {
 	DeleteConfigRepo(repo string) error
 	GetAdminsInfo() (SystemAdmins, error)
 	GetPipelineGroupInfo() ([]PipelineGroup, error)
-	GetEnvironmentInfo() ([]Environment, error)
+	GetEnvironments() ([]Environment, error)
+	CreateEnvironment(Environment) error
 	GetVersionInfo() (VersionInfo, error)
 	CreateOrUpdateBackup(backup BackupConfig) error
 	GetBackupInfo() (BackupConfig, error)
