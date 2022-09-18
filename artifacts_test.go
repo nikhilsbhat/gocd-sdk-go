@@ -19,7 +19,7 @@ var artifactInfoJSON string
 func Test_client_GetArtifactConfig(t *testing.T) {
 	correctArtifactsHeader := map[string]string{"Accept": gocd.HeaderVersionOne}
 	t.Run("should be able to get the artifact information from GoCD successfully", func(t *testing.T) {
-		server := mockArtifactInfoServer([]byte(artifactInfoJSON), http.StatusOK, correctArtifactsHeader, false)
+		server := mockArtifactInfoServer([]byte(artifactInfoJSON), http.StatusOK, correctArtifactsHeader)
 		client := gocd.NewClient(
 			server.URL,
 			"admin",
@@ -44,7 +44,7 @@ func Test_client_GetArtifactConfig(t *testing.T) {
 	})
 
 	t.Run("should error out while getting the artifact information from GoCD successfully due to wrong headers", func(t *testing.T) {
-		server := mockArtifactInfoServer([]byte(artifactInfoJSON), http.StatusOK, map[string]string{"Accept": gocd.HeaderVersionTwo}, false)
+		server := mockArtifactInfoServer([]byte(artifactInfoJSON), http.StatusOK, map[string]string{"Accept": gocd.HeaderVersionTwo})
 		client := gocd.NewClient(
 			server.URL,
 			"admin",
@@ -59,7 +59,7 @@ func Test_client_GetArtifactConfig(t *testing.T) {
 	})
 
 	t.Run("should error out while getting the artifact information from GoCD successfully due to no headers set", func(t *testing.T) {
-		server := mockArtifactInfoServer([]byte(artifactInfoJSON), http.StatusOK, nil, false)
+		server := mockArtifactInfoServer([]byte(artifactInfoJSON), http.StatusOK, nil)
 		client := gocd.NewClient(
 			server.URL,
 			"admin",
@@ -74,7 +74,7 @@ func Test_client_GetArtifactConfig(t *testing.T) {
 	})
 
 	t.Run("should error out while getting the artifact information as server returned malformed data", func(t *testing.T) {
-		server := mockArtifactInfoServer([]byte("artifactInfoJSON"), http.StatusOK, correctArtifactsHeader, false)
+		server := mockArtifactInfoServer([]byte("artifactInfoJSON"), http.StatusOK, correctArtifactsHeader)
 		client := gocd.NewClient(
 			server.URL,
 			"admin",
@@ -115,7 +115,7 @@ func Test_client_UpdateArtifactConfig(t *testing.T) {
 		"If-Match":     etag,
 	}
 	t.Run("should be able to update the artifact config successfully", func(t *testing.T) {
-		server := mockArtifactInfoServer([]byte(artifactInfoJSON), http.StatusOK, correctArtifactsHeader, false)
+		server := mockArtifactInfoServer([]byte(artifactInfoJSON), http.StatusOK, correctArtifactsHeader)
 		client := gocd.NewClient(
 			server.URL,
 			"admin",
@@ -140,7 +140,7 @@ func Test_client_UpdateArtifactConfig(t *testing.T) {
 	})
 
 	t.Run("should error out while updating the artifact information in GoCD due to wrong headers", func(t *testing.T) {
-		server := mockArtifactInfoServer([]byte(artifactInfoJSON), http.StatusOK, map[string]string{"Accept": gocd.HeaderVersionTwo}, false)
+		server := mockArtifactInfoServer([]byte(artifactInfoJSON), http.StatusOK, map[string]string{"Accept": gocd.HeaderVersionTwo})
 		client := gocd.NewClient(
 			server.URL,
 			"admin",
@@ -155,7 +155,7 @@ func Test_client_UpdateArtifactConfig(t *testing.T) {
 	})
 
 	t.Run("should error out while updating the artifact information in GoCD successfully due to no headers set", func(t *testing.T) {
-		server := mockArtifactInfoServer([]byte(artifactInfoJSON), http.StatusOK, nil, false)
+		server := mockArtifactInfoServer([]byte(artifactInfoJSON), http.StatusOK, nil)
 		client := gocd.NewClient(
 			server.URL,
 			"admin",
@@ -170,7 +170,7 @@ func Test_client_UpdateArtifactConfig(t *testing.T) {
 	})
 
 	t.Run("should error out while updating the artifact information as server returned malformed data", func(t *testing.T) {
-		server := mockArtifactInfoServer([]byte("artifactInfoJSON"), http.StatusInternalServerError, correctArtifactsHeader, false)
+		server := mockArtifactInfoServer([]byte("artifactInfoJSON"), http.StatusInternalServerError, correctArtifactsHeader)
 		client := gocd.NewClient(
 			server.URL,
 			"admin",
@@ -214,22 +214,20 @@ func Test_client_UpdateArtifactConfig(t *testing.T) {
 	})
 }
 
-func mockArtifactInfoServer(body []byte, statusCode int, header map[string]string, nilHeader bool) *httptest.Server {
+func mockArtifactInfoServer(body []byte, statusCode int, header map[string]string) *httptest.Server {
 	return httptest.NewServer(http.HandlerFunc(func(writer http.ResponseWriter, req *http.Request) {
-		if !nilHeader {
-			if header == nil {
-				writer.WriteHeader(http.StatusNotFound)
-				if _, err := writer.Write([]byte(`<html>
+		if header == nil {
+			writer.WriteHeader(http.StatusNotFound)
+			if _, err := writer.Write([]byte(`<html>
 <body>
 	<h2>404 Not found</h2>
 </body>
 
 </html>`)); err != nil {
-					log.Fatalln(err)
-				}
-
-				return
+				log.Fatalln(err)
 			}
+
+			return
 		}
 
 		for key, value := range header {
@@ -248,13 +246,14 @@ func mockArtifactInfoServer(body []byte, statusCode int, header map[string]strin
 			}
 		}
 
-		if req.Method == http.MethodPost {
+		if req.Method == http.MethodPost { //nolint:nestif
 			if statusCode == http.StatusInternalServerError {
 				writer.WriteHeader(http.StatusOK)
 				_, err := writer.Write(body)
 				if err != nil {
 					log.Fatalln(err)
 				}
+
 				return
 			}
 

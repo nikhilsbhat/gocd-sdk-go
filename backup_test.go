@@ -205,7 +205,7 @@ func Test_client_CreateOrUpdateBackup(t *testing.T) {
 	})
 }
 
-func backupMockServer(request interface{}, method string, header map[string]string) *httptest.Server {
+func backupMockServer(request interface{}, method string, header map[string]string) *httptest.Server { //nolint:unparam
 	return httptest.NewServer(http.HandlerFunc(func(writer http.ResponseWriter, req *http.Request) {
 		if header == nil {
 			writer.WriteHeader(http.StatusNotFound)

@@ -110,7 +110,7 @@ func Test_client_GetAgentsInfo(t *testing.T) {
 }
 
 func Test_client_GetAgentJobRunHistory1(t *testing.T) {
-	agentID := "adb9540a-b954-4571-9d9b-2f330739d4da"
+	agentID := "adb9540a-b954-4571-9d9b-2f330739d4da" //nolint:goconst
 	correctAgentsHeader := map[string]string{"Accept": gocd.HeaderVersionOne}
 	t.Run("should error out as call made to server while fetching job run", func(t *testing.T) {
 		client := gocd.NewClient(

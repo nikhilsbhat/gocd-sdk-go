@@ -2,9 +2,7 @@ package gocd_test
 
 import (
 	_ "embed"
-	"log"
 	"net/http"
-	"net/http/httptest"
 	"testing"
 
 	"github.com/nikhilsbhat/gocd-sdk-go"
@@ -223,15 +221,4 @@ func Test_client_CreateEnvironments(t *testing.T) {
 		assert.EqualError(t, err, "call made to create environment errored with Post"+
 			" \"http://localhost:8156/go/api/admin/environments\": dial tcp [::1]:8156: connect: connection refused")
 	})
-}
-
-func mockEnvironmentServer(body []byte, statusCode int, header map[string]string, nilHeader bool) *httptest.Server {
-	return httptest.NewServer(http.HandlerFunc(func(writer http.ResponseWriter, req *http.Request) {
-		writer.WriteHeader(statusCode)
-		_, err := writer.Write(body)
-		if err != nil {
-			log.Fatalln(err)
-		}
-		return
-	}))
 }
