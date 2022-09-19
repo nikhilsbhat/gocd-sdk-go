@@ -1,0 +1,56 @@
+{
+  "_links": {
+    "self": {
+      "href": "https://ci.example.com/go/api/admin/environments/new_environment"
+    },
+    "doc": {
+      "href": "https://api.gocd.org/#environment-config"
+    },
+    "find": {
+      "href": "https://ci.example.com/go/api/admin/environments/:environment_name"
+    }
+  },
+  "name": "new_environment",
+  "pipelines": [
+    {
+      "_links": {
+        "self": {
+          "href": "https://ci.example.com/go/api/admin/pipelines/pipeline1"
+        },
+        "doc": {
+          "href": "https://api.gocd.org/#pipeline-config"
+        },
+        "find": {
+          "href": "https://ci.example.com/go/api/admin/pipelines/:pipeline_name"
+        }
+      },
+      "name": "up41"
+    },
+    {
+      "_links": {
+        "self": {
+          "href": "https://ci.example.com/go/api/admin/pipelines/pipeline1"
+        },
+        "doc": {
+          "href": "https://api.gocd.org/#pipeline-config"
+        },
+        "find": {
+          "href": "https://ci.example.com/go/api/admin/pipelines/:pipeline_name"
+        }
+      },
+      "name": "up42"
+    }
+  ],
+  "environment_variables": [
+    {
+      "name": "GO_SERVER_URL",
+      "value": "https://ci.example.com/go",
+      "secure": false
+    },
+    {
+      "name": "GO_TOKEN",
+      "value": "LSd1TI0eLa+DjytHjj0qjA==",
+      "secure": true
+    }
+  ]
+}

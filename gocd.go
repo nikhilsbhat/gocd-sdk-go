@@ -36,7 +36,11 @@ type GoCd interface {
 	GetAdminsInfo() (SystemAdmins, error)
 	GetPipelineGroupInfo() ([]PipelineGroup, error)
 	GetEnvironments() ([]Environment, error)
-	CreateEnvironment(Environment) error
+	GetEnvironment(name string) (Environment, error)
+	CreateEnvironment(environment Environment) error
+	UpdateEnvironment(environment Environment) (Environment, error)
+	PatchEnvironment(environment any) (Environment, error)
+	DeleteEnvironment(name string) error
 	GetVersionInfo() (VersionInfo, error)
 	CreateOrUpdateBackup(backup BackupConfig) error
 	GetBackupInfo() (BackupConfig, error)

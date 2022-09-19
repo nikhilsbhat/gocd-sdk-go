@@ -1,0 +1,42 @@
+{
+  "_links": {
+    "self": {
+      "href": "https://ci.example.com/go/api/admin/environments/my_environment"
+    },
+    "doc": {
+      "href": "https://api.gocd.org/#environment-config"
+    },
+    "find": {
+      "href": "https://ci.example.com/go/api/admin/environments/:environment_name"
+    }
+  },
+  "name": "my_environment",
+  "pipelines": [
+    {
+      "_links": {
+        "self": {
+          "href": "https://ci.example.com/go/api/admin/pipelines/up42"
+        },
+        "doc": {
+          "href": "https://api.gocd.org/#pipeline-config"
+        },
+        "find": {
+          "href": "https://ci.example.com/go/api/admin/pipelines/:pipeline_name"
+        }
+      },
+      "name": "up42"
+    }
+  ],
+  "environment_variables": [
+    {
+      "secure": false,
+      "name": "username",
+      "value": "admin"
+    },
+    {
+      "secure": true,
+      "name": "password",
+      "encrypted_value": "LSd1TI0eLa+DjytHjj0qjA=="
+    }
+  ]
+}

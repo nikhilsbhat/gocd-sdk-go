@@ -176,6 +176,23 @@ type Environment struct {
 		EncryptedValue string `json:"encrypted_value,omitempty"`
 		Secure         bool   `json:"secure,omitempty"`
 	} `json:"environment_variables,omitempty"`
+	ETAG string
+}
+
+// PatchEnvironment holds information that is handy while patching GoCD environment.
+type PatchEnvironment struct {
+	Name      string `json:"name"`
+	Pipelines struct {
+		Add    []string `json:"add,omitempty"`
+		Remove []string `json:"remove,omitempty"`
+	} `json:"pipelines,omitempty"`
+	EnvVars struct {
+		Add []struct {
+			Name  string `json:"name,omitempty"`
+			Value string `json:"value,omitempty"`
+		} `json:"add,omitempty"`
+		Remove []string `json:"remove,omitempty"`
+	} `json:"environment_variables,omitempty"`
 }
 
 // VersionInfo holds version information of GoCD server.
