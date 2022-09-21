@@ -11,45 +11,6 @@ import (
 	"github.com/jinzhu/copier"
 )
 
-// Groups implements methods that help in fetching several other information from PipelineGroup.
-type Groups []PipelineGroup
-
-// GetPipelineGroupInfo fetches information of backup configured in GoCD server.
-func (conf *client) GetPipelineGroupInfo() ([]PipelineGroup, error) {
-	newClient := &client{}
-	if err := copier.CopyWithOption(newClient, conf, copier.Option{IgnoreEmpty: true, DeepCopy: true}); err != nil {
-		return nil, err
-	}
-
-	var groupConf PipelineGroupsConfig
-	resp, err := newClient.httpClient.R().
-		SetHeaders(map[string]string{
-			"Accept": HeaderVersionOne,
-		}).
-		Get(PipelineGroupEndpoint)
-	if err != nil {
-		return nil, fmt.Errorf("call made to get pipeline group information errored with %w", err)
-	}
-	if resp.StatusCode() != http.StatusOK {
-		return nil, APIWithCodeError(resp.StatusCode())
-	}
-
-	if err = json.Unmarshal(resp.Body(), &groupConf); err != nil {
-		return nil, ResponseReadError(err.Error())
-	}
-
-	updatedGroupConf := make([]PipelineGroup, 0)
-	for _, group := range groupConf.PipelineGroups.PipelineGroups {
-		updatedGroupConf = append(updatedGroupConf, PipelineGroup{
-			Name:          group.Name,
-			PipelineCount: len(group.Pipelines),
-			Pipelines:     group.Pipelines,
-		})
-	}
-
-	return updatedGroupConf, nil
-}
-
 // GetPipelines fetches all pipelines configured in GoCD server.
 func (conf *client) GetPipelines() (PipelinesInfo, error) {
 	newClient := &client{}
@@ -58,7 +19,8 @@ func (conf *client) GetPipelines() (PipelinesInfo, error) {
 	}
 
 	var pipelinesInfo PipelinesInfo
-	resp, err := newClient.httpClient.R().Get(APIFeedPipelineEndpoint)
+	resp, err := newClient.httpClient.R().
+		Get(APIFeedPipelineEndpoint)
 	if err != nil {
 		return PipelinesInfo{}, fmt.Errorf("call made to get pipelines errored with %w", err)
 	}
@@ -99,16 +61,6 @@ func (conf *client) GetPipelineState(pipeline string) (PipelineState, error) {
 	pipelinesStatus.Name = pipeline
 
 	return pipelinesStatus, nil
-}
-
-// Count return the total number of pipelines present.
-func (conf Groups) Count() int {
-	var pipelines int
-	for _, i := range conf {
-		pipelines += i.PipelineCount
-	}
-
-	return pipelines
 }
 
 // GetPipelineName parses pipeline url to fetch the pipeline name.
