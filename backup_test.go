@@ -37,7 +37,7 @@ func TestConfig_GetBackupInfo(t *testing.T) {
 	})
 
 	t.Run("should error out while fetching latest backup configuration information as server returned non 200 status code", func(t *testing.T) {
-		server := mockServer([]byte("backupJSON"), http.StatusBadGateway, correctBackupHeader, false)
+		server := mockServer([]byte("backupJSON"), http.StatusBadGateway, correctBackupHeader, false, nil)
 		client := gocd.NewClient(
 			server.URL,
 			"admin",
@@ -52,7 +52,7 @@ func TestConfig_GetBackupInfo(t *testing.T) {
 	})
 
 	t.Run("should error out while fetching latest backup configuration information as server returned malformed response", func(t *testing.T) {
-		server := mockServer([]byte(`{"email_on_failure"}`), http.StatusOK, correctBackupHeader, false)
+		server := mockServer([]byte(`{"email_on_failure"}`), http.StatusOK, correctBackupHeader, false, nil)
 		client := gocd.NewClient(
 			server.URL,
 			"admin",
@@ -67,7 +67,7 @@ func TestConfig_GetBackupInfo(t *testing.T) {
 	})
 
 	t.Run("should be able to fetch the latest backup configuration information available in GoCD", func(t *testing.T) {
-		server := mockServer([]byte(backupJSON), http.StatusOK, correctBackupHeader, false)
+		server := mockServer([]byte(backupJSON), http.StatusOK, correctBackupHeader, false, nil)
 
 		client := gocd.NewClient(
 			server.URL,

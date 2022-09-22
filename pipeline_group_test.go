@@ -9,8 +9,12 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-//go:embed internal/fixtures/pipeline_groups.json
-var pipelineGroups string
+var (
+	//go:embed internal/fixtures/pipeline_groups.json
+	pipelineGroups string
+	//go:embed internal/fixtures/pipeline_group.json
+	pipelineGroup string
+)
 
 func Test_client_GetPipelineGroupInfo(t *testing.T) {
 	correctPipelineHeader := map[string]string{"Accept": gocd.HeaderVersionOne}
@@ -32,7 +36,7 @@ func Test_client_GetPipelineGroupInfo(t *testing.T) {
 	})
 
 	t.Run("should error out while fetching all pipeline groups information as server returned non 200 status code", func(t *testing.T) {
-		server := mockServer([]byte("backupJSON"), http.StatusBadGateway, correctPipelineHeader, false)
+		server := mockServer([]byte("backupJSON"), http.StatusBadGateway, correctPipelineHeader, false, nil)
 		client := gocd.NewClient(
 			server.URL,
 			"admin",
@@ -47,7 +51,7 @@ func Test_client_GetPipelineGroupInfo(t *testing.T) {
 	})
 
 	t.Run("should error out while fetching all pipeline groups information as server returned malformed response", func(t *testing.T) {
-		server := mockServer([]byte(`{"email_on_failure"}`), http.StatusOK, correctPipelineHeader, false)
+		server := mockServer([]byte(`{"email_on_failure"}`), http.StatusOK, correctPipelineHeader, false, nil)
 		client := gocd.NewClient(
 			server.URL,
 			"admin",
@@ -62,7 +66,7 @@ func Test_client_GetPipelineGroupInfo(t *testing.T) {
 	})
 
 	t.Run("should be able to get information of all pipeline groups present in GoCD", func(t *testing.T) {
-		server := mockServer([]byte(pipelineGroups), http.StatusOK, correctPipelineHeader, false)
+		server := mockServer([]byte(pipelineGroups), http.StatusOK, correctPipelineHeader, false, nil)
 		client := gocd.NewClient(
 			server.URL,
 			"admin",
@@ -112,7 +116,7 @@ func TestGroups_Count(t *testing.T) {
 
 func Test_client_DeletePipelineGroup(t *testing.T) {
 	t.Run("should be able to delete pipeline group successfully", func(t *testing.T) {
-		server := mockServer(nil, http.StatusOK, map[string]string{"Accept": gocd.HeaderVersionOne}, false)
+		server := mockServer(nil, http.StatusOK, map[string]string{"Accept": gocd.HeaderVersionOne}, false, nil)
 		client := gocd.NewClient(
 			server.URL,
 			"admin",
@@ -126,7 +130,7 @@ func Test_client_DeletePipelineGroup(t *testing.T) {
 	})
 
 	t.Run("should error out while deleting pipeline group due to wrong headers passed", func(t *testing.T) {
-		server := mockServer(nil, http.StatusOK, map[string]string{"Accept": gocd.HeaderVersionTwo}, false)
+		server := mockServer(nil, http.StatusOK, map[string]string{"Accept": gocd.HeaderVersionTwo}, false, nil)
 		client := gocd.NewClient(
 			server.URL,
 			"admin",
@@ -140,7 +144,7 @@ func Test_client_DeletePipelineGroup(t *testing.T) {
 	})
 
 	t.Run("should error out while deleting pipeline group due to missing headers", func(t *testing.T) {
-		server := mockServer(nil, http.StatusOK, nil, false)
+		server := mockServer(nil, http.StatusOK, nil, false, nil)
 		client := gocd.NewClient(
 			server.URL,
 			"admin",
@@ -168,5 +172,194 @@ func Test_client_DeletePipelineGroup(t *testing.T) {
 		err := client.DeletePipelineGroup("pipeline_group_1")
 		assert.EqualError(t, err, "call made to delete pipeline group errored with Delete "+
 			"\"http://localhost:8156/go/api/admin/pipeline_groups/pipeline_group_1\": dial tcp [::1]:8156: connect: connection refused")
+	})
+}
+
+func Test_client_GetPipelineGroup(t *testing.T) {
+	t.Run("should be able to fetch pipeline group successfully from GoCD server", func(t *testing.T) {
+		server := mockServer([]byte(pipelineGroup), http.StatusOK,
+			map[string]string{"Accept": gocd.HeaderVersionOne}, false,
+			map[string]string{"ETag": "17f5a9edf150884e5fc4315b4a7814cd"})
+		client := gocd.NewClient(
+			server.URL,
+			"admin",
+			"admin",
+			"info",
+			nil,
+		)
+
+		expected := gocd.PipelineGroup{
+			Name:          "first",
+			PipelineCount: 0,
+			Pipelines:     []gocd.Pipeline{{Name: "up42"}},
+			Authorization: map[string]interface{}{
+				"view": map[string]interface{}{
+					"users": []interface{}{"operate"},
+					"roles": []interface{}{},
+				},
+				"admins": map[string]interface{}{
+					"users": []interface{}{"operate"},
+					"roles": []interface{}{},
+				},
+			},
+			ETAG: "17f5a9edf150884e5fc4315b4a7814cd",
+		}
+
+		actual, err := client.GetPipelineGroup("first")
+		assert.NoError(t, err)
+		assert.Equal(t, expected, actual)
+	})
+
+	t.Run("should error out while fetching pipeline group from GoCD server due to wrong headers", func(t *testing.T) {
+		server := mockServer([]byte(pipelineGroup), http.StatusOK, map[string]string{"Accept": gocd.HeaderVersionTwo}, false, nil)
+		client := gocd.NewClient(
+			server.URL,
+			"admin",
+			"admin",
+			"info",
+			nil,
+		)
+		expected := gocd.PipelineGroup{}
+
+		actual, err := client.GetPipelineGroup("first")
+		assert.EqualError(t, err, "body: <html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html> httpcode: 404")
+		assert.Equal(t, expected, actual)
+	})
+
+	t.Run("should error out while fetching pipeline group from GoCD server due to missing headers", func(t *testing.T) {
+		server := mockServer([]byte(pipelineGroup), http.StatusOK, nil, false, nil)
+		client := gocd.NewClient(
+			server.URL,
+			"admin",
+			"admin",
+			"info",
+			nil,
+		)
+		expected := gocd.PipelineGroup{}
+
+		actual, err := client.GetPipelineGroup("first")
+		assert.EqualError(t, err, "body: <html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html> httpcode: 404")
+		assert.Equal(t, expected, actual)
+	})
+
+	t.Run("should error out while fetching pipeline group as server returned malformed response", func(t *testing.T) {
+		server := mockServer([]byte("pipelineGroup"), http.StatusOK,
+			map[string]string{"Accept": gocd.HeaderVersionOne}, false,
+			map[string]string{"ETag": "17f5a9edf150884e5fc4315b4a7814cd"})
+		client := gocd.NewClient(
+			server.URL,
+			"admin",
+			"admin",
+			"info",
+			nil,
+		)
+		expected := gocd.PipelineGroup{}
+
+		actual, err := client.GetPipelineGroup("first")
+		assert.EqualError(t, err, "reading response body errored with: invalid character 'p' looking for beginning of value")
+		assert.Equal(t, expected, actual)
+	})
+
+	t.Run("should error out while fetching pipeline group as server is not reachable", func(t *testing.T) {
+		client := gocd.NewClient(
+			"http://localhost:8156/go",
+			"admin",
+			"admin",
+			"info",
+			nil,
+		)
+
+		client.SetRetryCount(1)
+		client.SetRetryWaitTime(1)
+
+		expected := gocd.PipelineGroup{}
+
+		actual, err := client.GetPipelineGroup("first")
+		assert.EqualError(t, err, "call made to fetch pipeline group errored with "+
+			"Get \"http://localhost:8156/go/api/admin/pipeline_groups/first\": dial tcp [::1]:8156: connect: connection refused")
+		assert.Equal(t, expected, actual)
+	})
+}
+
+func Test_client_CreatePipelineGroup(t *testing.T) {
+	t.Run("should be able to create pipeline group with specified configuration successfully", func(t *testing.T) {
+		server := mockServer([]byte(pipelineGroup), http.StatusOK,
+			map[string]string{"Accept": gocd.HeaderVersionOne, "Content-Type": gocd.ContentJSON}, false, nil)
+		client := gocd.NewClient(
+			server.URL,
+			"admin",
+			"admin",
+			"info",
+			nil,
+		)
+
+		group := gocd.PipelineGroup{
+			Name: "first",
+			Pipelines: []gocd.Pipeline{{
+				Name: "name",
+			}},
+			Authorization: map[string]interface{}{
+				"view": map[string]interface{}{
+					"users": []interface{}{"operate"},
+					"roles": []interface{}{},
+				},
+				"admins": map[string]interface{}{
+					"users": []interface{}{"operate"},
+					"roles": []interface{}{},
+				},
+			},
+		}
+
+		err := client.CreatePipelineGroup(group)
+		assert.NoError(t, err)
+	})
+
+	t.Run("should error out while creating pipeline group from GoCD server due to wrong headers", func(t *testing.T) {
+		server := mockServer([]byte(pipelineGroup), http.StatusOK, map[string]string{"Accept": gocd.HeaderVersionTwo, "Content-Type": gocd.ContentJSON}, false, nil)
+		client := gocd.NewClient(
+			server.URL,
+			"admin",
+			"admin",
+			"info",
+			nil,
+		)
+		group := gocd.PipelineGroup{}
+
+		err := client.CreatePipelineGroup(group)
+		assert.EqualError(t, err, "body: <html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html> httpcode: 404")
+	})
+
+	t.Run("should error out while creating pipeline group from GoCD server due to missing headers", func(t *testing.T) {
+		server := mockServer([]byte(pipelineGroup), http.StatusOK, nil, false, nil)
+		client := gocd.NewClient(
+			server.URL,
+			"admin",
+			"admin",
+			"info",
+			nil,
+		)
+		group := gocd.PipelineGroup{}
+
+		err := client.CreatePipelineGroup(group)
+		assert.EqualError(t, err, "body: <html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html> httpcode: 404")
+	})
+
+	t.Run("should error out while creating pipeline group as server is not reachable", func(t *testing.T) {
+		client := gocd.NewClient(
+			"http://localhost:8156/go",
+			"admin",
+			"admin",
+			"info",
+			nil,
+		)
+
+		client.SetRetryCount(1)
+		client.SetRetryWaitTime(1)
+
+		group := gocd.PipelineGroup{Name: "first"}
+
+		err := client.CreatePipelineGroup(group)
+		assert.EqualError(t, err, "call made to create pipeline group 'first' information errored with "+
+			"Post \"http://localhost:8156/go/api/admin/pipeline_groups\": dial tcp [::1]:8156: connect: connection refused")
 	})
 }

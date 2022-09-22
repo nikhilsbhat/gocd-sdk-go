@@ -32,7 +32,7 @@ func Test_config_GetVersionInfo(t *testing.T) {
 	})
 
 	t.Run("should error out while fetching version information as server returned non 200 status code", func(t *testing.T) {
-		server := mockServer([]byte("backupJSON"), http.StatusBadGateway, correctVersionHeader, false)
+		server := mockServer([]byte("backupJSON"), http.StatusBadGateway, correctVersionHeader, false, nil)
 		client := gocd.NewClient(
 			server.URL,
 			"admin",
@@ -47,7 +47,7 @@ func Test_config_GetVersionInfo(t *testing.T) {
 	})
 
 	t.Run("should error out while fetching version information as server returned malformed response", func(t *testing.T) {
-		server := mockServer([]byte(`{"email_on_failure"}`), http.StatusOK, correctVersionHeader, false)
+		server := mockServer([]byte(`{"email_on_failure"}`), http.StatusOK, correctVersionHeader, false, nil)
 		client := gocd.NewClient(
 			server.URL,
 			"admin",
@@ -62,7 +62,7 @@ func Test_config_GetVersionInfo(t *testing.T) {
 	})
 
 	t.Run("should be able to fetch the version info", func(t *testing.T) {
-		server := mockServer([]byte(versionInfo), http.StatusOK, correctVersionHeader, false)
+		server := mockServer([]byte(versionInfo), http.StatusOK, correctVersionHeader, false, nil)
 		client := gocd.NewClient(
 			server.URL,
 			"",

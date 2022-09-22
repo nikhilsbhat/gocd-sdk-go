@@ -100,9 +100,11 @@ type PipelineGroups struct {
 
 // PipelineGroup holds information of a specific pipeline group instance.
 type PipelineGroup struct {
-	Name          string     `json:"name,omitempty"`
-	PipelineCount int        `json:"pipeline_count,omitempty"`
-	Pipelines     []Pipeline `json:"pipelines,omitempty"`
+	Name          string                 `json:"name,omitempty"`
+	PipelineCount int                    `json:"pipeline_count,omitempty"`
+	Pipelines     []Pipeline             `json:"pipelines,omitempty"`
+	Authorization map[string]interface{} `json:"authorization,omitempty"`
+	ETAG          string
 }
 
 // SystemAdmins holds information of the system admins present.

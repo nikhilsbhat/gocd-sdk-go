@@ -32,7 +32,7 @@ func Test_client_GetAdminsInfo(t *testing.T) {
 	})
 
 	t.Run("should error out while fetching system admins present as server returned non 200 status code", func(t *testing.T) {
-		server := mockServer([]byte("backupJSON"), http.StatusBadGateway, correctAdminHeader, false)
+		server := mockServer([]byte("backupJSON"), http.StatusBadGateway, correctAdminHeader, false, nil)
 		client := gocd.NewClient(
 			server.URL,
 			"admin",
@@ -47,7 +47,7 @@ func Test_client_GetAdminsInfo(t *testing.T) {
 	})
 
 	t.Run("should error out while fetching system admins present as server returned malformed response", func(t *testing.T) {
-		server := mockServer([]byte(`{"email_on_failure"}`), http.StatusOK, correctAdminHeader, false)
+		server := mockServer([]byte(`{"email_on_failure"}`), http.StatusOK, correctAdminHeader, false, nil)
 		client := gocd.NewClient(
 			server.URL,
 			"admin",
@@ -62,7 +62,7 @@ func Test_client_GetAdminsInfo(t *testing.T) {
 	})
 
 	t.Run("should get 404 from server as header messed up", func(t *testing.T) {
-		server := mockServer([]byte(systemAdmins), http.StatusOK, map[string]string{"Accept": gocd.HeaderVersionOne}, false)
+		server := mockServer([]byte(systemAdmins), http.StatusOK, map[string]string{"Accept": gocd.HeaderVersionOne}, false, nil)
 		client := gocd.NewClient(
 			server.URL,
 			"admin",
@@ -77,7 +77,7 @@ func Test_client_GetAdminsInfo(t *testing.T) {
 	})
 
 	t.Run("should be able to fetch admins present in GoCD server", func(t *testing.T) {
-		server := mockServer([]byte(systemAdmins), http.StatusOK, correctAdminHeader, false)
+		server := mockServer([]byte(systemAdmins), http.StatusOK, correctAdminHeader, false, nil)
 		client := gocd.NewClient(
 			server.URL,
 			"",

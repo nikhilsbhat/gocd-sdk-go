@@ -48,7 +48,7 @@ func Test_client_GetAgentsInfo(t *testing.T) {
 	})
 
 	t.Run("should error out while fetching agents information as server returned non 200 status code", func(t *testing.T) {
-		server := mockServer([]byte("agentsJson"), http.StatusBadGateway, correctAgentsHeader, false)
+		server := mockServer([]byte("agentsJson"), http.StatusBadGateway, correctAgentsHeader, false, nil)
 		client := gocd.NewClient(
 			server.URL,
 			"admin",
@@ -63,7 +63,7 @@ func Test_client_GetAgentsInfo(t *testing.T) {
 	})
 
 	t.Run("should error out while fetching agents information as server returned malformed response", func(t *testing.T) {
-		server := mockServer([]byte(`{"_embedded": {"agents": [{`), http.StatusOK, correctAgentsHeader, false)
+		server := mockServer([]byte(`{"_embedded": {"agents": [{`), http.StatusOK, correctAgentsHeader, false, nil)
 		client := gocd.NewClient(
 			server.URL,
 			"admin",
@@ -78,7 +78,7 @@ func Test_client_GetAgentsInfo(t *testing.T) {
 	})
 
 	t.Run("should be able to fetch the agents information from GoCD server", func(t *testing.T) {
-		server := mockServer([]byte(agentsJSON), http.StatusOK, correctAgentsHeader, false)
+		server := mockServer([]byte(agentsJSON), http.StatusOK, correctAgentsHeader, false, nil)
 		client := gocd.NewClient(
 			server.URL,
 			"admin",
@@ -131,7 +131,7 @@ func Test_client_GetAgentJobRunHistory1(t *testing.T) {
 	})
 
 	t.Run("should error out while fetching job run history as server returned non 200 status code", func(t *testing.T) {
-		server := mockServer([]byte("agentRunHistoryJSON"), http.StatusBadGateway, correctAgentsHeader, false)
+		server := mockServer([]byte("agentRunHistoryJSON"), http.StatusBadGateway, correctAgentsHeader, false, nil)
 		client := gocd.NewClient(
 			server.URL,
 			"admin",
@@ -146,7 +146,7 @@ func Test_client_GetAgentJobRunHistory1(t *testing.T) {
 	})
 
 	t.Run("should error out while fetching agent job run history as server returned malformed response", func(t *testing.T) {
-		server := mockServer([]byte(`{"_embedded": {"agents": [{`), http.StatusOK, correctAgentsHeader, false)
+		server := mockServer([]byte(`{"_embedded": {"agents": [{`), http.StatusOK, correctAgentsHeader, false, nil)
 		client := gocd.NewClient(
 			server.URL,
 			"admin",
@@ -161,7 +161,7 @@ func Test_client_GetAgentJobRunHistory1(t *testing.T) {
 	})
 
 	t.Run("should be able to fetch the agent job run history", func(t *testing.T) {
-		server := mockServer([]byte(agentRunHistoryJSON), http.StatusOK, correctAgentsHeader, false)
+		server := mockServer([]byte(agentRunHistoryJSON), http.StatusOK, correctAgentsHeader, false, nil)
 		client := gocd.NewClient(
 			server.URL,
 			"admin",

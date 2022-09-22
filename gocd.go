@@ -34,6 +34,7 @@ type GoCd interface {
 	GetMaintenanceModeInfo() (Maintenance, error)
 	DeleteConfigRepo(repo string) error
 	GetAdminsInfo() (SystemAdmins, error)
+	CreatePipelineGroup(group PipelineGroup) error
 	GetPipelineGroups() ([]PipelineGroup, error)
 	GetPipelineGroup(name string) (PipelineGroup, error)
 	DeletePipelineGroup(name string) error

@@ -6,7 +6,7 @@ import (
 	"net/http/httptest"
 )
 
-func mockServer(body []byte, statusCode int, header map[string]string, nilHeader bool) *httptest.Server {
+func mockServer(body []byte, statusCode int, header map[string]string, nilHeader bool, additionalHeaders map[string]string) *httptest.Server {
 	return httptest.NewServer(http.HandlerFunc(func(writer http.ResponseWriter, req *http.Request) {
 		if !nilHeader {
 			if header == nil {
@@ -38,6 +38,10 @@ func mockServer(body []byte, statusCode int, header map[string]string, nilHeader
 
 				return
 			}
+		}
+
+		for key, value := range additionalHeaders {
+			writer.Header().Set(key, value)
 		}
 
 		writer.WriteHeader(statusCode)

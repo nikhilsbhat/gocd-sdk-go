@@ -15,7 +15,7 @@ var encryptionJSON string
 func Test_client_EncryptText(t *testing.T) {
 	correctEncryptionHeader := map[string]string{"Accept": gocd.HeaderVersionOne, "Content-Type": gocd.ContentJSON}
 	t.Run("should be able to encrypt the value passed successfully", func(t *testing.T) {
-		server := mockServer([]byte(encryptionJSON), http.StatusOK, correctEncryptionHeader, false)
+		server := mockServer([]byte(encryptionJSON), http.StatusOK, correctEncryptionHeader, false, nil)
 		client := gocd.NewClient(
 			server.URL,
 			"admin",
@@ -32,7 +32,7 @@ func Test_client_EncryptText(t *testing.T) {
 	})
 
 	t.Run("should error out while encrypting a value as server returned non 200 status code", func(t *testing.T) {
-		server := mockServer([]byte("encryptionJSON"), http.StatusBadGateway, correctEncryptionHeader, false)
+		server := mockServer([]byte("encryptionJSON"), http.StatusBadGateway, correctEncryptionHeader, false, nil)
 		client := gocd.NewClient(
 			server.URL,
 			"admin",
@@ -47,7 +47,7 @@ func Test_client_EncryptText(t *testing.T) {
 	})
 
 	t.Run("should error out while encrypting a value server returned malformed response", func(t *testing.T) {
-		server := mockServer([]byte(`{"encrypting a value"}`), http.StatusOK, correctEncryptionHeader, false)
+		server := mockServer([]byte(`{"encrypting a value"}`), http.StatusOK, correctEncryptionHeader, false, nil)
 		client := gocd.NewClient(
 			server.URL,
 			"admin",

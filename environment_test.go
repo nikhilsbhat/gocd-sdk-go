@@ -41,7 +41,7 @@ func Test_client_GetEnvironmentInfo(t *testing.T) {
 	})
 
 	t.Run("should error out while fetching all config repos present as server returned non 200 status code", func(t *testing.T) {
-		server := mockServer([]byte("backupJSON"), http.StatusBadGateway, correctEnvHeader, false)
+		server := mockServer([]byte("backupJSON"), http.StatusBadGateway, correctEnvHeader, false, nil)
 		client := gocd.NewClient(
 			server.URL,
 			"admin",
@@ -56,7 +56,7 @@ func Test_client_GetEnvironmentInfo(t *testing.T) {
 	})
 
 	t.Run("should error out while fetching all config repos present as server returned malformed response", func(t *testing.T) {
-		server := mockServer([]byte(`{"email_on_failure"}`), http.StatusOK, correctEnvHeader, false)
+		server := mockServer([]byte(`{"email_on_failure"}`), http.StatusOK, correctEnvHeader, false, nil)
 		client := gocd.NewClient(
 			server.URL,
 			"admin",
@@ -71,7 +71,7 @@ func Test_client_GetEnvironmentInfo(t *testing.T) {
 	})
 
 	t.Run("should be able to fetch all environment information present in GoCD server", func(t *testing.T) {
-		server := mockServer([]byte(environmentsJSON), http.StatusOK, correctEnvHeader, false)
+		server := mockServer([]byte(environmentsJSON), http.StatusOK, correctEnvHeader, false, nil)
 		client := gocd.NewClient(
 			server.URL,
 			"",
@@ -142,7 +142,7 @@ func Test_client_GetEnvironmentInfo(t *testing.T) {
 func Test_client_CreateEnvironments(t *testing.T) {
 	correctEnvHeader := map[string]string{"Accept": gocd.HeaderVersionThree, "Content-Type": gocd.ContentJSON}
 	t.Run("should be able to create the environment successfully", func(t *testing.T) {
-		server := mockServer([]byte(encryptionJSON), http.StatusOK, correctEnvHeader, false)
+		server := mockServer([]byte(encryptionJSON), http.StatusOK, correctEnvHeader, false, nil)
 		client := gocd.NewClient(
 			server.URL,
 			"admin",
@@ -182,7 +182,7 @@ func Test_client_CreateEnvironments(t *testing.T) {
 	})
 
 	t.Run("should error out while creating environment due to wrong headers set", func(t *testing.T) {
-		server := mockServer(nil, http.StatusOK, map[string]string{"Accept": gocd.HeaderVersionOne, "Content-Type": gocd.ContentJSON}, false)
+		server := mockServer(nil, http.StatusOK, map[string]string{"Accept": gocd.HeaderVersionOne, "Content-Type": gocd.ContentJSON}, false, nil)
 		client := gocd.NewClient(
 			server.URL,
 			"admin",
@@ -198,7 +198,7 @@ func Test_client_CreateEnvironments(t *testing.T) {
 	})
 
 	t.Run("should error out while creating environment due to missing", func(t *testing.T) {
-		server := mockServer(nil, http.StatusOK, nil, false)
+		server := mockServer(nil, http.StatusOK, nil, false, nil)
 		client := gocd.NewClient(
 			server.URL,
 			"admin",
@@ -234,7 +234,7 @@ func Test_client_CreateEnvironments(t *testing.T) {
 
 func Test_client_DeleteEnvironment(t *testing.T) {
 	t.Run("should be able to delete the environment successfully", func(t *testing.T) {
-		server := mockServer(nil, http.StatusOK, map[string]string{"Accept": gocd.HeaderVersionThree}, false)
+		server := mockServer(nil, http.StatusOK, map[string]string{"Accept": gocd.HeaderVersionThree}, false, nil)
 		client := gocd.NewClient(
 			server.URL,
 			"admin",
@@ -248,7 +248,7 @@ func Test_client_DeleteEnvironment(t *testing.T) {
 	})
 
 	t.Run("should error out while deleting the environment as wrong headers set", func(t *testing.T) {
-		server := mockServer(nil, http.StatusOK, map[string]string{"Accept": gocd.HeaderVersionTwo}, false)
+		server := mockServer(nil, http.StatusOK, map[string]string{"Accept": gocd.HeaderVersionTwo}, false, nil)
 		client := gocd.NewClient(
 			server.URL,
 			"admin",
@@ -262,7 +262,7 @@ func Test_client_DeleteEnvironment(t *testing.T) {
 	})
 
 	t.Run("should error out while deleting the environment as no headers set", func(t *testing.T) {
-		server := mockServer(nil, http.StatusOK, nil, false)
+		server := mockServer(nil, http.StatusOK, nil, false, nil)
 		client := gocd.NewClient(
 			server.URL,
 			"admin",
@@ -296,7 +296,7 @@ func Test_client_DeleteEnvironment(t *testing.T) {
 func Test_client_UpdateEnvironment(t *testing.T) {
 	correctUpdateHeader := map[string]string{"Accept": gocd.HeaderVersionThree, "Content-Type": gocd.ContentJSON, "If-Match": "26b227605daf6f2d7768c8edaf61b861"}
 	t.Run("should be able to update the environment successfully", func(t *testing.T) {
-		server := mockServer([]byte(environmentUpdateJSON), http.StatusOK, correctUpdateHeader, false)
+		server := mockServer([]byte(environmentUpdateJSON), http.StatusOK, correctUpdateHeader, false, nil)
 		client := gocd.NewClient(
 			server.URL,
 			"admin",
@@ -324,7 +324,10 @@ func Test_client_UpdateEnvironment(t *testing.T) {
 
 	t.Run("should error out while updating the environment due to wrong headers set", func(t *testing.T) {
 		server := mockServer([]byte(environmentUpdateJSON), http.StatusOK,
-			map[string]string{"Accept": gocd.HeaderVersionTwo, "Content-Type": gocd.ContentJSON, "If-Match": "26b227605daf6f2d7768c8edaf61b861"}, false)
+			map[string]string{
+				"Accept": gocd.HeaderVersionTwo, "Content-Type": gocd.ContentJSON,
+				"If-Match": "26b227605daf6f2d7768c8edaf61b861",
+			}, false, nil)
 		client := gocd.NewClient(
 			server.URL,
 			"admin",
@@ -340,7 +343,7 @@ func Test_client_UpdateEnvironment(t *testing.T) {
 	})
 
 	t.Run("should error out while updating the environment due to missing headers", func(t *testing.T) {
-		server := mockServer([]byte(environmentUpdateJSON), http.StatusOK, nil, false)
+		server := mockServer([]byte(environmentUpdateJSON), http.StatusOK, nil, false, nil)
 		client := gocd.NewClient(
 			server.URL,
 			"admin",
@@ -356,7 +359,7 @@ func Test_client_UpdateEnvironment(t *testing.T) {
 	})
 
 	t.Run("should error out while updating the environment as server returned malformed response", func(t *testing.T) {
-		server := mockServer([]byte("environmentUpdateJSON"), http.StatusOK, correctUpdateHeader, false)
+		server := mockServer([]byte("environmentUpdateJSON"), http.StatusOK, correctUpdateHeader, false, nil)
 		client := gocd.NewClient(
 			server.URL,
 			"admin",
@@ -397,7 +400,7 @@ func Test_client_UpdateEnvironment(t *testing.T) {
 func Test_client_PatchEnvironment(t *testing.T) {
 	correctPatchHeader := map[string]string{"Accept": gocd.HeaderVersionThree, "Content-Type": gocd.ContentJSON}
 	t.Run("should be able to patch the environment successfully", func(t *testing.T) {
-		server := mockServer([]byte(environmentPatchJSON), http.StatusOK, correctPatchHeader, false)
+		server := mockServer([]byte(environmentPatchJSON), http.StatusOK, correctPatchHeader, false, nil)
 		client := gocd.NewClient(
 			server.URL,
 			"admin",
@@ -443,7 +446,7 @@ func Test_client_PatchEnvironment(t *testing.T) {
 	})
 
 	t.Run("should error out while patching GoCD environment as required headers are missing", func(t *testing.T) {
-		server := mockServer([]byte(environmentPatchJSON), http.StatusOK, nil, false)
+		server := mockServer([]byte(environmentPatchJSON), http.StatusOK, nil, false, nil)
 		client := gocd.NewClient(
 			server.URL,
 			"admin",
@@ -459,7 +462,7 @@ func Test_client_PatchEnvironment(t *testing.T) {
 	})
 
 	t.Run("should error out while patching GoCD environment as wrong headers passed", func(t *testing.T) {
-		server := mockServer([]byte(environmentPatchJSON), http.StatusOK, map[string]string{"Accept": gocd.HeaderVersionTwo, "Content-Type": gocd.ContentJSON}, false)
+		server := mockServer([]byte(environmentPatchJSON), http.StatusOK, map[string]string{"Accept": gocd.HeaderVersionTwo, "Content-Type": gocd.ContentJSON}, false, nil)
 		client := gocd.NewClient(
 			server.URL,
 			"admin",
@@ -475,7 +478,7 @@ func Test_client_PatchEnvironment(t *testing.T) {
 	})
 
 	t.Run("should error out while patching GoCD environment as server returned malformed response", func(t *testing.T) {
-		server := mockServer([]byte("environmentPatchJSON"), http.StatusOK, correctPatchHeader, false)
+		server := mockServer([]byte("environmentPatchJSON"), http.StatusOK, correctPatchHeader, false, nil)
 		client := gocd.NewClient(
 			server.URL,
 			"admin",
@@ -516,7 +519,7 @@ func Test_client_GetEnvironment(t *testing.T) {
 	envName := "my_environment"
 
 	t.Run("should be able to fetch environment config from GoCD server successfully", func(t *testing.T) {
-		server := mockServer([]byte(environmentJSON), http.StatusOK, correctGetHeader, false)
+		server := mockServer([]byte(environmentJSON), http.StatusOK, correctGetHeader, false, nil)
 		client := gocd.NewClient(
 			server.URL,
 			"admin",
@@ -550,7 +553,7 @@ func Test_client_GetEnvironment(t *testing.T) {
 	})
 
 	t.Run("should error out while fetching GoCD environment as wrong headers set", func(t *testing.T) {
-		server := mockServer([]byte(environmentJSON), http.StatusOK, map[string]string{"Accept": gocd.HeaderVersionTwo}, false)
+		server := mockServer([]byte(environmentJSON), http.StatusOK, map[string]string{"Accept": gocd.HeaderVersionTwo}, false, nil)
 		client := gocd.NewClient(
 			server.URL,
 			"admin",
@@ -565,7 +568,7 @@ func Test_client_GetEnvironment(t *testing.T) {
 	})
 
 	t.Run("should error out while fetching GoCD environment as headers are missing", func(t *testing.T) {
-		server := mockServer([]byte(environmentJSON), http.StatusOK, nil, false)
+		server := mockServer([]byte(environmentJSON), http.StatusOK, nil, false, nil)
 		client := gocd.NewClient(
 			server.URL,
 			"admin",
@@ -580,7 +583,7 @@ func Test_client_GetEnvironment(t *testing.T) {
 	})
 
 	t.Run("should error out while fetching GoCD environment as server returned malformed response", func(t *testing.T) {
-		server := mockServer([]byte("environmentJSON"), http.StatusOK, correctGetHeader, false)
+		server := mockServer([]byte("environmentJSON"), http.StatusOK, correctGetHeader, false, nil)
 		client := gocd.NewClient(
 			server.URL,
 			"admin",
