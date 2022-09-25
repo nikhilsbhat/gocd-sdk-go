@@ -133,3 +133,36 @@ func (conf *client) GetPipelineGroup(name string) (PipelineGroup, error) {
 
 	return pipelineGroup, nil
 }
+
+// UpdatePipelineGroup updates the specified pipeline group with the latest config provided.
+func (conf *client) UpdatePipelineGroup(group PipelineGroup) (PipelineGroup, error) {
+	var pipelineGroup PipelineGroup
+	newClient := &client{}
+	if err := copier.CopyWithOption(newClient, conf, copier.Option{IgnoreEmpty: true, DeepCopy: true}); err != nil {
+		return pipelineGroup, err
+	}
+
+	resp, err := newClient.httpClient.R().
+		SetHeaders(map[string]string{
+			"Accept":       HeaderVersionOne,
+			"Content-Type": ContentJSON,
+			"If-Match":     group.ETAG,
+		}).
+		SetBody(group).
+		Put(filepath.Join(PipelineGroupEndpoint, group.Name))
+	if err != nil {
+		return pipelineGroup, fmt.Errorf("call made to update pipeline group '%s' errored with %w", group.Name, err)
+	}
+
+	if resp.StatusCode() != http.StatusOK {
+		return pipelineGroup, APIErrorWithBody(resp.String(), resp.StatusCode())
+	}
+
+	if err = json.Unmarshal(resp.Body(), &pipelineGroup); err != nil {
+		return pipelineGroup, ResponseReadError(err.Error())
+	}
+
+	pipelineGroup.ETAG = resp.Header().Get("ETag")
+
+	return pipelineGroup, nil
+}

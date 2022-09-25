@@ -41,7 +41,7 @@ func Test_client_GetAgentsInfo(t *testing.T) {
 		client.SetRetryCount(1)
 		client.SetRetryWaitTime(1)
 
-		actual, err := client.GetAgentsInfo()
+		actual, err := client.GetAgents()
 		assert.EqualError(t, err, "call made to get agents information errored with: "+
 			"Get \"http://localhost:8156/go/api/agents\": dial tcp [::1]:8156: connect: connection refused")
 		assert.Nil(t, actual)
@@ -57,7 +57,7 @@ func Test_client_GetAgentsInfo(t *testing.T) {
 			nil,
 		)
 
-		actual, err := client.GetAgentsInfo()
+		actual, err := client.GetAgents()
 		assert.EqualError(t, err, gocd.APIWithCodeError(http.StatusBadGateway).Error())
 		assert.Nil(t, actual)
 	})
@@ -72,7 +72,7 @@ func Test_client_GetAgentsInfo(t *testing.T) {
 			nil,
 		)
 
-		actual, err := client.GetAgentsInfo()
+		actual, err := client.GetAgents()
 		assert.EqualError(t, err, "reading response body errored with: unexpected end of JSON input")
 		assert.Nil(t, actual)
 	})
@@ -103,7 +103,7 @@ func Test_client_GetAgentsInfo(t *testing.T) {
 			},
 		}
 
-		actual, err := client.GetAgentsInfo()
+		actual, err := client.GetAgents()
 		assert.NoError(t, err)
 		assert.Equal(t, expected, actual)
 	})
@@ -562,6 +562,85 @@ func Test_client_DeleteAgentBulk(t *testing.T) {
 		assert.EqualError(t, err, "call made delete agents [adb9540a-b954-4571-9d9b-2f330739d4da adb9540a-5hfh-6453-9d9b-2f37467739d4da] errored with: "+
 			"Delete \"http://localhost:8156/go/api/agents\": dial tcp [::1]:8156: connect: connection refused")
 		assert.Equal(t, "", actual)
+	})
+}
+
+func Test_client_AgentKillTask(t *testing.T) {
+	correctTaskKillHeader := map[string]string{
+		"Accept":           gocd.HeaderVersionSeven,
+		gocd.HeaderConfirm: "true",
+	}
+
+	t.Run("should be able to cancel the tasks running on an agent successfully", func(t *testing.T) {
+		server := mockServer([]byte(pipelineGroupUpdate), http.StatusOK, correctTaskKillHeader,
+			false, nil)
+		client := gocd.NewClient(
+			server.URL,
+			"admin",
+			"admin",
+			"info",
+			nil,
+		)
+
+		agent := gocd.Agent{ID: "adb9540a-5hfh-6453-9d9b-2f37467739d4da"}
+
+		err := client.AgentKillTask(agent)
+		assert.NoError(t, err)
+	})
+
+	t.Run("should error out while canceling the tasks running on an agent due to wrong headers", func(t *testing.T) {
+		server := mockServer([]byte(pipelineGroupUpdate), http.StatusOK,
+			map[string]string{"Accept": gocd.HeaderVersionTwo, gocd.HeaderConfirm: "true"},
+			false, nil)
+		client := gocd.NewClient(
+			server.URL,
+			"admin",
+			"admin",
+			"info",
+			nil,
+		)
+
+		agent := gocd.Agent{ID: "adb9540a-5hfh-6453-9d9b-2f37467739d4da"}
+
+		err := client.AgentKillTask(agent)
+		assert.EqualError(t, err, "body: <html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html> httpcode: 404")
+	})
+
+	t.Run("should error out while canceling the tasks running on an agent due to missing headers", func(t *testing.T) {
+		server := mockServer([]byte(pipelineGroupUpdate), http.StatusOK,
+			map[string]string{"Accept": gocd.HeaderVersionTwo},
+			false, nil)
+		client := gocd.NewClient(
+			server.URL,
+			"admin",
+			"admin",
+			"info",
+			nil,
+		)
+
+		agent := gocd.Agent{ID: "adb9540a-5hfh-6453-9d9b-2f37467739d4da"}
+
+		err := client.AgentKillTask(agent)
+		assert.EqualError(t, err, "body: <html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html> httpcode: 404")
+	})
+
+	t.Run("should error out while canceling the tasks running on an agent since server is not reachable", func(t *testing.T) {
+		client := gocd.NewClient(
+			"http://localhost:8156/go",
+			"admin",
+			"admin",
+			"info",
+			nil,
+		)
+
+		client.SetRetryCount(1)
+		client.SetRetryWaitTime(1)
+
+		agent := gocd.Agent{ID: "adb9540a-5hfh-6453-9d9b-2f37467739d4da"}
+
+		err := client.AgentKillTask(agent)
+		assert.EqualError(t, err, "call made for killing tasks from agent adb9540a-5hfh-6453-9d9b-2f37467739d4da errored with: "+
+			"Post \"http://localhost:8156/go/api/agents/adb9540a-5hfh-6453-9d9b-2f37467739d4da/kill_running_tasks\": dial tcp [::1]:8156: connect: connection refused")
 	})
 }
 

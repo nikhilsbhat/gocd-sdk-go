@@ -18,12 +18,13 @@ type client struct {
 
 // GoCd implements methods to get various information from GoCD.
 type GoCd interface {
-	GetAgentsInfo() ([]Agent, error)
+	GetAgents() ([]Agent, error)
 	GetAgentJobRunHistory(agent string) (AgentJobHistory, error)
 	UpdateAgent(id string, agent Agent) error
 	UpdateAgentBulk(agent Agent) error
 	DeleteAgent(id string) (string, error)
 	DeleteAgentBulk(agent Agent) (string, error)
+	AgentKillTask(agent Agent) error
 	GetHealthMessages() ([]ServerHealth, error)
 	GetConfigRepos() ([]ConfigRepo, error)
 	GetConfigRepo(repo string) (ConfigRepo, error)
@@ -38,6 +39,7 @@ type GoCd interface {
 	GetPipelineGroups() ([]PipelineGroup, error)
 	GetPipelineGroup(name string) (PipelineGroup, error)
 	DeletePipelineGroup(name string) error
+	UpdatePipelineGroup(group PipelineGroup) (PipelineGroup, error)
 	GetEnvironments() ([]Environment, error)
 	GetEnvironment(name string) (Environment, error)
 	CreateEnvironment(environment Environment) error

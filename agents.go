@@ -9,8 +9,8 @@ import (
 	"github.com/jinzhu/copier"
 )
 
-// GetAgentsInfo implements method that fetches the details of all the agents present in GoCD server.
-func (conf *client) GetAgentsInfo() ([]Agent, error) {
+// GetAgents implements method that fetches the details of all the agents present in GoCD server.
+func (conf *client) GetAgents() ([]Agent, error) {
 	newClient := &client{}
 	if err := copier.CopyWithOption(newClient, conf, copier.Option{IgnoreEmpty: true, DeepCopy: true}); err != nil {
 		return nil, err
@@ -159,4 +159,28 @@ func (conf *client) DeleteAgentBulk(agent Agent) (string, error) {
 	}
 
 	return resp.String(), nil
+}
+
+// AgentKillTask will kill running tasks from an selected agent.
+func (conf *client) AgentKillTask(agent Agent) error {
+	newClient := &client{}
+	if err := copier.CopyWithOption(newClient, conf, copier.Option{IgnoreEmpty: true, DeepCopy: true}); err != nil {
+		return err
+	}
+
+	resp, err := newClient.httpClient.R().
+		SetHeaders(map[string]string{
+			"Accept":      HeaderVersionSeven,
+			HeaderConfirm: "true",
+		}).
+		Post(filepath.Join(AgentsEndpoint, agent.ID, "kill_running_tasks"))
+	if err != nil {
+		return fmt.Errorf("call made for killing tasks from agent %s errored with: %w", agent.ID, err)
+	}
+
+	if resp.StatusCode() != http.StatusOK {
+		return APIErrorWithBody(resp.String(), resp.StatusCode())
+	}
+
+	return nil
 }
