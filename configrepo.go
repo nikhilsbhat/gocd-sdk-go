@@ -29,7 +29,7 @@ func (conf *client) GetConfigRepo(repo string) (ConfigRepo, error) {
 		return ConfigRepo{}, APIErrorWithBody(resp.String(), resp.StatusCode())
 	}
 
-	if err := json.Unmarshal(resp.Body(), &repoConf); err != nil {
+	if err = json.Unmarshal(resp.Body(), &repoConf); err != nil {
 		return ConfigRepo{}, ResponseReadError(err.Error())
 	}
 
@@ -62,7 +62,7 @@ func (conf *client) GetConfigRepos() ([]ConfigRepo, error) {
 		return nil, APIErrorWithBody(resp.String(), resp.StatusCode())
 	}
 
-	if err := json.Unmarshal(resp.Body(), &reposConf); err != nil {
+	if err = json.Unmarshal(resp.Body(), &reposConf); err != nil {
 		return nil, ResponseReadError(err.Error())
 	}
 
@@ -142,4 +142,61 @@ func (conf *client) DeleteConfigRepo(repo string) error {
 	}
 
 	return nil
+}
+
+// ConfigRepoTriggerUpdate triggers config repo update for a specific config-repo.
+func (conf *client) ConfigRepoTriggerUpdate(name string) (map[string]string, error) {
+	newClient := &client{}
+	if err := copier.CopyWithOption(newClient, conf, copier.Option{IgnoreEmpty: true, DeepCopy: true}); err != nil {
+		return nil, err
+	}
+
+	resp, err := newClient.httpClient.R().
+		SetHeaders(map[string]string{
+			"Accept":      HeaderVersionFour,
+			HeaderConfirm: "true",
+		}).
+		Post(filepath.Join(ConfigReposEndpoint, name, "trigger_update"))
+	if err != nil {
+		return nil, fmt.Errorf("post call made to trigger update configrepo '%s' errored with: %w", name, err)
+	}
+
+	if (resp.StatusCode() != http.StatusOK) && (resp.StatusCode() != http.StatusConflict) {
+		return nil, APIErrorWithBody(resp.String(), resp.StatusCode())
+	}
+
+	var response map[string]string
+	if err = json.Unmarshal(resp.Body(), &response); err != nil {
+		return response, ResponseReadError(err.Error())
+	}
+
+	return response, nil
+}
+
+// ConfigRepoStatus fetches the latest available status of the specified config repo.
+func (conf *client) ConfigRepoStatus(repo string) (map[string]bool, error) {
+	newClient := &client{}
+	if err := copier.CopyWithOption(newClient, conf, copier.Option{IgnoreEmpty: true, DeepCopy: true}); err != nil {
+		return nil, err
+	}
+
+	resp, err := newClient.httpClient.R().
+		SetHeaders(map[string]string{
+			"Accept": HeaderVersionFour,
+		}).
+		Get(filepath.Join(ConfigReposEndpoint, repo, "trigger_update"))
+	if err != nil {
+		return nil, fmt.Errorf("post call made to get status of configrepo '%s' errored with: %w", repo, err)
+	}
+
+	if resp.StatusCode() != http.StatusOK {
+		return nil, APIErrorWithBody(resp.String(), resp.StatusCode())
+	}
+
+	var response map[string]bool
+	if err = json.Unmarshal(resp.Body(), &response); err != nil {
+		return response, ResponseReadError(err.Error())
+	}
+
+	return response, nil
 }

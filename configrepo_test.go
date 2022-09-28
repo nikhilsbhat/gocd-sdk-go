@@ -405,6 +405,199 @@ func Test_client_UpdateConfigRepo(t *testing.T) {
 	})
 }
 
+func Test_client_ConfigRepoTriggerUpdate(t *testing.T) {
+	correctConfigHeader := map[string]string{"Accept": gocd.HeaderVersionFour, "X-GoCD-Confirm": "true"}
+
+	t.Run("Should be able to trigger update for a config repo successfully", func(t *testing.T) {
+		server := mockServer([]byte(`{"message": "OK"}`), http.StatusOK, correctConfigHeader, false, nil)
+		client := gocd.NewClient(
+			server.URL,
+			"",
+			"",
+			"info",
+			nil,
+		)
+
+		expected := map[string]string{
+			"message": "OK",
+		}
+
+		actual, err := client.ConfigRepoTriggerUpdate("config_repo_1")
+		assert.NoError(t, err)
+		assert.Equal(t, expected, actual)
+	})
+
+	t.Run("Should error out while triggering config repo update as server returned malformed response", func(t *testing.T) {
+		server := mockServer([]byte(`{"message": }`), http.StatusOK, correctConfigHeader, false, nil)
+		client := gocd.NewClient(
+			server.URL,
+			"",
+			"",
+			"info",
+			nil,
+		)
+
+		actual, err := client.ConfigRepoTriggerUpdate("config_repo_1")
+		assert.EqualError(t, err, "reading response body errored with: invalid character '}' looking for beginning of value")
+		assert.Equal(t, map[string]string(nil), actual)
+	})
+
+	t.Run("Should not update config repo as scheduled update is still in progress", func(t *testing.T) {
+		server := mockServer([]byte(`{"message": "Update already in progress."}`), http.StatusConflict, correctConfigHeader, false, nil)
+		client := gocd.NewClient(
+			server.URL,
+			"",
+			"",
+			"info",
+			nil,
+		)
+
+		expected := map[string]string{
+			"message": "Update already in progress.",
+		}
+
+		actual, err := client.ConfigRepoTriggerUpdate("config_repo_1")
+		assert.NoError(t, err)
+		assert.Equal(t, expected, actual)
+	})
+
+	t.Run("Should error out while triggering update config due to wrong headers", func(t *testing.T) {
+		server := mockServer(nil, http.StatusConflict,
+			map[string]string{"Accept": gocd.HeaderVersionThree, "X-GoCD-Confirm": "true"}, false, nil)
+		client := gocd.NewClient(
+			server.URL,
+			"",
+			"",
+			"info",
+			nil,
+		)
+
+		actual, err := client.ConfigRepoTriggerUpdate("config_repo_1")
+		assert.EqualError(t, err, "body: <html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html> httpcode: 404")
+		assert.Equal(t, map[string]string(nil), actual)
+	})
+
+	t.Run("Should error out while triggering update config due to missing headers", func(t *testing.T) {
+		server := mockServer(nil, http.StatusOK, nil, false, nil)
+		client := gocd.NewClient(
+			server.URL,
+			"",
+			"",
+			"info",
+			nil,
+		)
+
+		actual, err := client.ConfigRepoTriggerUpdate("config_repo_1")
+		assert.EqualError(t, err, "body: <html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html> httpcode: 404")
+		assert.Equal(t, map[string]string(nil), actual)
+	})
+
+	t.Run("Should error out while triggering update config as server is not reachable", func(t *testing.T) {
+		client := gocd.NewClient(
+			"http://localhost:8156/go",
+			"",
+			"",
+			"info",
+			nil,
+		)
+
+		client.SetRetryCount(1)
+		client.SetRetryWaitTime(1)
+
+		actual, err := client.ConfigRepoTriggerUpdate("config_repo_1")
+		assert.EqualError(t, err, "post call made to trigger update configrepo 'config_repo_1' errored with: "+
+			"Post \"http://localhost:8156/go/api/admin/config_repos/config_repo_1/trigger_update\": dial tcp [::1]:8156: connect: connection refused")
+		assert.Nil(t, actual)
+	})
+}
+
+func Test_client_ConfigRepoStatus(t *testing.T) {
+	correctConfigHeader := map[string]string{"Accept": gocd.HeaderVersionFour}
+
+	t.Run("Should be able to fetch the status of the config-repo successfully", func(t *testing.T) {
+		server := mockServer([]byte(`{"in_progress": true}`), http.StatusOK, correctConfigHeader, false, nil)
+		client := gocd.NewClient(
+			server.URL,
+			"",
+			"",
+			"info",
+			nil,
+		)
+
+		expected := map[string]bool{
+			"in_progress": true,
+		}
+
+		actual, err := client.ConfigRepoStatus("config_repo_1")
+		assert.NoError(t, err)
+		assert.Equal(t, expected, actual)
+	})
+
+	t.Run("Should error out while fetching config-repo status as server returned malformed response", func(t *testing.T) {
+		server := mockServer([]byte(`{"in_progress": }`), http.StatusOK, correctConfigHeader, false, nil)
+		client := gocd.NewClient(
+			server.URL,
+			"",
+			"",
+			"info",
+			nil,
+		)
+
+		actual, err := client.ConfigRepoStatus("config_repo_1")
+		assert.EqualError(t, err, "reading response body errored with: invalid character '}' looking for beginning of value")
+		assert.Equal(t, map[string]bool(nil), actual)
+	})
+
+	t.Run("Should error out while fetching config-repo status due to wrong headers", func(t *testing.T) {
+		server := mockServer(nil, http.StatusConflict,
+			map[string]string{"Accept": gocd.HeaderVersionThree, "X-GoCD-Confirm": "true"}, false, nil)
+		client := gocd.NewClient(
+			server.URL,
+			"",
+			"",
+			"info",
+			nil,
+		)
+
+		actual, err := client.ConfigRepoStatus("config_repo_1")
+		assert.EqualError(t, err, "body: <html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html> httpcode: 404")
+		assert.Equal(t, map[string]bool(nil), actual)
+	})
+
+	t.Run("Should error out while fetching config-repo status due to missing headers", func(t *testing.T) {
+		server := mockServer(nil, http.StatusOK, nil, false, nil)
+		client := gocd.NewClient(
+			server.URL,
+			"",
+			"",
+			"info",
+			nil,
+		)
+
+		actual, err := client.ConfigRepoStatus("config_repo_1")
+		assert.EqualError(t, err, "body: <html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html> httpcode: 404")
+		assert.Equal(t, map[string]bool(nil), actual)
+	})
+
+	t.Run("Should error out while fetching config-repo status as server is not reachable", func(t *testing.T) {
+		client := gocd.NewClient(
+			"http://localhost:8156/go",
+			"",
+			"",
+			"info",
+			nil,
+		)
+
+		client.SetRetryCount(1)
+		client.SetRetryWaitTime(1)
+
+		actual, err := client.ConfigRepoStatus("config_repo_1")
+		assert.EqualError(t, err, "post call made to get status of configrepo 'config_repo_1' errored with: "+
+			"Get \"http://localhost:8156/go/api/admin/config_repos/config_repo_1/trigger_update\": dial tcp [::1]:8156: connect: connection refused")
+		assert.Nil(t, actual)
+	})
+}
+
 func mockConfigRepoServer(request interface{}, method string, header map[string]string, etag bool) *httptest.Server {
 	return httptest.NewServer(http.HandlerFunc(func(writer http.ResponseWriter, req *http.Request) {
 		if header == nil {

@@ -16,6 +16,7 @@ const (
 	EncryptEndpoint         = "/api/admin/encrypt"
 	ArtifactInfoEndpoint    = "/api/admin/config/server/artifact_config"
 	PipelinesEndpoint       = "/api/pipelines"
+	HealthEndpoint          = "/api/v1/health"
 	HeaderVersionOne        = "application/vnd.go.cd.v1+json"
 	HeaderVersionTwo        = "application/vnd.go.cd.v2+json"
 	HeaderVersionThree      = "application/vnd.go.cd.v3+json"
