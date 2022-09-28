@@ -252,3 +252,10 @@ type ArtifactInfo struct {
 	} `json:"purge_settings,omitempty"`
 	ETAG string
 }
+
+// Schedule holds config of the pipeline that needs to be scheduled.
+type Schedule struct {
+	EnvVars        []map[string]interface{} `json:"environment_variables,omitempty"`
+	Materials      []map[string]interface{} `json:"materials,omitempty"`
+	UpdateMaterial bool                     `json:"update_materials_before_scheduling,omitempty"`
+}

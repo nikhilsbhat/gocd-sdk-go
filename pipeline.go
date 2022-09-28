@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"path/filepath"
 	"strings"
 
 	"github.com/jinzhu/copier"
@@ -61,6 +62,111 @@ func (conf *client) GetPipelineState(pipeline string) (PipelineState, error) {
 	pipelinesStatus.Name = pipeline
 
 	return pipelinesStatus, nil
+}
+
+// PipelinePause pauses specified pipeline with valid message passed.
+func (conf *client) PipelinePause(name string, message any) error {
+	newClient := &client{}
+	if err := copier.CopyWithOption(newClient, conf, copier.Option{IgnoreEmpty: true, DeepCopy: true}); err != nil {
+		return err
+	}
+
+	msg := fmt.Sprintf("pausing pipeline %s", name)
+	if message != nil {
+		msg = message.(string)
+	}
+
+	resp, err := newClient.httpClient.R().
+		SetHeaders(map[string]string{
+			"Accept":       HeaderVersionOne,
+			"Content-Type": ContentJSON,
+		}).
+		SetBody(map[string]string{
+			"pause_cause": msg,
+		}).
+		Post(filepath.Join(PipelinesEndpoint, name, "pause"))
+	if err != nil {
+		return fmt.Errorf("call made to pause pipeline errored with %w", err)
+	}
+
+	if resp.StatusCode() != http.StatusOK {
+		return APIErrorWithBody(resp.String(), resp.StatusCode())
+	}
+
+	return nil
+}
+
+// PipelineUnPause unpauses specified pipeline.
+func (conf *client) PipelineUnPause(name string) error {
+	newClient := &client{}
+	if err := copier.CopyWithOption(newClient, conf, copier.Option{IgnoreEmpty: true, DeepCopy: true}); err != nil {
+		return err
+	}
+
+	resp, err := newClient.httpClient.R().
+		SetHeaders(map[string]string{
+			"Accept":      HeaderVersionOne,
+			HeaderConfirm: "true",
+		}).
+		Post(filepath.Join(PipelinesEndpoint, name, "unpause"))
+	if err != nil {
+		return fmt.Errorf("call made to unpause pipeline errored with %w", err)
+	}
+
+	if resp.StatusCode() != http.StatusOK {
+		return APIErrorWithBody(resp.String(), resp.StatusCode())
+	}
+
+	return nil
+}
+
+// PipelineUnlock unlocks the specified locked pipeline.
+func (conf *client) PipelineUnlock(name string) error {
+	newClient := &client{}
+	if err := copier.CopyWithOption(newClient, conf, copier.Option{IgnoreEmpty: true, DeepCopy: true}); err != nil {
+		return err
+	}
+
+	resp, err := newClient.httpClient.R().
+		SetHeaders(map[string]string{
+			"Accept":      HeaderVersionOne,
+			HeaderConfirm: "true",
+		}).
+		Post(filepath.Join(PipelinesEndpoint, name, "unlock"))
+	if err != nil {
+		return fmt.Errorf("call made to unlock pipeline errored with %w", err)
+	}
+
+	if resp.StatusCode() != http.StatusOK {
+		return APIErrorWithBody(resp.String(), resp.StatusCode())
+	}
+
+	return nil
+}
+
+// SchedulePipeline schedules the specified pipeline with specified configurations.
+func (conf *client) SchedulePipeline(name string, schedule Schedule) error {
+	newClient := &client{}
+	if err := copier.CopyWithOption(newClient, conf, copier.Option{IgnoreEmpty: true, DeepCopy: true}); err != nil {
+		return err
+	}
+
+	resp, err := newClient.httpClient.R().
+		SetHeaders(map[string]string{
+			"Accept":       HeaderVersionOne,
+			"Content-Type": ContentJSON,
+		}).
+		SetBody(schedule).
+		Post(filepath.Join(PipelinesEndpoint, name, "schedule"))
+	if err != nil {
+		return fmt.Errorf("call made to schedule pipeline '%s' errored with %w", name, err)
+	}
+
+	if resp.StatusCode() != http.StatusAccepted {
+		return APIErrorWithBody(resp.String(), resp.StatusCode())
+	}
+
+	return nil
 }
 
 // GetPipelineName parses pipeline url to fetch the pipeline name.

@@ -51,6 +51,10 @@ type GoCd interface {
 	GetBackupInfo() (BackupConfig, error)
 	GetPipelines() (PipelinesInfo, error)
 	GetPipelineState(pipeline string) (PipelineState, error)
+	PipelinePause(name string, message any) error
+	PipelineUnPause(name string) error
+	PipelineUnlock(name string) error
+	SchedulePipeline(name string, schedule Schedule) error
 	SetRetryCount(count int)
 	SetRetryWaitTime(count int)
 	EncryptText(value string) (Encrypted, error)
