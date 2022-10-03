@@ -111,6 +111,7 @@ type PipelineGroup struct {
 type SystemAdmins struct {
 	Roles []string `json:"roles,omitempty"`
 	Users []string `json:"users,omitempty"`
+	ETAG  string
 }
 
 // BackupConfig holds information of the backup configured.
@@ -258,4 +259,26 @@ type Schedule struct {
 	EnvVars        []map[string]interface{} `json:"environment_variables,omitempty"`
 	Materials      []map[string]interface{} `json:"materials,omitempty"`
 	UpdateMaterial bool                     `json:"update_materials_before_scheduling,omitempty"`
+}
+
+// AuthConfigs holds information of multiple authorization configurations.
+type AuthConfigs struct {
+	Config struct {
+		AuthConfigs []AuthConfig `json:"auth_configs"`
+	} `json:"_embedded,omitempty"`
+}
+
+// AuthConfig holds information of authorization configurations.
+type AuthConfig struct {
+	ID                  string           `json:"id,omitempty"`
+	PluginID            string           `json:"plugin_id,omitempty"`
+	AllowOnlyKnownUsers bool             `json:"allow_only_known_users_to_login,omitempty"`
+	Properties          []PluginProperty `json:"properties,omitempty"`
+	ETAG                string
+}
+
+// PluginProperty holds information of the various plugin properties used for auth configurations.
+type PluginProperty struct {
+	Key   string `json:"key,omitempty"`
+	Value string `json:"value,omitempty"`
 }

@@ -36,7 +36,8 @@ type GoCd interface {
 	EnableMaintenanceMode() error
 	DisableMaintenanceMode() error
 	GetMaintenanceModeInfo() (Maintenance, error)
-	GetAdminsInfo() (SystemAdmins, error)
+	GetSystemAdmins() (SystemAdmins, error)
+	UpdateSystemAdmins(data SystemAdmins) (SystemAdmins, error)
 	CreatePipelineGroup(group PipelineGroup) error
 	GetPipelineGroups() ([]PipelineGroup, error)
 	GetPipelineGroup(name string) (PipelineGroup, error)
@@ -62,6 +63,11 @@ type GoCd interface {
 	EncryptText(value string) (Encrypted, error)
 	GetArtifactConfig() (ArtifactInfo, error)
 	UpdateArtifactConfig(ArtifactInfo) (ArtifactInfo, error)
+	GetAuthConfigs() ([]AuthConfig, error)
+	GetAuthConfig(name string) (AuthConfig, error)
+	CreateAuthConfig(config AuthConfig) (AuthConfig, error)
+	UpdateAuthConfig(config AuthConfig) (AuthConfig, error)
+	DeleteAuthConfig(name string) error
 }
 
 // NewClient returns new instance of httpClient when invoked.

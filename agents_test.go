@@ -43,7 +43,7 @@ func Test_client_GetAgentsInfo(t *testing.T) {
 
 		actual, err := client.GetAgents()
 		assert.EqualError(t, err, "call made to get agents information errored with: "+
-			"Get \"http://localhost:8156/go/api/agents\": dial tcp [::1]:8156: connect: connection refused")
+			"Get \"http://localhost:8156/go/api/agents\": dial tcp 127.0.0.1:8156: connect: connection refused")
 		assert.Nil(t, actual)
 	})
 
@@ -126,7 +126,7 @@ func Test_client_GetAgentJobRunHistory1(t *testing.T) {
 		actual, err := client.GetAgentJobRunHistory(agentID)
 		assert.EqualError(t, err, "call made to get agent job run history errored with "+
 			"Get \"http://localhost:8156/go/api/agents/adb9540a-b954-4571-9d9b-2f330739d4da/job_run_history?sort_order=DESC\": "+
-			"dial tcp [::1]:8156: connect: connection refused")
+			"dial tcp 127.0.0.1:8156: connect: connection refused")
 		assert.Equal(t, gocd.AgentJobHistory{}, actual)
 	})
 
@@ -307,7 +307,7 @@ func Test_client_UpdateAgent(t *testing.T) {
 
 		err := client.UpdateAgent(agentID, agentUpdateInfo)
 		assert.EqualError(t, err, "call made to update agent02.example.com agent information errored with: "+
-			"Patch \"http://localhost:8156/go/api/agents/adb9540a-b954-4571-9d9b-2f330739d4da\": dial tcp [::1]:8156: connect: connection refused")
+			"Patch \"http://localhost:8156/go/api/agents/adb9540a-b954-4571-9d9b-2f330739d4da\": dial tcp 127.0.0.1:8156: connect: connection refused")
 	})
 }
 
@@ -423,7 +423,7 @@ func Test_client_UpdateAgentBulk(t *testing.T) {
 
 		err := client.UpdateAgentBulk(agentUpdateInfo)
 		assert.EqualError(t, err, "call made to bulk update [] agents information errored with: "+
-			"Patch \"http://localhost:8156/go/api/agents\": dial tcp [::1]:8156: connect: connection refused")
+			"Patch \"http://localhost:8156/go/api/agents\": dial tcp 127.0.0.1:8156: connect: connection refused")
 	})
 }
 
@@ -490,7 +490,7 @@ func Test_client_DeleteAgent(t *testing.T) {
 
 		actual, err := client.DeleteAgent(agentID)
 		assert.EqualError(t, err, "call made delete agent adb9540a-b954-4571-9d9b-2f330739d4da errored with: "+
-			"Delete \"http://localhost:8156/go/api/agents/adb9540a-b954-4571-9d9b-2f330739d4da\": dial tcp [::1]:8156: connect: connection refused")
+			"Delete \"http://localhost:8156/go/api/agents/adb9540a-b954-4571-9d9b-2f330739d4da\": dial tcp 127.0.0.1:8156: connect: connection refused")
 		assert.Equal(t, "", actual)
 	})
 }
@@ -560,7 +560,7 @@ func Test_client_DeleteAgentBulk(t *testing.T) {
 
 		actual, err := client.DeleteAgentBulk(agent)
 		assert.EqualError(t, err, "call made delete agents [adb9540a-b954-4571-9d9b-2f330739d4da adb9540a-5hfh-6453-9d9b-2f37467739d4da] errored with: "+
-			"Delete \"http://localhost:8156/go/api/agents\": dial tcp [::1]:8156: connect: connection refused")
+			"Delete \"http://localhost:8156/go/api/agents\": dial tcp 127.0.0.1:8156: connect: connection refused")
 		assert.Equal(t, "", actual)
 	})
 }
@@ -640,7 +640,7 @@ func Test_client_AgentKillTask(t *testing.T) {
 
 		err := client.AgentKillTask(agent)
 		assert.EqualError(t, err, "call made for killing tasks from agent adb9540a-5hfh-6453-9d9b-2f37467739d4da errored with: "+
-			"Post \"http://localhost:8156/go/api/agents/adb9540a-5hfh-6453-9d9b-2f37467739d4da/kill_running_tasks\": dial tcp [::1]:8156: connect: connection refused")
+			"Post \"http://localhost:8156/go/api/agents/adb9540a-5hfh-6453-9d9b-2f37467739d4da/kill_running_tasks\": dial tcp 127.0.0.1:8156: connect: connection refused")
 	})
 }
 
