@@ -282,3 +282,9 @@ type PluginProperty struct {
 	Key   string `json:"key,omitempty"`
 	Value string `json:"value,omitempty"`
 }
+
+// SiteURLConfig holds information of the site url of GoCD.
+type SiteURLConfig struct {
+	SiteURL       string `json:"site_url,omitempty"`
+	SecureSiteURL string `json:"secure_site_url,omitempty"`
+}

@@ -1,0 +1,12 @@
+{
+  "_links": {
+    "doc": {
+      "href": "https://api.gocd.org/current/#siteurls-config"
+    },
+    "self": {
+      "href": "http://ci.example.com/go/api/admin/config/server/site_urls"
+    }
+  },
+  "site_url": "http://foo.com",
+  "secure_site_url": "https://foo.com"
+}

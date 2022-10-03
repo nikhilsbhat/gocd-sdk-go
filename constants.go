@@ -18,6 +18,7 @@ const (
 	PipelinesEndpoint       = "/api/pipelines"
 	HealthEndpoint          = "/api/v1/health"
 	AuthConfigEndpoint      = "/api/admin/security/auth_configs"
+	SiteURLEndpoint         = "/api/admin/security/site_urls"
 	HeaderVersionOne        = "application/vnd.go.cd.v1+json"
 	HeaderVersionTwo        = "application/vnd.go.cd.v2+json"
 	HeaderVersionThree      = "application/vnd.go.cd.v3+json"

@@ -36,7 +36,7 @@ func (conf *client) GetBackupInfo() (BackupConfig, error) {
 }
 
 // CreateOrUpdateBackup will either create or update the config repo, it creates one if not created else update the existing with newer configuration.
-func (conf *client) CreateOrUpdateBackup(BackupConfig) error {
+func (conf *client) CreateOrUpdateBackup(backup BackupConfig) error {
 	newClient := &client{}
 	if err := copier.CopyWithOption(newClient, conf, copier.Option{IgnoreEmpty: true, DeepCopy: true}); err != nil {
 		return err
@@ -47,6 +47,7 @@ func (conf *client) CreateOrUpdateBackup(BackupConfig) error {
 			"Accept":       HeaderVersionOne,
 			"Content-Type": ContentJSON,
 		}).
+		SetBody(backup).
 		Post(BackupConfigEndpoint)
 	if err != nil {
 		return fmt.Errorf("call made to create/udpate backup configuration errored with %w", err)

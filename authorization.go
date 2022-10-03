@@ -22,7 +22,8 @@ func (conf *client) GetAuthConfigs() ([]AuthConfig, error) {
 	resp, err := newClient.httpClient.R().
 		SetHeaders(map[string]string{
 			"Accept": HeaderVersionTwo,
-		}).Get(AuthConfigEndpoint)
+		}).
+		Get(AuthConfigEndpoint)
 	if err != nil {
 		return nil, fmt.Errorf("call made to get auth configs errored with: %w", err)
 	}
@@ -49,7 +50,8 @@ func (conf *client) GetAuthConfig(name string) (AuthConfig, error) {
 	resp, err := newClient.httpClient.R().
 		SetHeaders(map[string]string{
 			"Accept": HeaderVersionTwo,
-		}).Get(filepath.Join(AuthConfigEndpoint, name))
+		}).
+		Get(filepath.Join(AuthConfigEndpoint, name))
 	if err != nil {
 		return auth, fmt.Errorf("call made to get auth config '%s' errored with: %w", name, err)
 	}
@@ -79,7 +81,9 @@ func (conf *client) CreateAuthConfig(config AuthConfig) (AuthConfig, error) {
 		SetHeaders(map[string]string{
 			"Accept":       HeaderVersionTwo,
 			"Content-Type": ContentJSON,
-		}).Post(AuthConfigEndpoint)
+		}).
+		SetBody(config).
+		Post(AuthConfigEndpoint)
 	if err != nil {
 		return auth, fmt.Errorf("call made to create auth config '%s' errored with: %w", config.ID, err)
 	}
@@ -110,7 +114,9 @@ func (conf *client) UpdateAuthConfig(config AuthConfig) (AuthConfig, error) {
 			"Accept":       HeaderVersionTwo,
 			"Content-Type": ContentJSON,
 			"If-Match":     config.ETAG,
-		}).Put(AuthConfigEndpoint)
+		}).
+		SetBody(config).
+		Put(AuthConfigEndpoint)
 	if err != nil {
 		return auth, fmt.Errorf("call made to update auth config '%s' errored with: %w", config.ID, err)
 	}
@@ -138,7 +144,8 @@ func (conf *client) DeleteAuthConfig(name string) error {
 	resp, err := newClient.httpClient.R().
 		SetHeaders(map[string]string{
 			"Accept": HeaderVersionTwo,
-		}).Delete(filepath.Join(AuthConfigEndpoint, name))
+		}).
+		Delete(filepath.Join(AuthConfigEndpoint, name))
 	if err != nil {
 		return fmt.Errorf("call made to delete auth config '%s' errored with: %w", name, err)
 	}

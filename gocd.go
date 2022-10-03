@@ -68,6 +68,8 @@ type GoCd interface {
 	CreateAuthConfig(config AuthConfig) (AuthConfig, error)
 	UpdateAuthConfig(config AuthConfig) (AuthConfig, error)
 	DeleteAuthConfig(name string) error
+	GetSiteURL() (SiteURLConfig, error)
+	CreateOrUpdateSiteURL(SiteURLConfig) (SiteURLConfig, error)
 }
 
 // NewClient returns new instance of httpClient when invoked.
