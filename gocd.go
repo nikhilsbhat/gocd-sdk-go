@@ -75,6 +75,9 @@ type GoCd interface {
 	DeleteMailServerConfig() error
 	GetDefaultJobTimeout() (map[string]string, error)
 	UpdateDefaultJobTimeout(timeoutMinutes int) error
+	GetPluginSettings(name string) (PluginSettings, error)
+	CreatePluginSettings(settings PluginSettings) (PluginSettings, error)
+	UpdatePluginSettings(settings PluginSettings) (PluginSettings, error)
 }
 
 // NewClient returns new instance of httpClient when invoked.

@@ -1,0 +1,32 @@
+{
+  "_links": {
+    "self": {
+      "href": "https://ci.example.com/go/api/admin/plugin_settings/github.oauth.login"
+    },
+    "doc": {
+      "href": "https://api.gocd.org/#plugin-settings"
+    },
+    "find": {
+      "href": "https://ci.example.com/go/api/admin/plugin_settings/:plugin_id"
+    }
+  },
+  "plugin_id": "github.oauth.login",
+  "configuration": [
+    {
+      "key": "consumer_key",
+      "value": "consumerkey"
+    },
+    {
+      "key": "consumer_secret",
+      "value": "consumersecret"
+    },
+    {
+      "key": "password",
+      "encrypted_value": "aSdiFgRRZ6A="
+    },
+    {
+      "key": "server_base_url",
+      "value": "https://ci.example.com"
+    }
+  ]
+}

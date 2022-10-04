@@ -19,6 +19,7 @@ const (
 	HealthEndpoint           = "/api/v1/health"
 	DefaultTimeoutEndpoint   = "api/admin/config/server/default_job_timeout"
 	MailServerConfigEndpoint = "api/config/mailserver"
+	PluginSettingsEndpoint   = "/api/admin/plugin_settings"
 	AuthConfigEndpoint       = "/api/admin/security/auth_configs"
 	SiteURLEndpoint          = "/api/admin/security/site_urls"
 	HeaderVersionOne         = "application/vnd.go.cd.v1+json"

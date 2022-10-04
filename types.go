@@ -270,17 +270,18 @@ type AuthConfigs struct {
 
 // AuthConfig holds information of authorization configurations.
 type AuthConfig struct {
-	ID                  string           `json:"id,omitempty"`
-	PluginID            string           `json:"plugin_id,omitempty"`
-	AllowOnlyKnownUsers bool             `json:"allow_only_known_users_to_login,omitempty"`
-	Properties          []PluginProperty `json:"properties,omitempty"`
+	ID                  string                `json:"id,omitempty"`
+	PluginID            string                `json:"plugin_id,omitempty"`
+	AllowOnlyKnownUsers bool                  `json:"allow_only_known_users_to_login,omitempty"`
+	Properties          []PluginConfiguration `json:"properties,omitempty"`
 	ETAG                string
 }
 
-// PluginProperty holds information of the various plugin properties used for auth configurations.
-type PluginProperty struct {
-	Key   string `json:"key,omitempty"`
-	Value string `json:"value,omitempty"`
+// PluginConfiguration holds information of the various plugin properties.
+type PluginConfiguration struct {
+	Key            string `json:"key,omitempty"`
+	Value          string `json:"value,omitempty"`
+	EncryptedValue string `json:"encrypted_value,omitempty"`
 }
 
 // SiteURLConfig holds information of the site url of GoCD.
@@ -298,4 +299,11 @@ type MailServerConfig struct {
 	TLS               bool   `json:"tls,omitempty"`
 	SenderEmail       string `json:"sender_email,omitempty"`
 	AdminEmail        string `json:"admin_email,omitempty"`
+}
+
+// PluginSettings holds information of plugin settings of GoCD.
+type PluginSettings struct {
+	ID            string                `json:"plugin_id,omitempty"`
+	Configuration []PluginConfiguration `json:"configuration,omitempty"`
+	ETAG          string
 }

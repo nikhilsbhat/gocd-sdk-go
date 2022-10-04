@@ -32,7 +32,7 @@ func Test_client_GetAuthConfigs(t *testing.T) {
 			ID:                  "ldap",
 			PluginID:            "cd.go.authentication.ldap",
 			AllowOnlyKnownUsers: false,
-			Properties: []gocd.PluginProperty{
+			Properties: []gocd.PluginConfiguration{
 				{Key: "Url", Value: "ldap://ldap.server.url:389"},
 			},
 		}}
@@ -133,12 +133,12 @@ func Test_client_GetAuthConfig(t *testing.T) {
 			ID:                  "ldap",
 			PluginID:            "cd.go.authentication.ldap",
 			AllowOnlyKnownUsers: false,
-			Properties: []gocd.PluginProperty{
+			Properties: []gocd.PluginConfiguration{
 				{Key: "Url", Value: "ldap://ldap.server.url:389"},
 				{Key: "SearchBase", Value: "ou=users,ou=system"},
 				{Key: "ManagerDN", Value: "uid=admin,ou=system"},
 				{Key: "SearchFilter", Value: "uid"},
-				{Key: "Password", Value: ""},
+				{Key: "Password", EncryptedValue: "GLzARJ+Qr+M="},
 				{Key: "DisplayNameAttribute", Value: "displayName"},
 				{Key: "EmailAttribute", Value: "mail"},
 			},
@@ -243,12 +243,12 @@ func Test_client_CreateAuthConfig(t *testing.T) {
 			ID:                  "ldap",
 			PluginID:            "cd.go.authentication.ldap",
 			AllowOnlyKnownUsers: false,
-			Properties: []gocd.PluginProperty{
+			Properties: []gocd.PluginConfiguration{
 				{Key: "Url", Value: "ldap://ldap.server.url:389"},
 				{Key: "SearchBase", Value: "ou=users,ou=system"},
 				{Key: "ManagerDN", Value: "uid=admin,ou=system"},
 				{Key: "SearchFilter", Value: "uid"},
-				{Key: "Password", Value: ""},
+				{Key: "Password", EncryptedValue: "GLzARJ+Qr+M="},
 				{Key: "DisplayNameAttribute", Value: "displayName"},
 				{Key: "EmailAttribute", Value: "mail"},
 			},
@@ -354,12 +354,12 @@ func Test_client_UpdateAuthConfig(t *testing.T) {
 			ID:                  "ldap",
 			PluginID:            "cd.go.authentication.ldap",
 			AllowOnlyKnownUsers: false,
-			Properties: []gocd.PluginProperty{
+			Properties: []gocd.PluginConfiguration{
 				{Key: "Url", Value: "ldap://ldap.server.url:389"},
 				{Key: "SearchBase", Value: "ou=users,ou=system"},
 				{Key: "ManagerDN", Value: "uid=admin,ou=system"},
 				{Key: "SearchFilter", Value: "uid"},
-				{Key: "Password", Value: ""},
+				{Key: "Password", EncryptedValue: "GLzARJ+Qr+M="},
 				{Key: "DisplayNameAttribute", Value: "displayName"},
 				{Key: "EmailAttribute", Value: "mail"},
 			},
