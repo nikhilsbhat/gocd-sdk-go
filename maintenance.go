@@ -44,7 +44,8 @@ func (conf *client) GetMaintenanceModeInfo() (Maintenance, error) {
 	resp, err := newClient.httpClient.R().
 		SetHeaders(map[string]string{
 			"Accept": HeaderVersionOne,
-		}).Get(filepath.Join(MaintenanceEndpoint, "info"))
+		}).
+		Get(filepath.Join(MaintenanceEndpoint, "info"))
 	if err != nil {
 		return Maintenance{}, fmt.Errorf("call made to enable maintenance mode errored with %w", err)
 	}

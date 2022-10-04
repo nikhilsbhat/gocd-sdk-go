@@ -288,3 +288,14 @@ type SiteURLConfig struct {
 	SiteURL       string `json:"site_url,omitempty"`
 	SecureSiteURL string `json:"secure_site_url,omitempty"`
 }
+
+// MailServerConfig holds information required for GoCD mail-server configuration.
+type MailServerConfig struct {
+	Hostname          string `json:"hostname,omitempty"`
+	Port              int64  `json:"port,omitempty"`
+	UserName          string `json:"username,omitempty"`
+	EncryptedPassword string `json:"encrypted_password,omitempty"`
+	TLS               bool   `json:"tls,omitempty"`
+	SenderEmail       string `json:"sender_email,omitempty"`
+	AdminEmail        string `json:"admin_email,omitempty"`
+}

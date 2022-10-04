@@ -114,7 +114,7 @@ func Test_client_CreateConfigRepoInfo(t *testing.T) {
 		client.SetRetryWaitTime(1)
 
 		err := client.CreateConfigRepo(gocd.ConfigRepo{})
-		assert.EqualError(t, err, "post call made to create config repo errored with: "+
+		assert.EqualError(t, err, "call made to create config repo errored with: "+
 			"Post \"http://localhost:8156/go/api/admin/config_repos\": dial tcp 127.0.0.1:8156: connect: connection refused")
 	})
 
@@ -148,7 +148,7 @@ func Test_client_DeleteConfigRepo(t *testing.T) {
 		client.SetRetryWaitTime(1)
 
 		err := client.DeleteConfigRepo(repoName)
-		assert.EqualError(t, err, "post call made to create config repo errored with: "+
+		assert.EqualError(t, err, "call made to create config repo errored with: "+
 			"Delete \"http://localhost:8156/go/api/admin/config_repos/repo1\": dial tcp 127.0.0.1:8156: connect: connection refused")
 	})
 
@@ -505,7 +505,7 @@ func Test_client_ConfigRepoTriggerUpdate(t *testing.T) {
 		client.SetRetryWaitTime(1)
 
 		actual, err := client.ConfigRepoTriggerUpdate("config_repo_1")
-		assert.EqualError(t, err, "post call made to trigger update configrepo 'config_repo_1' errored with: "+
+		assert.EqualError(t, err, "call made to trigger update configrepo 'config_repo_1' errored with: "+
 			"Post \"http://localhost:8156/go/api/admin/config_repos/config_repo_1/trigger_update\": dial tcp 127.0.0.1:8156: connect: connection refused")
 		assert.Nil(t, actual)
 	})
@@ -592,7 +592,7 @@ func Test_client_ConfigRepoStatus(t *testing.T) {
 		client.SetRetryWaitTime(1)
 
 		actual, err := client.ConfigRepoStatus("config_repo_1")
-		assert.EqualError(t, err, "post call made to get status of configrepo 'config_repo_1' errored with: "+
+		assert.EqualError(t, err, "call made to get status of configrepo 'config_repo_1' errored with: "+
 			"Get \"http://localhost:8156/go/api/admin/config_repos/config_repo_1/trigger_update\": dial tcp 127.0.0.1:8156: connect: connection refused")
 		assert.Nil(t, actual)
 	})

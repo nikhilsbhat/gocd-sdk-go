@@ -32,7 +32,7 @@ func (conf *client) UpdateArtifactConfig(info ArtifactInfo) (ArtifactInfo, error
 		return ArtifactInfo{}, APIErrorWithBody(resp.String(), resp.StatusCode())
 	}
 
-	if err := json.Unmarshal(resp.Body(), &artifactInfo); err != nil {
+	if err = json.Unmarshal(resp.Body(), &artifactInfo); err != nil {
 		return ArtifactInfo{}, ResponseReadError(err.Error())
 	}
 
@@ -50,7 +50,8 @@ func (conf *client) GetArtifactConfig() (ArtifactInfo, error) {
 	resp, err := newClient.httpClient.R().
 		SetHeaders(map[string]string{
 			"Accept": HeaderVersionOne,
-		}).Get(ArtifactInfoEndpoint)
+		}).
+		Get(ArtifactInfoEndpoint)
 	if err != nil {
 		return ArtifactInfo{}, fmt.Errorf("call made to get artifacts info errored with %w", err)
 	}
@@ -59,7 +60,7 @@ func (conf *client) GetArtifactConfig() (ArtifactInfo, error) {
 		return ArtifactInfo{}, APIErrorWithBody(resp.String(), resp.StatusCode())
 	}
 
-	if err := json.Unmarshal(resp.Body(), &artifactInfo); err != nil {
+	if err = json.Unmarshal(resp.Body(), &artifactInfo); err != nil {
 		return ArtifactInfo{}, ResponseReadError(err.Error())
 	}
 

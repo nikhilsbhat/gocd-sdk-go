@@ -70,6 +70,11 @@ type GoCd interface {
 	DeleteAuthConfig(name string) error
 	GetSiteURL() (SiteURLConfig, error)
 	CreateOrUpdateSiteURL(SiteURLConfig) (SiteURLConfig, error)
+	GetMailServerConfig() (MailServerConfig, error)
+	CreateOrUpdateMailServerConfig(mailConfig MailServerConfig) (MailServerConfig, error)
+	DeleteMailServerConfig() error
+	GetDefaultJobTimeout() (map[string]string, error)
+	UpdateDefaultJobTimeout(timeoutMinutes int) error
 }
 
 // NewClient returns new instance of httpClient when invoked.

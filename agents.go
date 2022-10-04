@@ -30,7 +30,7 @@ func (conf *client) GetAgents() ([]Agent, error) {
 		return nil, APIWithCodeError(resp.StatusCode())
 	}
 
-	if err := json.Unmarshal(resp.Body(), &agentsConf); err != nil {
+	if err = json.Unmarshal(resp.Body(), &agentsConf); err != nil {
 		return nil, ResponseReadError(err.Error())
 	}
 
@@ -58,7 +58,7 @@ func (conf *client) GetAgentJobRunHistory(agentID string) (AgentJobHistory, erro
 		return AgentJobHistory{}, APIWithCodeError(resp.StatusCode())
 	}
 
-	if err := json.Unmarshal(resp.Body(), &jobHistoryConf); err != nil {
+	if err = json.Unmarshal(resp.Body(), &jobHistoryConf); err != nil {
 		return AgentJobHistory{}, ResponseReadError(err.Error())
 	}
 
@@ -125,7 +125,8 @@ func (conf *client) DeleteAgent(agentID string) (string, error) {
 	resp, err := newClient.httpClient.R().
 		SetHeaders(map[string]string{
 			"Accept": HeaderVersionSeven,
-		}).Delete(filepath.Join(AgentsEndpoint, agentID))
+		}).
+		Delete(filepath.Join(AgentsEndpoint, agentID))
 	if err != nil {
 		return "", fmt.Errorf("call made delete agent %s errored with: %w", agentID, err)
 	}

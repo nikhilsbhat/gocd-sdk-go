@@ -1,0 +1,17 @@
+{
+  "_links": {
+    "self": {
+      "href": "https://ci.example.com/go/api/config/mailserver"
+    },
+    "doc": {
+      "href": "https://api.gocd.org/#mailserver-config"
+    }
+  },
+  "hostname": "smtp.example.com",
+  "port": 465,
+  "username": "user@example.com",
+  "encrypted_password": "AES:lzcCuNSe4vUx+CsWgN11Uw==:Q2OlnqIf9S++yMPqSCx8qg==",
+  "tls": true,
+  "sender_email": "no-reply@example.com",
+  "admin_email": "gocd-admins@example.com"
+}

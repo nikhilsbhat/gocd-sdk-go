@@ -84,7 +84,7 @@ func (conf *client) CreateConfigRepo(repoObj ConfigRepo) error {
 		SetBody(repoObj).
 		Post(ConfigReposEndpoint)
 	if err != nil {
-		return fmt.Errorf("post call made to create config repo errored with: %w", err)
+		return fmt.Errorf("call made to create config repo errored with: %w", err)
 	}
 
 	if resp.StatusCode() != http.StatusOK {
@@ -158,7 +158,7 @@ func (conf *client) ConfigRepoTriggerUpdate(name string) (map[string]string, err
 		}).
 		Post(filepath.Join(ConfigReposEndpoint, name, "trigger_update"))
 	if err != nil {
-		return nil, fmt.Errorf("post call made to trigger update configrepo '%s' errored with: %w", name, err)
+		return nil, fmt.Errorf("call made to trigger update configrepo '%s' errored with: %w", name, err)
 	}
 
 	if (resp.StatusCode() != http.StatusOK) && (resp.StatusCode() != http.StatusConflict) {
@@ -186,7 +186,7 @@ func (conf *client) ConfigRepoStatus(repo string) (map[string]bool, error) {
 		}).
 		Get(filepath.Join(ConfigReposEndpoint, repo, "trigger_update"))
 	if err != nil {
-		return nil, fmt.Errorf("post call made to get status of configrepo '%s' errored with: %w", repo, err)
+		return nil, fmt.Errorf("call made to get status of configrepo '%s' errored with: %w", repo, err)
 	}
 
 	if resp.StatusCode() != http.StatusOK {
