@@ -36,7 +36,7 @@ func Test_client_GetEnvironmentInfo(t *testing.T) {
 
 		actual, err := client.GetEnvironments()
 		assert.EqualError(t, err, "call made to get environments errored with "+
-			"Get \"http://localhost:8156/go/api/admin/environments\": dial tcp 127.0.0.1:8156: connect: connection refused")
+			"Get \"http://localhost:8156/go/api/admin/environments\": dial tcp [::1]:8156: connect: connection refused")
 		assert.Nil(t, actual)
 	})
 
@@ -228,7 +228,7 @@ func Test_client_CreateEnvironments(t *testing.T) {
 		environment := gocd.Environment{}
 		err := client.CreateEnvironment(environment)
 		assert.EqualError(t, err, "call made to create environment errored with Post"+
-			" \"http://localhost:8156/go/api/admin/environments\": dial tcp 127.0.0.1:8156: connect: connection refused")
+			" \"http://localhost:8156/go/api/admin/environments\": dial tcp [::1]:8156: connect: connection refused")
 	})
 }
 
@@ -289,7 +289,7 @@ func Test_client_DeleteEnvironment(t *testing.T) {
 
 		err := client.DeleteEnvironment("env1")
 		assert.EqualError(t, err, "call made to delete environment env1 errored with "+
-			"Delete \"http://localhost:8156/go/api/admin/environments/env1\": dial tcp 127.0.0.1:8156: connect: connection refused")
+			"Delete \"http://localhost:8156/go/api/admin/environments/env1\": dial tcp [::1]:8156: connect: connection refused")
 	})
 }
 
@@ -392,7 +392,7 @@ func Test_client_UpdateEnvironment(t *testing.T) {
 
 		actual, err := client.UpdateEnvironment(environment)
 		assert.EqualError(t, err, "call made to update environment errored with Patch "+
-			"\"http://localhost:8156/go/api/admin/environments\": dial tcp 127.0.0.1:8156: connect: connection refused")
+			"\"http://localhost:8156/go/api/admin/environments\": dial tcp [::1]:8156: connect: connection refused")
 		assert.Equal(t, gocd.Environment{}, actual)
 	})
 }
@@ -509,7 +509,7 @@ func Test_client_PatchEnvironment(t *testing.T) {
 
 		actual, err := client.PatchEnvironment(patch)
 		assert.EqualError(t, err, "call made to patch environment errored with Patch "+
-			"\"http://localhost:8156/go/api/admin/environments\": dial tcp 127.0.0.1:8156: connect: connection refused")
+			"\"http://localhost:8156/go/api/admin/environments\": dial tcp [::1]:8156: connect: connection refused")
 		assert.Equal(t, gocd.Environment{}, actual)
 	})
 }
@@ -611,7 +611,7 @@ func Test_client_GetEnvironment(t *testing.T) {
 
 		actual, err := client.GetEnvironment(envName)
 		assert.EqualError(t, err, "call made to get environment errored with Get "+
-			"\"http://localhost:8156/go/api/admin/environments/my_environment\": dial tcp 127.0.0.1:8156: connect: connection refused")
+			"\"http://localhost:8156/go/api/admin/environments/my_environment\": dial tcp [::1]:8156: connect: connection refused")
 		assert.Equal(t, gocd.Environment{}, actual)
 	})
 }

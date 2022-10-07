@@ -28,7 +28,7 @@ func TestConfig_GetHealthInfo(t *testing.T) {
 
 		actual, err := client.GetHealthMessages()
 		assert.EqualError(t, err, "call made to get health info errored with "+
-			"Get \"http://localhost:8156/go/api/server_health_messages\": dial tcp 127.0.0.1:8156: connect: connection refused")
+			"Get \"http://localhost:8156/go/api/server_health_messages\": dial tcp [::1]:8156: connect: connection refused")
 		assert.Nil(t, actual)
 	})
 

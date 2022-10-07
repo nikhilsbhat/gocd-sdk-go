@@ -54,7 +54,7 @@ func (conf *client) GetMaintenanceModeInfo() (Maintenance, error) {
 		return Maintenance{}, APIErrorWithBody(resp.String(), resp.StatusCode())
 	}
 
-	if err := json.Unmarshal(resp.Body(), &maintenanceInfo); err != nil {
+	if err = json.Unmarshal(resp.Body(), &maintenanceInfo); err != nil {
 		return Maintenance{}, ResponseReadError(err.Error())
 	}
 

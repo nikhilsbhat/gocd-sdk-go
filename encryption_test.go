@@ -74,7 +74,7 @@ func Test_client_EncryptText(t *testing.T) {
 
 		actual, err := client.EncryptText("value_to_encrypt")
 		assert.EqualError(t, err, "call made to encrypt a value errored with: "+
-			"Post \"http://localhost:8156/go/api/admin/encrypt\": dial tcp 127.0.0.1:8156: connect: connection refused")
+			"Post \"http://localhost:8156/go/api/admin/encrypt\": dial tcp [::1]:8156: connect: connection refused")
 		assert.Equal(t, gocd.Encrypted{}, actual)
 	})
 }

@@ -27,7 +27,7 @@ func Test_client_GetAdminsInfo(t *testing.T) {
 
 		actual, err := client.GetSystemAdmins()
 		assert.EqualError(t, err, "call made to get system admin errored with: "+
-			"Get \"http://localhost:8156/go/api/admin/security/system_admins\": dial tcp 127.0.0.1:8156: connect: connection refused")
+			"Get \"http://localhost:8156/go/api/admin/security/system_admins\": dial tcp [::1]:8156: connect: connection refused")
 		assert.Equal(t, gocd.SystemAdmins{}, actual)
 	})
 
@@ -240,7 +240,7 @@ func Test_client_UpdateSystemAdmins(t *testing.T) {
 
 		actual, err := client.UpdateSystemAdmins(users)
 		assert.EqualError(t, err, "call made to update system admin errored with: "+
-			"Put \"http://localhost:8156/go/api/admin/security/system_admins\": dial tcp 127.0.0.1:8156: connect: connection refused")
+			"Put \"http://localhost:8156/go/api/admin/security/system_admins\": dial tcp [::1]:8156: connect: connection refused")
 		assert.Equal(t, gocd.SystemAdmins{}, actual)
 	})
 }

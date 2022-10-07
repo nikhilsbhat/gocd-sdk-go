@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"net/url"
 	"path/filepath"
+	"strconv"
 	"strings"
 
 	"github.com/jinzhu/copier"
@@ -29,7 +30,7 @@ func (conf *client) GetPipelines() (PipelinesInfo, error) {
 		return PipelinesInfo{}, APIWithCodeError(resp.StatusCode())
 	}
 
-	if err := xml.Unmarshal(resp.Body(), &pipelinesInfo); err != nil {
+	if err = xml.Unmarshal(resp.Body(), &pipelinesInfo); err != nil {
 		return PipelinesInfo{}, ResponseReadError(err.Error())
 	}
 
@@ -56,7 +57,7 @@ func (conf *client) GetPipelineState(pipeline string) (PipelineState, error) {
 		return PipelineState{}, APIWithCodeError(resp.StatusCode())
 	}
 
-	if err := json.Unmarshal(resp.Body(), &pipelinesStatus); err != nil {
+	if err = json.Unmarshal(resp.Body(), &pipelinesStatus); err != nil {
 		return PipelineState{}, ResponseReadError(err.Error())
 	}
 	pipelinesStatus.Name = pipeline
@@ -177,4 +178,110 @@ func GetPipelineName(link string) (string, error) {
 	}
 
 	return strings.TrimSuffix(strings.TrimPrefix(parsedURL.Path, "/go/api/feed/pipelines/"), "/stages.xml"), nil
+}
+
+// CommentOnPipeline publishes comment on specified pipeline.
+func (conf *client) CommentOnPipeline(comment PipelineObject) error {
+	if len(comment.Message) == 0 {
+		return fmt.Errorf("comment message cannot be empty") //nolint:goerr113
+	}
+
+	newClient := &client{}
+	if err := copier.CopyWithOption(newClient, conf, copier.Option{IgnoreEmpty: true, DeepCopy: true}); err != nil {
+		return err
+	}
+
+	resp, err := newClient.httpClient.R().
+		SetHeaders(map[string]string{
+			"Accept":       HeaderVersionOne,
+			"Content-Type": ContentJSON,
+		}).
+		SetBody(map[string]string{"comment": comment.Message}).
+		Post(filepath.Join(PipelinesEndpoint, comment.Name, strconv.Itoa(comment.Counter), "comment"))
+	if err != nil {
+		return fmt.Errorf("call made to comment on pipeline '%s' errored with %w", comment.Name, err)
+	}
+
+	if resp.StatusCode() != http.StatusOK {
+		return APIErrorWithBody(resp.String(), resp.StatusCode())
+	}
+
+	return nil
+}
+
+// GetPipelineInstance fetches the instance of a selected pipeline with counter.
+func (conf *client) GetPipelineInstance(pipeline PipelineObject) (map[string]interface{}, error) {
+	var pipelineInstance map[string]interface{}
+	newClient := &client{}
+	if err := copier.CopyWithOption(newClient, conf, copier.Option{IgnoreEmpty: true, DeepCopy: true}); err != nil {
+		return pipelineInstance, err
+	}
+
+	resp, err := newClient.httpClient.R().
+		SetHeaders(map[string]string{
+			"Accept": HeaderVersionOne,
+		}).
+		Get(filepath.Join(PipelinesEndpoint, pipeline.Name, strconv.Itoa(pipeline.Counter)))
+	if err != nil {
+		return pipelineInstance, fmt.Errorf("call made to fetch pipeline instance '%s' errored with %w", pipeline.Name, err)
+	}
+
+	if resp.StatusCode() != http.StatusOK {
+		return pipelineInstance, APIErrorWithBody(resp.String(), resp.StatusCode())
+	}
+
+	if err = json.Unmarshal(resp.Body(), &pipelineInstance); err != nil {
+		return pipelineInstance, ResponseReadError(err.Error())
+	}
+
+	return pipelineInstance, nil
+}
+
+// GetPipelineHistory fetches the history of a selected pipeline with counter.
+func (conf *client) GetPipelineHistory(name string, defaultSize, defaultAfter int) ([]map[string]interface{}, error) {
+	var history []map[string]interface{}
+	newClient := &client{}
+	if err := copier.CopyWithOption(newClient, conf, copier.Option{IgnoreEmpty: true, DeepCopy: true}); err != nil {
+		return history, err
+	}
+
+	paginate := true
+	size := defaultSize
+	after := defaultAfter
+
+	for paginate {
+		var pipelineHistory PipelineHistory
+		resp, err := newClient.httpClient.R().
+			SetQueryParams(map[string]string{
+				"page_size": strconv.Itoa(size),
+				"after":     strconv.Itoa(after),
+			}).
+			SetHeaders(map[string]string{
+				"Accept": HeaderVersionOne,
+			}).
+			Get(filepath.Join(PipelinesEndpoint, name, "history"))
+		if err != nil {
+			return history, fmt.Errorf("call made to fetch pipeline history '%s' errored with %w", name, err)
+		}
+
+		if resp.StatusCode() != http.StatusOK {
+			return history, APIErrorWithBody(resp.String(), resp.StatusCode())
+		}
+
+		if err = json.Unmarshal(resp.Body(), &pipelineHistory); err != nil {
+			return history, ResponseReadError(err.Error())
+		}
+
+		if (len(pipelineHistory.Pipelines) == 0) || (pipelineHistory.Links["next"] == nil) {
+			conf.logger.Debug("no more pages to paginate, moving out of loop")
+			paginate = false
+		}
+
+		after = size
+		size += defaultSize
+
+		history = append(history, pipelineHistory.Pipelines...)
+	}
+
+	return history, nil
 }

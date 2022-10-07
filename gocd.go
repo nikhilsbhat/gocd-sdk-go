@@ -58,6 +58,9 @@ type GoCd interface {
 	PipelineUnPause(name string) error
 	PipelineUnlock(name string) error
 	SchedulePipeline(name string, schedule Schedule) error
+	GetPipelineInstance(pipeline PipelineObject) (map[string]interface{}, error)
+	GetPipelineHistory(name string, size, after int) ([]map[string]interface{}, error)
+	CommentOnPipeline(comment PipelineObject) error
 	SetRetryCount(count int)
 	SetRetryWaitTime(count int)
 	EncryptText(value string) (Encrypted, error)

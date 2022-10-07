@@ -1,0 +1,52 @@
+{
+  "_links": {
+    "next": {
+      "href": "http://ci.example.com/go/api/pipelines/pipeline1/history?after=35"
+    },
+    "previous": {
+      "href": "http://ci.example.com/go/api/pipelines/pipeline1/history?before=9"
+    }
+  },
+  "pipelines": [
+    {
+      "name": "pipeline1",
+      "counter": 1
+    },
+    {
+      "name": "pipeline1",
+      "counter": 2
+    },
+    {
+      "name": "pipeline1",
+      "counter": 3
+    },
+    {
+      "name": "pipeline1",
+      "counter": 4
+    },
+    {
+      "name": "pipeline1",
+      "counter": 5
+    },
+    {
+      "name": "pipeline1",
+      "counter": 6
+    },
+    {
+      "name": "pipeline1",
+      "counter": 7
+    },
+    {
+      "name": "pipeline1",
+      "counter": 8
+    },
+    {
+      "name": "pipeline1",
+      "counter": 9
+    },
+    {
+      "name": "pipeline1",
+      "counter": 10
+    }
+  ]
+}

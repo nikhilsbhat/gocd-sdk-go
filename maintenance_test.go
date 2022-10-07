@@ -55,7 +55,7 @@ func Test_client_EnableMaintenanceMode(t *testing.T) {
 
 		err := client.EnableMaintenanceMode()
 		assert.EqualError(t, err, "call made to enable maintenance mode errored with Post "+
-			"\"http://localhost:8156/go/api/admin/maintenance_mode/enable\": dial tcp 127.0.0.1:8156: connect: connection refused")
+			"\"http://localhost:8156/go/api/admin/maintenance_mode/enable\": dial tcp [::1]:8156: connect: connection refused")
 	})
 }
 
@@ -102,7 +102,7 @@ func Test_client_DisableMaintenanceMode(t *testing.T) {
 
 		err := client.DisableMaintenanceMode()
 		assert.EqualError(t, err, "call made to enable maintenance mode errored with Post "+
-			"\"http://localhost:8156/go/api/admin/maintenance_mode/disable\": dial tcp 127.0.0.1:8156: connect: connection refused")
+			"\"http://localhost:8156/go/api/admin/maintenance_mode/disable\": dial tcp [::1]:8156: connect: connection refused")
 	})
 }
 
@@ -171,7 +171,7 @@ func Test_client_GetMaintenanceModeInfo(t *testing.T) {
 
 		actual, err := client.GetMaintenanceModeInfo()
 		assert.EqualError(t, err, "call made to enable maintenance mode errored with "+
-			"Get \"http://localhost:8156/go/api/admin/maintenance_mode/info\": dial tcp 127.0.0.1:8156: connect: connection refused")
+			"Get \"http://localhost:8156/go/api/admin/maintenance_mode/info\": dial tcp [::1]:8156: connect: connection refused")
 		assert.Equal(t, gocd.Maintenance{}, actual)
 	})
 }

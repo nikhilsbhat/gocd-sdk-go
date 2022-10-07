@@ -127,7 +127,7 @@ func Test_client_GetPluginSettings(t *testing.T) {
 
 		actual, err := client.GetPluginSettings(pluginName)
 		assert.EqualError(t, err, "call made to get 'github.oauth.login' plugin setting errored with: "+
-			"Get \"http://localhost:8156/go/api/admin/plugin_settings/github.oauth.login\": dial tcp 127.0.0.1:8156: connect: connection refused")
+			"Get \"http://localhost:8156/go/api/admin/plugin_settings/github.oauth.login\": dial tcp [::1]:8156: connect: connection refused")
 		assert.Equal(t, expected, actual)
 	})
 }
@@ -249,7 +249,7 @@ func Test_client_CreatePluginSettings(t *testing.T) {
 
 		actual, err := client.CreatePluginSettings(pluginSettings)
 		assert.EqualError(t, err, "call made to create plugin setting of 'github.oauth.login' errored with: "+
-			"Post \"http://localhost:8156/go/api/admin/plugin_settings\": dial tcp 127.0.0.1:8156: connect: connection refused")
+			"Post \"http://localhost:8156/go/api/admin/plugin_settings\": dial tcp [::1]:8156: connect: connection refused")
 		assert.Equal(t, expected, actual)
 	})
 }
@@ -372,7 +372,7 @@ func Test_client_UpdatePluginSettings(t *testing.T) {
 
 		actual, err := client.UpdatePluginSettings(pluginSettings)
 		assert.EqualError(t, err, "call made to update plugin setting of 'github.oauth.login' errored with: "+
-			"Put \"http://localhost:8156/go/api/admin/plugin_settings/github.oauth.login\": dial tcp 127.0.0.1:8156: connect: connection refused")
+			"Put \"http://localhost:8156/go/api/admin/plugin_settings/github.oauth.login\": dial tcp [::1]:8156: connect: connection refused")
 		assert.Equal(t, expected, actual)
 	})
 }

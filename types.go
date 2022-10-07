@@ -307,3 +307,16 @@ type PluginSettings struct {
 	Configuration []PluginConfiguration `json:"configuration,omitempty"`
 	ETAG          string
 }
+
+// PipelineObject holds information required to comment/get/history of pipeline or instance of the same.
+type PipelineObject struct {
+	Name    string
+	Counter int
+	Message string
+}
+
+// PipelineHistory holds information of the pipeline history that also helps in paginating the responses.
+type PipelineHistory struct {
+	Links     map[string]interface{}   `json:"_links,omitempty"`
+	Pipelines []map[string]interface{} `json:"pipelines,omitempty"`
+}
