@@ -11,7 +11,7 @@ Golang client library for [GoCD API](https://api.gocd.org/current/) (Not all the
 This Library could be helpful while building any tools around GoCD or while interacting with GoCD to perform certain
 daily activities.
 
-Which could include checking the health of all agents connected to GoCD or status of a job and many more.
+This could include checking the health of all agents connected to GoCD or status of a job and many more.
 
 ## Installation
 
@@ -48,6 +48,7 @@ func main() {
 	fmt.Println(env)
 }
 ```
+More examples can be found [here](https://github.com/nikhilsbhat/gocd-sdk-go/tree/master/examples).
 
 ## Supported APIs
 Below are the list of supported APIs:
