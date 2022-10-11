@@ -27,7 +27,7 @@ func Test_config_GetVersionInfo(t *testing.T) {
 
 		actual, err := client.GetVersionInfo()
 		assert.EqualError(t, err, "call made to get version information errored with: "+
-			"Get \"http://localhost:8156/go/api/version\": dial tcp [::1]:8156: connect: connection refused")
+			"Get \"http://localhost:8156/go/api/version\": dial tcp 127.0.0.1:8156: connect: connection refused")
 		assert.Equal(t, gocd.VersionInfo{}, actual)
 	})
 

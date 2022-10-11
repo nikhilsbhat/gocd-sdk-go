@@ -30,9 +30,9 @@ func TestConfig_GetBackupInfo(t *testing.T) {
 		client.SetRetryCount(1)
 		client.SetRetryWaitTime(1)
 
-		actual, err := client.GetBackupInfo()
+		actual, err := client.GetBackupConfig()
 		assert.EqualError(t, err, "call made to get backup information errored with "+
-			"Get \"http://localhost:8156/go/api/config/backup\": dial tcp [::1]:8156: connect: connection refused")
+			"Get \"http://localhost:8156/go/api/config/backup\": dial tcp 127.0.0.1:8156: connect: connection refused")
 		assert.Equal(t, gocd.BackupConfig{}, actual)
 	})
 
@@ -46,8 +46,8 @@ func TestConfig_GetBackupInfo(t *testing.T) {
 			nil,
 		)
 
-		actual, err := client.GetBackupInfo()
-		assert.EqualError(t, err, gocd.APIWithCodeError(http.StatusBadGateway).Error())
+		actual, err := client.GetBackupConfig()
+		assert.EqualError(t, err, "body: backupJSON httpcode: 502")
 		assert.Equal(t, gocd.BackupConfig{}, actual)
 	})
 
@@ -61,7 +61,7 @@ func TestConfig_GetBackupInfo(t *testing.T) {
 			nil,
 		)
 
-		actual, err := client.GetBackupInfo()
+		actual, err := client.GetBackupConfig()
 		assert.EqualError(t, err, "reading response body errored with: invalid character '}' after object key")
 		assert.Equal(t, gocd.BackupConfig{}, actual)
 	})
@@ -84,7 +84,7 @@ func TestConfig_GetBackupInfo(t *testing.T) {
 			PostBackupScript: "/usr/local/bin/copy-gocd-backup-to-s3",
 		}
 
-		actual, err := client.GetBackupInfo()
+		actual, err := client.GetBackupConfig()
 		assert.NoError(t, err)
 		assert.Equal(t, expected, actual)
 	})
@@ -113,7 +113,7 @@ func Test_client_CreateOrUpdateBackup(t *testing.T) {
 			PostBackupScript: "/usr/local/bin/copy-gocd-backup-to-s3",
 		}
 
-		err = client.CreateOrUpdateBackup(backupObj)
+		err = client.CreateOrUpdateBackupConfig(backupObj)
 		assert.NoError(t, err)
 	})
 
@@ -134,7 +134,7 @@ func Test_client_CreateOrUpdateBackup(t *testing.T) {
 			PostBackupScript: "/usr/local/bin/copy-gocd-backup-to-s3",
 		}
 
-		err := client.CreateOrUpdateBackup(backupObj)
+		err := client.CreateOrUpdateBackupConfig(backupObj)
 		assert.EqualError(t, err, "body: <html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html> httpcode: 404")
 	})
 
@@ -155,7 +155,7 @@ func Test_client_CreateOrUpdateBackup(t *testing.T) {
 			PostBackupScript: "/usr/local/bin/copy-gocd-backup-to-s3",
 		}
 
-		err := client.CreateOrUpdateBackup(backupObj)
+		err := client.CreateOrUpdateBackupConfig(backupObj)
 		assert.EqualError(t, err, "body: <html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html> httpcode: 404")
 	})
 
@@ -176,7 +176,7 @@ func Test_client_CreateOrUpdateBackup(t *testing.T) {
 			PostBackupScript: "/usr/local/bin/copy-gocd-backup-to-s3",
 		}
 
-		err := client.CreateOrUpdateBackup(backupObj)
+		err := client.CreateOrUpdateBackupConfig(backupObj)
 		assert.EqualError(t, err, "body: json: cannot unmarshal string into Go value of type gocd.BackupConfig httpcode: 500")
 	})
 
@@ -199,9 +199,58 @@ func Test_client_CreateOrUpdateBackup(t *testing.T) {
 			PostBackupScript: "/usr/local/bin/copy-gocd-backup-to-s3",
 		}
 
-		err := client.CreateOrUpdateBackup(backupObj)
+		err := client.CreateOrUpdateBackupConfig(backupObj)
 		assert.EqualError(t, err, "call made to create/udpate backup configuration errored with Post "+
-			"\"http://localhost:8156/go/api/config/backup\": dial tcp [::1]:8156: connect: connection refused")
+			"\"http://localhost:8156/go/api/config/backup\": dial tcp 127.0.0.1:8156: connect: connection refused")
+	})
+}
+
+func Test_client_DeleteBackupConfig(t *testing.T) {
+	correctBackupHeader := map[string]string{"Accept": gocd.HeaderVersionOne}
+	t.Run("should be able to delete the backup configurations successfully ", func(t *testing.T) {
+		server := mockServer(nil, http.StatusOK, correctBackupHeader, false, nil)
+		client := gocd.NewClient(
+			server.URL,
+			"",
+			"",
+			"info",
+			nil,
+		)
+
+		err := client.DeleteBackupConfig()
+		assert.NoError(t, err)
+	})
+
+	t.Run("should error out while deleting the backup configurations due to wrong headers", func(t *testing.T) {
+		server := mockServer(nil, http.StatusOK,
+			map[string]string{"Accept": gocd.HeaderVersionTwo}, false, nil)
+		client := gocd.NewClient(
+			server.URL,
+			"",
+			"",
+			"info",
+			nil,
+		)
+
+		err := client.DeleteBackupConfig()
+		assert.EqualError(t, err, "body: <html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html> httpcode: 404")
+	})
+
+	t.Run("should error out while deleting the backup configurations as server is not reachable", func(t *testing.T) {
+		client := gocd.NewClient(
+			"http://localhost:8156/go",
+			"",
+			"",
+			"info",
+			nil,
+		)
+
+		client.SetRetryCount(1)
+		client.SetRetryWaitTime(1)
+
+		err := client.DeleteBackupConfig()
+		assert.EqualError(t, err, "call made to get backup information errored with: "+
+			"Delete \"http://localhost:8156/go/api/config/backup\": dial tcp 127.0.0.1:8156: connect: connection refused")
 	})
 }
 

@@ -50,8 +50,9 @@ type GoCd interface {
 	PatchEnvironment(environment any) (Environment, error)
 	DeleteEnvironment(name string) error
 	GetVersionInfo() (VersionInfo, error)
-	CreateOrUpdateBackup(backup BackupConfig) error
-	GetBackupInfo() (BackupConfig, error)
+	GetBackupConfig() (BackupConfig, error)
+	CreateOrUpdateBackupConfig(backup BackupConfig) error
+	DeleteBackupConfig() error
 	GetPipelines() (PipelinesInfo, error)
 	GetPipelineState(pipeline string) (PipelineState, error)
 	PipelinePause(name string, message any) error

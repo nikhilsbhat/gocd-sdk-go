@@ -109,7 +109,7 @@ func Test_client_GetMailServerConfig(t *testing.T) {
 
 		actual, err := client.GetMailServerConfig()
 		assert.EqualError(t, err, "call made to get mail server config errored with: "+
-			"Get \"http://localhost:8156/go/api/config/mailserver\": dial tcp [::1]:8156: connect: connection refused")
+			"Get \"http://localhost:8156/go/api/config/mailserver\": dial tcp 127.0.0.1:8156: connect: connection refused")
 		assert.Equal(t, expected, actual)
 	})
 }
@@ -174,7 +174,7 @@ func Test_client_DeleteMailServerConfig(t *testing.T) {
 
 		err := client.DeleteMailServerConfig()
 		assert.EqualError(t, err, "call made to delete mail server config errored with: "+
-			"Delete \"http://localhost:8156/go/api/config/mailserver\": dial tcp [::1]:8156: connect: connection refused")
+			"Delete \"http://localhost:8156/go/api/config/mailserver\": dial tcp 127.0.0.1:8156: connect: connection refused")
 	})
 }
 
@@ -281,7 +281,7 @@ func Test_client_CreateOrUpdateMailServerConfig(t *testing.T) {
 
 		actual, err := client.CreateOrUpdateMailServerConfig(input)
 		assert.EqualError(t, err, "call made to create or update mail server config errored with: "+
-			"Get \"http://localhost:8156/go/api/config/mailserver\": dial tcp [::1]:8156: connect: connection refused")
+			"Get \"http://localhost:8156/go/api/config/mailserver\": dial tcp 127.0.0.1:8156: connect: connection refused")
 		assert.Equal(t, expected, actual)
 	})
 }

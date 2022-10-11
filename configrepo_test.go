@@ -36,7 +36,7 @@ func TestConfig_GetConfigRepoInfo(t *testing.T) {
 
 		actual, err := client.GetConfigRepos()
 		assert.EqualError(t, err, "call made to get config repos errored with "+
-			"Get \"http://localhost:8156/go/api/admin/config_repos\": dial tcp [::1]:8156: connect: connection refused")
+			"Get \"http://localhost:8156/go/api/admin/config_repos\": dial tcp 127.0.0.1:8156: connect: connection refused")
 		assert.Nil(t, actual)
 	})
 
@@ -115,7 +115,7 @@ func Test_client_CreateConfigRepoInfo(t *testing.T) {
 
 		err := client.CreateConfigRepo(gocd.ConfigRepo{})
 		assert.EqualError(t, err, "call made to create config repo errored with: "+
-			"Post \"http://localhost:8156/go/api/admin/config_repos\": dial tcp [::1]:8156: connect: connection refused")
+			"Post \"http://localhost:8156/go/api/admin/config_repos\": dial tcp 127.0.0.1:8156: connect: connection refused")
 	})
 
 	t.Run("should create config repo successfully", func(t *testing.T) {
@@ -149,7 +149,7 @@ func Test_client_DeleteConfigRepo(t *testing.T) {
 
 		err := client.DeleteConfigRepo(repoName)
 		assert.EqualError(t, err, "call made to create config repo errored with: "+
-			"Delete \"http://localhost:8156/go/api/admin/config_repos/repo1\": dial tcp [::1]:8156: connect: connection refused")
+			"Delete \"http://localhost:8156/go/api/admin/config_repos/repo1\": dial tcp 127.0.0.1:8156: connect: connection refused")
 	})
 
 	t.Run("server should return 404 due to wrong header set while deleting config repo", func(t *testing.T) {
@@ -226,7 +226,7 @@ func Test_client_GetConfigRepo(t *testing.T) {
 
 		actual, err := client.GetConfigRepo(repoName)
 		assert.EqualError(t, err, "call made to get config repo errored with Get "+
-			"\"http://localhost:8156/go/api/admin/config_repos/repo1\": dial tcp [::1]:8156: connect: connection refused")
+			"\"http://localhost:8156/go/api/admin/config_repos/repo1\": dial tcp 127.0.0.1:8156: connect: connection refused")
 		assert.Equal(t, gocd.ConfigRepo{}, actual)
 	})
 
@@ -330,7 +330,7 @@ func Test_client_UpdateConfigRepo(t *testing.T) {
 
 		actual, err := client.UpdateConfigRepo(*configRepo, eTag)
 		assert.EqualError(t, err, "put call made to update config repo errored with: Put "+
-			"\"http://localhost:8156/go/api/admin/config_repos/repo1\": dial tcp [::1]:8156: connect: connection refused")
+			"\"http://localhost:8156/go/api/admin/config_repos/repo1\": dial tcp 127.0.0.1:8156: connect: connection refused")
 		assert.Equal(t, "", actual)
 	})
 
@@ -506,7 +506,7 @@ func Test_client_ConfigRepoTriggerUpdate(t *testing.T) {
 
 		actual, err := client.ConfigRepoTriggerUpdate("config_repo_1")
 		assert.EqualError(t, err, "call made to trigger update configrepo 'config_repo_1' errored with: "+
-			"Post \"http://localhost:8156/go/api/admin/config_repos/config_repo_1/trigger_update\": dial tcp [::1]:8156: connect: connection refused")
+			"Post \"http://localhost:8156/go/api/admin/config_repos/config_repo_1/trigger_update\": dial tcp 127.0.0.1:8156: connect: connection refused")
 		assert.Nil(t, actual)
 	})
 }
@@ -593,7 +593,7 @@ func Test_client_ConfigRepoStatus(t *testing.T) {
 
 		actual, err := client.ConfigRepoStatus("config_repo_1")
 		assert.EqualError(t, err, "call made to get status of configrepo 'config_repo_1' errored with: "+
-			"Get \"http://localhost:8156/go/api/admin/config_repos/config_repo_1/trigger_update\": dial tcp [::1]:8156: connect: connection refused")
+			"Get \"http://localhost:8156/go/api/admin/config_repos/config_repo_1/trigger_update\": dial tcp 127.0.0.1:8156: connect: connection refused")
 		assert.Nil(t, actual)
 	})
 }

@@ -90,10 +90,10 @@ Below are the list of supported APIs:
     - [x] Update Environment
     - [x] Patch Environment
     - [x] Delete Environment
-- [ ] Backup
+- [x] Backup
     - [x] Get Backup Info
     - [x] Create or Update Backup
-    - [ ] Delete Backup Info
+    - [x] Delete Backup Info
 - [ ] Pipeline
     - [x] Get pipeline status
     - [x] Pause Pipeline

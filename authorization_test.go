@@ -112,7 +112,7 @@ func Test_client_GetAuthConfigs(t *testing.T) {
 
 		actual, err := client.GetAuthConfigs()
 		assert.EqualError(t, err, "call made to get auth configs errored with: "+
-			"Get \"http://localhost:8156/go/api/admin/security/auth_configs\": dial tcp [::1]:8156: connect: connection refused")
+			"Get \"http://localhost:8156/go/api/admin/security/auth_configs\": dial tcp 127.0.0.1:8156: connect: connection refused")
 		assert.Equal(t, expected, actual)
 	})
 }
@@ -220,7 +220,7 @@ func Test_client_GetAuthConfig(t *testing.T) {
 
 		actual, err := client.GetAuthConfig("ldap")
 		assert.EqualError(t, err, "call made to get auth config 'ldap' errored with: "+
-			"Get \"http://localhost:8156/go/api/admin/security/auth_configs/ldap\": dial tcp [::1]:8156: connect: connection refused")
+			"Get \"http://localhost:8156/go/api/admin/security/auth_configs/ldap\": dial tcp 127.0.0.1:8156: connect: connection refused")
 		assert.Equal(t, expected, actual)
 	})
 }
@@ -331,7 +331,7 @@ func Test_client_CreateAuthConfig(t *testing.T) {
 
 		actual, err := client.CreateAuthConfig(gocd.AuthConfig{ID: "ldap"})
 		assert.EqualError(t, err, "call made to create auth config 'ldap' errored with:"+
-			" Post \"http://localhost:8156/go/api/admin/security/auth_configs\": dial tcp [::1]:8156: connect: connection refused")
+			" Post \"http://localhost:8156/go/api/admin/security/auth_configs\": dial tcp 127.0.0.1:8156: connect: connection refused")
 		assert.Equal(t, expected, actual)
 	})
 }
@@ -443,7 +443,7 @@ func Test_client_UpdateAuthConfig(t *testing.T) {
 
 		actual, err := client.UpdateAuthConfig(gocd.AuthConfig{ID: "ldap"})
 		assert.EqualError(t, err, "call made to update auth config 'ldap' errored with:"+
-			" Put \"http://localhost:8156/go/api/admin/security/auth_configs\": dial tcp [::1]:8156: connect: connection refused")
+			" Put \"http://localhost:8156/go/api/admin/security/auth_configs\": dial tcp 127.0.0.1:8156: connect: connection refused")
 		assert.Equal(t, expected, actual)
 	})
 }
@@ -507,6 +507,6 @@ func Test_client_DeleteAuthConfig(t *testing.T) {
 
 		err := client.DeleteAuthConfig("ldap")
 		assert.EqualError(t, err, "call made to delete auth config 'ldap' errored with: "+
-			"Delete \"http://localhost:8156/go/api/admin/security/auth_configs/ldap\": dial tcp [::1]:8156: connect: connection refused")
+			"Delete \"http://localhost:8156/go/api/admin/security/auth_configs/ldap\": dial tcp 127.0.0.1:8156: connect: connection refused")
 	})
 }

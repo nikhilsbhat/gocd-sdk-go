@@ -7,7 +7,7 @@ import (
 	"github.com/nikhilsbhat/gocd-sdk-go"
 )
 
-func main() {
+func exampleMain() {
 	client := gocd.NewClient("http://localhost:8153/go", "admin", "admin", "info", nil)
 	fmt.Println(environments(client))
 	fmt.Println(configRepos(client))
