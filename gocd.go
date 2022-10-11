@@ -61,8 +61,6 @@ type GoCd interface {
 	GetPipelineInstance(pipeline PipelineObject) (map[string]interface{}, error)
 	GetPipelineHistory(name string, size, after int) ([]map[string]interface{}, error)
 	CommentOnPipeline(comment PipelineObject) error
-	SetRetryCount(count int)
-	SetRetryWaitTime(count int)
 	EncryptText(value string) (Encrypted, error)
 	GetArtifactConfig() (ArtifactInfo, error)
 	UpdateArtifactConfig(ArtifactInfo) (ArtifactInfo, error)
@@ -81,6 +79,8 @@ type GoCd interface {
 	GetPluginSettings(name string) (PluginSettings, error)
 	CreatePluginSettings(settings PluginSettings) (PluginSettings, error)
 	UpdatePluginSettings(settings PluginSettings) (PluginSettings, error)
+	SetRetryCount(count int)
+	SetRetryWaitTime(count int)
 }
 
 // NewClient returns new instance of httpClient when invoked.
