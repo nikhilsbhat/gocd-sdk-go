@@ -320,3 +320,34 @@ type PipelineHistory struct {
 	Links     map[string]interface{}   `json:"_links,omitempty"`
 	Pipelines []map[string]interface{} `json:"pipelines,omitempty"`
 }
+
+// ArtifactStoresConfigs holds information of the specified artifact-stores/cluster-profiles/agent-profiles.
+type ArtifactStoresConfigs struct {
+	ArtifactStoresConfigs ArtifactStoresConfig `json:"_embedded,omitempty"`
+}
+
+// ArtifactStoresConfig holds information of all config-repos present in GoCD.
+type ArtifactStoresConfig struct {
+	CommonConfigs []CommonConfig `json:"artifact_stores,omitempty"`
+	ETAG          string
+}
+
+// ProfileConfigs holds information of the specified artifact-stores/cluster-profiles/agent-profiles.
+type ProfileConfigs struct {
+	ProfileConfigs ProfileConfig `json:"_embedded,omitempty"`
+}
+
+// ProfileConfig holds information of all config-repos present in GoCD.
+type ProfileConfig struct {
+	CommonConfigs []CommonConfig `json:"profiles,omitempty"`
+	ETAG          string
+}
+
+// CommonConfig holds information of the specified artifact store.
+type CommonConfig struct {
+	ID               string                `json:"id,omitempty"`
+	PluginID         string                `json:"plugin_id,omitempty"`
+	ClusterProfileID string                `json:"cluster_profile_id,omitempty"`
+	Properties       []PluginConfiguration `json:"properties,omitempty"`
+	ETAG             string
+}

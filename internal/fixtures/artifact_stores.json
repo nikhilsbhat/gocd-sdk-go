@@ -1,0 +1,40 @@
+{
+  "_links" : {
+    "self" : {
+      "href" : "https://ci.example.com/go/api/admin/artifact_stores"
+    },
+    "doc" : {
+      "href" : "https://api.gocd.org/current/#artifact_stores"
+    },
+    "find" : {
+      "href" : "https://ci.example.com/go/api/admin/artifact_stores/:id"
+    }
+  },
+  "_embedded" : {
+    "artifact_stores" : [ {
+      "_links" : {
+        "self" : {
+          "href" : "https://ci.example.com/go/api/admin/artifact_stores/hub.docker"
+        },
+        "doc" : {
+          "href" : "https://api.gocd.org/current/#artifact_stores"
+        },
+        "find" : {
+          "href" : "https://ci.example.com/go/api/admin/artifact_stores/:id"
+        }
+      },
+      "id" : "hub.docker",
+      "plugin_id" : "cd.go.artifact.docker.registry",
+      "properties" : [ {
+        "key" : "RegistryURL",
+        "value" : "https://your_docker_registry_url"
+      }, {
+        "key" : "Username",
+        "value" : "admin"
+      }, {
+        "key" : "Password",
+        "encrypted_value" : "AES:tdfTtYtIUSAF2JXJP/3YwA==:43Kjidjuh42NHKisCAs/BQ=="
+      } ]
+    } ]
+  }
+}

@@ -103,9 +103,10 @@ func Test_client_UpdateSystemAdmins(t *testing.T) {
 		"Content-Type": gocd.ContentJSON,
 		"If-Match":     "cbc5f2d5b9c13a2cc1b1efb3d8a6155d",
 	}
+	updatedEtag := "61406622382e51c2079c11dcbdb978fb"
 	t.Run("should be able to update the system admins successfully", func(t *testing.T) {
 		server := mockServer([]byte(systemAdmins), http.StatusOK, correctAdminHeader,
-			false, map[string]string{"ETag": "61406622382e51c2079c11dcbdb978fb"})
+			false, map[string]string{"ETag": updatedEtag})
 		client := gocd.NewClient(
 			server.URL,
 			"admin",
@@ -121,7 +122,7 @@ func Test_client_UpdateSystemAdmins(t *testing.T) {
 		}
 
 		expected := users
-		expected.ETAG = "61406622382e51c2079c11dcbdb978fb"
+		expected.ETAG = updatedEtag
 
 		actual, err := client.UpdateSystemAdmins(users)
 		assert.NoError(t, err)
@@ -134,7 +135,7 @@ func Test_client_UpdateSystemAdmins(t *testing.T) {
 			"Content-Type": gocd.ContentJSON,
 			"If-Match":     "cbc5f2d5b9c13a2cc1b1efb3d8a6155d",
 		},
-			false, map[string]string{"ETag": "61406622382e51c2079c11dcbdb978fb"})
+			false, map[string]string{"ETag": updatedEtag})
 		client := gocd.NewClient(
 			server.URL,
 			"admin",
@@ -156,7 +157,7 @@ func Test_client_UpdateSystemAdmins(t *testing.T) {
 
 	t.Run("should error out while updating system admins due to missing headers", func(t *testing.T) {
 		server := mockServer([]byte(systemAdmins), http.StatusOK, nil,
-			false, map[string]string{"ETag": "61406622382e51c2079c11dcbdb978fb"})
+			false, map[string]string{"ETag": updatedEtag})
 		client := gocd.NewClient(
 			server.URL,
 			"admin",
@@ -178,7 +179,7 @@ func Test_client_UpdateSystemAdmins(t *testing.T) {
 
 	t.Run("should error out while updating system admins as server returned malformed response", func(t *testing.T) {
 		server := mockServer([]byte("systemAdmins"), http.StatusOK, correctAdminHeader,
-			false, map[string]string{"ETag": "61406622382e51c2079c11dcbdb978fb"})
+			false, map[string]string{"ETag": updatedEtag})
 		client := gocd.NewClient(
 			server.URL,
 			"admin",
@@ -200,7 +201,7 @@ func Test_client_UpdateSystemAdmins(t *testing.T) {
 
 	t.Run("should error out while updating system admins as server returned malformed response", func(t *testing.T) {
 		server := mockServer([]byte("systemAdmins"), http.StatusOK, correctAdminHeader,
-			false, map[string]string{"ETag": "61406622382e51c2079c11dcbdb978fb"})
+			false, map[string]string{"ETag": updatedEtag})
 		client := gocd.NewClient(
 			server.URL,
 			"admin",

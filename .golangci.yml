@@ -17,6 +17,8 @@ linters:
     - wrapcheck
     - interfacebloat
     - forcetypeassert
+    - dupl
+    - goconst
 
 issues:
   exclude-rules:
