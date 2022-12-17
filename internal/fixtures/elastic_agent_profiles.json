@@ -1,0 +1,54 @@
+{
+  "_links": {
+    "self": {
+      "href": "https://ci.example.com/go/api/elastic/profiles"
+    },
+    "doc": {
+      "href": "https://api.gocd.org/#elastic-agent-profiles"
+    },
+    "find": {
+      "href": "https://ci.example.com/go/api/elastic/profiles/:profile_id"
+    }
+  },
+  "_embedded": {
+    "profiles": [
+      {
+        "_links": {
+          "self": {
+            "href": "https://ci.example.com/go/api/elastic/profiles/unit-tests"
+          },
+          "doc": {
+            "href": "https://api.gocd.org/#elastic-profiles"
+          },
+          "find": {
+            "href": "https://ci.example.com/go/api/elastic/profiles/:profile_id"
+          }
+        },
+        "id": "unit-tests",
+        "cluster_profile_id": "prod-cluster",
+        "properties": [
+          {
+            "key": "Image",
+            "value": "alpine:latest"
+          },
+          {
+            "key": "Command",
+            "value": ""
+          },
+          {
+            "key": "Environment",
+            "value": ""
+          },
+          {
+            "key": "MaxMemory",
+            "value": "200M"
+          },
+          {
+            "key": "ReservedMemory",
+            "value": "150M"
+          }
+        ]
+      }
+    ]
+  }
+}

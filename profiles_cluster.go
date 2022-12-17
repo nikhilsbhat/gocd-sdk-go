@@ -9,95 +9,95 @@ import (
 	"github.com/jinzhu/copier"
 )
 
-func (conf *client) GetArtifactStores() (ArtifactStoresConfig, error) {
+func (conf *client) GetClusterProfiles() (ProfilesConfig, error) {
 	newClient := &client{}
 	if err := copier.CopyWithOption(newClient, conf, copier.Option{IgnoreEmpty: true, DeepCopy: true}); err != nil {
-		return ArtifactStoresConfig{}, err
+		return ProfilesConfig{}, err
 	}
 
-	var storeCfg ArtifactStoresConfigs
+	var profilesCfg ProfilesConfigs
 	resp, err := newClient.httpClient.R().
 		SetHeaders(map[string]string{
 			"Accept": HeaderVersionOne,
 		}).
-		Get(ArtifactStoreEndpoint)
+		Get(ClusterProfileEndpoint)
 	if err != nil {
-		return ArtifactStoresConfig{}, fmt.Errorf("call made to get artifact stores errored with: %w", err)
+		return ProfilesConfig{}, fmt.Errorf("call made to get cluster profiles errored with: %w", err)
 	}
 
 	if resp.StatusCode() != http.StatusOK {
-		return ArtifactStoresConfig{}, APIErrorWithBody(resp.String(), resp.StatusCode())
+		return ProfilesConfig{}, APIErrorWithBody(resp.String(), resp.StatusCode())
 	}
 
-	if err = json.Unmarshal(resp.Body(), &storeCfg); err != nil {
-		return ArtifactStoresConfig{}, ResponseReadError(err.Error())
+	if err = json.Unmarshal(resp.Body(), &profilesCfg); err != nil {
+		return ProfilesConfig{}, ResponseReadError(err.Error())
 	}
 
-	storeCfg.ArtifactStoresConfigs.ETAG = resp.Header().Get("ETag")
+	profilesCfg.ProfilesConfigs.ETAG = resp.Header().Get("ETag")
 
-	return storeCfg.ArtifactStoresConfigs, nil
+	return profilesCfg.ProfilesConfigs, nil
 }
 
-func (conf *client) GetArtifactStore(name string) (CommonConfig, error) {
+func (conf *client) GetClusterProfile(name string) (CommonConfig, error) {
 	newClient := &client{}
 	if err := copier.CopyWithOption(newClient, conf, copier.Option{IgnoreEmpty: true, DeepCopy: true}); err != nil {
 		return CommonConfig{}, err
 	}
 
-	var storeCfg CommonConfig
+	var profilesCfg CommonConfig
 	resp, err := newClient.httpClient.R().
 		SetHeaders(map[string]string{
 			"Accept": HeaderVersionOne,
 		}).
-		Get(filepath.Join(ArtifactStoreEndpoint, name))
+		Get(filepath.Join(ClusterProfileEndpoint, name))
 	if err != nil {
-		return CommonConfig{}, fmt.Errorf("call made to get artifact store %s errored with: %w", name, err)
+		return CommonConfig{}, fmt.Errorf("call made to get cluster profile '%s' errored with: %w", name, err)
 	}
 
 	if resp.StatusCode() != http.StatusOK {
 		return CommonConfig{}, APIErrorWithBody(resp.String(), resp.StatusCode())
 	}
 
-	if err = json.Unmarshal(resp.Body(), &storeCfg); err != nil {
+	if err = json.Unmarshal(resp.Body(), &profilesCfg); err != nil {
 		return CommonConfig{}, ResponseReadError(err.Error())
 	}
 
-	storeCfg.ETAG = resp.Header().Get("ETag")
+	profilesCfg.ETAG = resp.Header().Get("ETag")
 
-	return storeCfg, nil
+	return profilesCfg, nil
 }
 
-func (conf *client) CreateArtifactStore(config CommonConfig) (CommonConfig, error) {
+func (conf *client) CreateClusterProfile(config CommonConfig) (CommonConfig, error) {
 	newClient := &client{}
 	if err := copier.CopyWithOption(newClient, conf, copier.Option{IgnoreEmpty: true, DeepCopy: true}); err != nil {
 		return CommonConfig{}, err
 	}
 
-	var storeCfg CommonConfig
+	var profileCfg CommonConfig
 	resp, err := newClient.httpClient.R().
 		SetHeaders(map[string]string{
 			"Accept":       HeaderVersionOne,
 			"Content-Type": ContentJSON,
 		}).
-		Post(ArtifactStoreEndpoint)
+		Post(ClusterProfileEndpoint)
 	if err != nil {
-		return CommonConfig{}, fmt.Errorf("call made to create artifact store %s errored with: %w", config.ID, err)
+		return CommonConfig{}, fmt.Errorf("call made to create cluster profile '%s' errored with: %w", config.ID, err)
 	}
 
 	if resp.StatusCode() != http.StatusOK {
 		return CommonConfig{}, APIErrorWithBody(resp.String(), resp.StatusCode())
 	}
 
-	if err = json.Unmarshal(resp.Body(), &storeCfg); err != nil {
+	if err = json.Unmarshal(resp.Body(), &profileCfg); err != nil {
 		return CommonConfig{}, ResponseReadError(err.Error())
 	}
 
-	storeCfg.ETAG = resp.Header().Get("ETag")
+	profileCfg.ETAG = resp.Header().Get("ETag")
 
-	return storeCfg, nil
+	return profileCfg, nil
 }
 
-func (conf *client) UpdateArtifactStore(config CommonConfig) (CommonConfig, error) {
+func (conf *client) UpdateClusterProfile(config CommonConfig) (CommonConfig, error) {
 	newClient := &client{}
 	if err := copier.CopyWithOption(newClient, conf, copier.Option{IgnoreEmpty: true, DeepCopy: true}); err != nil {
 		return CommonConfig{}, err
@@ -110,9 +110,9 @@ func (conf *client) UpdateArtifactStore(config CommonConfig) (CommonConfig, erro
 			"Content-Type": ContentJSON,
 			"If-Match":     config.ETAG,
 		}).
-		Put(filepath.Join(ArtifactStoreEndpoint, config.ID))
+		Put(filepath.Join(ClusterProfileEndpoint, config.ID))
 	if err != nil {
-		return CommonConfig{}, fmt.Errorf("call made to update artifact store %s errored with: %w", config.ID, err)
+		return CommonConfig{}, fmt.Errorf("call made to update cluster profile '%s' errored with: %w", config.ID, err)
 	}
 
 	if resp.StatusCode() != http.StatusOK {
@@ -128,7 +128,7 @@ func (conf *client) UpdateArtifactStore(config CommonConfig) (CommonConfig, erro
 	return storeCfg, nil
 }
 
-func (conf *client) DeleteArtifactStore(name string) error {
+func (conf *client) DeleteClusterProfile(name string) error {
 	newClient := &client{}
 	if err := copier.CopyWithOption(newClient, conf, copier.Option{IgnoreEmpty: true, DeepCopy: true}); err != nil {
 		return err
@@ -138,9 +138,9 @@ func (conf *client) DeleteArtifactStore(name string) error {
 		SetHeaders(map[string]string{
 			"Accept": HeaderVersionOne,
 		}).
-		Delete(filepath.Join(ArtifactStoreEndpoint, name))
+		Delete(filepath.Join(ClusterProfileEndpoint, name))
 	if err != nil {
-		return fmt.Errorf("call made to delete artifact store %s errored with: %w", name, err)
+		return fmt.Errorf("call made to delete cluster profile '%s' errored with: %w", name, err)
 	}
 
 	if resp.StatusCode() != http.StatusOK {

@@ -332,13 +332,13 @@ type ArtifactStoresConfig struct {
 	ETAG          string
 }
 
-// ProfileConfigs holds information of the specified artifact-stores/cluster-profiles/agent-profiles.
-type ProfileConfigs struct {
-	ProfileConfigs ProfileConfig `json:"_embedded,omitempty"`
+// ProfilesConfigs holds information of the specified artifact-stores/cluster-profiles/agent-profiles.
+type ProfilesConfigs struct {
+	ProfilesConfigs ProfilesConfig `json:"_embedded,omitempty"`
 }
 
-// ProfileConfig holds information of all config-repos present in GoCD.
-type ProfileConfig struct {
+// ProfilesConfig holds information of all config-repos present in GoCD.
+type ProfilesConfig struct {
 	CommonConfigs []CommonConfig `json:"profiles,omitempty"`
 	ETAG          string
 }

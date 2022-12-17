@@ -562,22 +562,6 @@ func Test_client_DeleteArtifactStore(t *testing.T) {
 		assert.EqualError(t, err, "body: <html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html> httpcode: 404")
 	})
 
-	t.Run("should error out while deleting an artifact store as server returned malformed response", func(t *testing.T) {
-		server := mockServer([]byte("artifactStoreJSON"), http.StatusOK,
-			correctArtifactHeader, false, nil)
-
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
-
-		err := client.DeleteArtifactStore("docker")
-		assert.EqualError(t, err, "reading response body errored with: invalid character 'a' looking for beginning of value")
-	})
-
 	t.Run("should error out while deleting an artifact store as GoCD server is not reachable", func(t *testing.T) {
 		client := gocd.NewClient(
 			"http://localhost:8156/go",
