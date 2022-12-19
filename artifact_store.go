@@ -79,6 +79,7 @@ func (conf *client) CreateArtifactStore(config CommonConfig) (CommonConfig, erro
 			"Accept":       HeaderVersionOne,
 			"Content-Type": ContentJSON,
 		}).
+		SetBody(config).
 		Post(ArtifactStoreEndpoint)
 	if err != nil {
 		return CommonConfig{}, fmt.Errorf("call made to create artifact store %s errored with: %w", config.ID, err)
@@ -110,6 +111,7 @@ func (conf *client) UpdateArtifactStore(config CommonConfig) (CommonConfig, erro
 			"Content-Type": ContentJSON,
 			"If-Match":     config.ETAG,
 		}).
+		SetBody(config).
 		Put(filepath.Join(ArtifactStoreEndpoint, config.ID))
 	if err != nil {
 		return CommonConfig{}, fmt.Errorf("call made to update artifact store %s errored with: %w", config.ID, err)

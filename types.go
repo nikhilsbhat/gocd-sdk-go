@@ -349,5 +349,5 @@ type CommonConfig struct {
 	PluginID         string                `json:"plugin_id,omitempty"`
 	ClusterProfileID string                `json:"cluster_profile_id,omitempty"`
 	Properties       []PluginConfiguration `json:"properties,omitempty"`
-	ETAG             string
+	ETAG             string                `json:"etag,omitempty"`
 }

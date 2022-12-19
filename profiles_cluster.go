@@ -79,6 +79,7 @@ func (conf *client) CreateClusterProfile(config CommonConfig) (CommonConfig, err
 			"Accept":       HeaderVersionOne,
 			"Content-Type": ContentJSON,
 		}).
+		SetBody(config).
 		Post(ClusterProfileEndpoint)
 	if err != nil {
 		return CommonConfig{}, fmt.Errorf("call made to create cluster profile '%s' errored with: %w", config.ID, err)
@@ -110,6 +111,7 @@ func (conf *client) UpdateClusterProfile(config CommonConfig) (CommonConfig, err
 			"Content-Type": ContentJSON,
 			"If-Match":     config.ETAG,
 		}).
+		SetBody(config).
 		Put(filepath.Join(ClusterProfileEndpoint, config.ID))
 	if err != nil {
 		return CommonConfig{}, fmt.Errorf("call made to update cluster profile '%s' errored with: %w", config.ID, err)

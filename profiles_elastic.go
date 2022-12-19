@@ -79,6 +79,7 @@ func (conf *client) CreateElasticAgentProfile(config CommonConfig) (CommonConfig
 			"Accept":       HeaderVersionTwo,
 			"Content-Type": ContentJSON,
 		}).
+		SetBody(config).
 		Post(AgentProfileEndpoint)
 	if err != nil {
 		return CommonConfig{}, fmt.Errorf("call made to create elastic agent profile '%s' errored with: %w", config.ID, err)
@@ -110,6 +111,7 @@ func (conf *client) UpdateElasticAgentProfile(config CommonConfig) (CommonConfig
 			"Content-Type": ContentJSON,
 			"If-Match":     config.ETAG,
 		}).
+		SetBody(config).
 		Put(filepath.Join(AgentProfileEndpoint, config.ID))
 	if err != nil {
 		return CommonConfig{}, fmt.Errorf("call made to update elastic agent profile '%s' errored with: %w", config.ID, err)
