@@ -95,6 +95,11 @@ type GoCd interface {
 	CreateArtifactStore(config CommonConfig) (CommonConfig, error)
 	UpdateArtifactStore(config CommonConfig) (CommonConfig, error)
 	DeleteArtifactStore(name string) error
+	GetSecretConfigs() (SecretsConfig, error)
+	GetSecretConfig(id string) (CommonConfig, error)
+	CreateSecretConfig(config CommonConfig) (CommonConfig, error)
+	UpdateSecretConfig(config CommonConfig) (CommonConfig, error)
+	DeleteSecretConfig(id string) error
 	SetRetryCount(count int)
 	SetRetryWaitTime(count int)
 }

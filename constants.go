@@ -25,6 +25,7 @@ const (
 	AgentProfileEndpoint     = "/api/elastic/profiles"
 	ArtifactStoreEndpoint    = "/api/admin/artifact_stores"
 	SiteURLEndpoint          = "/api/admin/security/site_urls"
+	SecretsConfigEndpoint    = "api/admin/secret_configs"
 	HeaderVersionOne         = "application/vnd.go.cd.v1+json"
 	HeaderVersionTwo         = "application/vnd.go.cd.v2+json"
 	HeaderVersionThree       = "application/vnd.go.cd.v3+json"

@@ -343,11 +343,24 @@ type ProfilesConfig struct {
 	ETAG          string
 }
 
+// SecretsConfigs holds information of all secret configs present in GoCD.
+type SecretsConfigs struct {
+	SecretsConfigs SecretsConfig `json:"_embedded,omitempty"`
+}
+
+// SecretsConfig holds information of a specified secret config present in GoCD.
+type SecretsConfig struct {
+	CommonConfigs []CommonConfig `json:"secret_configs,omitempty"`
+	ETAG          string
+}
+
 // CommonConfig holds information of the specified artifact store.
 type CommonConfig struct {
 	ID               string                `json:"id,omitempty"`
 	PluginID         string                `json:"plugin_id,omitempty"`
+	Description      string                `json:"description,omitempty"`
 	ClusterProfileID string                `json:"cluster_profile_id,omitempty"`
 	Properties       []PluginConfiguration `json:"properties,omitempty"`
+	Rules            []map[string]string   `json:"rules,omitempty"`
 	ETAG             string                `json:"etag,omitempty"`
 }
