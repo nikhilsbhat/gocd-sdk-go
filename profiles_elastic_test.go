@@ -146,7 +146,7 @@ func Test_client_GetElasticAgentProfiles(t *testing.T) {
 
 		actual, err := client.GetElasticAgentProfiles()
 		assert.EqualError(t, err, "call made to get elastic agent profiles errored with: "+
-			"Get \"http://localhost:8156/go/api/elastic/profiles\": dial tcp 127.0.0.1:8156: connect: connection refused")
+			"Get \"http://localhost:8156/go/api/elastic/profiles\": dial tcp [::1]:8156: connect: connection refused")
 		assert.Equal(t, expected, actual)
 	})
 }
@@ -199,11 +199,9 @@ func Test_client_GetElasticAgentProfile(t *testing.T) {
 			nil,
 		)
 
-		expected := gocd.ProfilesConfig{
-			CommonConfigs: nil,
-		}
+		expected := gocd.CommonConfig{}
 
-		actual, err := client.GetElasticAgentProfiles()
+		actual, err := client.GetElasticAgentProfile(profileName)
 		assert.EqualError(t, err, "body: <html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html> httpcode: 404")
 		assert.Equal(t, expected, actual)
 	})
@@ -219,11 +217,9 @@ func Test_client_GetElasticAgentProfile(t *testing.T) {
 			nil,
 		)
 
-		expected := gocd.ProfilesConfig{
-			CommonConfigs: nil,
-		}
+		expected := gocd.CommonConfig{}
 
-		actual, err := client.GetElasticAgentProfiles()
+		actual, err := client.GetElasticAgentProfile(profileName)
 		assert.EqualError(t, err, "body: <html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html> httpcode: 404")
 		assert.Equal(t, expected, actual)
 	})
@@ -239,11 +235,9 @@ func Test_client_GetElasticAgentProfile(t *testing.T) {
 			nil,
 		)
 
-		expected := gocd.ProfilesConfig{
-			CommonConfigs: nil,
-		}
+		expected := gocd.CommonConfig{}
 
-		actual, err := client.GetElasticAgentProfiles()
+		actual, err := client.GetElasticAgentProfile(profileName)
 		assert.EqualError(t, err, "reading response body errored with: invalid character 'e' looking for beginning of value")
 		assert.Equal(t, expected, actual)
 	})
@@ -260,13 +254,11 @@ func Test_client_GetElasticAgentProfile(t *testing.T) {
 		client.SetRetryCount(1)
 		client.SetRetryWaitTime(1)
 
-		expected := gocd.ProfilesConfig{
-			CommonConfigs: nil,
-		}
+		expected := gocd.CommonConfig{}
 
-		actual, err := client.GetElasticAgentProfiles()
-		assert.EqualError(t, err, "call made to get elastic agent profiles errored with: "+
-			"Get \"http://localhost:8156/go/api/elastic/profiles\": dial tcp 127.0.0.1:8156: connect: connection refused")
+		actual, err := client.GetElasticAgentProfile(profileName)
+		assert.EqualError(t, err, "call made to get elastic agent profile 'prod-cluster' errored with: "+
+			"Get \"http://localhost:8156/go/api/elastic/profiles/prod-cluster\": dial tcp [::1]:8156: connect: connection refused")
 		assert.Equal(t, expected, actual)
 	})
 }
@@ -336,7 +328,7 @@ func Test_client_DeleteElasticAgentProfile(t *testing.T) {
 
 		err := client.DeleteElasticAgentProfile(profileName)
 		assert.EqualError(t, err, "call made to delete elastic agent profile 'prod-cluster' errored with: "+
-			"Delete \"http://localhost:8156/go/api/elastic/profiles/prod-cluster\": dial tcp 127.0.0.1:8156: connect: connection refused")
+			"Delete \"http://localhost:8156/go/api/elastic/profiles/prod-cluster\": dial tcp [::1]:8156: connect: connection refused")
 	})
 }
 
@@ -453,7 +445,7 @@ func Test_client_UpdateElasticAgentProfile(t *testing.T) {
 
 		actual, err := client.UpdateElasticAgentProfile(profileCfg)
 		assert.EqualError(t, err, "call made to update elastic agent profile 'unit-tests' errored with: "+
-			"Put \"http://localhost:8156/go/api/elastic/profiles/unit-tests\": dial tcp 127.0.0.1:8156: connect: connection refused")
+			"Put \"http://localhost:8156/go/api/elastic/profiles/unit-tests\": dial tcp [::1]:8156: connect: connection refused")
 		assert.Equal(t, expected, actual)
 	})
 }
@@ -571,7 +563,7 @@ func Test_client_CreateElasticAgentProfile(t *testing.T) {
 
 		actual, err := client.CreateElasticAgentProfile(profileCfg)
 		assert.EqualError(t, err, "call made to create elastic agent profile 'unit-tests' errored with: "+
-			"Post \"http://localhost:8156/go/api/elastic/profiles\": dial tcp 127.0.0.1:8156: connect: connection refused")
+			"Post \"http://localhost:8156/go/api/elastic/profiles\": dial tcp [::1]:8156: connect: connection refused")
 		assert.Equal(t, expected, actual)
 	})
 }

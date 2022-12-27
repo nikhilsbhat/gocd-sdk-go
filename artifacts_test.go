@@ -102,7 +102,7 @@ func Test_client_GetArtifactConfig(t *testing.T) {
 
 		actual, err := client.GetArtifactConfig()
 		assert.EqualError(t, err, "call made to get artifacts info errored with "+
-			"Get \"http://localhost:8156/go/api/admin/config/server/artifact_config\": dial tcp 127.0.0.1:8156: connect: connection refused")
+			"Get \"http://localhost:8156/go/api/admin/config/server/artifact_config\": dial tcp [::1]:8156: connect: connection refused")
 		assert.Equal(t, gocd.ArtifactInfo{}, actual)
 	})
 }
@@ -209,7 +209,7 @@ func Test_client_UpdateArtifactConfig(t *testing.T) {
 
 		actual, err := client.UpdateArtifactConfig(gocd.ArtifactInfo{})
 		assert.EqualError(t, err, "call made to update artifacts info errored with Post "+
-			"\"http://localhost:8156/go/api/admin/config/server/artifact_config\": dial tcp 127.0.0.1:8156: connect: connection refused")
+			"\"http://localhost:8156/go/api/admin/config/server/artifact_config\": dial tcp [::1]:8156: connect: connection refused")
 		assert.Equal(t, gocd.ArtifactInfo{}, actual)
 	})
 }

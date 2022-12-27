@@ -100,6 +100,16 @@ type GoCd interface {
 	CreateSecretConfig(config CommonConfig) (CommonConfig, error)
 	UpdateSecretConfig(config CommonConfig) (CommonConfig, error)
 	DeleteSecretConfig(id string) error
+	GetPackageRepositories() ([]PackageRepository, error)
+	GetPackageRepository(id string) (PackageRepository, error)
+	CreatePackageRepository(config PackageRepository) (PackageRepository, error)
+	UpdatePackageRepository(config PackageRepository) (PackageRepository, error)
+	DeletePackageRepository(id string) error
+	GetPackages() ([]Package, error)
+	GetPackage(id string) (Package, error)
+	CreatePackage(config Package) (Package, error)
+	UpdatePackage(config Package) (Package, error)
+	DeletePackage(id string) error
 	SetRetryCount(count int)
 	SetRetryWaitTime(count int)
 }

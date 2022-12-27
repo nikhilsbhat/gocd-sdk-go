@@ -87,7 +87,7 @@ func Test_client_GetPipelines(t *testing.T) {
 
 		actual, err := client.GetPipelines()
 		assert.EqualError(t, err, "call made to get pipelines errored with "+
-			"Get \"http://localhost:8156/go/api/feed/pipelines.xml\": dial tcp 127.0.0.1:8156: connect: connection refused")
+			"Get \"http://localhost:8156/go/api/feed/pipelines.xml\": dial tcp [::1]:8156: connect: connection refused")
 		assert.Equal(t, gocd.PipelinesInfo{}, actual)
 	})
 
@@ -184,7 +184,7 @@ func Test_client_GetPipelineStatus(t *testing.T) {
 
 		actual, err := client.GetPipelineState(pipeline)
 		assert.EqualError(t, err, "call made to get pipeline state errored with Get "+
-			"\"http://localhost:8156/go/api/pipelines/action-movies-manual/status\": dial tcp 127.0.0.1:8156: connect: connection refused")
+			"\"http://localhost:8156/go/api/pipelines/action-movies-manual/status\": dial tcp [::1]:8156: connect: connection refused")
 		assert.Equal(t, gocd.PipelineState{}, actual)
 	})
 
@@ -304,7 +304,7 @@ func Test_client_PipelinePause(t *testing.T) {
 
 		err := client.PipelinePause("first_pipeline", "pausing the pipeline")
 		assert.EqualError(t, err, "call made to pause pipeline errored with "+
-			"Post \"http://localhost:8156/go/api/pipelines/first_pipeline/pause\": dial tcp 127.0.0.1:8156: connect: connection refused")
+			"Post \"http://localhost:8156/go/api/pipelines/first_pipeline/pause\": dial tcp [::1]:8156: connect: connection refused")
 	})
 }
 
@@ -369,7 +369,7 @@ func Test_client_PipelineUnPause(t *testing.T) {
 
 		err := client.PipelineUnPause("first_pipeline")
 		assert.EqualError(t, err, "call made to unpause pipeline errored with "+
-			"Post \"http://localhost:8156/go/api/pipelines/first_pipeline/unpause\": dial tcp 127.0.0.1:8156: connect: connection refused")
+			"Post \"http://localhost:8156/go/api/pipelines/first_pipeline/unpause\": dial tcp [::1]:8156: connect: connection refused")
 	})
 }
 
@@ -431,7 +431,7 @@ func Test_client_PipelineUnlock(t *testing.T) {
 
 		err := client.PipelineUnlock("first_pipeline")
 		assert.EqualError(t, err, "call made to unlock pipeline errored with "+
-			"Post \"http://localhost:8156/go/api/pipelines/first_pipeline/unlock\": dial tcp 127.0.0.1:8156: connect: connection refused")
+			"Post \"http://localhost:8156/go/api/pipelines/first_pipeline/unlock\": dial tcp [::1]:8156: connect: connection refused")
 	})
 }
 
@@ -516,7 +516,7 @@ func Test_client_SchedulePipeline(t *testing.T) {
 
 		err := client.SchedulePipeline("first_pipeline", schedule)
 		assert.EqualError(t, err, "call made to schedule pipeline 'first_pipeline' errored with "+
-			"Post \"http://localhost:8156/go/api/pipelines/first_pipeline/schedule\": dial tcp 127.0.0.1:8156: connect: connection refused")
+			"Post \"http://localhost:8156/go/api/pipelines/first_pipeline/schedule\": dial tcp [::1]:8156: connect: connection refused")
 	})
 }
 
@@ -603,7 +603,7 @@ func Test_client_CommentOnPipeline(t *testing.T) {
 
 		err := client.CommentOnPipeline(comment)
 		assert.EqualError(t, err, "call made to comment on pipeline 'pipeline1' errored with "+
-			"Post \"http://localhost:8156/go/api/pipelines/pipeline1/1/comment\": dial tcp 127.0.0.1:8156: connect: connection refused")
+			"Post \"http://localhost:8156/go/api/pipelines/pipeline1/1/comment\": dial tcp [::1]:8156: connect: connection refused")
 	})
 }
 
@@ -689,7 +689,7 @@ func Test_client_GetPipelineInstance(t *testing.T) {
 
 		actual, err := client.GetPipelineInstance(pipelineObj)
 		assert.EqualError(t, err, "call made to fetch pipeline instance 'pipeline1' errored with "+
-			"Get \"http://localhost:8156/go/api/pipelines/pipeline1/1\": dial tcp 127.0.0.1:8156: connect: connection refused")
+			"Get \"http://localhost:8156/go/api/pipelines/pipeline1/1\": dial tcp [::1]:8156: connect: connection refused")
 		assert.Nil(t, actual)
 	})
 }

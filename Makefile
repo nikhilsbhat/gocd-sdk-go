@@ -3,6 +3,7 @@ BUILD_ENVIRONMENT?=${ENVIRONMENT}
 GOVERSION?=$(shell go version | awk '{printf $$3}')
 APP_DIR?=$(shell git rev-parse --show-toplevel)
 SOURCE_PACKAGES?=$(shell go list -mod=vendor ./... | grep -v "vendor" | grep -v "mocks")
+TEST_FILES?=$(shell go list ./... | grep -v /vendor/ | grep -v examples)
 
 # Get the currently used golang install path (in GOPATH/bin, unless GOBIN is set)
 ifeq (,$(shell go env GOBIN))
@@ -40,7 +41,7 @@ report: ## Publishes the go-report of the appliction (uses go-reportcard)
 	if [ -z "${DEV}" ]; then goreportcard -v ; else docker run --rm -v $(APP_DIR):/app -w /app basnik/goreportcard-cli:latest goreportcard-cli -v ; fi
 
 test: ## runs test cases
-	@time go test ./... -mod=vendor -coverprofile cover.out && go tool cover -html=cover.out -o cover.html && open cover.html
+	@time go test $(TEST_FILES) -mod=vendor -coverprofile cover.out && go tool cover -html=cover.out -o cover.html && open cover.html
 
 generate.mocks:  ## Generates mocks to those methods that has comments //go:generate
 	@go generate ${SOURCE_PACKAGES}

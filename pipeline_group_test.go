@@ -33,7 +33,7 @@ func Test_client_GetPipelineGroupInfo(t *testing.T) {
 
 		actual, err := client.GetPipelineGroups()
 		assert.EqualError(t, err, "call made to get pipeline group information errored with "+
-			"Get \"http://localhost:8156/go/api/admin/pipeline_groups\": dial tcp 127.0.0.1:8156: connect: connection refused")
+			"Get \"http://localhost:8156/go/api/admin/pipeline_groups\": dial tcp [::1]:8156: connect: connection refused")
 		assert.Nil(t, actual)
 	})
 
@@ -173,7 +173,7 @@ func Test_client_DeletePipelineGroup(t *testing.T) {
 
 		err := client.DeletePipelineGroup("pipeline_group_1")
 		assert.EqualError(t, err, "call made to delete pipeline group errored with Delete "+
-			"\"http://localhost:8156/go/api/admin/pipeline_groups/pipeline_group_1\": dial tcp 127.0.0.1:8156: connect: connection refused")
+			"\"http://localhost:8156/go/api/admin/pipeline_groups/pipeline_group_1\": dial tcp [::1]:8156: connect: connection refused")
 	})
 }
 
@@ -278,7 +278,7 @@ func Test_client_GetPipelineGroup(t *testing.T) {
 
 		actual, err := client.GetPipelineGroup("first")
 		assert.EqualError(t, err, "call made to fetch pipeline group errored with "+
-			"Get \"http://localhost:8156/go/api/admin/pipeline_groups/first\": dial tcp 127.0.0.1:8156: connect: connection refused")
+			"Get \"http://localhost:8156/go/api/admin/pipeline_groups/first\": dial tcp [::1]:8156: connect: connection refused")
 		assert.Equal(t, expected, actual)
 	})
 }
@@ -362,7 +362,7 @@ func Test_client_CreatePipelineGroup(t *testing.T) {
 
 		err := client.CreatePipelineGroup(group)
 		assert.EqualError(t, err, "call made to create pipeline group 'first' information errored with "+
-			"Post \"http://localhost:8156/go/api/admin/pipeline_groups\": dial tcp 127.0.0.1:8156: connect: connection refused")
+			"Post \"http://localhost:8156/go/api/admin/pipeline_groups\": dial tcp [::1]:8156: connect: connection refused")
 	})
 }
 
@@ -508,7 +508,7 @@ func Test_client_UpdatePipelineGroup(t *testing.T) {
 
 		actual, err := client.UpdatePipelineGroup(group)
 		assert.EqualError(t, err, "call made to update pipeline group 'first' errored with"+
-			" Put \"http://localhost:8156/go/api/admin/pipeline_groups/first\": dial tcp 127.0.0.1:8156: connect: connection refused")
+			" Put \"http://localhost:8156/go/api/admin/pipeline_groups/first\": dial tcp [::1]:8156: connect: connection refused")
 		assert.Equal(t, expected, actual)
 	})
 }

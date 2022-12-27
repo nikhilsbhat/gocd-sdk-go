@@ -87,7 +87,7 @@ func Test_client_GetDefaultJobTimeout(t *testing.T) {
 
 		actual, err := client.GetDefaultJobTimeout()
 		assert.EqualError(t, err, "call made to get default job timeout errored with: "+
-			"Get \"http://localhost:8156/go/api/admin/config/server/default_job_timeout\": dial tcp 127.0.0.1:8156: connect: connection refused")
+			"Get \"http://localhost:8156/go/api/admin/config/server/default_job_timeout\": dial tcp [::1]:8156: connect: connection refused")
 		assert.Equal(t, map[string]string(nil), actual)
 	})
 }
@@ -152,6 +152,6 @@ func Test_client_UpdateDefaultJobTimeout(t *testing.T) {
 
 		err := client.UpdateDefaultJobTimeout(10)
 		assert.EqualError(t, err, "call made to update default job timeout errored with: "+
-			"Post \"http://localhost:8156/go/api/admin/config/server/default_job_timeout\": dial tcp 127.0.0.1:8156: connect: connection refused")
+			"Post \"http://localhost:8156/go/api/admin/config/server/default_job_timeout\": dial tcp [::1]:8156: connect: connection refused")
 	})
 }

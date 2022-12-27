@@ -357,10 +357,46 @@ type SecretsConfig struct {
 // CommonConfig holds information of the specified artifact store.
 type CommonConfig struct {
 	ID               string                `json:"id,omitempty"`
+	Name             string                `json:"name,omitempty"`
 	PluginID         string                `json:"plugin_id,omitempty"`
 	Description      string                `json:"description,omitempty"`
 	ClusterProfileID string                `json:"cluster_profile_id,omitempty"`
 	Properties       []PluginConfiguration `json:"properties,omitempty"`
 	Rules            []map[string]string   `json:"rules,omitempty"`
 	ETAG             string                `json:"etag,omitempty"`
+}
+
+// PackageRepositories holds information of all package repositories present in GoCD.
+type PackageRepositories struct {
+	Repositories struct {
+		PackageRepositories []PackageRepository `json:"package_repositories,omitempty"`
+	} `json:"_embedded"`
+}
+
+// PackageRepository holds information of the specified package repository.
+type PackageRepository struct {
+	ID             string                `json:"repo_id,omitempty"`
+	Name           string                `json:"name,omitempty"`
+	PluginMetaData map[string]string     `json:"plugin_metadata,omitempty"`
+	Configuration  []PluginConfiguration `json:"configuration,omitempty"`
+	Packages       struct {
+		Packages []CommonConfig `json:"packages,omitempty"`
+	} `json:"_embedded,omitempty"`
+	ETAG string
+}
+
+// Packages holds information of all packages present in GoCD.
+type Packages struct {
+	Packages struct {
+		Packages []Package `json:"packages,omitempty"`
+	} `json:"_embedded"`
+}
+
+// Package holds information of the specified packages of the package repository.
+type Package struct {
+	CommonConfig
+	AutoUpdate    bool                  `json:"auto_update,omitempty"`
+	PackageRepos  CommonConfig          `json:"package_repo,omitempty"`
+	Configuration []PluginConfiguration `json:"configuration,omitempty"`
+	ETAG          string                `json:"etag,omitempty"`
 }

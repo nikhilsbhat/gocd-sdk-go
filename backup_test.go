@@ -32,7 +32,7 @@ func TestConfig_GetBackupInfo(t *testing.T) {
 
 		actual, err := client.GetBackupConfig()
 		assert.EqualError(t, err, "call made to get backup information errored with "+
-			"Get \"http://localhost:8156/go/api/config/backup\": dial tcp 127.0.0.1:8156: connect: connection refused")
+			"Get \"http://localhost:8156/go/api/config/backup\": dial tcp [::1]:8156: connect: connection refused")
 		assert.Equal(t, gocd.BackupConfig{}, actual)
 	})
 
@@ -201,7 +201,7 @@ func Test_client_CreateOrUpdateBackup(t *testing.T) {
 
 		err := client.CreateOrUpdateBackupConfig(backupObj)
 		assert.EqualError(t, err, "call made to create/udpate backup configuration errored with Post "+
-			"\"http://localhost:8156/go/api/config/backup\": dial tcp 127.0.0.1:8156: connect: connection refused")
+			"\"http://localhost:8156/go/api/config/backup\": dial tcp [::1]:8156: connect: connection refused")
 	})
 }
 
@@ -250,7 +250,7 @@ func Test_client_DeleteBackupConfig(t *testing.T) {
 
 		err := client.DeleteBackupConfig()
 		assert.EqualError(t, err, "call made to get backup information errored with: "+
-			"Delete \"http://localhost:8156/go/api/config/backup\": dial tcp 127.0.0.1:8156: connect: connection refused")
+			"Delete \"http://localhost:8156/go/api/config/backup\": dial tcp [::1]:8156: connect: connection refused")
 	})
 }
 

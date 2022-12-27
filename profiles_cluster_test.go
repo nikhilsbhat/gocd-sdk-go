@@ -130,7 +130,7 @@ func Test_client_GetClusterProfiles(t *testing.T) {
 
 		actual, err := client.GetClusterProfiles()
 		assert.EqualError(t, err, "call made to get cluster profiles errored with: "+
-			"Get \"http://localhost:8156/go/api/admin/elastic/cluster_profiles\": dial tcp 127.0.0.1:8156: connect: connection refused")
+			"Get \"http://localhost:8156/go/api/admin/elastic/cluster_profiles\": dial tcp [::1]:8156: connect: connection refused")
 		assert.Equal(t, expected, actual)
 	})
 }
@@ -238,7 +238,7 @@ func Test_client_GetClusterProfile(t *testing.T) {
 
 		actual, err := client.GetClusterProfile(profileName)
 		assert.EqualError(t, err, "call made to get cluster profile 'prod-cluster' errored with: "+
-			"Get \"http://localhost:8156/go/api/admin/elastic/cluster_profiles/prod-cluster\": dial tcp 127.0.0.1:8156: connect: connection refused")
+			"Get \"http://localhost:8156/go/api/admin/elastic/cluster_profiles/prod-cluster\": dial tcp [::1]:8156: connect: connection refused")
 		assert.Equal(t, expected, actual)
 	})
 }
@@ -311,7 +311,7 @@ func Test_client_CreateClusterProfile(t *testing.T) {
 		profileCfg := gocd.CommonConfig{}
 		expected := profileCfg
 
-		actual, err := client.UpdateClusterProfile(profileCfg)
+		actual, err := client.CreateClusterProfile(profileCfg)
 		assert.EqualError(t, err, "body: <html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html> httpcode: 404")
 		assert.Equal(t, expected, actual)
 	})
@@ -330,7 +330,7 @@ func Test_client_CreateClusterProfile(t *testing.T) {
 		profileCfg := gocd.CommonConfig{}
 		expected := profileCfg
 
-		actual, err := client.UpdateClusterProfile(profileCfg)
+		actual, err := client.CreateClusterProfile(profileCfg)
 		assert.EqualError(t, err, "reading response body errored with: invalid character 'c' looking for beginning of value")
 		assert.Equal(t, expected, actual)
 	})
@@ -352,7 +352,7 @@ func Test_client_CreateClusterProfile(t *testing.T) {
 
 		actual, err := client.CreateClusterProfile(profileCfg)
 		assert.EqualError(t, err, "call made to create cluster profile 'prod-cluster' errored with: "+
-			"Post \"http://localhost:8156/go/api/admin/elastic/cluster_profiles\": dial tcp 127.0.0.1:8156: connect: connection refused")
+			"Post \"http://localhost:8156/go/api/admin/elastic/cluster_profiles\": dial tcp [::1]:8156: connect: connection refused")
 		assert.Equal(t, expected, actual)
 	})
 }
@@ -466,7 +466,7 @@ func Test_client_UpdateClusterProfile(t *testing.T) {
 
 		actual, err := client.UpdateClusterProfile(profileCfg)
 		assert.EqualError(t, err, "call made to update cluster profile 'prod-cluster' errored with: "+
-			"Put \"http://localhost:8156/go/api/admin/elastic/cluster_profiles/prod-cluster\": dial tcp 127.0.0.1:8156: connect: connection refused")
+			"Put \"http://localhost:8156/go/api/admin/elastic/cluster_profiles/prod-cluster\": dial tcp [::1]:8156: connect: connection refused")
 		assert.Equal(t, expected, actual)
 	})
 }
@@ -535,6 +535,6 @@ func Test_client_DeleteClusterProfile(t *testing.T) {
 
 		err := client.DeleteClusterProfile("prod-cluster")
 		assert.EqualError(t, err, "call made to delete cluster profile 'prod-cluster' errored with: "+
-			"Delete \"http://localhost:8156/go/api/admin/elastic/cluster_profiles/prod-cluster\": dial tcp 127.0.0.1:8156: connect: connection refused")
+			"Delete \"http://localhost:8156/go/api/admin/elastic/cluster_profiles/prod-cluster\": dial tcp [::1]:8156: connect: connection refused")
 	})
 }

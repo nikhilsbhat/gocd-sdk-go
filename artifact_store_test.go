@@ -142,7 +142,7 @@ func Test_client_GetArtifactStores(t *testing.T) {
 
 		actual, err := client.GetArtifactStores()
 		assert.EqualError(t, err, "call made to get artifact stores errored with: "+
-			"Get \"http://localhost:8156/go/api/admin/artifact_stores\": dial tcp 127.0.0.1:8156: connect: connection refused")
+			"Get \"http://localhost:8156/go/api/admin/artifact_stores\": dial tcp [::1]:8156: connect: connection refused")
 		assert.Equal(t, expected, actual)
 	})
 }
@@ -267,7 +267,7 @@ func Test_client_GetArtifactStore(t *testing.T) {
 
 		actual, err := client.GetArtifactStore("hub.docker")
 		assert.EqualError(t, err, "call made to get artifact store hub.docker errored with: "+
-			"Get \"http://localhost:8156/go/api/admin/artifact_stores/hub.docker\": dial tcp 127.0.0.1:8156: connect: connection refused")
+			"Get \"http://localhost:8156/go/api/admin/artifact_stores/hub.docker\": dial tcp [::1]:8156: connect: connection refused")
 		assert.Equal(t, expected, actual)
 	})
 }
@@ -387,7 +387,7 @@ func Test_client_CreateArtifactStore(t *testing.T) {
 
 		actual, err := client.CreateArtifactStore(storeCfg)
 		assert.EqualError(t, err, "call made to create artifact store docker errored with: "+
-			"Post \"http://localhost:8156/go/api/admin/artifact_stores\": dial tcp 127.0.0.1:8156: connect: connection refused")
+			"Post \"http://localhost:8156/go/api/admin/artifact_stores\": dial tcp [::1]:8156: connect: connection refused")
 		assert.Equal(t, gocd.CommonConfig{}, actual)
 	})
 }
@@ -507,7 +507,7 @@ func Test_client_UpdateArtifactStore(t *testing.T) {
 
 		actual, err := client.UpdateArtifactStore(storeCfg)
 		assert.EqualError(t, err, "call made to update artifact store docker errored with: "+
-			"Put \"http://localhost:8156/go/api/admin/artifact_stores/docker\": dial tcp 127.0.0.1:8156: connect: connection refused")
+			"Put \"http://localhost:8156/go/api/admin/artifact_stores/docker\": dial tcp [::1]:8156: connect: connection refused")
 		assert.Equal(t, gocd.CommonConfig{}, actual)
 	})
 }
@@ -576,6 +576,6 @@ func Test_client_DeleteArtifactStore(t *testing.T) {
 
 		err := client.DeleteArtifactStore("docker")
 		assert.EqualError(t, err, "call made to delete artifact store docker errored with: "+
-			"Delete \"http://localhost:8156/go/api/admin/artifact_stores/docker\": dial tcp 127.0.0.1:8156: connect: connection refused")
+			"Delete \"http://localhost:8156/go/api/admin/artifact_stores/docker\": dial tcp [::1]:8156: connect: connection refused")
 	})
 }

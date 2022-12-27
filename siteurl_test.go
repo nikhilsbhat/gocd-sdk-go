@@ -104,7 +104,7 @@ func Test_client_GetSiteURL(t *testing.T) {
 
 		actual, err := client.GetSiteURL()
 		assert.EqualError(t, err, "call made to get site url errored with: "+
-			"Get \"http://localhost:8156/go/api/admin/security/site_urls\": dial tcp 127.0.0.1:8156: connect: connection refused")
+			"Get \"http://localhost:8156/go/api/admin/security/site_urls\": dial tcp [::1]:8156: connect: connection refused")
 		assert.Equal(t, expected, actual)
 	})
 }
@@ -206,7 +206,7 @@ func Test_client_CreateOrUpdateSiteURL(t *testing.T) {
 
 		actual, err := client.CreateOrUpdateSiteURL(gocd.SiteURLConfig{})
 		assert.EqualError(t, err, "call made to create/update site url errored with: "+
-			"Post \"http://localhost:8156/go/api/admin/security/site_urls\": dial tcp 127.0.0.1:8156: connect: connection refused")
+			"Post \"http://localhost:8156/go/api/admin/security/site_urls\": dial tcp [::1]:8156: connect: connection refused")
 		assert.Equal(t, expected, actual)
 	})
 }
