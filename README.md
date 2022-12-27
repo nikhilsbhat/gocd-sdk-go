@@ -48,12 +48,14 @@ func main() {
 	fmt.Println(env)
 }
 ```
+
 More examples can be found [here](https://github.com/nikhilsbhat/gocd-sdk-go/tree/master/examples).
 
 ## Supported APIs
+
 Below are the list of supported APIs:
 
-- [x] Agents
+- [x] [Agents](https://api.gocd.org/current/#agents)
     - [x] Get All Agents
     - [x] Get Specific Agent
     - [x] Update Agent
@@ -62,7 +64,7 @@ Below are the list of supported APIs:
     - [x] Delete Agents bulk
     - [x] Kill running tasks iin Agent
     - [x] Agent job run history
-- [ ] ConfigRepo
+- [ ] [ConfigRepo](https://api.gocd.org/current/#config-repo)
     - [x] Get All Config repo
     - [x] Get Specific Config repo
     - [x] Create Config repo
@@ -73,89 +75,128 @@ Below are the list of supported APIs:
     - [ ] Export pipeline config to config repo format
     - [ ] Preflight check of config repo configurations
     - [ ] Definitions defined in config repo
-- [x] Maintenance Mode
+- [x] [Maintenance Mode](https://api.gocd.org/current/#maintenance-mode)
     - [x] Enable Maintenance Mode
     - [x] Disable Maintenance Mode
     - [x] Get Maintenance Mode info
-- [x] PipelineGroup
+- [x] [PipelineGroup](https://api.gocd.org/current/#pipeline-group-config)
     - [x] Get All pipeline groups
     - [x] Get specific pipeline group
     - [x] Update pipeline group
     - [x] Create pipeline group
     - [x] Delete pipeline group
-- [x] Environment Config
+- [x] [Environment Config](https://api.gocd.org/current/#environment-config)
     - [x] Get All Environments
     - [x] Get specific Environment
     - [x] Create Environment
     - [x] Update Environment
     - [x] Patch Environment
     - [x] Delete Environment
-- [x] Backup
+- [x] [Backup-config](https://api.gocd.org/current/#backup-config)
     - [x] Get Backup Info
     - [x] Create or Update Backup
     - [x] Delete Backup Info
-- [ ] Pipeline
+- [ ] [Backup](https://api.gocd.org/current/#backups)
+    - [ ] Schedule Backup
+    - [ ] Get Backup
+- [ ] [Pipeline](https://api.gocd.org/current/#pipelines)
     - [x] Get pipeline status
     - [x] Pause Pipeline
     - [x] UnPause Pipeline
     - [x] UnLock Pipeline
     - [x] Schedule Pipeline
     - [ ] Compare pipeline instances
-- [x] Pipeline Instances
+- [x] [Pipeline Instances](https://api.gocd.org/current/#pipeline-instances)
     - [x] Get Pipeline Instance
     - [x] Get Pipeline History
     - [x] Comment on Pipeline
-- [ ] Pipeline Config
+- [ ] [Pipeline Config](https://api.gocd.org/current/#pipeline-config)
     - [ ] Get pipeline config
     - [ ] Edit pipeline config
     - [ ] Create a pipeline
     - [ ] Delete a pipeline
     - [ ] Extract template from pipeline
-- [ ] Stage Instances
+- [ ] [Stage Instances](https://api.gocd.org/current/#stage-instances)
     - [ ] Cancel stage
     - [ ] Get stage instance
     - [ ] Get stage history
     - [ ] Run failed jobs
     - [ ] Run selected jobs
-- [ ] Stages
+- [ ] [Stages](https://api.gocd.org/current/#stages)
     - [ ] Run stage
-- [ ] Jobs
+- [ ] [Jobs](https://api.gocd.org/current/#jobs)
     - [ ] Get job instance
     - [ ] Get job history
-- [x] Feeds
+- [x] [Feeds](https://api.gocd.org/current/#feeds)
     - [x] Get All pipelines
     - [ ]
-- [x] Artifact Config
+- [x] [Artifact Config](https://api.gocd.org/current/#artifacts-config)
     - [x] Get Artifact Config
     - [x] Update Artifact Config
-- [x] Site URL
+- [x] [Artifact Store](https://api.gocd.org/current/#artifact-store)
+    - [x] Get Artifact Stores
+    - [x] Get Artifact Store
+    - [x] Create Artifact Stores
+    - [x] Update Artifact Stores
+    - [x] Delete Artifact Stores
+- [x] [Cluster Profiles](https://api.gocd.org/current/#cluster-profiles)
+    - [x] Get Cluster Profiles
+    - [x] Get Cluster Profile
+    - [x] Create Cluster Profile
+    - [x] Update Cluster Profile
+    - [x] Delete Cluster Profile
+- [x] [Elastic Agent Profiles](https://api.gocd.org/current/#elastic-agent-profiles)
+    - [x] Get Elastic Agent Profiles
+    - [x] Get Elastic Agent Profile
+    - [x] Create Elastic Agent Profile
+    - [x] Update Elastic Agent Profile
+    - [x] Delete Elastic Agent Profile
+- [x] [Secret Configs](https://api.gocd.org/current/#secret-configs)
+    - [x] Get Secret Configs
+    - [x] Get Secret Config
+    - [x] Create Secret Config
+    - [x] Update Secret Config
+    - [x] Delete Secret Config
+- [x] [Package Repositories](https://api.gocd.org/current/#package-repositories)
+    - [x] Get Package repositories
+    - [x] Get Package Repository
+    - [x] Create Package Repository
+    - [x] Update Package Repository
+    - [x] Delete Package Repository
+- [x] [Package](https://api.gocd.org/current/#packages)
+    - [x] Get Package Materials
+    - [x] Get Package Material
+    - [x] Create Package Material
+    - [x] Update Package Material
+    - [x] Delete Package Material
+- [x] [Site URL](https://api.gocd.org/current/#siteurls-config)
     - [x] Get Site URL
     - [x] Create or Update Site URL
-- [x] Mail server config
+- [x] [Mail server config](https://api.gocd.org/current/#mailserver-config)
     - [x] Get Mail server config
     - [x] Create or Update Mail server config
     - [x] Update Mail server config
-- [x] Default Job timeout
+- [x] [Default Job timeout](https://api.gocd.org/current/#default-job-timeout)
     - [x] Get Default Job timeout
     - [x] Update Default Job timeout
-- [x] Plugin settings
+- [x] [Plugin settings](https://api.gocd.org/current/#plugin-settings)
     - [x] Get Plugin settings
     - [x] Create Plugin settings
     - [x] Update Plugin settings
-- [ ] Plugin Info
+- [ ] [Plugin Info](https://api.gocd.org/current/#get-all-plugin-info)
     - [ ] Get all plugin info
     - [ ] Get plugin info
-- [x] Auth Configs
-  - [x] Get All Auth configs
-  - [x] Get Specific Auth config
-  - [x] Create Auth config
-  - [x] Update Auth config
-  - [x] Delete Auth config
-- [ ] System Admin
+- [x] [Auth Configs](https://api.gocd.org/current/#authorization-configuration)
+    - [x] Get All Auth configs
+    - [x] Get Specific Auth config
+    - [x] Create Auth config
+    - [x] Update Auth config
+    - [x] Delete Auth config
+- [ ] [System Admin](https://api.gocd.org/current/#system-admins)
     - [x] Get All system admins
     - [x] Update system Admin
     - [ ] Bulk update system admins
-- [ ] Roles
+- [ ] [Roles](https://api.gocd.org/current/#roles)
     - [ ] Get all roles
     - [ ] Get all roles by type
     - [ ] Get Specific role
@@ -164,9 +205,9 @@ Below are the list of supported APIs:
     - [ ] Update a role
     - [ ] Delete a role
     - [ ] Bulk update roles
-- [x] Server Health Messages
+- [x] [Server Health Messages](https://api.gocd.org/current/#server-health-messages)
     - [x] Get Server Health messages
-- [x] Version
+- [x] [Version](https://api.gocd.org/current/#version)
     - [x] Get Version
-- [x] Encryption
+- [x] [Encryption](https://api.gocd.org/current/#encryption)
     - [x] Encrypt plain text value
