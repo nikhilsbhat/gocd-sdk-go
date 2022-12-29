@@ -10,7 +10,7 @@ import (
 )
 
 // GetAuthConfigs fetches all authorization configurations present iin GoCD.
-func (conf *client) GetAuthConfigs() ([]AuthConfig, error) {
+func (conf *client) GetAuthConfigs() ([]CommonConfig, error) {
 	var auth AuthConfigs
 	{
 	}
@@ -40,8 +40,8 @@ func (conf *client) GetAuthConfigs() ([]AuthConfig, error) {
 }
 
 // GetAuthConfig fetches authorization configuration for specified id.
-func (conf *client) GetAuthConfig(name string) (AuthConfig, error) {
-	var auth AuthConfig
+func (conf *client) GetAuthConfig(name string) (CommonConfig, error) {
+	var auth CommonConfig
 	newClient := &client{}
 	if err := copier.CopyWithOption(newClient, conf, copier.Option{IgnoreEmpty: true, DeepCopy: true}); err != nil {
 		return auth, err
@@ -70,8 +70,8 @@ func (conf *client) GetAuthConfig(name string) (AuthConfig, error) {
 }
 
 // CreateAuthConfig creates an authorization configuration with the provided configurations.
-func (conf *client) CreateAuthConfig(config AuthConfig) (AuthConfig, error) {
-	var auth AuthConfig
+func (conf *client) CreateAuthConfig(config CommonConfig) (CommonConfig, error) {
+	var auth CommonConfig
 	newClient := &client{}
 	if err := copier.CopyWithOption(newClient, conf, copier.Option{IgnoreEmpty: true, DeepCopy: true}); err != nil {
 		return auth, err
@@ -102,8 +102,8 @@ func (conf *client) CreateAuthConfig(config AuthConfig) (AuthConfig, error) {
 }
 
 // UpdateAuthConfig updates some attributes of an authorization configuration.
-func (conf *client) UpdateAuthConfig(config AuthConfig) (AuthConfig, error) {
-	var auth AuthConfig
+func (conf *client) UpdateAuthConfig(config CommonConfig) (CommonConfig, error) {
+	var auth CommonConfig
 	newClient := &client{}
 	if err := copier.CopyWithOption(newClient, conf, copier.Option{IgnoreEmpty: true, DeepCopy: true}); err != nil {
 		return auth, err

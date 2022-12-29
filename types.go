@@ -264,17 +264,8 @@ type Schedule struct {
 // AuthConfigs holds information of multiple authorization configurations.
 type AuthConfigs struct {
 	Config struct {
-		AuthConfigs []AuthConfig `json:"auth_configs"`
+		AuthConfigs []CommonConfig `json:"auth_configs"`
 	} `json:"_embedded,omitempty"`
-}
-
-// AuthConfig holds information of authorization configurations.
-type AuthConfig struct {
-	ID                  string                `json:"id,omitempty"`
-	PluginID            string                `json:"plugin_id,omitempty"`
-	AllowOnlyKnownUsers bool                  `json:"allow_only_known_users_to_login,omitempty"`
-	Properties          []PluginConfiguration `json:"properties,omitempty"`
-	ETAG                string
 }
 
 // PluginConfiguration holds information of the various plugin properties.
@@ -356,14 +347,15 @@ type SecretsConfig struct {
 
 // CommonConfig holds information of the specified artifact store.
 type CommonConfig struct {
-	ID               string                `json:"id,omitempty"`
-	Name             string                `json:"name,omitempty"`
-	PluginID         string                `json:"plugin_id,omitempty"`
-	Description      string                `json:"description,omitempty"`
-	ClusterProfileID string                `json:"cluster_profile_id,omitempty"`
-	Properties       []PluginConfiguration `json:"properties,omitempty"`
-	Rules            []map[string]string   `json:"rules,omitempty"`
-	ETAG             string                `json:"etag,omitempty"`
+	ID                  string                `json:"id,omitempty"`
+	Name                string                `json:"name,omitempty"`
+	PluginID            string                `json:"plugin_id,omitempty"`
+	Description         string                `json:"description,omitempty"`
+	ClusterProfileID    string                `json:"cluster_profile_id,omitempty"`
+	AllowOnlyKnownUsers bool                  `json:"allow_only_known_users_to_login,omitempty"`
+	Properties          []PluginConfiguration `json:"properties,omitempty"`
+	Rules               []map[string]string   `json:"rules,omitempty"`
+	ETAG                string                `json:"etag,omitempty"`
 }
 
 // PackageRepositories holds information of all package repositories present in GoCD.
