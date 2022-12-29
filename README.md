@@ -169,6 +169,9 @@ Below are the list of supported APIs:
     - [x] Create Package Material
     - [x] Update Package Material
     - [x] Delete Package Material
+- [x] [Materials](hhttps://api.gocd.org/current/#materials)
+    - [x] Get All Materials
+    - [ ] Get material modifications
 - [x] [Site URL](https://api.gocd.org/current/#siteurls-config)
     - [x] Get Site URL
     - [x] Create or Update Site URL

@@ -19,6 +19,7 @@ linters:
     - forcetypeassert
     - dupl
     - goconst
+    - maligned
 
 issues:
   exclude-rules:

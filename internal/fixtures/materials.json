@@ -1,0 +1,53 @@
+{
+  "_links": {
+    "doc": {
+      "href": "https://api.gocd.org/#materials"
+    },
+    "self": {
+      "href": "https://ci.example.com/go/api/config/materials"
+    }
+  },
+  "_embedded": {
+    "materials": [
+      {
+        "type": "svn",
+        "fingerprint": "6b0cd6b9181434866c555f3c3bb780e950389a456764c876d804c848efbad554",
+        "attributes": {
+          "url": "https://github.com/gocd/gocd",
+          "destination": "test",
+          "filter": null,
+          "invert_filter": false,
+          "name": null,
+          "auto_update": false,
+          "username": "admin",
+          "encrypted_password": "AES:lTFKwi5NvrlqmQ3LOQ5UQA==:Ebggz5N27w54NrhSXKIbng==",
+          "check_externals": false
+        }
+      },
+      {
+        "type": "hg",
+        "fingerprint": "f6b61bc6b33e524c2a94c5be4a4661e5f1d2b74ca089418de20de10b282e39e9",
+        "attributes": {
+          "url": "ssh://hg@bitbucket.org/example/gocd-hg",
+          "destination": "test",
+          "filter": null,
+          "invert_filter": false,
+          "name": null,
+          "auto_update": false,
+          "branch": ""
+        }
+      },
+      {
+        "type": "dependency",
+        "fingerprint": "21f7963a8eca6cced5b4f20b57b4e9cb8edaed29d683c83621a77dfb499c553d",
+        "attributes": {
+          "pipeline": "up42",
+          "stage": "up42_stage",
+          "name": "up42_material",
+          "auto_update": true,
+          "ignore_for_scheduling": false
+        }
+      }
+    ]
+  }
+}

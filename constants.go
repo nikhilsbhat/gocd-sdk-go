@@ -28,6 +28,7 @@ const (
 	SecretsConfigEndpoint       = "api/admin/secret_configs"
 	PackageRepositoriesEndpoint = "api/admin/repositories"
 	PackagesEndpoint            = "api/admin/packages"
+	MaterialEndpoint            = "/api/config/materials"
 	HeaderVersionOne            = "application/vnd.go.cd.v1+json"
 	HeaderVersionTwo            = "application/vnd.go.cd.v2+json"
 	HeaderVersionThree          = "application/vnd.go.cd.v3+json"

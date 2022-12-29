@@ -70,19 +70,9 @@ type ConfigRepos struct {
 
 // ConfigRepo holds information of the specified config-repo.
 type ConfigRepo struct {
-	PluginID string `json:"plugin_id"`
-	ID       string `json:"config_repos,omitempty"`
-	Material struct {
-		Type       string `json:"type,omitempty"`
-		Attributes struct {
-			URL               string `json:"url,omitempty"`
-			Username          string `json:"username,omitempty"`
-			Password          string `json:"password,omitempty"`
-			EncryptedPassword string `json:"encrypted_password,omitempty"`
-			Branch            string `json:"branch,omitempty"`
-			AutoUpdate        bool   `json:"auto_update,omitempty"`
-		}
-	}
+	PluginID      string                   `json:"plugin_id"`
+	ID            string                   `json:"config_repos,omitempty"`
+	Material      Material                 `json:"material,omitempty"`
 	Configuration []map[string]interface{} `json:"configuration,omitempty"`
 	Rules         []map[string]interface{} `json:"rules,omitempty"`
 	ETAG          string
@@ -391,4 +381,44 @@ type Package struct {
 	PackageRepos  CommonConfig          `json:"package_repo,omitempty"`
 	Configuration []PluginConfiguration `json:"configuration,omitempty"`
 	ETAG          string                `json:"etag,omitempty"`
+}
+
+// Materials holds information of all material type present in GoCD.
+type Materials struct {
+	Materials struct {
+		Materials []Material `json:"materials,omitempty"`
+	} `json:"_embedded,omitempty"`
+}
+
+// Material holds information of a particular material type present in GoCD.
+type Material struct {
+	Type        string    `json:"type,omitempty"`
+	Fingerprint string    `json:"fingerprint,omitempty"`
+	Attributes  Attribute `json:"attributes,omitempty"`
+}
+
+// Attribute holds information of material type present in GoCD.
+type Attribute struct {
+	URL                 string `json:"url,omitempty"`
+	Username            string `json:"username,omitempty"`
+	Password            string `json:"password,omitempty"`
+	EncryptedPassword   string `json:"encrypted_password,omitempty"`
+	Branch              string `json:"branch,omitempty"`
+	AutoUpdate          bool   `json:"auto_update,omitempty"`
+	CheckExternals      bool   `json:"check_externals,omitempty"`
+	UseTickets          bool   `json:"use_tickets,omitempty"`
+	View                string `json:"view,omitempty"`
+	Port                string `json:"port,omitempty"`
+	ProjectPath         string `json:"project_path,omitempty"`
+	Domain              string `json:"domain,omitempty"`
+	Ref                 string `json:"ref,omitempty"`
+	Name                string `json:"name,omitempty"`
+	Stage               string `json:"stage,omitempty"`
+	Pipeline            string `json:"pipeline,omitempty"`
+	IgnoreForScheduling bool   `json:"ignore_for_scheduling,omitempty"`
+	Destination         string `json:"destination,omitempty"`
+	InvertFilter        bool   `json:"invert_filter,omitempty"`
+	Filter              struct {
+		Ignore []string `json:"ignore,omitempty"`
+	} `json:"filter,omitempty"`
 }

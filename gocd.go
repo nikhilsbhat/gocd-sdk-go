@@ -110,6 +110,7 @@ type GoCd interface {
 	CreatePackage(config Package) (Package, error)
 	UpdatePackage(config Package) (Package, error)
 	DeletePackage(id string) error
+	GetMaterials() ([]Material, error)
 	SetRetryCount(count int)
 	SetRetryWaitTime(count int)
 }
