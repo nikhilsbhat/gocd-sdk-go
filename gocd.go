@@ -29,7 +29,7 @@ type GoCd interface {
 	GetConfigRepos() ([]ConfigRepo, error)
 	GetConfigRepo(repo string) (ConfigRepo, error)
 	CreateConfigRepo(repoObj ConfigRepo) error
-	UpdateConfigRepo(repo ConfigRepo, etag string) (string, error)
+	UpdateConfigRepo(repo ConfigRepo) (string, error)
 	DeleteConfigRepo(repo string) error
 	ConfigRepoStatus(repo string) (map[string]bool, error)
 	ConfigRepoTriggerUpdate(name string) (map[string]string, error)

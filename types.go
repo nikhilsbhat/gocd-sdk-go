@@ -73,7 +73,7 @@ type ConfigRepo struct {
 	PluginID      string                   `json:"plugin_id"`
 	ID            string                   `json:"config_repos,omitempty"`
 	Material      Material                 `json:"material,omitempty"`
-	Configuration []map[string]interface{} `json:"configuration,omitempty"`
+	Configuration []PluginConfiguration    `json:"configuration,omitempty"`
 	Rules         []map[string]interface{} `json:"rules,omitempty"`
 	ETAG          string
 }
@@ -263,6 +263,7 @@ type PluginConfiguration struct {
 	Key            string `json:"key,omitempty"`
 	Value          string `json:"value,omitempty"`
 	EncryptedValue string `json:"encrypted_value,omitempty"`
+	IsSecure       bool   `json:"is_secure,omitempty"`
 }
 
 // SiteURLConfig holds information of the site url of GoCD.

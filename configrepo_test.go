@@ -311,7 +311,7 @@ func Test_client_UpdateConfigRepo(t *testing.T) {
 
 		client.SetRetryCount(1)
 		client.SetRetryWaitTime(1)
-		actual, err := client.UpdateConfigRepo(*configRepo, eTag)
+		actual, err := client.UpdateConfigRepo(*configRepo)
 
 		assert.EqualError(t, err, "body: json: cannot unmarshal string into Go value of type gocd.ConfigRepo httpcode: 500")
 		assert.Equal(t, "", actual)
@@ -328,7 +328,7 @@ func Test_client_UpdateConfigRepo(t *testing.T) {
 		client.SetRetryCount(1)
 		client.SetRetryWaitTime(1)
 
-		actual, err := client.UpdateConfigRepo(*configRepo, eTag)
+		actual, err := client.UpdateConfigRepo(*configRepo)
 		assert.EqualError(t, err, "put call made to update config repo errored with: Put "+
 			"\"http://localhost:8156/go/api/admin/config_repos/repo1\": dial tcp [::1]:8156: connect: connection refused")
 		assert.Equal(t, "", actual)
@@ -349,7 +349,7 @@ func Test_client_UpdateConfigRepo(t *testing.T) {
 		client.SetRetryCount(1)
 		client.SetRetryWaitTime(1)
 
-		actual, err := client.UpdateConfigRepo(*newConfigRepo, eTag)
+		actual, err := client.UpdateConfigRepo(*newConfigRepo)
 		assert.EqualError(t, err, "body: <html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html> httpcode: 404")
 		assert.Equal(t, "", actual)
 	})
@@ -364,7 +364,7 @@ func Test_client_UpdateConfigRepo(t *testing.T) {
 			nil,
 		)
 
-		actual, err := client.UpdateConfigRepo(*configRepo, eTag)
+		actual, err := client.UpdateConfigRepo(*configRepo)
 		assert.EqualError(t, err, "body: <html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html> httpcode: 404")
 		assert.Equal(t, "", actual)
 	})
@@ -382,7 +382,7 @@ func Test_client_UpdateConfigRepo(t *testing.T) {
 			"info",
 			nil,
 		)
-		actual, err := client.UpdateConfigRepo(*newConfigRepo, eTag)
+		actual, err := client.UpdateConfigRepo(*newConfigRepo)
 		assert.EqualError(t, err, "body: lost update httpcode: 406")
 		assert.Equal(t, "", actual)
 	})
@@ -399,7 +399,7 @@ func Test_client_UpdateConfigRepo(t *testing.T) {
 			"info",
 			nil,
 		)
-		actual, err := client.UpdateConfigRepo(*newConfigRepo, eTag)
+		actual, err := client.UpdateConfigRepo(*newConfigRepo)
 		assert.NoError(t, err)
 		assert.Equal(t, eTag, actual)
 	})
@@ -703,19 +703,19 @@ func testGetConfigRepoObj() *gocd.ConfigRepo {
 			"resource":  "*",
 		},
 	}
-	configRepo.Configuration = []map[string]interface{}{
+	configRepo.Configuration = []gocd.PluginConfiguration{
 		{
-			"key":   "username",
-			"value": "admin",
+			Key:   "username",
+			Value: "admin",
 		},
 		{
-			"key":             "password",
-			"encrypted_value": "1f3rrs9uhn63hd",
+			Key:            "password",
+			EncryptedValue: "1f3rrs9uhn63hd",
 		},
 		{
-			"key":       "url",
-			"value":     "https://github.com/sample/example.git",
-			"is_secure": true,
+			Key:      "url",
+			Value:    "https://github.com/sample/example.git",
+			IsSecure: true,
 		},
 	}
 

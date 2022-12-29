@@ -95,7 +95,7 @@ func (conf *client) CreateConfigRepo(repoObj ConfigRepo) error {
 }
 
 // UpdateConfigRepo updates the config repo configurations with the latest configurations provided.
-func (conf *client) UpdateConfigRepo(repoObj ConfigRepo, etag string) (string, error) {
+func (conf *client) UpdateConfigRepo(repo ConfigRepo) (string, error) {
 	newClient := &client{}
 	if err := copier.CopyWithOption(newClient, conf, copier.Option{IgnoreEmpty: true, DeepCopy: true}); err != nil {
 		return "", err
@@ -105,10 +105,10 @@ func (conf *client) UpdateConfigRepo(repoObj ConfigRepo, etag string) (string, e
 		SetHeaders(map[string]string{
 			"Accept":       HeaderVersionFour,
 			"Content-Type": ContentJSON,
-			"If-Match":     etag,
+			"If-Match":     repo.ETAG,
 		}).
-		SetBody(repoObj).
-		Put(filepath.Join(ConfigReposEndpoint, repoObj.ID))
+		SetBody(repo).
+		Put(filepath.Join(ConfigReposEndpoint, repo.ID))
 	if err != nil {
 		return "", fmt.Errorf("put call made to update config repo errored with: %w", err)
 	}
