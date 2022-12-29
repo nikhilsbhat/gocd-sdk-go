@@ -17,9 +17,11 @@ import (
 var (
 	//go:embed internal/fixtures/config_repos.json
 	configReposJSON string
-	eTag            = "05548388f7ef5042cd39f7fe42e85735"
-	correctHeader   = map[string]string{"Accept": gocd.HeaderVersionFour}
-	configRepo      = testGetConfigRepoObj()
+	//go:embed internal/fixtures/config_repo.json
+	configRepoJSON string
+	eTag           = "05548388f7ef5042cd39f7fe42e85735"
+	correctHeader  = map[string]string{"Accept": gocd.HeaderVersionFour}
+	configRepo     = testGetConfigRepoObj()
 )
 
 func TestConfig_GetConfigRepoInfo(t *testing.T) {
@@ -80,9 +82,48 @@ func TestConfig_GetConfigRepoInfo(t *testing.T) {
 			nil,
 		)
 
+		expected := []gocd.ConfigRepo{
+			{
+				ID:       "repo1",
+				PluginID: "json.config.plugin",
+				Material: gocd.Material{
+					Type: "git",
+					Attributes: gocd.Attribute{
+						URL:               "https://github.com/config-repo/gocd-json-config-example.git",
+						Username:          "bob",
+						EncryptedPassword: "aSdiFgRRZ6A=",
+						Branch:            "master",
+						AutoUpdate:        true,
+					},
+				},
+				Configuration: []gocd.PluginConfiguration{
+					{
+						Key:   "username",
+						Value: "admin",
+					},
+					{
+						Key:            "password",
+						EncryptedValue: "1f3rrs9uhn63hd",
+					},
+					{
+						Key:      "url",
+						Value:    "https://github.com/sample/example.git",
+						IsSecure: true,
+					},
+				},
+				Rules: []map[string]interface{}{
+					{
+						"directive": "allow",
+						"action":    "refer",
+						"type":      "pipeline_group",
+						"resource":  "*",
+					},
+				},
+			},
+		}
 		actual, err := client.GetConfigRepos()
 		assert.NoError(t, err)
-		assert.Equal(t, 1, len(actual))
+		assert.Equal(t, expected, actual)
 	})
 }
 
@@ -184,7 +225,7 @@ func Test_client_DeleteConfigRepo(t *testing.T) {
 func Test_client_GetConfigRepo(t *testing.T) {
 	repoName := "repo1"
 	t.Run("should error out while fetching config repo information as server returned non 200 status code", func(t *testing.T) {
-		server := mockConfigRepoServer(configReposJSON, http.MethodPost, correctHeader, false)
+		server := mockConfigRepoServer(configRepoJSON, http.MethodPost, correctHeader, false)
 		client := gocd.NewClient(
 			server.URL,
 			"",

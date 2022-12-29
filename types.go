@@ -71,7 +71,7 @@ type ConfigRepos struct {
 // ConfigRepo holds information of the specified config-repo.
 type ConfigRepo struct {
 	PluginID      string                   `json:"plugin_id"`
-	ID            string                   `json:"config_repos,omitempty"`
+	ID            string                   `json:"id,omitempty"`
 	Material      Material                 `json:"material,omitempty"`
 	Configuration []PluginConfiguration    `json:"configuration,omitempty"`
 	Rules         []map[string]interface{} `json:"rules,omitempty"`

@@ -1,0 +1,35 @@
+{
+  "_links": {
+    "self": {
+      "href": "https://ci.example.com/go/api/admin/config_repos/repo1"
+    },
+    "doc": {
+      "href": "https://api.gocd.org/#config-repos"
+    },
+    "find": {
+      "href": "https://ci.example.com/go/api/admin/config_repos/:id"
+    }
+  },
+  "id": "repo1",
+  "plugin_id": "json.config.plugin",
+  "material": {
+    "type": "git",
+    "attributes": {
+      "url": "https://github.com/config-repo/gocd-json-config-example.git",
+      "username": "bob",
+      "encrypted_password": "aSdiFgRRZ6A=",
+      "branch": "master",
+      "auto_update": true
+    }
+  },
+  "configuration": [
+  ],
+  "rules": [
+    {
+      "directive": "allow",
+      "action": "refer",
+      "type": "pipeline_group",
+      "resource": "*"
+    }
+  ]
+}
