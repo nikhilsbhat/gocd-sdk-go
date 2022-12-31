@@ -88,12 +88,7 @@ func Test_client_GetEnvironmentInfo(t *testing.T) {
 						Name: "pipeline1",
 					},
 				},
-				EnvVars: []struct {
-					Name           string `json:"name,omitempty"`
-					Value          string `json:"value,omitempty"`
-					EncryptedValue string `json:"encrypted_value,omitempty"`
-					Secure         bool   `json:"secure,omitempty"`
-				}{
+				EnvVars: []gocd.EnvVars{
 					{
 						Name:   "username",
 						Value:  "admin",
@@ -113,12 +108,7 @@ func Test_client_GetEnvironmentInfo(t *testing.T) {
 						Name: "pipeline2",
 					},
 				},
-				EnvVars: []struct {
-					Name           string `json:"name,omitempty"`
-					Value          string `json:"value,omitempty"`
-					EncryptedValue string `json:"encrypted_value,omitempty"`
-					Secure         bool   `json:"secure,omitempty"`
-				}{
+				EnvVars: []gocd.EnvVars{
 					{
 						Name:   "username",
 						Value:  "admin",
@@ -158,12 +148,7 @@ func Test_client_CreateEnvironments(t *testing.T) {
 					Name: "pipeline1",
 				},
 			},
-			EnvVars: []struct {
-				Name           string `json:"name,omitempty"`
-				Value          string `json:"value,omitempty"`
-				EncryptedValue string `json:"encrypted_value,omitempty"`
-				Secure         bool   `json:"secure,omitempty"`
-			}{
+			EnvVars: []gocd.EnvVars{
 				{
 					Name:   "env1",
 					Value:  "env_value_1",
@@ -531,20 +516,17 @@ func Test_client_GetEnvironment(t *testing.T) {
 		expected := gocd.Environment{
 			Name:      envName,
 			Pipelines: []gocd.Pipeline{{Name: "up42"}},
-			EnvVars: []struct {
-				Name           string `json:"name,omitempty"`
-				Value          string `json:"value,omitempty"`
-				EncryptedValue string `json:"encrypted_value,omitempty"`
-				Secure         bool   `json:"secure,omitempty"`
-			}{{
-				Name:   "username",
-				Secure: false,
-				Value:  "admin",
-			}, {
-				Name:           "password",
-				Secure:         true,
-				EncryptedValue: "LSd1TI0eLa+DjytHjj0qjA==",
-			}},
+			EnvVars: []gocd.EnvVars{
+				{
+					Name:   "username",
+					Secure: false,
+					Value:  "admin",
+				}, {
+					Name:           "password",
+					Secure:         true,
+					EncryptedValue: "LSd1TI0eLa+DjytHjj0qjA==",
+				},
+			},
 		}
 
 		actual, err := client.GetEnvironment(envName)

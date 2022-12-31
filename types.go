@@ -30,11 +30,14 @@ type Agent struct {
 	DiskSpaceAvailable interface{}   `json:"free_space,omitempty"`
 	Resources          []string      `json:"resources,omitempty"`
 	Environments       []interface{} `json:"environments,omitempty"`
-	Operations         struct {
-		Resources    AddRemoves `json:"resources,omitempty"`
-		Environments AddRemoves `json:"environments,omitempty"`
-	} `json:"operations,omitempty"`
-	UUIDS []string `json:"uuids,omitempty"`
+	Operations         Operations    `json:"operations,omitempty"`
+	UUIDS              []string      `json:"uuids,omitempty"`
+}
+
+// Operations holds information of the operations to be performed on GoCD agent.
+type Operations struct {
+	Resources    AddRemoves `json:"resources,omitempty"`
+	Environments AddRemoves `json:"environments,omitempty"`
 }
 
 type AddRemoves struct {
@@ -163,13 +166,16 @@ type Environments struct {
 type Environment struct {
 	Name      string     `json:"name,omitempty"`
 	Pipelines []Pipeline `json:"pipelines,omitempty"`
-	EnvVars   []struct {
-		Name           string `json:"name,omitempty"`
-		Value          string `json:"value,omitempty"`
-		EncryptedValue string `json:"encrypted_value,omitempty"`
-		Secure         bool   `json:"secure,omitempty"`
-	} `json:"environment_variables,omitempty"`
-	ETAG string
+	EnvVars   []EnvVars  `json:"environment_variables,omitempty"`
+	ETAG      string
+}
+
+// EnvVars holds information of environment variables present in GoCD.
+type EnvVars struct {
+	Name           string `json:"name,omitempty"`
+	Value          string `json:"value,omitempty"`
+	EncryptedValue string `json:"encrypted_value,omitempty"`
+	Secure         bool   `json:"secure,omitempty"`
 }
 
 // PatchEnvironment holds information that is handy while patching GoCD environment.
