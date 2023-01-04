@@ -136,7 +136,7 @@ func (conf *client) UpdateEnvironment(environment Environment) (Environment, err
 			"If-Match":     environment.ETAG,
 		}).
 		SetBody(environment).
-		Patch(filepath.Join(EnvironmentEndpoint, environment.Name))
+		Put(filepath.Join(EnvironmentEndpoint, environment.Name))
 	if err != nil {
 		return env, fmt.Errorf("call made to update environment errored with %w", err)
 	}
