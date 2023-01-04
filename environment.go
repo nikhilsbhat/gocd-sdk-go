@@ -60,6 +60,8 @@ func (conf *client) GetEnvironment(name string) (Environment, error) {
 		return env, ResponseReadError(err.Error())
 	}
 
+	env.ETAG = resp.Header().Get("ETag")
+
 	return env, nil
 }
 
