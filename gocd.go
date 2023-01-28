@@ -3,6 +3,8 @@ package gocd
 import (
 	"crypto/tls"
 	"crypto/x509"
+	"reflect"
+	"sort"
 	"strings"
 	"time"
 
@@ -173,4 +175,14 @@ func (conf *client) SetRetryCount(count int) {
 // SetRetryWaitTime sets retry wait time for the go-resty client.
 func (conf *client) SetRetryWaitTime(count int) {
 	conf.httpClient.SetRetryWaitTime(time.Duration(count) * time.Second)
+}
+
+func GetGoCDMethodNames() []string {
+	t := reflect.TypeOf((*GoCd)(nil)).Elem()
+	var methodNames []string
+	for i := 0; i < t.NumMethod(); i++ {
+		methodNames = append(methodNames, t.Method(i).Name)
+	}
+	sort.Sort(sort.StringSlice(methodNames))
+	return methodNames
 }
