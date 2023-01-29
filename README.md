@@ -208,6 +208,14 @@ Below are the list of supported APIs:
     - [ ] Update a role
     - [ ] Delete a role
     - [ ] Bulk update roles
+- [ ] [access-tokens](https://api.gocd.org/current/#access-tokens)
+    - [ ] Get all tokens for current user
+    - [ ] Get one token for current user
+    - [ ] Create token for current user
+    - [ ] Revoke token for current user
+    - [ ] Get all tokens for all users
+    - [ ] Get one token for any user
+    - [ ] Revoke token for any user
 - [x] [Server Health Messages](https://api.gocd.org/current/#server-health-messages)
     - [x] Get Server Health messages
 - [x] [Version](https://api.gocd.org/current/#version)

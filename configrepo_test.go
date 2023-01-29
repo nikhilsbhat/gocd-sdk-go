@@ -111,7 +111,7 @@ func TestConfig_GetConfigRepoInfo(t *testing.T) {
 						IsSecure: true,
 					},
 				},
-				Rules: []map[string]interface{}{
+				Rules: []map[string]string{
 					{
 						"directive": "allow",
 						"action":    "refer",
@@ -736,7 +736,7 @@ func testGetConfigRepoObj() *gocd.ConfigRepo {
 	configRepo.Material.Attributes.URL = "https://github.com/config-repo/gocd-json-config-example.git"
 	configRepo.Material.Attributes.AutoUpdate = false
 	configRepo.Material.Attributes.Branch = "master"
-	configRepo.Rules = []map[string]interface{}{
+	configRepo.Rules = []map[string]string{
 		{
 			"directive": "allow",
 			"action":    "refer",

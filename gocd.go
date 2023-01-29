@@ -183,6 +183,7 @@ func GetGoCDMethodNames() []string {
 	for i := 0; i < t.NumMethod(); i++ {
 		methodNames = append(methodNames, t.Method(i).Name)
 	}
-	sort.Sort(sort.StringSlice(methodNames))
+	sort.Strings(methodNames)
+
 	return methodNames
 }
