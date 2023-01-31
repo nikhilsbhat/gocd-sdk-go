@@ -186,9 +186,9 @@ Below are the list of supported APIs:
     - [x] Get Plugin settings
     - [x] Create Plugin settings
     - [x] Update Plugin settings
-- [ ] [Plugin Info](https://api.gocd.org/current/#get-all-plugin-info)
-    - [ ] Get all plugin info
-    - [ ] Get plugin info
+- [x] [Plugin Info](https://api.gocd.org/current/#plugin-info)
+    - [x] Get all plugin info
+    - [x] Get plugin info
 - [x] [Auth Configs](https://api.gocd.org/current/#authorization-configuration)
     - [x] Get All Auth configs
     - [x] Get Specific Auth config
@@ -216,6 +216,12 @@ Below are the list of supported APIs:
     - [ ] Get all tokens for all users
     - [ ] Get one token for any user
     - [ ] Revoke token for any user
+- [ ] [Notification Filter](https://api.gocd.org/current/#notification-filters)
+    - [ ] Get all notification filters
+    - [ ] Get a notification filter
+    - [ ] Create a notification filter
+    - [ ] Update a notification filter
+    - [ ] Delete a notification filter
 - [x] [Server Health Messages](https://api.gocd.org/current/#server-health-messages)
     - [x] Get Server Health messages
 - [x] [Version](https://api.gocd.org/current/#version)

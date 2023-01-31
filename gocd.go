@@ -119,6 +119,8 @@ type GoCd interface {
 	CreateRole(config Role) (Role, error)
 	UpdateRole(config Role) (Role, error)
 	DeleteRole(name string) error
+	GetPluginsInfo() (PluginsInfo, error)
+	GetPluginInfo(name string) (Plugin, error)
 	SetRetryCount(count int)
 	SetRetryWaitTime(count int)
 }

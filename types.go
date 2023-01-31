@@ -430,16 +430,18 @@ type Attribute struct {
 	} `json:"filter,omitempty"`
 }
 
+// RolesConfigs holds information of all role configs present in GoCd.
 type RolesConfigs struct {
 	RolesConfigs RolesConfig `json:"_embedded,omitempty"`
 }
 
+// RolesConfig holds information of all role configs present in GoCd.
 type RolesConfig struct {
 	Role []Role `json:"roles,omitempty"`
 	ETAG string
 }
 
-// Role hols information of a specific role in GoCd.
+// Role holds information of a specific role in GoCd.
 type Role struct {
 	Name         string                `json:"name,omitempty"`
 	Type         string                `json:"type,omitempty"`
@@ -450,9 +452,32 @@ type Role struct {
 	ETAG         string
 }
 
-// RoleAttribute hols information of a specific attribute of a role in GoCd.
+// RoleAttribute holds information of a specific attribute of a role in GoCd.
 type RoleAttribute struct {
 	Users        []string              `json:"users,omitempty"`
 	AuthConfigID string                `json:"auth_config_id,omitempty"`
 	Properties   []PluginConfiguration `json:"properties,omitempty"`
+}
+
+// PluginsInfos holds information of all plugins present in GoCd.
+type PluginsInfos struct {
+	PluginsInfos PluginsInfo `json:"_embedded,omitempty"`
+}
+
+// PluginsInfo holds information of all plugins present in GoCd.
+type PluginsInfo struct {
+	Plugins []Plugin `json:"plugin_info,omitempty"`
+	ETAG    string
+}
+
+// Plugin holds information of a specific plugins present in GoCd.
+type Plugin struct {
+	ID     string `json:"id,omitempty"`
+	Status struct {
+		State string `json:"state,omitempty"`
+	} `json:"status,omitempty"`
+	PluginFileLocation string                 `json:"plugin_file_location,omitempty"`
+	BundledPlugin      bool                   `json:"bundled_plugin,omitempty"`
+	About              map[string]interface{} `json:"about,omitempty"`
+	ETAG               string
 }

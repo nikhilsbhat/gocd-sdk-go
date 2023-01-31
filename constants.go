@@ -30,6 +30,7 @@ const (
 	PackagesEndpoint            = "/api/admin/packages"
 	MaterialEndpoint            = "/api/config/materials"
 	RolesEndpoint               = "/api/admin/security/roles"
+	PluginInfoEndpoint          = "/api/admin/plugin_info"
 	HeaderVersionOne            = "application/vnd.go.cd.v1+json"
 	HeaderVersionTwo            = "application/vnd.go.cd.v2+json"
 	HeaderVersionThree          = "application/vnd.go.cd.v3+json"

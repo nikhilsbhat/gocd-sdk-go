@@ -60,7 +60,7 @@ func Test_client_GetSecretConfigs(t *testing.T) {
 	})
 
 	t.Run("should error out while fetching all secret configs present in GoCD due to wrong headers", func(t *testing.T) {
-		server := mockServer([]byte(elasticAgentProfilesJSON), http.StatusOK,
+		server := mockServer([]byte(secretConfigsJSON), http.StatusOK,
 			map[string]string{"Accept": gocd.HeaderVersionTwo}, false, nil)
 
 		client := gocd.NewClient(
@@ -81,7 +81,7 @@ func Test_client_GetSecretConfigs(t *testing.T) {
 	})
 
 	t.Run("should error out while fetching all secret configs present in GoCD due to missing headers", func(t *testing.T) {
-		server := mockServer([]byte(elasticAgentProfilesJSON), http.StatusOK,
+		server := mockServer([]byte(secretConfigsJSON), http.StatusOK,
 			nil, false, nil)
 		client := gocd.NewClient(
 			server.URL,
@@ -101,7 +101,7 @@ func Test_client_GetSecretConfigs(t *testing.T) {
 	})
 
 	t.Run("should error out while fetching all secret configs from GoCD as server returned malformed response", func(t *testing.T) {
-		server := mockServer([]byte("elasticAgentProfilesJSON"), http.StatusOK, correctArtifactHeader,
+		server := mockServer([]byte("secretConfigsJSON"), http.StatusOK, correctArtifactHeader,
 			false, map[string]string{"ETag": "cbc5f2d5b9c13a2cc1b1efb3d8a6155d"})
 		client := gocd.NewClient(
 			server.URL,
@@ -116,7 +116,7 @@ func Test_client_GetSecretConfigs(t *testing.T) {
 		}
 
 		actual, err := client.GetSecretConfigs()
-		assert.EqualError(t, err, "reading response body errored with: invalid character 'e' looking for beginning of value")
+		assert.EqualError(t, err, "reading response body errored with: invalid character 's' looking for beginning of value")
 		assert.Equal(t, expected, actual)
 	})
 
