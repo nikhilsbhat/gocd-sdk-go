@@ -376,7 +376,7 @@ func Test_client_UpdateEnvironment(t *testing.T) {
 		environment := gocd.Environment{}
 
 		actual, err := client.UpdateEnvironment(environment)
-		assert.EqualError(t, err, "call made to update environment errored with Patch "+
+		assert.EqualError(t, err, "call made to update environment errored with Put "+
 			"\"http://localhost:8156/go/api/admin/environments\": dial tcp [::1]:8156: connect: connection refused")
 		assert.Equal(t, gocd.Environment{}, actual)
 	})

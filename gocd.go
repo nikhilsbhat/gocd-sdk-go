@@ -113,6 +113,12 @@ type GoCd interface {
 	UpdatePackage(config Package) (Package, error)
 	DeletePackage(id string) error
 	GetMaterials() ([]Material, error)
+	GetRoles() (RolesConfig, error)
+	GetRole(name string) (Role, error)
+	GetRolesByType(roleType string) (RolesConfig, error)
+	CreateRole(config Role) (Role, error)
+	UpdateRole(config Role) (Role, error)
+	DeleteRole(name string) error
 	SetRetryCount(count int)
 	SetRetryWaitTime(count int)
 }

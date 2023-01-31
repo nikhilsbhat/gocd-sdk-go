@@ -1,0 +1,47 @@
+{
+  "_links": {
+    "self": {
+      "href": "https://ci.example.com/go/api/admin/security/roles"
+    },
+    "doc": {
+      "href": "https://api.gocd.org/#roles"
+    },
+    "find": {
+      "href": "https://ci.example.com/go/api/admin/security/roles/:role_name"
+    }
+  },
+  "_embedded": {
+    "roles": [
+      {
+        "_links": {
+          "self": {
+            "href": "https://ci.example.com/go/api/admin/security/roles/spacetiger"
+          },
+          "doc": {
+            "href": "https://api.gocd.org/#roles"
+          },
+          "find": {
+            "href": "https://ci.example.com/go/api/admin/security/roles/:role_name"
+          }
+        },
+        "name": "spacetiger",
+        "type": "gocd",
+        "attributes": {
+          "users": [
+            "alice",
+            "bob",
+            "robin"
+          ]
+        },
+        "policy": [
+          {
+            "permission": "allow",
+            "action": "view",
+            "type": "environment",
+            "resource": "env_A_*"
+          }
+        ]
+      }
+    ]
+  }
+}

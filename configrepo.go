@@ -134,7 +134,7 @@ func (conf *client) DeleteConfigRepo(repo string) error {
 		}).
 		Delete(filepath.Join(ConfigReposEndpoint, repo))
 	if err != nil {
-		return fmt.Errorf("call made to create config repo errored with: %w", err)
+		return fmt.Errorf("call made to delete config repo '%s' errored with: %w", repo, err)
 	}
 
 	if resp.StatusCode() != http.StatusOK {

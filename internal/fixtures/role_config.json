@@ -1,0 +1,30 @@
+{
+  "_links": {
+    "self": {
+      "href": "https://ci.example.com/go/api/admin/security/roles/blackbird"
+    },
+    "doc": {
+      "href": "https://api.gocd.org/#roles"
+    },
+    "find": {
+      "href": "https://ci.example.com/go/api/admin/security/roles/:role_name"
+    }
+  },
+  "name": "blackbird",
+  "auth_config_id": "ldap",
+  "type": "plugin",
+  "properties": [
+    {
+      "key": "MemberOf",
+      "value": "ou=blackbird,ou=area51,dc=example,dc=com"
+    }
+  ],
+  "policy": [
+    {
+      "permission": "allow",
+      "action": "view",
+      "type": "environment",
+      "resource": "env_A_*"
+    }
+  ]
+}

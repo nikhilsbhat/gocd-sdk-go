@@ -429,3 +429,30 @@ type Attribute struct {
 		Ignore []string `json:"ignore,omitempty"`
 	} `json:"filter,omitempty"`
 }
+
+type RolesConfigs struct {
+	RolesConfigs RolesConfig `json:"_embedded,omitempty"`
+}
+
+type RolesConfig struct {
+	Role []Role `json:"roles,omitempty"`
+	ETAG string
+}
+
+// Role hols information of a specific role in GoCd.
+type Role struct {
+	Name         string                `json:"name,omitempty"`
+	Type         string                `json:"type,omitempty"`
+	Attributes   RoleAttribute         `json:"attributes,omitempty"`
+	Policy       []map[string]string   `json:"policy,omitempty"`
+	AuthConfigID string                `json:"auth_config_id,omitempty"`
+	Properties   []PluginConfiguration `json:"properties,omitempty"`
+	ETAG         string
+}
+
+// RoleAttribute hols information of a specific attribute of a role in GoCd.
+type RoleAttribute struct {
+	Users        []string              `json:"users,omitempty"`
+	AuthConfigID string                `json:"auth_config_id,omitempty"`
+	Properties   []PluginConfiguration `json:"properties,omitempty"`
+}

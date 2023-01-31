@@ -189,7 +189,7 @@ func Test_client_DeleteConfigRepo(t *testing.T) {
 		client.SetRetryWaitTime(1)
 
 		err := client.DeleteConfigRepo(repoName)
-		assert.EqualError(t, err, "call made to create config repo errored with: "+
+		assert.EqualError(t, err, "call made to delete config repo 'repo1' errored with: "+
 			"Delete \"http://localhost:8156/go/api/admin/config_repos/repo1\": dial tcp [::1]:8156: connect: connection refused")
 	})
 

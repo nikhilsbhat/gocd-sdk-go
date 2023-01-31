@@ -199,15 +199,15 @@ Below are the list of supported APIs:
     - [x] Get All system admins
     - [x] Update system Admin
     - [ ] Bulk update system admins
-- [ ] [Roles](https://api.gocd.org/current/#roles)
-    - [ ] Get all roles
-    - [ ] Get all roles by type
-    - [ ] Get Specific role
-    - [ ] Create a GoCD role
-    - [ ] Create a plugin role
-    - [ ] Update a role
-    - [ ] Delete a role
-    - [ ] Bulk update roles
+- [ ] [Role](https://api.gocd.org/current/#roles)
+    - [x] Get all roles
+    - [X] Get all roles by type
+    - [x] Get Specific role
+    - [X] Create a GoCD role
+    - [X] Create a plugin role
+    - [X] Update a role
+    - [x] Delete a role
+    - [ ] <del>Bulk update roles<del>
 - [ ] [access-tokens](https://api.gocd.org/current/#access-tokens)
     - [ ] Get all tokens for current user
     - [ ] Get one token for current user
