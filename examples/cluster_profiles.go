@@ -9,7 +9,11 @@ import (
 )
 
 func main() {
-	client := gocd.NewClient("http://localhost:8153/go", "admin", "admin", "info", nil)
+	auth := gocd.Auth{
+		UserName: "admin",
+		Password: "admin",
+	}
+	client := gocd.NewClient("http://localhost:8153/go", auth, "info", nil)
 	clusterProfileConfig := gocd.CommonConfig{
 		ID:       "sample-cluster-profile",
 		PluginID: "cd.go.contrib.elasticagent.kubernetes",

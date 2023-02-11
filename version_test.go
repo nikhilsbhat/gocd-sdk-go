@@ -15,13 +15,7 @@ var versionInfo string
 func Test_config_GetVersionInfo(t *testing.T) {
 	correctVersionHeader := map[string]string{"Accept": gocd.HeaderVersionOne}
 	t.Run("should error out while fetching version information from server", func(t *testing.T) {
-		client := gocd.NewClient(
-			"http://localhost:8156/go",
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
 		client.SetRetryCount(1)
 		client.SetRetryWaitTime(1)
 
@@ -33,13 +27,7 @@ func Test_config_GetVersionInfo(t *testing.T) {
 
 	t.Run("should error out while fetching version information as server returned non 200 status code", func(t *testing.T) {
 		server := mockServer([]byte("backupJSON"), http.StatusBadGateway, correctVersionHeader, false, nil)
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		actual, err := client.GetVersionInfo()
 		assert.EqualError(t, err, gocd.APIWithCodeError(http.StatusBadGateway).Error())
@@ -48,13 +36,7 @@ func Test_config_GetVersionInfo(t *testing.T) {
 
 	t.Run("should error out while fetching version information as server returned malformed response", func(t *testing.T) {
 		server := mockServer([]byte(`{"email_on_failure"}`), http.StatusOK, correctVersionHeader, false, nil)
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		actual, err := client.GetVersionInfo()
 		assert.EqualError(t, err, "reading response body errored with: invalid character '}' after object key")
@@ -63,13 +45,7 @@ func Test_config_GetVersionInfo(t *testing.T) {
 
 	t.Run("should be able to fetch the version info", func(t *testing.T) {
 		server := mockServer([]byte(versionInfo), http.StatusOK, correctVersionHeader, false, nil)
-		client := gocd.NewClient(
-			server.URL,
-			"",
-			"",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		expected := gocd.VersionInfo{
 			Version:     "16.6.0",

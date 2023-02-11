@@ -18,13 +18,7 @@ func Test_client_GetMaterials(t *testing.T) {
 		server := mockServer([]byte(attributesJSON), http.StatusOK,
 			correctArtifactHeader, false, nil)
 
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		expected := []gocd.Material{
 			{
@@ -77,13 +71,7 @@ func Test_client_GetMaterials(t *testing.T) {
 		server := mockServer([]byte(attributesJSON), http.StatusOK,
 			map[string]string{"Accept": gocd.HeaderVersionThree}, false, nil)
 
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		var expected []gocd.Material
 
@@ -95,13 +83,7 @@ func Test_client_GetMaterials(t *testing.T) {
 	t.Run("should error out while fetching all available materials present in GoCD due to missing headers", func(t *testing.T) {
 		server := mockServer([]byte(attributesJSON), http.StatusOK,
 			nil, false, nil)
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		var expected []gocd.Material
 
@@ -113,13 +95,7 @@ func Test_client_GetMaterials(t *testing.T) {
 	t.Run("should error out while fetching all available materials from GoCD as server returned malformed response", func(t *testing.T) {
 		server := mockServer([]byte("attributesJSON"), http.StatusOK, correctArtifactHeader,
 			false, nil)
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		var expected []gocd.Material
 
@@ -129,13 +105,7 @@ func Test_client_GetMaterials(t *testing.T) {
 	})
 
 	t.Run("should error out while fetching all available materials present in GoCD as server is not reachable", func(t *testing.T) {
-		client := gocd.NewClient(
-			"http://localhost:8156/go",
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
 
 		client.SetRetryCount(1)
 		client.SetRetryWaitTime(1)

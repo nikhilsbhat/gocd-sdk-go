@@ -22,13 +22,7 @@ func Test_client_GetPluginsInfo(t *testing.T) {
 		server := mockServer([]byte(pluginsInfoJSON), http.StatusOK,
 			correctArtifactHeader, false, map[string]string{"ETag": "cbc5f2d5b9c13a2cc1b1efb3d8a6155d"})
 
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		expected := gocd.PluginsInfo{
 			ETAG: "cbc5f2d5b9c13a2cc1b1efb3d8a6155d",
@@ -64,13 +58,7 @@ func Test_client_GetPluginsInfo(t *testing.T) {
 		server := mockServer([]byte(pluginsInfoJSON), http.StatusOK,
 			map[string]string{"Accept": gocd.HeaderVersionTwo}, false, nil)
 
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		expected := gocd.PluginsInfo{}
 
@@ -82,13 +70,7 @@ func Test_client_GetPluginsInfo(t *testing.T) {
 	t.Run("should error out while fetching all plugin info present in GoCD due to missing headers", func(t *testing.T) {
 		server := mockServer([]byte(pluginsInfoJSON), http.StatusOK,
 			nil, false, nil)
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		expected := gocd.PluginsInfo{}
 
@@ -100,13 +82,7 @@ func Test_client_GetPluginsInfo(t *testing.T) {
 	t.Run("should error out while fetching all plugin info from GoCD as server returned malformed response", func(t *testing.T) {
 		server := mockServer([]byte("pluginsInfoJSON"), http.StatusOK, correctArtifactHeader,
 			false, map[string]string{"ETag": "cbc5f2d5b9c13a2cc1b1efb3d8a6155d"})
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		expected := gocd.PluginsInfo{}
 
@@ -116,13 +92,7 @@ func Test_client_GetPluginsInfo(t *testing.T) {
 	})
 
 	t.Run("should error out while fetching all plugin info present in GoCD as server is not reachable", func(t *testing.T) {
-		client := gocd.NewClient(
-			"http://localhost:8156/go",
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
 
 		client.SetRetryCount(1)
 		client.SetRetryWaitTime(1)
@@ -142,13 +112,7 @@ func Test_client_GetPluginInfo(t *testing.T) {
 		server := mockServer([]byte(pluginInfoJSON), http.StatusOK,
 			correctArtifactHeader, false, map[string]string{"ETag": "cbc5f2d5b9c13a2cc1b1efb3d8a6155d"})
 
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		expected := gocd.Plugin{
 			ETAG:               "cbc5f2d5b9c13a2cc1b1efb3d8a6155d",
@@ -180,13 +144,7 @@ func Test_client_GetPluginInfo(t *testing.T) {
 		server := mockServer([]byte(pluginInfoJSON), http.StatusOK,
 			map[string]string{"Accept": gocd.HeaderVersionTwo}, false, nil)
 
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		expected := gocd.Plugin{}
 
@@ -198,13 +156,7 @@ func Test_client_GetPluginInfo(t *testing.T) {
 	t.Run("should error out while fetching all plugin info present in GoCD due to missing headers", func(t *testing.T) {
 		server := mockServer([]byte(pluginInfoJSON), http.StatusOK,
 			nil, false, nil)
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		expected := gocd.Plugin{}
 
@@ -216,13 +168,7 @@ func Test_client_GetPluginInfo(t *testing.T) {
 	t.Run("should error out while fetching all plugin info from GoCD as server returned malformed response", func(t *testing.T) {
 		server := mockServer([]byte("pluginInfoJSON"), http.StatusOK, correctArtifactHeader,
 			false, map[string]string{"ETag": "cbc5f2d5b9c13a2cc1b1efb3d8a6155d"})
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		expected := gocd.Plugin{}
 
@@ -232,13 +178,7 @@ func Test_client_GetPluginInfo(t *testing.T) {
 	})
 
 	t.Run("should error out while fetching all plugin info present in GoCD as server is not reachable", func(t *testing.T) {
-		client := gocd.NewClient(
-			"http://localhost:8156/go",
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
 
 		client.SetRetryCount(1)
 		client.SetRetryWaitTime(1)

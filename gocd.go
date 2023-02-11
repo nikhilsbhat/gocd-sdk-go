@@ -126,10 +126,15 @@ type GoCd interface {
 	SetRetryWaitTime(count int)
 }
 
+// Auth holds information of authorisations configurations used for GoCd.
+type Auth struct {
+	UserName    string `json:"user_name,omitempty" yaml:"user_name,omitempty"`
+	Password    string `json:"password,omitempty" yaml:"password,omitempty"`
+	BearerToken string `json:"bearer_token,omitempty" yaml:"bearer_token,omitempty"`
+}
+
 // NewClient returns new instance of httpClient when invoked.
-func NewClient(baseURL, userName, passWord, logLevel string,
-	caContent []byte,
-) GoCd {
+func NewClient(baseURL string, auth Auth, logLevel string, caContent []byte) GoCd {
 	logger := log.New()
 	logger.SetLevel(GetLoglevel(logLevel))
 	logger.WithField(goCdAPILoggerName, true)
@@ -142,8 +147,12 @@ func NewClient(baseURL, userName, passWord, logLevel string,
 	if logLevel == "debug" {
 		newClient.SetDebug(true)
 	}
+
+	auth.setAuth(newClient)
+
+	// setting authorization
 	newClient.SetBaseURL(baseURL)
-	newClient.SetBasicAuth(userName, passWord)
+
 	if len(caContent) != 0 {
 		certPool := x509.NewCertPool()
 		certPool.AppendCertsFromPEM(caContent)
@@ -173,6 +182,14 @@ func GetLoglevel(level string) log.Level {
 		return log.ErrorLevel
 	default:
 		return log.InfoLevel
+	}
+}
+
+func (auth *Auth) setAuth(newClient *resty.Client) {
+	if len(auth.BearerToken) != 0 {
+		newClient.SetAuthToken(auth.BearerToken)
+	} else {
+		newClient.SetBasicAuth(auth.UserName, auth.Password)
 	}
 }
 

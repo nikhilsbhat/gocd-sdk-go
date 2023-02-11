@@ -9,19 +9,19 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-//go:embed internal/fixtures/system_admins.json
-var systemAdmins string
+var (
+	//go:embed internal/fixtures/system_admins.json
+	systemAdmins string
+	auth         = gocd.Auth{
+		UserName: "admin",
+		Password: "admin",
+	}
+)
 
 func Test_client_GetAdminsInfo(t *testing.T) {
 	correctAdminHeader := map[string]string{"Accept": gocd.HeaderVersionTwo}
 	t.Run("should error out while fetching system admins present from server", func(t *testing.T) {
-		client := gocd.NewClient(
-			"http://localhost:8156/go",
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
 		client.SetRetryCount(1)
 		client.SetRetryWaitTime(1)
 
@@ -33,13 +33,7 @@ func Test_client_GetAdminsInfo(t *testing.T) {
 
 	t.Run("should error out while fetching system admins present as server returned non 200 status code", func(t *testing.T) {
 		server := mockServer([]byte("backupJSON"), http.StatusBadGateway, correctAdminHeader, false, nil)
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		actual, err := client.GetSystemAdmins()
 		assert.EqualError(t, err, gocd.APIWithCodeError(http.StatusBadGateway).Error())
@@ -48,13 +42,7 @@ func Test_client_GetAdminsInfo(t *testing.T) {
 
 	t.Run("should error out while fetching system admins present as server returned malformed response", func(t *testing.T) {
 		server := mockServer([]byte(`{"email_on_failure"}`), http.StatusOK, correctAdminHeader, false, nil)
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		actual, err := client.GetSystemAdmins()
 		assert.EqualError(t, err, "reading response body errored with: invalid character '}' after object key")
@@ -63,13 +51,7 @@ func Test_client_GetAdminsInfo(t *testing.T) {
 
 	t.Run("should get 404 from server as header messed up", func(t *testing.T) {
 		server := mockServer([]byte(systemAdmins), http.StatusOK, map[string]string{"Accept": gocd.HeaderVersionOne}, false, nil)
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		actual, err := client.GetSystemAdmins()
 		assert.EqualError(t, err, "goCd server returned code 404 with message")
@@ -78,13 +60,7 @@ func Test_client_GetAdminsInfo(t *testing.T) {
 
 	t.Run("should be able to fetch admins present in GoCD server", func(t *testing.T) {
 		server := mockServer([]byte(systemAdmins), http.StatusOK, correctAdminHeader, false, nil)
-		client := gocd.NewClient(
-			server.URL,
-			"",
-			"",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		expected := gocd.SystemAdmins{
 			Roles: []string{"manager"},
@@ -107,13 +83,7 @@ func Test_client_UpdateSystemAdmins(t *testing.T) {
 	t.Run("should be able to update the system admins successfully", func(t *testing.T) {
 		server := mockServer([]byte(systemAdmins), http.StatusOK, correctAdminHeader,
 			false, map[string]string{"ETag": updatedEtag})
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		users := gocd.SystemAdmins{
 			Roles: []string{"manager"},
@@ -136,13 +106,7 @@ func Test_client_UpdateSystemAdmins(t *testing.T) {
 			"If-Match":     "cbc5f2d5b9c13a2cc1b1efb3d8a6155d",
 		},
 			false, map[string]string{"ETag": updatedEtag})
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		users := gocd.SystemAdmins{
 			Roles: []string{"manager"},
@@ -158,13 +122,7 @@ func Test_client_UpdateSystemAdmins(t *testing.T) {
 	t.Run("should error out while updating system admins due to missing headers", func(t *testing.T) {
 		server := mockServer([]byte(systemAdmins), http.StatusOK, nil,
 			false, map[string]string{"ETag": updatedEtag})
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		users := gocd.SystemAdmins{
 			Roles: []string{"manager"},
@@ -180,13 +138,7 @@ func Test_client_UpdateSystemAdmins(t *testing.T) {
 	t.Run("should error out while updating system admins as server returned malformed response", func(t *testing.T) {
 		server := mockServer([]byte("systemAdmins"), http.StatusOK, correctAdminHeader,
 			false, map[string]string{"ETag": updatedEtag})
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		users := gocd.SystemAdmins{
 			Roles: []string{"manager"},
@@ -202,13 +154,7 @@ func Test_client_UpdateSystemAdmins(t *testing.T) {
 	t.Run("should error out while updating system admins as server returned malformed response", func(t *testing.T) {
 		server := mockServer([]byte("systemAdmins"), http.StatusOK, correctAdminHeader,
 			false, map[string]string{"ETag": updatedEtag})
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		users := gocd.SystemAdmins{
 			Roles: []string{"manager"},
@@ -222,13 +168,7 @@ func Test_client_UpdateSystemAdmins(t *testing.T) {
 	})
 
 	t.Run("should error out while updating system admins as server was not reachable", func(t *testing.T) {
-		client := gocd.NewClient(
-			"http://localhost:8156/go",
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
 
 		client.SetRetryCount(1)
 		client.SetRetryWaitTime(1)

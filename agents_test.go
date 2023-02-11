@@ -31,13 +31,7 @@ var (
 func Test_client_GetAgentsInfo(t *testing.T) {
 	correctAgentsHeader := map[string]string{"Accept": gocd.HeaderVersionSeven}
 	t.Run("should error out as call made to server while fetching agents", func(t *testing.T) {
-		client := gocd.NewClient(
-			"http://localhost:8156/go",
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
 		client.SetRetryCount(1)
 		client.SetRetryWaitTime(1)
 
@@ -49,13 +43,7 @@ func Test_client_GetAgentsInfo(t *testing.T) {
 
 	t.Run("should error out while fetching agents information as server returned non 200 status code", func(t *testing.T) {
 		server := mockServer([]byte("agentsJson"), http.StatusBadGateway, correctAgentsHeader, false, nil)
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		actual, err := client.GetAgents()
 		assert.EqualError(t, err, gocd.APIWithCodeError(http.StatusBadGateway).Error())
@@ -64,13 +52,7 @@ func Test_client_GetAgentsInfo(t *testing.T) {
 
 	t.Run("should error out while fetching agents information as server returned malformed response", func(t *testing.T) {
 		server := mockServer([]byte(`{"_embedded": {"agents": [{`), http.StatusOK, correctAgentsHeader, false, nil)
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		actual, err := client.GetAgents()
 		assert.EqualError(t, err, "reading response body errored with: unexpected end of JSON input")
@@ -79,13 +61,7 @@ func Test_client_GetAgentsInfo(t *testing.T) {
 
 	t.Run("should be able to fetch the agents information from GoCD server", func(t *testing.T) {
 		server := mockServer([]byte(agentsJSON), http.StatusOK, correctAgentsHeader, false, nil)
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		expected := []gocd.Agent{
 			{
@@ -113,13 +89,7 @@ func Test_client_GetAgentJobRunHistory1(t *testing.T) {
 	agentID := "adb9540a-b954-4571-9d9b-2f330739d4da" //nolint:goconst
 	correctAgentsHeader := map[string]string{"Accept": gocd.HeaderVersionOne}
 	t.Run("should error out as call made to server while fetching job run", func(t *testing.T) {
-		client := gocd.NewClient(
-			"http://localhost:8156/go",
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
 		client.SetRetryCount(1)
 		client.SetRetryWaitTime(1)
 
@@ -132,13 +102,7 @@ func Test_client_GetAgentJobRunHistory1(t *testing.T) {
 
 	t.Run("should error out while fetching job run history as server returned non 200 status code", func(t *testing.T) {
 		server := mockServer([]byte("agentRunHistoryJSON"), http.StatusBadGateway, correctAgentsHeader, false, nil)
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		actual, err := client.GetAgentJobRunHistory(agentID)
 		assert.EqualError(t, err, gocd.APIWithCodeError(http.StatusBadGateway).Error())
@@ -147,13 +111,7 @@ func Test_client_GetAgentJobRunHistory1(t *testing.T) {
 
 	t.Run("should error out while fetching agent job run history as server returned malformed response", func(t *testing.T) {
 		server := mockServer([]byte(`{"_embedded": {"agents": [{`), http.StatusOK, correctAgentsHeader, false, nil)
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		actual, err := client.GetAgentJobRunHistory(agentID)
 		assert.EqualError(t, err, "reading response body errored with: unexpected end of JSON input")
@@ -162,13 +120,7 @@ func Test_client_GetAgentJobRunHistory1(t *testing.T) {
 
 	t.Run("should be able to fetch the agent job run history", func(t *testing.T) {
 		server := mockServer([]byte(agentRunHistoryJSON), http.StatusOK, correctAgentsHeader, false, nil)
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		expected := gocd.AgentJobHistory{
 			Jobs: []gocd.JobRunHistory{
@@ -204,13 +156,7 @@ func Test_client_UpdateAgent(t *testing.T) {
 		assert.NoError(t, err)
 
 		server := agentMockServer(agentInfo, http.MethodPatch, correctAgentUpdateHeader)
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		agentUpdateInfo := gocd.Agent{
 			Name:         "agent02.example.com",
@@ -225,13 +171,7 @@ func Test_client_UpdateAgent(t *testing.T) {
 
 	t.Run("should error out while updating agent information due to wrong headers", func(t *testing.T) {
 		server := agentMockServer(nil, http.MethodPatch, map[string]string{"Accept": gocd.HeaderVersionFour, "Content-Type": gocd.ContentJSON})
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		agentUpdateInfo := gocd.Agent{
 			Name:         "agent02.example.com",
@@ -246,13 +186,7 @@ func Test_client_UpdateAgent(t *testing.T) {
 
 	t.Run("should error out while updating agent information due to missing headers", func(t *testing.T) {
 		server := agentMockServer(nil, http.MethodPatch, nil)
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		agentUpdateInfo := gocd.Agent{
 			Name:         "agent02.example.com",
@@ -267,13 +201,7 @@ func Test_client_UpdateAgent(t *testing.T) {
 
 	t.Run("should error out while updating agent information as malformed data sent to server", func(t *testing.T) {
 		server := agentMockServer([]byte("agentsJSON"), http.MethodPatch, correctAgentUpdateHeader)
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		agentUpdateInfo := gocd.Agent{
 			Name:         "agent02.example.com",
@@ -287,13 +215,7 @@ func Test_client_UpdateAgent(t *testing.T) {
 	})
 
 	t.Run("should error out while updating agent information as server was not reachable", func(t *testing.T) {
-		client := gocd.NewClient(
-			"http://localhost:8156/go",
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
 
 		client.SetRetryCount(1)
 		client.SetRetryWaitTime(1)
@@ -320,13 +242,7 @@ func Test_client_UpdateAgentBulk(t *testing.T) {
 		assert.NoError(t, err)
 
 		server := agentMockServer(agentInfo, http.MethodPatch, correctAgentUpdateHeader)
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		agentUpdateInfo := gocd.Agent{
 			Name:         "agent02.example.com",
@@ -341,13 +257,7 @@ func Test_client_UpdateAgentBulk(t *testing.T) {
 
 	t.Run("should error out while bulk updating agents information due to wrong headers", func(t *testing.T) {
 		server := agentMockServer(nil, http.MethodPatch, map[string]string{"Accept": gocd.HeaderVersionFour, "Content-Type": gocd.ContentJSON})
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		agentUpdateInfo := gocd.Agent{
 			Name:         "agent02.example.com",
@@ -362,13 +272,7 @@ func Test_client_UpdateAgentBulk(t *testing.T) {
 
 	t.Run("should error out while bulk updating agents information due to missing headers", func(t *testing.T) {
 		server := agentMockServer(nil, http.MethodPatch, nil)
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		agentUpdateInfo := gocd.Agent{
 			Name:         "agent02.example.com",
@@ -383,13 +287,7 @@ func Test_client_UpdateAgentBulk(t *testing.T) {
 
 	t.Run("should error out while bulk updating agents information as malformed data sent to server", func(t *testing.T) {
 		server := agentMockServer([]byte("agentsJSON"), http.MethodPatch, correctAgentUpdateHeader)
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		agentUpdateInfo := gocd.Agent{
 			Name:         "agent02.example.com",
@@ -403,13 +301,7 @@ func Test_client_UpdateAgentBulk(t *testing.T) {
 	})
 
 	t.Run("should error out while bulk updating agents information as server was not reachable", func(t *testing.T) {
-		client := gocd.NewClient(
-			"http://localhost:8156/go",
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
 
 		client.SetRetryCount(1)
 		client.SetRetryWaitTime(1)
@@ -433,13 +325,7 @@ func Test_client_DeleteAgent(t *testing.T) {
 
 	t.Run("should be able to delete the specified agent successfully", func(t *testing.T) {
 		server := agentMockServer(nil, http.MethodDelete, correctAgentUpdateHeader)
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		actual, err := client.DeleteAgent(agentID)
 		assert.NoError(t, err)
@@ -448,13 +334,7 @@ func Test_client_DeleteAgent(t *testing.T) {
 
 	t.Run("should error out while deleting agent due to wrong headers", func(t *testing.T) {
 		server := agentMockServer(nil, http.MethodDelete, map[string]string{"Accept": gocd.HeaderVersionFour})
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		actual, err := client.DeleteAgent(agentID)
 		assert.EqualError(t, err, "body: <html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html> httpcode: 404")
@@ -463,13 +343,7 @@ func Test_client_DeleteAgent(t *testing.T) {
 
 	t.Run("should error out while deleting agent due to missing headers", func(t *testing.T) {
 		server := agentMockServer(nil, http.MethodDelete, nil)
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		actual, err := client.DeleteAgent(agentID)
 		assert.EqualError(t, err, "body: <html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html> httpcode: 404")
@@ -477,13 +351,7 @@ func Test_client_DeleteAgent(t *testing.T) {
 	})
 
 	t.Run("should error out while deleting agent as server was not reachable", func(t *testing.T) {
-		client := gocd.NewClient(
-			"http://localhost:8156/go",
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
 
 		client.SetRetryCount(1)
 		client.SetRetryWaitTime(1)
@@ -503,13 +371,7 @@ func Test_client_DeleteAgentBulk(t *testing.T) {
 
 	t.Run("should be able bulk delete the specified agents successfully", func(t *testing.T) {
 		server := agentMockServer(nil, http.MethodDelete, correctAgentUpdateHeader)
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		actual, err := client.DeleteAgentBulk(agent)
 		assert.NoError(t, err)
@@ -518,13 +380,7 @@ func Test_client_DeleteAgentBulk(t *testing.T) {
 
 	t.Run("should error out while bulk deleting agents due to wrong headers", func(t *testing.T) {
 		server := agentMockServer(nil, http.MethodDelete, map[string]string{"Accept": gocd.HeaderVersionFour})
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		actual, err := client.DeleteAgentBulk(agent)
 		assert.EqualError(t, err, "body: <html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html> httpcode: 404")
@@ -533,13 +389,7 @@ func Test_client_DeleteAgentBulk(t *testing.T) {
 
 	t.Run("should error out while bulk deleting agents due to missing headers", func(t *testing.T) {
 		server := agentMockServer(nil, http.MethodDelete, nil)
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		actual, err := client.DeleteAgentBulk(agent)
 		assert.EqualError(t, err, "body: <html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html> httpcode: 404")
@@ -547,13 +397,7 @@ func Test_client_DeleteAgentBulk(t *testing.T) {
 	})
 
 	t.Run("should error out while bulk deleting agent as server was not reachable", func(t *testing.T) {
-		client := gocd.NewClient(
-			"http://localhost:8156/go",
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
 
 		client.SetRetryCount(1)
 		client.SetRetryWaitTime(1)
@@ -574,13 +418,7 @@ func Test_client_AgentKillTask(t *testing.T) {
 	t.Run("should be able to cancel the tasks running on an agent successfully", func(t *testing.T) {
 		server := mockServer([]byte(pipelineGroupUpdate), http.StatusOK, correctTaskKillHeader,
 			false, nil)
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		agent := gocd.Agent{ID: "adb9540a-5hfh-6453-9d9b-2f37467739d4da"}
 
@@ -592,13 +430,7 @@ func Test_client_AgentKillTask(t *testing.T) {
 		server := mockServer([]byte(pipelineGroupUpdate), http.StatusOK,
 			map[string]string{"Accept": gocd.HeaderVersionTwo, gocd.HeaderConfirm: "true"},
 			false, nil)
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		agent := gocd.Agent{ID: "adb9540a-5hfh-6453-9d9b-2f37467739d4da"}
 
@@ -610,13 +442,7 @@ func Test_client_AgentKillTask(t *testing.T) {
 		server := mockServer([]byte(pipelineGroupUpdate), http.StatusOK,
 			map[string]string{"Accept": gocd.HeaderVersionTwo},
 			false, nil)
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		agent := gocd.Agent{ID: "adb9540a-5hfh-6453-9d9b-2f37467739d4da"}
 
@@ -625,13 +451,7 @@ func Test_client_AgentKillTask(t *testing.T) {
 	})
 
 	t.Run("should error out while canceling the tasks running on an agent since server is not reachable", func(t *testing.T) {
-		client := gocd.NewClient(
-			"http://localhost:8156/go",
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
 
 		client.SetRetryCount(1)
 		client.SetRetryWaitTime(1)

@@ -8,7 +8,11 @@ import (
 )
 
 func exampleMain() {
-	client := gocd.NewClient("http://localhost:8153/go", "admin", "admin", "info", nil)
+	auth := gocd.Auth{
+		UserName: "admin",
+		Password: "admin",
+	}
+	client := gocd.NewClient("http://localhost:8153/go", auth, "info", nil)
 	fmt.Println(environments(client))
 	fmt.Println(configRepos(client))
 }

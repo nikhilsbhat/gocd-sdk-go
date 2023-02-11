@@ -16,13 +16,7 @@ func Test_client_GetMailServerConfig(t *testing.T) {
 	t.Run("should be able to fetch mail server configuration successfully", func(t *testing.T) {
 		server := mockServer([]byte(mailServerJSON), http.StatusOK,
 			map[string]string{"Accept": gocd.HeaderVersionOne}, false, nil)
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		expected := gocd.MailServerConfig{
 			Hostname:          "smtp.example.com",
@@ -42,13 +36,7 @@ func Test_client_GetMailServerConfig(t *testing.T) {
 	t.Run("should error out while fetching mail server configuration due to wrong headers", func(t *testing.T) {
 		server := mockServer([]byte(mailServerJSON), http.StatusOK,
 			map[string]string{"Accept": gocd.HeaderVersionTwo}, false, nil)
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		expected := gocd.MailServerConfig{}
 
@@ -60,13 +48,7 @@ func Test_client_GetMailServerConfig(t *testing.T) {
 	t.Run("should error out while fetching mail server configuration due to missing headers", func(t *testing.T) {
 		server := mockServer([]byte(mailServerJSON), http.StatusOK,
 			nil, false, nil)
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		expected := gocd.MailServerConfig{}
 
@@ -78,13 +60,7 @@ func Test_client_GetMailServerConfig(t *testing.T) {
 	t.Run("should error out while fetching mail server configuration as server returned malformed response", func(t *testing.T) {
 		server := mockServer([]byte("mailServerJSON"), http.StatusOK,
 			map[string]string{"Accept": gocd.HeaderVersionOne}, false, nil)
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		expected := gocd.MailServerConfig{}
 
@@ -94,13 +70,7 @@ func Test_client_GetMailServerConfig(t *testing.T) {
 	})
 
 	t.Run("should error out while fetching mail server configuration as server is not reachable", func(t *testing.T) {
-		client := gocd.NewClient(
-			"http://localhost:8156/go",
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
 
 		client.SetRetryCount(1)
 		client.SetRetryWaitTime(1)
@@ -118,13 +88,7 @@ func Test_client_DeleteMailServerConfig(t *testing.T) {
 	t.Run("should be able to delete mail server configuration successfully", func(t *testing.T) {
 		server := mockServer(nil, http.StatusOK,
 			map[string]string{"Accept": gocd.HeaderVersionOne}, false, nil)
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		err := client.DeleteMailServerConfig()
 		assert.NoError(t, err)
@@ -133,13 +97,7 @@ func Test_client_DeleteMailServerConfig(t *testing.T) {
 	t.Run("should error out while deleting mail server configuration due to wrong headers", func(t *testing.T) {
 		server := mockServer(nil, http.StatusOK,
 			map[string]string{"Accept": gocd.HeaderVersionTwo}, false, nil)
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		err := client.DeleteMailServerConfig()
 		assert.EqualError(t, err, "body: <html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html> httpcode: 404")
@@ -148,26 +106,14 @@ func Test_client_DeleteMailServerConfig(t *testing.T) {
 	t.Run("should error out while deleting mail server configuration due to missing headers", func(t *testing.T) {
 		server := mockServer([]byte(mailServerJSON), http.StatusOK,
 			nil, false, nil)
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		err := client.DeleteMailServerConfig()
 		assert.EqualError(t, err, "body: <html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html> httpcode: 404")
 	})
 
 	t.Run("should error out while deleting mail server configuration as server is not reachable", func(t *testing.T) {
-		client := gocd.NewClient(
-			"http://localhost:8156/go",
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
 
 		client.SetRetryCount(1)
 		client.SetRetryWaitTime(1)
@@ -182,13 +128,7 @@ func Test_client_CreateOrUpdateMailServerConfig(t *testing.T) {
 	t.Run("should be create/update mail server configuration successfully", func(t *testing.T) {
 		server := mockServer([]byte(mailServerJSON), http.StatusOK,
 			map[string]string{"Accept": gocd.HeaderVersionOne, "Content-Type": gocd.ContentJSON}, false, nil)
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		input := gocd.MailServerConfig{
 			Hostname:          "smtp.example.com",
@@ -210,13 +150,7 @@ func Test_client_CreateOrUpdateMailServerConfig(t *testing.T) {
 	t.Run("should error out while creating/updating mail server configuration due to wrong headers", func(t *testing.T) {
 		server := mockServer([]byte(mailServerJSON), http.StatusOK,
 			map[string]string{"Accept": gocd.HeaderVersionTwo}, false, nil)
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		input := gocd.MailServerConfig{}
 		expected := input
@@ -229,13 +163,7 @@ func Test_client_CreateOrUpdateMailServerConfig(t *testing.T) {
 	t.Run("should error out while creating/updating mail server configuration due to missing headers", func(t *testing.T) {
 		server := mockServer([]byte(mailServerJSON), http.StatusOK,
 			nil, false, nil)
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		input := gocd.MailServerConfig{}
 		expected := input
@@ -248,13 +176,7 @@ func Test_client_CreateOrUpdateMailServerConfig(t *testing.T) {
 	t.Run("should error out while creating/updating mail server configuration as server returned malformed response", func(t *testing.T) {
 		server := mockServer([]byte("mailServerJSON"), http.StatusOK,
 			map[string]string{"Accept": gocd.HeaderVersionOne}, false, nil)
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		input := gocd.MailServerConfig{}
 		expected := input
@@ -265,13 +187,7 @@ func Test_client_CreateOrUpdateMailServerConfig(t *testing.T) {
 	})
 
 	t.Run("should error out while creating/updating mail server configuration as server is not reachable", func(t *testing.T) {
-		client := gocd.NewClient(
-			"http://localhost:8156/go",
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
 
 		client.SetRetryCount(1)
 		client.SetRetryWaitTime(1)

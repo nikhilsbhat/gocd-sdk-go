@@ -22,13 +22,7 @@ func Test_client_GetSecretConfigs(t *testing.T) {
 		server := mockServer([]byte(secretConfigsJSON), http.StatusOK,
 			correctArtifactHeader, false, map[string]string{"ETag": "cbc5f2d5b9c13a2cc1b1efb3d8a6155d"})
 
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		expected := gocd.SecretsConfig{
 			ETAG: "cbc5f2d5b9c13a2cc1b1efb3d8a6155d",
@@ -63,13 +57,7 @@ func Test_client_GetSecretConfigs(t *testing.T) {
 		server := mockServer([]byte(secretConfigsJSON), http.StatusOK,
 			map[string]string{"Accept": gocd.HeaderVersionTwo}, false, nil)
 
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		expected := gocd.SecretsConfig{
 			CommonConfigs: nil,
@@ -83,13 +71,7 @@ func Test_client_GetSecretConfigs(t *testing.T) {
 	t.Run("should error out while fetching all secret configs present in GoCD due to missing headers", func(t *testing.T) {
 		server := mockServer([]byte(secretConfigsJSON), http.StatusOK,
 			nil, false, nil)
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		expected := gocd.SecretsConfig{
 			CommonConfigs: nil,
@@ -103,13 +85,7 @@ func Test_client_GetSecretConfigs(t *testing.T) {
 	t.Run("should error out while fetching all secret configs from GoCD as server returned malformed response", func(t *testing.T) {
 		server := mockServer([]byte("secretConfigsJSON"), http.StatusOK, correctArtifactHeader,
 			false, map[string]string{"ETag": "cbc5f2d5b9c13a2cc1b1efb3d8a6155d"})
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		expected := gocd.SecretsConfig{
 			CommonConfigs: nil,
@@ -121,13 +97,7 @@ func Test_client_GetSecretConfigs(t *testing.T) {
 	})
 
 	t.Run("should error out while fetching all secret configs present in GoCD as server is not reachable", func(t *testing.T) {
-		client := gocd.NewClient(
-			"http://localhost:8156/go",
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
 
 		client.SetRetryCount(1)
 		client.SetRetryWaitTime(1)
@@ -149,13 +119,7 @@ func Test_client_GetSecretConfig(t *testing.T) {
 		server := mockServer([]byte(secretConfigJSON), http.StatusOK,
 			correctArtifactHeader, false, map[string]string{"ETag": "cbc5f2d5b9c13a2cc1b1efb3d8a6155d"})
 
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		expected := gocd.CommonConfig{
 			ETAG:     "cbc5f2d5b9c13a2cc1b1efb3d8a6155d",
@@ -186,13 +150,7 @@ func Test_client_GetSecretConfig(t *testing.T) {
 		server := mockServer([]byte(secretConfigJSON), http.StatusOK,
 			map[string]string{"Accept": gocd.HeaderVersionTwo}, false, nil)
 
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		expected := gocd.CommonConfig{}
 
@@ -204,13 +162,7 @@ func Test_client_GetSecretConfig(t *testing.T) {
 	t.Run("should error out while fetching a specific secret config present in GoCD due to missing headers", func(t *testing.T) {
 		server := mockServer([]byte(secretConfigJSON), http.StatusOK,
 			nil, false, nil)
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		expected := gocd.CommonConfig{}
 
@@ -222,13 +174,7 @@ func Test_client_GetSecretConfig(t *testing.T) {
 	t.Run("should error out while fetching a specific secret config from GoCD as server returned malformed response", func(t *testing.T) {
 		server := mockServer([]byte("secretConfigJSON"), http.StatusOK, correctArtifactHeader,
 			false, map[string]string{"ETag": "cbc5f2d5b9c13a2cc1b1efb3d8a6155d"})
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		expected := gocd.CommonConfig{}
 
@@ -238,13 +184,7 @@ func Test_client_GetSecretConfig(t *testing.T) {
 	})
 
 	t.Run("should error out while fetching a specific secret config present in GoCD as server is not reachable", func(t *testing.T) {
-		client := gocd.NewClient(
-			"http://localhost:8156/go",
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
 
 		client.SetRetryCount(1)
 		client.SetRetryWaitTime(1)
@@ -265,13 +205,7 @@ func Test_client_DeleteSecretConfig(t *testing.T) {
 		server := mockServer(nil, http.StatusOK,
 			correctArtifactHeader, false, nil)
 
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		err := client.DeleteSecretConfig(secretCfgID)
 		assert.NoError(t, err)
@@ -281,13 +215,7 @@ func Test_client_DeleteSecretConfig(t *testing.T) {
 		server := mockServer(nil, http.StatusOK,
 			map[string]string{"Accept": gocd.HeaderVersionTwo}, false, nil)
 
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		err := client.DeleteSecretConfig(secretCfgID)
 		assert.EqualError(t, err, "body: <html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html> httpcode: 404")
@@ -297,26 +225,14 @@ func Test_client_DeleteSecretConfig(t *testing.T) {
 		server := mockServer(nil, http.StatusOK,
 			nil, false, nil)
 
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		err := client.DeleteSecretConfig(secretCfgID)
 		assert.EqualError(t, err, "body: <html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html> httpcode: 404")
 	})
 
 	t.Run("should error out while deleting an secret config as GoCD server is not reachable", func(t *testing.T) {
-		client := gocd.NewClient(
-			"http://localhost:8156/go",
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
 
 		client.SetRetryCount(1)
 		client.SetRetryWaitTime(1)
@@ -334,13 +250,7 @@ func Test_client_UpdateSecretConfig(t *testing.T) {
 		server := mockServer([]byte(secretConfigJSON), http.StatusOK,
 			correctArtifactHeader, false, map[string]string{"ETag": "61406622382e51c2079c11dcbdb978fb"})
 
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		profileCfg := gocd.CommonConfig{
 			ETAG:     "cbc5f2d5b9c13a2cc1b1efb3d8a6155d",
@@ -374,13 +284,7 @@ func Test_client_UpdateSecretConfig(t *testing.T) {
 		server := mockServer([]byte(secretConfigJSON), http.StatusOK,
 			map[string]string{"Accept": gocd.HeaderVersionTwo}, false, nil)
 
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		profileCfg := gocd.CommonConfig{}
 		expected := profileCfg
@@ -393,13 +297,7 @@ func Test_client_UpdateSecretConfig(t *testing.T) {
 	t.Run("should error out while updating an specific secret config present in GoCD due to missing headers", func(t *testing.T) {
 		server := mockServer([]byte(secretConfigJSON), http.StatusOK,
 			nil, false, nil)
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		profileCfg := gocd.CommonConfig{}
 		expected := profileCfg
@@ -412,13 +310,7 @@ func Test_client_UpdateSecretConfig(t *testing.T) {
 	t.Run("should error out while updating an specific secret config from GoCD as server returned malformed response", func(t *testing.T) {
 		server := mockServer([]byte("secretConfigJSON"), http.StatusOK, correctArtifactHeader,
 			false, map[string]string{"ETag": "cbc5f2d5b9c13a2cc1b1efb3d8a6155d"})
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		secretCfg := gocd.CommonConfig{}
 		expected := secretCfg
@@ -429,13 +321,7 @@ func Test_client_UpdateSecretConfig(t *testing.T) {
 	})
 
 	t.Run("should error out while updating an specific secret config present in GoCD as server is not reachable", func(t *testing.T) {
-		client := gocd.NewClient(
-			"http://localhost:8156/go",
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
 
 		client.SetRetryCount(1)
 		client.SetRetryWaitTime(1)
@@ -457,13 +343,7 @@ func Test_client_CreateSecretConfig(t *testing.T) {
 		server := mockServer([]byte(secretConfigJSON), http.StatusOK,
 			correctArtifactHeader, false, map[string]string{"ETag": "61406622382e51c2079c11dcbdb978fb"})
 
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		secretCfg := gocd.CommonConfig{
 			ID:       secretCfgID,
@@ -496,13 +376,7 @@ func Test_client_CreateSecretConfig(t *testing.T) {
 		server := mockServer([]byte(secretConfigJSON), http.StatusOK,
 			map[string]string{"Accept": gocd.HeaderVersionTwo}, false, nil)
 
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		secretCfg := gocd.CommonConfig{}
 		expected := secretCfg
@@ -515,13 +389,7 @@ func Test_client_CreateSecretConfig(t *testing.T) {
 	t.Run("should error out while creating an specific secret config present in GoCD due to missing headers", func(t *testing.T) {
 		server := mockServer([]byte(secretConfigJSON), http.StatusOK,
 			nil, false, nil)
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		profileCfg := gocd.CommonConfig{}
 		expected := profileCfg
@@ -534,13 +402,7 @@ func Test_client_CreateSecretConfig(t *testing.T) {
 	t.Run("should error out while creating an specific secret config from GoCD as server returned malformed response", func(t *testing.T) {
 		server := mockServer([]byte("secretConfigJSON"), http.StatusOK, correctArtifactHeader,
 			false, map[string]string{"ETag": "cbc5f2d5b9c13a2cc1b1efb3d8a6155d"})
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		secretCfg := gocd.CommonConfig{}
 		expected := secretCfg
@@ -551,13 +413,7 @@ func Test_client_CreateSecretConfig(t *testing.T) {
 	})
 
 	t.Run("should error out while creating an specific secret config present in GoCD as server is not reachable", func(t *testing.T) {
-		client := gocd.NewClient(
-			"http://localhost:8156/go",
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
 
 		client.SetRetryCount(1)
 		client.SetRetryWaitTime(1)

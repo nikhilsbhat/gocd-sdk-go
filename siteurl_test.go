@@ -16,13 +16,7 @@ func Test_client_GetSiteURL(t *testing.T) {
 	t.Run("should be able to get the site url successfully", func(t *testing.T) {
 		server := mockServer([]byte(siteURLJSON), http.StatusOK,
 			map[string]string{"Accept": gocd.HeaderVersionOne}, false, nil)
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		expected := gocd.SiteURLConfig{
 			SiteURL:       "http://foo.com",
@@ -37,13 +31,7 @@ func Test_client_GetSiteURL(t *testing.T) {
 	t.Run("should error out while getting the site url due to wrong headers", func(t *testing.T) {
 		server := mockServer([]byte(siteURLJSON), http.StatusOK,
 			map[string]string{"Accept": gocd.HeaderVersionTwo}, false, nil)
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		expected := gocd.SiteURLConfig{}
 
@@ -55,13 +43,7 @@ func Test_client_GetSiteURL(t *testing.T) {
 	t.Run("should error out while getting the site url due to missing headers", func(t *testing.T) {
 		server := mockServer([]byte(siteURLJSON), http.StatusOK,
 			nil, false, nil)
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		expected := gocd.SiteURLConfig{}
 
@@ -73,13 +55,7 @@ func Test_client_GetSiteURL(t *testing.T) {
 	t.Run("should error out while getting site url as server returned malformed response", func(t *testing.T) {
 		server := mockServer([]byte("siteURLJSON"), http.StatusOK,
 			map[string]string{"Accept": gocd.HeaderVersionOne}, false, nil)
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		expected := gocd.SiteURLConfig{}
 
@@ -89,13 +65,7 @@ func Test_client_GetSiteURL(t *testing.T) {
 	})
 
 	t.Run("should error out while getting site url as server is not reachable", func(t *testing.T) {
-		client := gocd.NewClient(
-			"http://localhost:8156/go",
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
 
 		client.SetRetryCount(1)
 		client.SetRetryWaitTime(1)
@@ -113,13 +83,7 @@ func Test_client_CreateOrUpdateSiteURL(t *testing.T) {
 	t.Run("should be able to create/update the site url successfully", func(t *testing.T) {
 		server := mockServer([]byte(siteURLJSON), http.StatusOK,
 			map[string]string{"Accept": gocd.HeaderVersionOne}, false, nil)
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		site := gocd.SiteURLConfig{
 			SiteURL:       "http://foo.com",
@@ -139,13 +103,7 @@ func Test_client_CreateOrUpdateSiteURL(t *testing.T) {
 	t.Run("should error out while creating/updating the site url due to wrong headers", func(t *testing.T) {
 		server := mockServer([]byte(siteURLJSON), http.StatusOK,
 			map[string]string{"Accept": gocd.HeaderVersionTwo}, false, nil)
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		expected := gocd.SiteURLConfig{}
 
@@ -157,13 +115,7 @@ func Test_client_CreateOrUpdateSiteURL(t *testing.T) {
 	t.Run("should error out while creating/updating the site url due to missing headers", func(t *testing.T) {
 		server := mockServer([]byte(siteURLJSON), http.StatusOK,
 			nil, false, nil)
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		expected := gocd.SiteURLConfig{}
 
@@ -175,13 +127,7 @@ func Test_client_CreateOrUpdateSiteURL(t *testing.T) {
 	t.Run("should error out while getting site url as server returned malformed response", func(t *testing.T) {
 		server := mockServer([]byte("siteURLJSON"), http.StatusOK,
 			map[string]string{"Accept": gocd.HeaderVersionOne}, false, nil)
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		expected := gocd.SiteURLConfig{}
 
@@ -191,13 +137,7 @@ func Test_client_CreateOrUpdateSiteURL(t *testing.T) {
 	})
 
 	t.Run("should error out while getting site url as server is not reachable", func(t *testing.T) {
-		client := gocd.NewClient(
-			"http://localhost:8156/go",
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
 
 		client.SetRetryCount(1)
 		client.SetRetryWaitTime(1)

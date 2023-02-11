@@ -20,13 +20,7 @@ func Test_client_GetArtifactConfig(t *testing.T) {
 	correctArtifactsHeader := map[string]string{"Accept": gocd.HeaderVersionOne}
 	t.Run("should be able to get the artifact information from GoCD successfully", func(t *testing.T) {
 		server := mockArtifactInfoServer([]byte(artifactInfoJSON), http.StatusOK, correctArtifactsHeader)
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		expected := gocd.ArtifactInfo{
 			ArtifactsDir: "foo",
@@ -45,13 +39,7 @@ func Test_client_GetArtifactConfig(t *testing.T) {
 
 	t.Run("should error out while getting the artifact information from GoCD successfully due to wrong headers", func(t *testing.T) {
 		server := mockArtifactInfoServer([]byte(artifactInfoJSON), http.StatusOK, map[string]string{"Accept": gocd.HeaderVersionTwo})
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		actual, err := client.GetArtifactConfig()
 		assert.EqualError(t, err, "body: <html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html> httpcode: 404")
@@ -60,13 +48,7 @@ func Test_client_GetArtifactConfig(t *testing.T) {
 
 	t.Run("should error out while getting the artifact information from GoCD successfully due to no headers set", func(t *testing.T) {
 		server := mockArtifactInfoServer([]byte(artifactInfoJSON), http.StatusOK, nil)
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		actual, err := client.GetArtifactConfig()
 		assert.EqualError(t, err, "body: <html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html> httpcode: 404")
@@ -75,13 +57,7 @@ func Test_client_GetArtifactConfig(t *testing.T) {
 
 	t.Run("should error out while getting the artifact information as server returned malformed data", func(t *testing.T) {
 		server := mockArtifactInfoServer([]byte("artifactInfoJSON"), http.StatusOK, correctArtifactsHeader)
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		actual, err := client.GetArtifactConfig()
 		assert.EqualError(t, err, "reading response body errored with: invalid character 'a' looking for beginning of value")
@@ -89,13 +65,7 @@ func Test_client_GetArtifactConfig(t *testing.T) {
 	})
 
 	t.Run("should error out while making client call to fetch the artifact information as server is not reachable", func(t *testing.T) {
-		client := gocd.NewClient(
-			"http://localhost:8156/go",
-			"",
-			"",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
 
 		client.SetRetryCount(1)
 		client.SetRetryWaitTime(1)
@@ -116,13 +86,7 @@ func Test_client_UpdateArtifactConfig(t *testing.T) {
 	}
 	t.Run("should be able to update the artifact config successfully", func(t *testing.T) {
 		server := mockArtifactInfoServer([]byte(artifactInfoJSON), http.StatusOK, correctArtifactsHeader)
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 		artifactConfig := gocd.ArtifactInfo{
 			ArtifactsDir: "foo",
 			PurgeSettings: struct {
@@ -141,13 +105,7 @@ func Test_client_UpdateArtifactConfig(t *testing.T) {
 
 	t.Run("should error out while updating the artifact information in GoCD due to wrong headers", func(t *testing.T) {
 		server := mockArtifactInfoServer([]byte(artifactInfoJSON), http.StatusOK, map[string]string{"Accept": gocd.HeaderVersionTwo})
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		actual, err := client.UpdateArtifactConfig(gocd.ArtifactInfo{})
 		assert.EqualError(t, err, "body: <html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html> httpcode: 404")
@@ -156,13 +114,7 @@ func Test_client_UpdateArtifactConfig(t *testing.T) {
 
 	t.Run("should error out while updating the artifact information in GoCD successfully due to no headers set", func(t *testing.T) {
 		server := mockArtifactInfoServer([]byte(artifactInfoJSON), http.StatusOK, nil)
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		actual, err := client.UpdateArtifactConfig(gocd.ArtifactInfo{})
 		assert.EqualError(t, err, "body: <html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html> httpcode: 404")
@@ -171,13 +123,7 @@ func Test_client_UpdateArtifactConfig(t *testing.T) {
 
 	t.Run("should error out while updating the artifact information as server returned malformed data", func(t *testing.T) {
 		server := mockArtifactInfoServer([]byte("artifactInfoJSON"), http.StatusInternalServerError, correctArtifactsHeader)
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		artifactConfig := gocd.ArtifactInfo{
 			ArtifactsDir: "foo",
@@ -196,13 +142,7 @@ func Test_client_UpdateArtifactConfig(t *testing.T) {
 	})
 
 	t.Run("should error out while updating the artifact information in GoCD as server is not reachable", func(t *testing.T) {
-		client := gocd.NewClient(
-			"http://localhost:8156/go",
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
 
 		client.SetRetryCount(1)
 		client.SetRetryWaitTime(1)

@@ -75,13 +75,7 @@ var pipelineMap = map[string]interface{}{
 
 func Test_client_GetPipelines(t *testing.T) {
 	t.Run("should error out while fetching pipelines from server", func(t *testing.T) {
-		client := gocd.NewClient(
-			"http://localhost:8156/go",
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
 		client.SetRetryCount(1)
 		client.SetRetryWaitTime(1)
 
@@ -93,13 +87,7 @@ func Test_client_GetPipelines(t *testing.T) {
 
 	t.Run("should error out while fetching pipelines as server returned non 200 status code", func(t *testing.T) {
 		server := mockServer([]byte("backupJSON"), http.StatusBadGateway, nil, true, nil)
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		actual, err := client.GetPipelines()
 		assert.EqualError(t, err, gocd.APIWithCodeError(http.StatusBadGateway).Error())
@@ -108,13 +96,7 @@ func Test_client_GetPipelines(t *testing.T) {
 
 	t.Run("should error out while fetching pipelines as server returned malformed response", func(t *testing.T) {
 		server := mockServer([]byte(`{"email_on_failure"}`), http.StatusOK, nil, true, nil)
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		actual, err := client.GetPipelines()
 		assert.EqualError(t, err, "reading response body errored with: EOF")
@@ -123,13 +105,7 @@ func Test_client_GetPipelines(t *testing.T) {
 
 	t.Run("should be able to fetch the pipelines present in GoCD", func(t *testing.T) {
 		server := mockServer([]byte(pipelines), http.StatusOK, nil, true, nil)
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		actual, err := client.GetPipelines()
 		assert.NoError(t, err)
@@ -172,13 +148,7 @@ func Test_client_GetPipelineStatus(t *testing.T) {
 	pipeline := "action-movies-manual"
 	correctPipelineHeader := map[string]string{"Accept": gocd.HeaderVersionOne}
 	t.Run("should error out while fetching pipeline statuses information from server", func(t *testing.T) {
-		client := gocd.NewClient(
-			"http://localhost:8156/go",
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
 		client.SetRetryCount(1)
 		client.SetRetryWaitTime(1)
 
@@ -190,13 +160,7 @@ func Test_client_GetPipelineStatus(t *testing.T) {
 
 	t.Run("should error out while fetching pipeline statuses information as server returned non 200 status code", func(t *testing.T) {
 		server := mockServer([]byte("backupJSON"), http.StatusBadGateway, correctPipelineHeader, false, nil)
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		actual, err := client.GetPipelineState(pipeline)
 		assert.EqualError(t, err, gocd.APIWithCodeError(http.StatusBadGateway).Error())
@@ -205,13 +169,7 @@ func Test_client_GetPipelineStatus(t *testing.T) {
 
 	t.Run("should error out while fetching pipeline statuses information as server returned malformed response", func(t *testing.T) {
 		server := mockServer([]byte(`{"email_on_failure"}`), http.StatusOK, correctPipelineHeader, false, nil)
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		actual, err := client.GetPipelineState(pipeline)
 		assert.EqualError(t, err, "reading response body errored with: invalid character '}' after object key")
@@ -220,13 +178,7 @@ func Test_client_GetPipelineStatus(t *testing.T) {
 
 	t.Run("should be able to get pipeline statuses of all pipeline present in GoCD", func(t *testing.T) {
 		server := mockServer([]byte(pipelineState), http.StatusOK, correctPipelineHeader, false, nil)
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		expected := gocd.PipelineState{
 			Name:        pipeline,
@@ -250,13 +202,7 @@ func Test_client_PipelinePause(t *testing.T) {
 	}
 	t.Run("Should be able to pause pipeline successfully", func(t *testing.T) {
 		server := mockServer(nil, http.StatusOK, correctPipelinePauseHeader, false, nil)
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		err := client.PipelinePause("first_pipeline", "pausing the pipeline")
 		assert.NoError(t, err)
@@ -264,13 +210,7 @@ func Test_client_PipelinePause(t *testing.T) {
 
 	t.Run("Should error out while pausing pipeline due to wrong header", func(t *testing.T) {
 		server := mockServer(nil, http.StatusOK, map[string]string{"Accept": gocd.HeaderVersionTwo, "Content-Type": gocd.ContentJSON}, false, nil)
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		err := client.PipelinePause("first_pipeline", "pausing the pipeline")
 		assert.EqualError(t, err, "body: <html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html> httpcode: 404")
@@ -278,26 +218,14 @@ func Test_client_PipelinePause(t *testing.T) {
 
 	t.Run("Should error out while pausing pipeline due missing header", func(t *testing.T) {
 		server := mockServer(nil, http.StatusOK, nil, false, nil)
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		err := client.PipelinePause("first_pipeline", "pausing the pipeline")
 		assert.EqualError(t, err, "body: <html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html> httpcode: 404")
 	})
 
 	t.Run("Should error out while pausing pipeline as server is not reachable", func(t *testing.T) {
-		client := gocd.NewClient(
-			"http://localhost:8156/go",
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
 
 		client.SetRetryCount(1)
 		client.SetRetryWaitTime(1)
@@ -315,13 +243,7 @@ func Test_client_PipelineUnPause(t *testing.T) {
 	}
 	t.Run("Should be able to unpause pipeline successfully", func(t *testing.T) {
 		server := mockServer(nil, http.StatusOK, correctPipelinePauseHeader, false, nil)
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		err := client.PipelineUnPause("first_pipeline")
 		assert.NoError(t, err)
@@ -329,13 +251,7 @@ func Test_client_PipelineUnPause(t *testing.T) {
 
 	t.Run("Should error out while un pausing pipeline due to wrong header", func(t *testing.T) {
 		server := mockServer(nil, http.StatusOK, map[string]string{"Accept": gocd.HeaderVersionTwo, "Content-Type": gocd.ContentJSON}, false, nil)
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		err := client.PipelineUnPause("first_pipeline")
 		assert.EqualError(t, err, "body: <html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html> httpcode: 404")
@@ -343,26 +259,14 @@ func Test_client_PipelineUnPause(t *testing.T) {
 
 	t.Run("Should error out while un pausing pipeline due missing header", func(t *testing.T) {
 		server := mockServer(nil, http.StatusOK, nil, false, nil)
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		err := client.PipelineUnPause("first_pipeline")
 		assert.EqualError(t, err, "body: <html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html> httpcode: 404")
 	})
 
 	t.Run("Should error out while un pausing pipeline as server is not reachable", func(t *testing.T) {
-		client := gocd.NewClient(
-			"http://localhost:8156/go",
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
 
 		client.SetRetryCount(1)
 		client.SetRetryWaitTime(1)
@@ -377,13 +281,7 @@ func Test_client_PipelineUnlock(t *testing.T) {
 	correctPipelinePauseHeader := map[string]string{"Accept": gocd.HeaderVersionOne, gocd.HeaderConfirm: "true"}
 	t.Run("Should be able to unlock pipeline successfully", func(t *testing.T) {
 		server := mockServer(nil, http.StatusOK, correctPipelinePauseHeader, false, nil)
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		err := client.PipelineUnlock("first_pipeline")
 		assert.NoError(t, err)
@@ -391,13 +289,7 @@ func Test_client_PipelineUnlock(t *testing.T) {
 
 	t.Run("Should error out while unlocking pipeline due to wrong header", func(t *testing.T) {
 		server := mockServer(nil, http.StatusOK, map[string]string{"Accept": gocd.HeaderVersionTwo, "Content-Type": gocd.ContentJSON}, false, nil)
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		err := client.PipelineUnlock("first_pipeline")
 		assert.EqualError(t, err, "body: <html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html> httpcode: 404")
@@ -405,26 +297,14 @@ func Test_client_PipelineUnlock(t *testing.T) {
 
 	t.Run("Should error out while unlocking pipeline due missing header", func(t *testing.T) {
 		server := mockServer(nil, http.StatusOK, nil, false, nil)
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		err := client.PipelineUnlock("first_pipeline")
 		assert.EqualError(t, err, "body: <html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html> httpcode: 404")
 	})
 
 	t.Run("Should error out while unlocking pipeline as server is not reachable", func(t *testing.T) {
-		client := gocd.NewClient(
-			"http://localhost:8156/go",
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
 
 		client.SetRetryCount(1)
 		client.SetRetryWaitTime(1)
@@ -439,13 +319,7 @@ func Test_client_SchedulePipeline(t *testing.T) {
 	correctPipelinePauseHeader := map[string]string{"Accept": gocd.HeaderVersionOne, "Content-Type": "application/json"}
 	t.Run("should be able to schedule pipeline successfully", func(t *testing.T) {
 		server := mockServer([]byte(pipelineSchedule), http.StatusAccepted, correctPipelinePauseHeader, false, nil)
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		schedule := gocd.Schedule{
 			EnvVars: []map[string]interface{}{
@@ -462,13 +336,7 @@ func Test_client_SchedulePipeline(t *testing.T) {
 	t.Run("should error out while scheduling pipeline due to wrong header", func(t *testing.T) {
 		server := mockServer([]byte(pipelineSchedule), http.StatusOK,
 			map[string]string{"Accept": gocd.HeaderVersionTwo, "Content-Type": "application/json"}, false, nil)
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		schedule := gocd.Schedule{}
 
@@ -478,13 +346,7 @@ func Test_client_SchedulePipeline(t *testing.T) {
 
 	t.Run("should error out while scheduling pipeline due to missing header", func(t *testing.T) {
 		server := mockServer([]byte(pipelineSchedule), http.StatusOK, nil, false, nil)
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		schedule := gocd.Schedule{}
 
@@ -493,13 +355,7 @@ func Test_client_SchedulePipeline(t *testing.T) {
 	})
 
 	t.Run("should error out while scheduling pipeline as server is not reachable", func(t *testing.T) {
-		client := gocd.NewClient(
-			"http://localhost:8156/go",
-			"admin",
-			"admin",
-			"debug",
-			nil,
-		)
+		client := gocd.NewClient("http://localhost:8156/go", auth, "debug", nil)
 
 		client.SetRetryCount(1)
 		client.SetRetryWaitTime(1)
@@ -530,13 +386,7 @@ func Test_client_CommentOnPipeline(t *testing.T) {
 
 	t.Run("should be able to comment on selected pipeline successfully", func(t *testing.T) {
 		server := mockServer(nil, http.StatusOK, correctPipelineHeader, false, nil)
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"debug",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "debug", nil)
 
 		err := client.CommentOnPipeline(comment)
 		assert.NoError(t, err)
@@ -545,13 +395,7 @@ func Test_client_CommentOnPipeline(t *testing.T) {
 	t.Run("should error out while commenting on pipeline due to wrong header", func(t *testing.T) {
 		server := mockServer([]byte(pipelineSchedule), http.StatusOK,
 			map[string]string{"Accept": gocd.HeaderVersionTwo, "Content-Type": gocd.ContentJSON}, false, nil)
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		err := client.CommentOnPipeline(comment)
 		assert.EqualError(t, err, "body: <html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html> httpcode: 404")
@@ -559,13 +403,7 @@ func Test_client_CommentOnPipeline(t *testing.T) {
 
 	t.Run("should error out while commenting on pipeline due to missing header", func(t *testing.T) {
 		server := mockServer([]byte(pipelineSchedule), http.StatusOK, nil, false, nil)
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		err := client.CommentOnPipeline(comment)
 		assert.EqualError(t, err, "body: <html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html> httpcode: 404")
@@ -573,13 +411,7 @@ func Test_client_CommentOnPipeline(t *testing.T) {
 
 	t.Run("should error out while commenting on pipeline due to missing fields in Comment object", func(t *testing.T) {
 		server := mockServer([]byte(pipelineSchedule), http.StatusOK, correctPipelineHeader, false, nil)
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		comments := gocd.PipelineObject{
 			Name:    "pipeline1",
@@ -591,13 +423,7 @@ func Test_client_CommentOnPipeline(t *testing.T) {
 	})
 
 	t.Run("should error out while commenting on pipeline as server is not reachable", func(t *testing.T) {
-		client := gocd.NewClient(
-			"http://localhost:8156/go",
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
 		client.SetRetryCount(1)
 		client.SetRetryWaitTime(1)
 
@@ -615,13 +441,7 @@ func Test_client_GetPipelineInstance(t *testing.T) {
 	}
 	t.Run("should be able to fetch the pipeline instance from GoCD successfully", func(t *testing.T) {
 		server := mockServer([]byte(pipelineInstance), http.StatusOK, correctPipelineHeader, false, nil)
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"debug",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "debug", nil)
 
 		expected := pipelineMap
 
@@ -633,13 +453,7 @@ func Test_client_GetPipelineInstance(t *testing.T) {
 	t.Run("should error out while fetching pipeline instance due to wrong header", func(t *testing.T) {
 		server := mockServer([]byte(pipelineInstance), http.StatusOK,
 			map[string]string{"Accept": gocd.HeaderVersionTwo, "Content-Type": gocd.ContentJSON}, false, nil)
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		actual, err := client.GetPipelineInstance(pipelineObj)
 		assert.EqualError(t, err, "body: <html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html> httpcode: 404")
@@ -648,13 +462,7 @@ func Test_client_GetPipelineInstance(t *testing.T) {
 
 	t.Run("should error out while fetching pipeline instance due to missing header", func(t *testing.T) {
 		server := mockServer([]byte(pipelineInstance), http.StatusOK, nil, false, nil)
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		actual, err := client.GetPipelineInstance(pipelineObj)
 		assert.EqualError(t, err, "body: <html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html> httpcode: 404")
@@ -663,13 +471,7 @@ func Test_client_GetPipelineInstance(t *testing.T) {
 
 	t.Run("should error out while fetching pipeline as server returned malformed response", func(t *testing.T) {
 		server := mockServer([]byte("{pipelineInstance}"), http.StatusOK, correctPipelineHeader, false, nil)
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		actual, err := client.GetPipelineInstance(pipelineObj)
 		assert.EqualError(t, err, "reading response body errored with: invalid character 'p' looking for beginning of object key string")
@@ -677,13 +479,7 @@ func Test_client_GetPipelineInstance(t *testing.T) {
 	})
 
 	t.Run("should error out while fetching pipeline as server is not reachable", func(t *testing.T) {
-		client := gocd.NewClient(
-			"http://localhost:8156/go",
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
 		client.SetRetryCount(1)
 		client.SetRetryWaitTime(1)
 

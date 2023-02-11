@@ -8,12 +8,16 @@ import (
 )
 
 func main() {
+	auth := gocd.Auth{
+		UserName: "admin",
+		Password: "admin",
+	}
 	ca, err := os.ReadFile("path/to/ca.pem")
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	client := gocd.NewClient("http://localhost:8153/go", "admin", "admin", "info", ca)
+	client := gocd.NewClient("http://localhost:8153/go", auth, "info", ca)
 
 	if err = client.CommentOnPipeline(gocd.PipelineObject{
 		Name:    "sample_pipeline",

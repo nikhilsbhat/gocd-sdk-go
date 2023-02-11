@@ -20,13 +20,7 @@ func Test_client_GetAuthConfigs(t *testing.T) {
 	t.Run("should be able to fetch all auth configs present in GoCD successfully", func(t *testing.T) {
 		server := mockServer([]byte(authConfigsGetJSON), http.StatusOK,
 			map[string]string{"Accept": gocd.HeaderVersionTwo}, false, map[string]string{"ETag": "cbc5f2d5b9c13a2cc1b1efb3d8a6155d"})
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		expected := []gocd.CommonConfig{{
 			ID:                  "ldap",
@@ -45,13 +39,7 @@ func Test_client_GetAuthConfigs(t *testing.T) {
 	t.Run("should error out while fetching all auth configs present in GoCD due to wrong headers", func(t *testing.T) {
 		server := mockServer([]byte(authConfigGetJSON), http.StatusOK,
 			map[string]string{"Accept": gocd.HeaderVersionThree}, false, nil)
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		expected := []gocd.CommonConfig(nil)
 
@@ -63,13 +51,7 @@ func Test_client_GetAuthConfigs(t *testing.T) {
 	t.Run("should error out while fetching all auth configs present in GoCD due to missing headers", func(t *testing.T) {
 		server := mockServer([]byte(authConfigGetJSON), http.StatusOK,
 			nil, false, nil)
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		expected := []gocd.CommonConfig(nil)
 
@@ -81,13 +63,7 @@ func Test_client_GetAuthConfigs(t *testing.T) {
 	t.Run("should error out while fetching a auth configs from GoCD as server returned malformed response", func(t *testing.T) {
 		server := mockServer([]byte("authConfigsGetJSON"), http.StatusOK, map[string]string{"Accept": gocd.HeaderVersionTwo},
 			false, map[string]string{"ETag": "cbc5f2d5b9c13a2cc1b1efb3d8a6155d"})
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		expected := []gocd.CommonConfig(nil)
 
@@ -97,13 +73,7 @@ func Test_client_GetAuthConfigs(t *testing.T) {
 	})
 
 	t.Run("should error out while fetching a auth configs present in GoCD as server is not reachable", func(t *testing.T) {
-		client := gocd.NewClient(
-			"http://localhost:8156/go",
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
 
 		client.SetRetryCount(1)
 		client.SetRetryWaitTime(1)
@@ -121,13 +91,7 @@ func Test_client_GetAuthConfig(t *testing.T) {
 	t.Run("should be able to fetch a selected auth config present in GoCD successfully", func(t *testing.T) {
 		server := mockServer([]byte(authConfigGetJSON), http.StatusOK,
 			map[string]string{"Accept": gocd.HeaderVersionTwo}, false, map[string]string{"ETag": "cbc5f2d5b9c13a2cc1b1efb3d8a6155d"})
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		expected := gocd.CommonConfig{
 			ID:                  "ldap",
@@ -153,13 +117,7 @@ func Test_client_GetAuthConfig(t *testing.T) {
 	t.Run("should error out while fetching a auth config present in GoCD due to wrong headers", func(t *testing.T) {
 		server := mockServer([]byte(authConfigGetJSON), http.StatusOK,
 			map[string]string{"Accept": gocd.HeaderVersionThree}, false, map[string]string{"ETag": "cbc5f2d5b9c13a2cc1b1efb3d8a6155d"})
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		expected := gocd.CommonConfig{}
 
@@ -171,13 +129,7 @@ func Test_client_GetAuthConfig(t *testing.T) {
 	t.Run("should error out while fetching a auth config present in GoCD due to missing headers", func(t *testing.T) {
 		server := mockServer([]byte(authConfigGetJSON), http.StatusOK, nil,
 			false, map[string]string{"ETag": "cbc5f2d5b9c13a2cc1b1efb3d8a6155d"})
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		expected := gocd.CommonConfig{}
 
@@ -189,13 +141,7 @@ func Test_client_GetAuthConfig(t *testing.T) {
 	t.Run("should error out while fetching a auth config present in GoCD as server returned malformed response", func(t *testing.T) {
 		server := mockServer([]byte("authConfigGetJSON"), http.StatusOK, map[string]string{"Accept": gocd.HeaderVersionTwo},
 			false, map[string]string{"ETag": "cbc5f2d5b9c13a2cc1b1efb3d8a6155d"})
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		expected := gocd.CommonConfig{}
 
@@ -205,13 +151,7 @@ func Test_client_GetAuthConfig(t *testing.T) {
 	})
 
 	t.Run("should error out while fetching a auth config present in GoCD as server is not reachable", func(t *testing.T) {
-		client := gocd.NewClient(
-			"http://localhost:8156/go",
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
 
 		client.SetRetryCount(1)
 		client.SetRetryWaitTime(1)
@@ -231,13 +171,7 @@ func Test_client_CreateAuthConfig(t *testing.T) {
 		server := mockServer([]byte(authConfigGetJSON), http.StatusOK, correctAuthHeader,
 			false, map[string]string{"ETag": "cbc5f2d5b9c13a2cc1b1efb3d8a6155d"})
 
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		authCfg := gocd.CommonConfig{
 			ID:                  "ldap",
@@ -264,13 +198,7 @@ func Test_client_CreateAuthConfig(t *testing.T) {
 	t.Run("should error out while creating auth config due to wrong headers", func(t *testing.T) {
 		server := mockServer([]byte(authConfigGetJSON), http.StatusOK,
 			map[string]string{"Accept": gocd.HeaderVersionThree}, false, map[string]string{"ETag": "cbc5f2d5b9c13a2cc1b1efb3d8a6155d"})
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		expected := gocd.CommonConfig{}
 
@@ -282,13 +210,7 @@ func Test_client_CreateAuthConfig(t *testing.T) {
 	t.Run("should error out while creating auth config due to missing headers", func(t *testing.T) {
 		server := mockServer([]byte(authConfigGetJSON), http.StatusOK,
 			nil, false, map[string]string{"ETag": "cbc5f2d5b9c13a2cc1b1efb3d8a6155d"})
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		expected := gocd.CommonConfig{}
 
@@ -300,13 +222,7 @@ func Test_client_CreateAuthConfig(t *testing.T) {
 	t.Run("should error out while creating auth config as server returned malformed response", func(t *testing.T) {
 		server := mockServer([]byte("authConfigGetJSON"), http.StatusOK, correctAuthHeader,
 			false, map[string]string{"ETag": "cbc5f2d5b9c13a2cc1b1efb3d8a6155d"})
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		expected := gocd.CommonConfig{}
 
@@ -316,13 +232,7 @@ func Test_client_CreateAuthConfig(t *testing.T) {
 	})
 
 	t.Run("should error out while creating auth config as server is not reachable", func(t *testing.T) {
-		client := gocd.NewClient(
-			"http://localhost:8156/go",
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
 
 		client.SetRetryCount(1)
 		client.SetRetryWaitTime(1)
@@ -342,13 +252,7 @@ func Test_client_UpdateAuthConfig(t *testing.T) {
 		server := mockServer([]byte(authConfigGetJSON), http.StatusOK, correctAuthHeader,
 			false, map[string]string{"ETag": "61406622382e51c2079c11dcbdb978fb"})
 
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		authCfg := gocd.CommonConfig{
 			ID:                  "ldap",
@@ -376,13 +280,7 @@ func Test_client_UpdateAuthConfig(t *testing.T) {
 	t.Run("should error out while updating auth config due to wrong headers", func(t *testing.T) {
 		server := mockServer([]byte(authConfigGetJSON), http.StatusOK,
 			map[string]string{"Accept": gocd.HeaderVersionThree}, false, map[string]string{"ETag": "cbc5f2d5b9c13a2cc1b1efb3d8a6155d"})
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		expected := gocd.CommonConfig{}
 
@@ -394,13 +292,7 @@ func Test_client_UpdateAuthConfig(t *testing.T) {
 	t.Run("should error out while updating auth config due to missing headers", func(t *testing.T) {
 		server := mockServer([]byte(authConfigGetJSON), http.StatusOK,
 			nil, false, map[string]string{"ETag": "cbc5f2d5b9c13a2cc1b1efb3d8a6155d"})
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		expected := gocd.CommonConfig{}
 
@@ -412,13 +304,7 @@ func Test_client_UpdateAuthConfig(t *testing.T) {
 	t.Run("should error out while updating auth config as server returned malformed response", func(t *testing.T) {
 		server := mockServer([]byte("authConfigGetJSON"), http.StatusOK, correctAuthHeader,
 			false, map[string]string{"ETag": "61406622382e51c2079c11dcbdb978fb"})
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		expected := gocd.CommonConfig{}
 
@@ -428,13 +314,7 @@ func Test_client_UpdateAuthConfig(t *testing.T) {
 	})
 
 	t.Run("should error out while updating auth config as server is not reachable", func(t *testing.T) {
-		client := gocd.NewClient(
-			"http://localhost:8156/go",
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
 
 		client.SetRetryCount(1)
 		client.SetRetryWaitTime(1)
@@ -452,13 +332,7 @@ func Test_client_DeleteAuthConfig(t *testing.T) {
 	t.Run("should be able to delete auth config successfully", func(t *testing.T) {
 		server := mockServer(nil, http.StatusOK,
 			map[string]string{"Accept": gocd.HeaderVersionTwo}, false, nil)
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		err := client.DeleteAuthConfig("ldap")
 		assert.NoError(t, err)
@@ -467,13 +341,7 @@ func Test_client_DeleteAuthConfig(t *testing.T) {
 	t.Run("should error out while deleting auth config due to wrong headers", func(t *testing.T) {
 		server := mockServer(nil, http.StatusOK,
 			map[string]string{"Accept": gocd.HeaderVersionThree}, false, nil)
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		err := client.DeleteAuthConfig("ldap")
 		assert.EqualError(t, err, "body: <html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html> httpcode: 404")
@@ -481,26 +349,14 @@ func Test_client_DeleteAuthConfig(t *testing.T) {
 
 	t.Run("should error out while deleting auth config due to missing headers", func(t *testing.T) {
 		server := mockServer(nil, http.StatusOK, nil, false, nil)
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		err := client.DeleteAuthConfig("ldap")
 		assert.EqualError(t, err, "body: <html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html> httpcode: 404")
 	})
 
 	t.Run("should error out while deleting auth config as server is not reachable", func(t *testing.T) {
-		client := gocd.NewClient(
-			"http://localhost:8156/go",
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
 
 		client.SetRetryCount(1)
 		client.SetRetryWaitTime(1)

@@ -24,13 +24,7 @@ var (
 func Test_client_GetEnvironmentInfo(t *testing.T) {
 	correctEnvHeader := map[string]string{"Accept": gocd.HeaderVersionThree}
 	t.Run("should error out while fetching all config repos present from server", func(t *testing.T) {
-		client := gocd.NewClient(
-			"http://localhost:8156/go",
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
 		client.SetRetryCount(1)
 		client.SetRetryWaitTime(1)
 
@@ -42,13 +36,7 @@ func Test_client_GetEnvironmentInfo(t *testing.T) {
 
 	t.Run("should error out while fetching all config repos present as server returned non 200 status code", func(t *testing.T) {
 		server := mockServer([]byte("backupJSON"), http.StatusBadGateway, correctEnvHeader, false, nil)
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		actual, err := client.GetEnvironments()
 		assert.EqualError(t, err, gocd.APIWithCodeError(http.StatusBadGateway).Error())
@@ -57,13 +45,7 @@ func Test_client_GetEnvironmentInfo(t *testing.T) {
 
 	t.Run("should error out while fetching all config repos present as server returned malformed response", func(t *testing.T) {
 		server := mockServer([]byte(`{"email_on_failure"}`), http.StatusOK, correctEnvHeader, false, nil)
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		actual, err := client.GetEnvironments()
 		assert.EqualError(t, err, "reading response body errored with: invalid character '}' after object key")
@@ -72,13 +54,7 @@ func Test_client_GetEnvironmentInfo(t *testing.T) {
 
 	t.Run("should be able to fetch all environment information present in GoCD server", func(t *testing.T) {
 		server := mockServer([]byte(environmentsJSON), http.StatusOK, correctEnvHeader, false, nil)
-		client := gocd.NewClient(
-			server.URL,
-			"",
-			"",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		expected := []gocd.Environment{
 			{
@@ -133,13 +109,7 @@ func Test_client_CreateEnvironments(t *testing.T) {
 	correctEnvHeader := map[string]string{"Accept": gocd.HeaderVersionThree, "Content-Type": gocd.ContentJSON}
 	t.Run("should be able to create the environment successfully", func(t *testing.T) {
 		server := mockServer([]byte(encryptionJSON), http.StatusOK, correctEnvHeader, false, nil)
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		environment := gocd.Environment{
 			Name: "environment_1",
@@ -168,13 +138,7 @@ func Test_client_CreateEnvironments(t *testing.T) {
 
 	t.Run("should error out while creating environment due to wrong headers set", func(t *testing.T) {
 		server := mockServer(nil, http.StatusOK, map[string]string{"Accept": gocd.HeaderVersionOne, "Content-Type": gocd.ContentJSON}, false, nil)
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		environment := gocd.Environment{}
 
@@ -184,13 +148,7 @@ func Test_client_CreateEnvironments(t *testing.T) {
 
 	t.Run("should error out while creating environment due to missing", func(t *testing.T) {
 		server := mockServer(nil, http.StatusOK, nil, false, nil)
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		environment := gocd.Environment{}
 
@@ -199,13 +157,7 @@ func Test_client_CreateEnvironments(t *testing.T) {
 	})
 
 	t.Run("should error out while creating environment due to missing", func(t *testing.T) {
-		client := gocd.NewClient(
-			"http://localhost:8156/go",
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
 
 		client.SetRetryCount(1)
 		client.SetRetryWaitTime(1)
@@ -220,13 +172,7 @@ func Test_client_CreateEnvironments(t *testing.T) {
 func Test_client_DeleteEnvironment(t *testing.T) {
 	t.Run("should be able to delete the environment successfully", func(t *testing.T) {
 		server := mockServer(nil, http.StatusOK, map[string]string{"Accept": gocd.HeaderVersionThree}, false, nil)
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		err := client.DeleteEnvironment("env1")
 		assert.NoError(t, err)
@@ -234,13 +180,7 @@ func Test_client_DeleteEnvironment(t *testing.T) {
 
 	t.Run("should error out while deleting the environment as wrong headers set", func(t *testing.T) {
 		server := mockServer(nil, http.StatusOK, map[string]string{"Accept": gocd.HeaderVersionTwo}, false, nil)
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		err := client.DeleteEnvironment("env1")
 		assert.EqualError(t, err, "body: <html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html> httpcode: 404")
@@ -248,26 +188,14 @@ func Test_client_DeleteEnvironment(t *testing.T) {
 
 	t.Run("should error out while deleting the environment as no headers set", func(t *testing.T) {
 		server := mockServer(nil, http.StatusOK, nil, false, nil)
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		err := client.DeleteEnvironment("env1")
 		assert.EqualError(t, err, "body: <html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html> httpcode: 404")
 	})
 
 	t.Run("should error out while deleting the environment as server is not reachable", func(t *testing.T) {
-		client := gocd.NewClient(
-			"http://localhost:8156/go",
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
 
 		client.SetRetryCount(1)
 		client.SetRetryWaitTime(1)
@@ -282,13 +210,7 @@ func Test_client_UpdateEnvironment(t *testing.T) {
 	correctUpdateHeader := map[string]string{"Accept": gocd.HeaderVersionThree, "Content-Type": gocd.ContentJSON, "If-Match": "26b227605daf6f2d7768c8edaf61b861"}
 	t.Run("should be able to update the environment successfully", func(t *testing.T) {
 		server := mockServer([]byte(environmentUpdateJSON), http.StatusOK, correctUpdateHeader, false, nil)
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		environment := gocd.Environment{
 			Name: "new_environment",
@@ -313,13 +235,7 @@ func Test_client_UpdateEnvironment(t *testing.T) {
 				"Accept": gocd.HeaderVersionTwo, "Content-Type": gocd.ContentJSON,
 				"If-Match": "26b227605daf6f2d7768c8edaf61b861",
 			}, false, nil)
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		environment := gocd.Environment{}
 		actual, err := client.UpdateEnvironment(environment)
@@ -329,13 +245,7 @@ func Test_client_UpdateEnvironment(t *testing.T) {
 
 	t.Run("should error out while updating the environment due to missing headers", func(t *testing.T) {
 		server := mockServer([]byte(environmentUpdateJSON), http.StatusOK, nil, false, nil)
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		environment := gocd.Environment{}
 		actual, err := client.UpdateEnvironment(environment)
@@ -345,13 +255,7 @@ func Test_client_UpdateEnvironment(t *testing.T) {
 
 	t.Run("should error out while updating the environment as server returned malformed response", func(t *testing.T) {
 		server := mockServer([]byte("environmentUpdateJSON"), http.StatusOK, correctUpdateHeader, false, nil)
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		environment := gocd.Environment{
 			ETAG: "26b227605daf6f2d7768c8edaf61b861",
@@ -362,13 +266,7 @@ func Test_client_UpdateEnvironment(t *testing.T) {
 	})
 
 	t.Run("should error out while updating the environment as server is not reachable", func(t *testing.T) {
-		client := gocd.NewClient(
-			"http://localhost:8156/go",
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
 
 		client.SetRetryCount(1)
 		client.SetRetryWaitTime(1)
@@ -386,13 +284,7 @@ func Test_client_PatchEnvironment(t *testing.T) {
 	correctPatchHeader := map[string]string{"Accept": gocd.HeaderVersionThree, "Content-Type": gocd.ContentJSON}
 	t.Run("should be able to patch the environment successfully", func(t *testing.T) {
 		server := mockServer([]byte(environmentPatchJSON), http.StatusOK, correctPatchHeader, false, nil)
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		patch := gocd.PatchEnvironment{
 			Name: "new_environment",
@@ -432,13 +324,7 @@ func Test_client_PatchEnvironment(t *testing.T) {
 
 	t.Run("should error out while patching GoCD environment as required headers are missing", func(t *testing.T) {
 		server := mockServer([]byte(environmentPatchJSON), http.StatusOK, nil, false, nil)
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 		patch := gocd.PatchEnvironment{}
 
 		actual, err := client.PatchEnvironment(patch)
@@ -448,13 +334,7 @@ func Test_client_PatchEnvironment(t *testing.T) {
 
 	t.Run("should error out while patching GoCD environment as wrong headers passed", func(t *testing.T) {
 		server := mockServer([]byte(environmentPatchJSON), http.StatusOK, map[string]string{"Accept": gocd.HeaderVersionTwo, "Content-Type": gocd.ContentJSON}, false, nil)
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 		patch := gocd.PatchEnvironment{}
 
 		actual, err := client.PatchEnvironment(patch)
@@ -464,13 +344,7 @@ func Test_client_PatchEnvironment(t *testing.T) {
 
 	t.Run("should error out while patching GoCD environment as server returned malformed response", func(t *testing.T) {
 		server := mockServer([]byte("environmentPatchJSON"), http.StatusOK, correctPatchHeader, false, nil)
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 		patch := gocd.PatchEnvironment{}
 
 		actual, err := client.PatchEnvironment(patch)
@@ -479,13 +353,7 @@ func Test_client_PatchEnvironment(t *testing.T) {
 	})
 
 	t.Run("should error out while patching GoCD environment as server is not reachable", func(t *testing.T) {
-		client := gocd.NewClient(
-			"http://localhost:8156/go",
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
 
 		client.SetRetryCount(1)
 		client.SetRetryWaitTime(1)
@@ -505,13 +373,7 @@ func Test_client_GetEnvironment(t *testing.T) {
 
 	t.Run("should be able to fetch environment config from GoCD server successfully", func(t *testing.T) {
 		server := mockServer([]byte(environmentJSON), http.StatusOK, correctGetHeader, false, nil)
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		expected := gocd.Environment{
 			Name:      envName,
@@ -536,13 +398,7 @@ func Test_client_GetEnvironment(t *testing.T) {
 
 	t.Run("should error out while fetching GoCD environment as wrong headers set", func(t *testing.T) {
 		server := mockServer([]byte(environmentJSON), http.StatusOK, map[string]string{"Accept": gocd.HeaderVersionTwo}, false, nil)
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		actual, err := client.GetEnvironment(envName)
 		assert.EqualError(t, err, "body: <html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html> httpcode: 404")
@@ -551,13 +407,7 @@ func Test_client_GetEnvironment(t *testing.T) {
 
 	t.Run("should error out while fetching GoCD environment as headers are missing", func(t *testing.T) {
 		server := mockServer([]byte(environmentJSON), http.StatusOK, nil, false, nil)
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		actual, err := client.GetEnvironment(envName)
 		assert.EqualError(t, err, "body: <html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html> httpcode: 404")
@@ -566,13 +416,7 @@ func Test_client_GetEnvironment(t *testing.T) {
 
 	t.Run("should error out while fetching GoCD environment as server returned malformed response", func(t *testing.T) {
 		server := mockServer([]byte("environmentJSON"), http.StatusOK, correctGetHeader, false, nil)
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		actual, err := client.GetEnvironment(envName)
 		assert.EqualError(t, err, "reading response body errored with: invalid character 'e' looking for beginning of value")
@@ -580,13 +424,7 @@ func Test_client_GetEnvironment(t *testing.T) {
 	})
 
 	t.Run("should error out while fetching GoCD environment as server is not reachable", func(t *testing.T) {
-		client := gocd.NewClient(
-			"http://localhost:8156/go",
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
 
 		client.SetRetryCount(1)
 		client.SetRetryWaitTime(1)

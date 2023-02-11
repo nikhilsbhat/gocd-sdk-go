@@ -12,13 +12,7 @@ func Test_client_GetDefaultJobTimeout(t *testing.T) {
 	t.Run("should be able fetch the default job timeout successfully", func(t *testing.T) {
 		server := mockServer([]byte(`{"default_job_timeout" : "0"}`), http.StatusOK,
 			map[string]string{"Accept": gocd.HeaderVersionOne}, false, nil)
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		actual, err := client.GetDefaultJobTimeout()
 		assert.NoError(t, err)
@@ -28,13 +22,7 @@ func Test_client_GetDefaultJobTimeout(t *testing.T) {
 	t.Run("should error out while fetching default job timeout due to wrong headers", func(t *testing.T) {
 		server := mockServer([]byte(`{"default_job_timeout" : "0"}`), http.StatusOK,
 			map[string]string{"Accept": gocd.HeaderVersionTwo}, false, nil)
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		actual, err := client.GetDefaultJobTimeout()
 		assert.EqualError(t, err, "body: <html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html> httpcode: 404")
@@ -44,13 +32,7 @@ func Test_client_GetDefaultJobTimeout(t *testing.T) {
 	t.Run("should error out while fetching default job timeout due to missing headers", func(t *testing.T) {
 		server := mockServer([]byte(`{"default_job_timeout" : "0"}`), http.StatusOK,
 			nil, false, nil)
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		actual, err := client.GetDefaultJobTimeout()
 		assert.EqualError(t, err, "body: <html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html> httpcode: 404")
@@ -60,13 +42,7 @@ func Test_client_GetDefaultJobTimeout(t *testing.T) {
 	t.Run("should error out while fetching default job timeout as server returned malformed response", func(t *testing.T) {
 		server := mockServer([]byte(`default_job_timeout" : "0"}`), http.StatusOK,
 			map[string]string{"Accept": gocd.HeaderVersionOne}, false, nil)
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		actual, err := client.GetDefaultJobTimeout()
 		assert.EqualError(t, err, "reading response body errored with: invalid character 'd' looking for beginning of value")
@@ -74,13 +50,7 @@ func Test_client_GetDefaultJobTimeout(t *testing.T) {
 	})
 
 	t.Run("should error out while fetching default job timeout as server is not reachable", func(t *testing.T) {
-		client := gocd.NewClient(
-			"http://localhost:8156/go",
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
 
 		client.SetRetryCount(1)
 		client.SetRetryWaitTime(1)
@@ -96,13 +66,7 @@ func Test_client_UpdateDefaultJobTimeout(t *testing.T) {
 	t.Run("should be able update the default job timeout successfully", func(t *testing.T) {
 		server := mockServer([]byte(`{"default_job_timeout" : "10"}`), http.StatusOK,
 			map[string]string{"Accept": gocd.HeaderVersionOne}, false, nil)
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		err := client.UpdateDefaultJobTimeout(10)
 		assert.NoError(t, err)
@@ -111,13 +75,7 @@ func Test_client_UpdateDefaultJobTimeout(t *testing.T) {
 	t.Run("should error out while updating default job timeout due to wrong headers", func(t *testing.T) {
 		server := mockServer([]byte(`{"default_job_timeout" : "0"}`), http.StatusOK,
 			map[string]string{"Accept": gocd.HeaderVersionTwo}, false, nil)
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		err := client.UpdateDefaultJobTimeout(10)
 		assert.EqualError(t, err, "body: <html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html> httpcode: 404")
@@ -126,26 +84,14 @@ func Test_client_UpdateDefaultJobTimeout(t *testing.T) {
 	t.Run("should error out while updating default job timeout due to missing headers", func(t *testing.T) {
 		server := mockServer([]byte(`{"default_job_timeout" : "0"}`), http.StatusOK,
 			nil, false, nil)
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		err := client.UpdateDefaultJobTimeout(10)
 		assert.EqualError(t, err, "body: <html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html> httpcode: 404")
 	})
 
 	t.Run("should error out while updating default job timeout as server is not reachable", func(t *testing.T) {
-		client := gocd.NewClient(
-			"http://localhost:8156/go",
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
 
 		client.SetRetryCount(1)
 		client.SetRetryWaitTime(1)

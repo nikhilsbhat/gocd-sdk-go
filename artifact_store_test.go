@@ -22,13 +22,7 @@ func Test_client_GetArtifactStores(t *testing.T) {
 		server := mockServer([]byte(artifactStoresJSON), http.StatusOK,
 			correctArtifactHeader, false, map[string]string{"ETag": "cbc5f2d5b9c13a2cc1b1efb3d8a6155d"})
 
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		expected := gocd.ArtifactStoresConfig{
 			ETAG: "cbc5f2d5b9c13a2cc1b1efb3d8a6155d",
@@ -63,13 +57,7 @@ func Test_client_GetArtifactStores(t *testing.T) {
 		server := mockServer([]byte(artifactStoresJSON), http.StatusOK,
 			map[string]string{"Accept": gocd.HeaderVersionThree}, false, nil)
 
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		expected := gocd.ArtifactStoresConfig{
 			CommonConfigs: nil,
@@ -84,13 +72,7 @@ func Test_client_GetArtifactStores(t *testing.T) {
 	t.Run("should error out while fetching all artifact stores present in GoCD due to missing headers", func(t *testing.T) {
 		server := mockServer([]byte(artifactStoresJSON), http.StatusOK,
 			nil, false, nil)
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		expected := gocd.ArtifactStoresConfig{
 			CommonConfigs: nil,
@@ -105,13 +87,7 @@ func Test_client_GetArtifactStores(t *testing.T) {
 	t.Run("should error out while fetching artifact stores from GoCD as server returned malformed response", func(t *testing.T) {
 		server := mockServer([]byte("artifactStoreJSON"), http.StatusOK, correctArtifactHeader,
 			false, map[string]string{"ETag": "cbc5f2d5b9c13a2cc1b1efb3d8a6155d"})
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		expected := gocd.ArtifactStoresConfig{
 			CommonConfigs: nil,
@@ -124,13 +100,7 @@ func Test_client_GetArtifactStores(t *testing.T) {
 	})
 
 	t.Run("should error out while fetching artifact stores present in GoCD as server is not reachable", func(t *testing.T) {
-		client := gocd.NewClient(
-			"http://localhost:8156/go",
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
 
 		client.SetRetryCount(1)
 		client.SetRetryWaitTime(1)
@@ -153,13 +123,7 @@ func Test_client_GetArtifactStore(t *testing.T) {
 		server := mockServer([]byte(artifactStoreJSON), http.StatusOK,
 			correctArtifactHeader, false, map[string]string{"ETag": "cbc5f2d5b9c13a2cc1b1efb3d8a6155d"})
 
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		expected := gocd.CommonConfig{
 			ETAG:     "cbc5f2d5b9c13a2cc1b1efb3d8a6155d",
@@ -190,13 +154,7 @@ func Test_client_GetArtifactStore(t *testing.T) {
 		server := mockServer([]byte(artifactStoreJSON), http.StatusOK,
 			map[string]string{"Accept": gocd.HeaderVersionThree}, false, nil)
 
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		expected := gocd.CommonConfig{
 			Properties: nil,
@@ -211,13 +169,7 @@ func Test_client_GetArtifactStore(t *testing.T) {
 		server := mockServer([]byte(artifactStoreJSON), http.StatusOK,
 			nil, false, nil)
 
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		expected := gocd.CommonConfig{
 			Properties: nil,
@@ -232,13 +184,7 @@ func Test_client_GetArtifactStore(t *testing.T) {
 		server := mockServer([]byte("artifactStoreJSON"), http.StatusOK,
 			correctArtifactHeader, false, nil)
 
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		expected := gocd.CommonConfig{
 			Properties: nil,
@@ -250,13 +196,7 @@ func Test_client_GetArtifactStore(t *testing.T) {
 	})
 
 	t.Run("should error out while fetching an appropriate artifact store as GoCD server is not reachable", func(t *testing.T) {
-		client := gocd.NewClient(
-			"http://localhost:8156/go",
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
 
 		client.SetRetryCount(1)
 		client.SetRetryWaitTime(1)
@@ -278,13 +218,7 @@ func Test_client_CreateArtifactStore(t *testing.T) {
 		server := mockServer([]byte(artifactStoreJSON), http.StatusOK,
 			correctArtifactHeader, false, map[string]string{"ETag": "cbc5f2d5b9c13a2cc1b1efb3d8a6155d"})
 
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		storeCfg := gocd.CommonConfig{
 			ETAG:     "cbc5f2d5b9c13a2cc1b1efb3d8a6155d",
@@ -318,13 +252,7 @@ func Test_client_CreateArtifactStore(t *testing.T) {
 		server := mockServer([]byte(artifactStoreJSON), http.StatusOK,
 			map[string]string{"Accept": gocd.HeaderVersionThree}, false, nil)
 
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		storeCfg := gocd.CommonConfig{}
 
@@ -337,13 +265,7 @@ func Test_client_CreateArtifactStore(t *testing.T) {
 		server := mockServer([]byte(artifactStoreJSON), http.StatusOK,
 			nil, false, nil)
 
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		storeCfg := gocd.CommonConfig{}
 
@@ -356,13 +278,7 @@ func Test_client_CreateArtifactStore(t *testing.T) {
 		server := mockServer([]byte("artifactStoreJSON"), http.StatusOK,
 			correctArtifactHeader, false, nil)
 
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		storeCfg := gocd.CommonConfig{}
 
@@ -372,13 +288,7 @@ func Test_client_CreateArtifactStore(t *testing.T) {
 	})
 
 	t.Run("should error out while creating an artifact store as GoCD server is not reachable", func(t *testing.T) {
-		client := gocd.NewClient(
-			"http://localhost:8156/go",
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
 
 		client.SetRetryCount(1)
 		client.SetRetryWaitTime(1)
@@ -398,13 +308,7 @@ func Test_client_UpdateArtifactStore(t *testing.T) {
 		server := mockServer([]byte(artifactStoreJSON), http.StatusOK,
 			correctArtifactHeader, false, map[string]string{"ETag": "61406622382e51c2079c11dcbdb978fb"})
 
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		storeCfg := gocd.CommonConfig{
 			ETAG:     "cbc5f2d5b9c13a2cc1b1efb3d8a6155d",
@@ -438,13 +342,7 @@ func Test_client_UpdateArtifactStore(t *testing.T) {
 		server := mockServer([]byte(artifactStoreJSON), http.StatusOK,
 			map[string]string{"Accept": gocd.HeaderVersionThree}, false, nil)
 
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		storeCfg := gocd.CommonConfig{}
 
@@ -457,13 +355,7 @@ func Test_client_UpdateArtifactStore(t *testing.T) {
 		server := mockServer([]byte(artifactStoreJSON), http.StatusOK,
 			nil, false, nil)
 
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		storeCfg := gocd.CommonConfig{}
 
@@ -476,13 +368,7 @@ func Test_client_UpdateArtifactStore(t *testing.T) {
 		server := mockServer([]byte("artifactStoreJSON"), http.StatusOK,
 			correctArtifactHeader, false, nil)
 
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		storeCfg := gocd.CommonConfig{}
 
@@ -492,13 +378,7 @@ func Test_client_UpdateArtifactStore(t *testing.T) {
 	})
 
 	t.Run("should error out while updating an artifact store as GoCD server is not reachable", func(t *testing.T) {
-		client := gocd.NewClient(
-			"http://localhost:8156/go",
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
 
 		client.SetRetryCount(1)
 		client.SetRetryWaitTime(1)
@@ -518,13 +398,7 @@ func Test_client_DeleteArtifactStore(t *testing.T) {
 		server := mockServer([]byte(artifactStoreJSON), http.StatusOK,
 			correctArtifactHeader, false, nil)
 
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		err := client.DeleteArtifactStore("docker")
 		assert.NoError(t, err)
@@ -534,13 +408,7 @@ func Test_client_DeleteArtifactStore(t *testing.T) {
 		server := mockServer([]byte(artifactStoreJSON), http.StatusOK,
 			map[string]string{"Accept": gocd.HeaderVersionThree}, false, nil)
 
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		err := client.DeleteArtifactStore("docker")
 		assert.EqualError(t, err, "body: <html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html> httpcode: 404")
@@ -550,26 +418,14 @@ func Test_client_DeleteArtifactStore(t *testing.T) {
 		server := mockServer([]byte(artifactStoreJSON), http.StatusOK,
 			nil, false, nil)
 
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		err := client.DeleteArtifactStore("docker")
 		assert.EqualError(t, err, "body: <html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html> httpcode: 404")
 	})
 
 	t.Run("should error out while deleting an artifact store as GoCD server is not reachable", func(t *testing.T) {
-		client := gocd.NewClient(
-			"http://localhost:8156/go",
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
 
 		client.SetRetryCount(1)
 		client.SetRetryWaitTime(1)

@@ -20,13 +20,7 @@ var backupJSON string
 func TestConfig_GetBackupInfo(t *testing.T) {
 	correctBackupHeader := map[string]string{"Accept": gocd.HeaderVersionOne}
 	t.Run("should error out while fetching latest backup configuration information from server", func(t *testing.T) {
-		client := gocd.NewClient(
-			"http://localhost:8156/go",
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
 		client.SetRetryCount(1)
 		client.SetRetryWaitTime(1)
 
@@ -38,13 +32,7 @@ func TestConfig_GetBackupInfo(t *testing.T) {
 
 	t.Run("should error out while fetching latest backup configuration information as server returned non 200 status code", func(t *testing.T) {
 		server := mockServer([]byte("backupJSON"), http.StatusBadGateway, correctBackupHeader, false, nil)
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		actual, err := client.GetBackupConfig()
 		assert.EqualError(t, err, "body: backupJSON httpcode: 502")
@@ -53,13 +41,7 @@ func TestConfig_GetBackupInfo(t *testing.T) {
 
 	t.Run("should error out while fetching latest backup configuration information as server returned malformed response", func(t *testing.T) {
 		server := mockServer([]byte(`{"email_on_failure"}`), http.StatusOK, correctBackupHeader, false, nil)
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		actual, err := client.GetBackupConfig()
 		assert.EqualError(t, err, "reading response body errored with: invalid character '}' after object key")
@@ -69,13 +51,7 @@ func TestConfig_GetBackupInfo(t *testing.T) {
 	t.Run("should be able to fetch the latest backup configuration information available in GoCD", func(t *testing.T) {
 		server := mockServer([]byte(backupJSON), http.StatusOK, correctBackupHeader, false, nil)
 
-		client := gocd.NewClient(
-			server.URL,
-			"",
-			"",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		expected := gocd.BackupConfig{
 			EmailOnSuccess:   false,
@@ -98,13 +74,7 @@ func Test_client_CreateOrUpdateBackup(t *testing.T) {
 		assert.NoError(t, err)
 
 		server := backupMockServer(backupInfo, http.MethodPost, correctBackupHeader)
-		client := gocd.NewClient(
-			server.URL,
-			"",
-			"",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		backupObj := gocd.BackupConfig{
 			EmailOnSuccess:   false,
@@ -119,13 +89,7 @@ func Test_client_CreateOrUpdateBackup(t *testing.T) {
 
 	t.Run("should error while creating or updating backup configuration due to wrong headers", func(t *testing.T) {
 		server := backupMockServer([]byte("backupJSON"), http.MethodPost, map[string]string{"Accept": gocd.HeaderVersionTwo, "Content-Type": gocd.ContentJSON})
-		client := gocd.NewClient(
-			server.URL,
-			"",
-			"",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		backupObj := gocd.BackupConfig{
 			EmailOnSuccess:   false,
@@ -140,13 +104,7 @@ func Test_client_CreateOrUpdateBackup(t *testing.T) {
 
 	t.Run("should error while creating or updating backup configuration due to missing headers", func(t *testing.T) {
 		server := backupMockServer([]byte("backupJSON"), http.MethodPost, nil)
-		client := gocd.NewClient(
-			server.URL,
-			"",
-			"",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		backupObj := gocd.BackupConfig{
 			EmailOnSuccess:   false,
@@ -161,13 +119,7 @@ func Test_client_CreateOrUpdateBackup(t *testing.T) {
 
 	t.Run("should error while creating or updating backup configuration as malformed data sent to server", func(t *testing.T) {
 		server := backupMockServer([]byte("backupJSON"), http.MethodPost, correctBackupHeader)
-		client := gocd.NewClient(
-			server.URL,
-			"",
-			"",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		backupObj := gocd.BackupConfig{
 			EmailOnSuccess:   false,
@@ -181,13 +133,7 @@ func Test_client_CreateOrUpdateBackup(t *testing.T) {
 	})
 
 	t.Run("should error while creating or updating backup configuration as server was not reachable", func(t *testing.T) {
-		client := gocd.NewClient(
-			"http://localhost:8156/go",
-			"",
-			"",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
 
 		client.SetRetryCount(1)
 		client.SetRetryWaitTime(1)
@@ -209,13 +155,7 @@ func Test_client_DeleteBackupConfig(t *testing.T) {
 	correctBackupHeader := map[string]string{"Accept": gocd.HeaderVersionOne}
 	t.Run("should be able to delete the backup configurations successfully ", func(t *testing.T) {
 		server := mockServer(nil, http.StatusOK, correctBackupHeader, false, nil)
-		client := gocd.NewClient(
-			server.URL,
-			"",
-			"",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		err := client.DeleteBackupConfig()
 		assert.NoError(t, err)
@@ -224,26 +164,14 @@ func Test_client_DeleteBackupConfig(t *testing.T) {
 	t.Run("should error out while deleting the backup configurations due to wrong headers", func(t *testing.T) {
 		server := mockServer(nil, http.StatusOK,
 			map[string]string{"Accept": gocd.HeaderVersionTwo}, false, nil)
-		client := gocd.NewClient(
-			server.URL,
-			"",
-			"",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		err := client.DeleteBackupConfig()
 		assert.EqualError(t, err, "body: <html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html> httpcode: 404")
 	})
 
 	t.Run("should error out while deleting the backup configurations as server is not reachable", func(t *testing.T) {
-		client := gocd.NewClient(
-			"http://localhost:8156/go",
-			"",
-			"",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
 
 		client.SetRetryCount(1)
 		client.SetRetryWaitTime(1)

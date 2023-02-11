@@ -22,13 +22,7 @@ func Test_client_GetPackageRepositories(t *testing.T) {
 		server := mockServer([]byte(packageRepositoriesJSON), http.StatusOK,
 			correctArtifactHeader, false, nil)
 
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		expected := []gocd.PackageRepository{
 			{
@@ -66,13 +60,7 @@ func Test_client_GetPackageRepositories(t *testing.T) {
 		server := mockServer([]byte(packageRepositoriesJSON), http.StatusOK,
 			map[string]string{"Accept": gocd.HeaderVersionThree}, false, nil)
 
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		var expected []gocd.PackageRepository
 
@@ -84,13 +72,7 @@ func Test_client_GetPackageRepositories(t *testing.T) {
 	t.Run("should error out while fetching all package repositories present in GoCD due to missing headers", func(t *testing.T) {
 		server := mockServer([]byte(packageRepositoriesJSON), http.StatusOK,
 			nil, false, nil)
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		var expected []gocd.PackageRepository
 
@@ -102,13 +84,7 @@ func Test_client_GetPackageRepositories(t *testing.T) {
 	t.Run("should error out while fetching all package repositories from GoCD as server returned malformed response", func(t *testing.T) {
 		server := mockServer([]byte("packageRepositoriesJSON"), http.StatusOK, correctArtifactHeader,
 			false, nil)
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		var expected []gocd.PackageRepository
 
@@ -118,13 +94,7 @@ func Test_client_GetPackageRepositories(t *testing.T) {
 	})
 
 	t.Run("should error out while fetching all package repositories present in GoCD as server is not reachable", func(t *testing.T) {
-		client := gocd.NewClient(
-			"http://localhost:8156/go",
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
 
 		client.SetRetryCount(1)
 		client.SetRetryWaitTime(1)
@@ -145,13 +115,7 @@ func Test_client_GetPackageRepository(t *testing.T) {
 		server := mockServer([]byte(packageRepositoryJSON), http.StatusOK,
 			correctArtifactHeader, false, map[string]string{"ETag": "cbc5f2d5b9c13a2cc1b1efb3d8a6155d"})
 
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		expected := gocd.PackageRepository{
 			ID:   "dd8926c0-3b4a-4c9e-8012-957b179cec5b",
@@ -188,13 +152,7 @@ func Test_client_GetPackageRepository(t *testing.T) {
 		server := mockServer([]byte(packageRepositoryJSON), http.StatusOK,
 			map[string]string{"Accept": gocd.HeaderVersionThree}, false, nil)
 
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		expected := gocd.PackageRepository{}
 
@@ -206,13 +164,7 @@ func Test_client_GetPackageRepository(t *testing.T) {
 	t.Run("should error out while fetching a specific package repository present in GoCD due to missing headers", func(t *testing.T) {
 		server := mockServer([]byte(packageRepositoryJSON), http.StatusOK,
 			nil, false, nil)
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		expected := gocd.PackageRepository{}
 
@@ -224,13 +176,7 @@ func Test_client_GetPackageRepository(t *testing.T) {
 	t.Run("should error out while fetching a specific package repository from GoCD as server returned malformed response", func(t *testing.T) {
 		server := mockServer([]byte("packageRepositoryJSON"), http.StatusOK, correctArtifactHeader,
 			false, map[string]string{"ETag": "cbc5f2d5b9c13a2cc1b1efb3d8a6155d"})
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		expected := gocd.PackageRepository{}
 
@@ -240,13 +186,7 @@ func Test_client_GetPackageRepository(t *testing.T) {
 	})
 
 	t.Run("should error out while fetching a specific package repository present in GoCD as server is not reachable", func(t *testing.T) {
-		client := gocd.NewClient(
-			"http://localhost:8156/go",
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
 
 		client.SetRetryCount(1)
 		client.SetRetryWaitTime(1)
@@ -266,13 +206,7 @@ func Test_client_CreatePackageRepository(t *testing.T) {
 		server := mockServer([]byte(packageRepositoryJSON), http.StatusOK,
 			correctArtifactHeader, false, map[string]string{"ETag": "61406622382e51c2079c11dcbdb978fb"})
 
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		repositoryCfg := gocd.PackageRepository{
 			ID:   "dd8926c0-3b4a-4c9e-8012-957b179cec5b",
@@ -311,13 +245,7 @@ func Test_client_CreatePackageRepository(t *testing.T) {
 		server := mockServer([]byte(packageRepositoryJSON), http.StatusOK,
 			map[string]string{"Accept": gocd.HeaderVersionThree}, false, nil)
 
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		repositoryCfg := gocd.PackageRepository{}
 		expected := repositoryCfg
@@ -330,13 +258,7 @@ func Test_client_CreatePackageRepository(t *testing.T) {
 	t.Run("should error out while creating a specific package repository present in GoCD due to missing headers", func(t *testing.T) {
 		server := mockServer([]byte(packageRepositoryJSON), http.StatusOK,
 			nil, false, nil)
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		repositoryCfg := gocd.PackageRepository{}
 		expected := repositoryCfg
@@ -349,13 +271,7 @@ func Test_client_CreatePackageRepository(t *testing.T) {
 	t.Run("should error out while creating a specific package repository from GoCD as server returned malformed response", func(t *testing.T) {
 		server := mockServer([]byte("packageRepositoryJSON"), http.StatusOK, correctArtifactHeader,
 			false, map[string]string{"ETag": "cbc5f2d5b9c13a2cc1b1efb3d8a6155d"})
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		repositoryCfg := gocd.PackageRepository{}
 		expected := repositoryCfg
@@ -366,13 +282,7 @@ func Test_client_CreatePackageRepository(t *testing.T) {
 	})
 
 	t.Run("should error out while creating a specific package repository present in GoCD as server is not reachable", func(t *testing.T) {
-		client := gocd.NewClient(
-			"http://localhost:8156/go",
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
 
 		client.SetRetryCount(1)
 		client.SetRetryWaitTime(1)
@@ -394,13 +304,7 @@ func Test_client_UpdatePackageRepository(t *testing.T) {
 		server := mockServer([]byte(packageRepositoryJSON), http.StatusOK,
 			correctArtifactHeader, false, map[string]string{"ETag": "61406622382e51c2079c11dcbdb978fb"})
 
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		repositoryCfg := gocd.PackageRepository{
 			ETAG: "cbc5f2d5b9c13a2cc1b1efb3d8a6155d",
@@ -440,13 +344,7 @@ func Test_client_UpdatePackageRepository(t *testing.T) {
 		server := mockServer([]byte(packageRepositoryJSON), http.StatusOK,
 			map[string]string{"Accept": gocd.HeaderVersionThree}, false, nil)
 
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		repositoryCfg := gocd.PackageRepository{}
 		expected := repositoryCfg
@@ -459,13 +357,7 @@ func Test_client_UpdatePackageRepository(t *testing.T) {
 	t.Run("should error out while updating a specific package repository present in GoCD due to missing headers", func(t *testing.T) {
 		server := mockServer([]byte(packageRepositoryJSON), http.StatusOK,
 			nil, false, nil)
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		repositoryCfg := gocd.PackageRepository{}
 		expected := repositoryCfg
@@ -478,13 +370,7 @@ func Test_client_UpdatePackageRepository(t *testing.T) {
 	t.Run("should error out while updating a specific package repository from GoCD as server returned malformed response", func(t *testing.T) {
 		server := mockServer([]byte("packageRepositoryJSON"), http.StatusOK, correctArtifactHeader,
 			false, map[string]string{"ETag": "cbc5f2d5b9c13a2cc1b1efb3d8a6155d"})
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		repositoryCfg := gocd.PackageRepository{}
 		expected := repositoryCfg
@@ -495,13 +381,7 @@ func Test_client_UpdatePackageRepository(t *testing.T) {
 	})
 
 	t.Run("should error out while updating a specific package repository present in GoCD as server is not reachable", func(t *testing.T) {
-		client := gocd.NewClient(
-			"http://localhost:8156/go",
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
 
 		client.SetRetryCount(1)
 		client.SetRetryWaitTime(1)
@@ -523,13 +403,7 @@ func Test_client_DeletePackageRepository(t *testing.T) {
 		server := mockServer(nil, http.StatusOK,
 			correctArtifactHeader, false, nil)
 
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		err := client.DeletePackageRepository(repositoryID)
 		assert.NoError(t, err)
@@ -539,13 +413,7 @@ func Test_client_DeletePackageRepository(t *testing.T) {
 		server := mockServer(nil, http.StatusOK,
 			map[string]string{"Accept": gocd.HeaderVersionThree}, false, nil)
 
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		err := client.DeletePackageRepository(repositoryID)
 		assert.EqualError(t, err, "body: <html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html> httpcode: 404")
@@ -555,26 +423,14 @@ func Test_client_DeletePackageRepository(t *testing.T) {
 		server := mockServer(nil, http.StatusOK,
 			nil, false, nil)
 
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		err := client.DeletePackageRepository(repositoryID)
 		assert.EqualError(t, err, "body: <html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html> httpcode: 404")
 	})
 
 	t.Run("should error out while deleting a package repository as GoCD server is not reachable", func(t *testing.T) {
-		client := gocd.NewClient(
-			"http://localhost:8156/go",
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
 
 		client.SetRetryCount(1)
 		client.SetRetryWaitTime(1)

@@ -19,13 +19,7 @@ func Test_client_GetPluginSettings(t *testing.T) {
 	t.Run("should be able to fetch the plugin setting successfully", func(t *testing.T) {
 		server := mockServer([]byte(pluginSettingJSON), http.StatusOK,
 			map[string]string{"Accept": gocd.HeaderVersionOne}, false, map[string]string{"ETag": "05548388f7ef5042cd39f7fe42e85735"})
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		expected := gocd.PluginSettings{
 			ID: pluginName,
@@ -60,13 +54,7 @@ func Test_client_GetPluginSettings(t *testing.T) {
 	t.Run("should error out while fetching the plugin setting due to wrong headers", func(t *testing.T) {
 		server := mockServer([]byte(pluginSettingJSON), http.StatusOK,
 			map[string]string{"Accept": gocd.HeaderVersionTwo}, false, map[string]string{"ETag": "05548388f7ef5042cd39f7fe42e85735"})
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		expected := gocd.PluginSettings{}
 
@@ -78,13 +66,7 @@ func Test_client_GetPluginSettings(t *testing.T) {
 	t.Run("should error out while fetching the plugin setting due to wrong headers", func(t *testing.T) {
 		server := mockServer([]byte(pluginSettingJSON), http.StatusOK,
 			nil, false, map[string]string{"ETag": "05548388f7ef5042cd39f7fe42e85735"})
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		expected := gocd.PluginSettings{}
 
@@ -96,13 +78,7 @@ func Test_client_GetPluginSettings(t *testing.T) {
 	t.Run("should error out while fetching the plugin setting as server returned malformed response", func(t *testing.T) {
 		server := mockServer([]byte("pluginSettingJSON"), http.StatusOK,
 			map[string]string{"Accept": gocd.HeaderVersionOne}, false, map[string]string{"ETag": "05548388f7ef5042cd39f7fe42e85735"})
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		expected := gocd.PluginSettings{}
 
@@ -112,13 +88,7 @@ func Test_client_GetPluginSettings(t *testing.T) {
 	})
 
 	t.Run("should error out while fetching the plugin setting as server is not reachable", func(t *testing.T) {
-		client := gocd.NewClient(
-			"http://localhost:8156/go",
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
 
 		client.SetRetryCount(1)
 		client.SetRetryWaitTime(1)
@@ -137,13 +107,7 @@ func Test_client_CreatePluginSettings(t *testing.T) {
 
 	t.Run("should be able to create the plugin setting successfully", func(t *testing.T) {
 		server := mockServer([]byte(pluginSettingJSON), http.StatusOK, pluginHeaders, false, nil)
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		pluginSettings := gocd.PluginSettings{
 			ID: pluginName,
@@ -178,13 +142,7 @@ func Test_client_CreatePluginSettings(t *testing.T) {
 	t.Run("should error out while creating the plugin setting due to wrong headers", func(t *testing.T) {
 		server := mockServer([]byte(pluginSettingJSON), http.StatusOK,
 			map[string]string{"Accept": gocd.HeaderVersionTwo, "Content-Type": gocd.ContentJSON}, false, nil)
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		pluginSettings := gocd.PluginSettings{ID: pluginName}
 		expected := gocd.PluginSettings{}
@@ -197,13 +155,7 @@ func Test_client_CreatePluginSettings(t *testing.T) {
 	t.Run("should error out while creating the plugin setting due to wrong headers", func(t *testing.T) {
 		server := mockServer([]byte(pluginSettingJSON), http.StatusOK,
 			nil, false, map[string]string{"ETag": "05548388f7ef5042cd39f7fe42e85735"})
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		pluginSettings := gocd.PluginSettings{ID: pluginName}
 		expected := gocd.PluginSettings{}
@@ -216,13 +168,7 @@ func Test_client_CreatePluginSettings(t *testing.T) {
 	t.Run("should error out while creating the plugin setting as server returned malformed response", func(t *testing.T) {
 		server := mockServer([]byte("pluginSettingJSON"), http.StatusOK,
 			map[string]string{"Accept": gocd.HeaderVersionOne}, false, map[string]string{"ETag": "05548388f7ef5042cd39f7fe42e85735"})
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		pluginSettings := gocd.PluginSettings{ID: pluginName}
 		expected := gocd.PluginSettings{}
@@ -233,13 +179,7 @@ func Test_client_CreatePluginSettings(t *testing.T) {
 	})
 
 	t.Run("should error out while creating the plugin setting as server is not reachable", func(t *testing.T) {
-		client := gocd.NewClient(
-			"http://localhost:8156/go",
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
 
 		client.SetRetryCount(1)
 		client.SetRetryWaitTime(1)
@@ -259,13 +199,7 @@ func Test_client_UpdatePluginSettings(t *testing.T) {
 
 	t.Run("should be able to update the plugin setting successfully", func(t *testing.T) {
 		server := mockServer([]byte(pluginSettingJSON), http.StatusOK, pluginHeaders, false, map[string]string{"ETag": "e89135b38ddbcd9380c83eb524647bdd"})
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		pluginSettings := gocd.PluginSettings{
 			ID: pluginName,
@@ -301,13 +235,7 @@ func Test_client_UpdatePluginSettings(t *testing.T) {
 	t.Run("should error out while updating the plugin setting due to wrong headers", func(t *testing.T) {
 		server := mockServer([]byte(pluginSettingJSON), http.StatusOK,
 			map[string]string{"Accept": gocd.HeaderVersionTwo, "Content-Type": gocd.ContentJSON}, false, nil)
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		pluginSettings := gocd.PluginSettings{ID: pluginName}
 		expected := gocd.PluginSettings{}
@@ -320,13 +248,7 @@ func Test_client_UpdatePluginSettings(t *testing.T) {
 	t.Run("should error out while updating the plugin setting due to wrong headers", func(t *testing.T) {
 		server := mockServer([]byte(pluginSettingJSON), http.StatusOK,
 			nil, false, map[string]string{"ETag": "05548388f7ef5042cd39f7fe42e85735"})
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		pluginSettings := gocd.PluginSettings{ID: pluginName}
 		expected := gocd.PluginSettings{}
@@ -339,13 +261,7 @@ func Test_client_UpdatePluginSettings(t *testing.T) {
 	t.Run("should error out while updating the plugin setting as server returned malformed response", func(t *testing.T) {
 		server := mockServer([]byte("pluginSettingJSON"), http.StatusOK,
 			map[string]string{"Accept": gocd.HeaderVersionOne}, false, map[string]string{"ETag": "05548388f7ef5042cd39f7fe42e85735"})
-		client := gocd.NewClient(
-			server.URL,
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		pluginSettings := gocd.PluginSettings{ID: pluginName}
 		expected := gocd.PluginSettings{}
@@ -356,13 +272,7 @@ func Test_client_UpdatePluginSettings(t *testing.T) {
 	})
 
 	t.Run("should error out while updating the plugin setting as server is not reachable", func(t *testing.T) {
-		client := gocd.NewClient(
-			"http://localhost:8156/go",
-			"admin",
-			"admin",
-			"info",
-			nil,
-		)
+		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
 
 		client.SetRetryCount(1)
 		client.SetRetryWaitTime(1)
