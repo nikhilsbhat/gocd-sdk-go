@@ -198,7 +198,7 @@ Below are the list of supported APIs:
 - [ ] [System Admin](https://api.gocd.org/current/#system-admins)
     - [x] Get All system admins
     - [x] Update system Admin
-    - [ ] Bulk update system admins
+    - [ ] <del>Bulk update system admins<del>
 - [ ] [Role](https://api.gocd.org/current/#roles)
     - [x] Get all roles
     - [X] Get all roles by type
@@ -228,3 +228,4 @@ Below are the list of supported APIs:
     - [x] Get Version
 - [x] [Encryption](https://api.gocd.org/current/#encryption)
     - [x] Encrypt plain text value
+    - [x] Decrypt encrypted text value

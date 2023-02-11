@@ -78,3 +78,90 @@ func Test_client_EncryptText(t *testing.T) {
 		assert.Equal(t, gocd.Encrypted{}, actual)
 	})
 }
+
+func Test_client_DecryptText(t *testing.T) {
+	cipher := "ab533bc2b64169f487412301afa6f5f6"
+	t.Run("should be able to decrypt the secret successfully", func(t *testing.T) {
+		client := gocd.NewClient(
+			"http://localhost:8156/go",
+			"admin",
+			"admin",
+			"info",
+			nil,
+		)
+
+		response, err := client.DecryptText("AES:wSOqnltxM6Rp9j0Tb8uWpw==:4zVLtLx9msGleK+pLOOUHg==", cipher)
+		assert.NoError(t, err)
+		assert.Equal(t, "badger", response)
+	})
+
+	t.Run("should error out while decrypting secret due to wrong cipher passed", func(t *testing.T) {
+		client := gocd.NewClient(
+			"http://localhost:8156/go",
+			"admin",
+			"admin",
+			"info",
+			nil,
+		)
+
+		response, err := client.DecryptText("AES:wSOqnltxM6Rp9j0Tb8uWpw==:4zVLtLx9msGleK+pLOOUHg==", "kencehcf84nnkcxjrfjx48")
+		assert.EqualError(t, err, "encoding/hex: invalid byte: U+006B 'k'")
+		assert.Equal(t, "", response)
+	})
+
+	t.Run("should error out while decrypting secret due to malformed encrypted value", func(t *testing.T) {
+		client := gocd.NewClient(
+			"http://localhost:8156/go",
+			"admin",
+			"admin",
+			"info",
+			nil,
+		)
+
+		response, err := client.DecryptText("AES:wSOqnltxM6Rp9j0Tb8uWpw==:hjdsdjxwerj474x3+pLOOUHg==", "kencehcf84nnkcxjrfjx48")
+		assert.EqualError(t, err, "illegal base64 data at input byte 24")
+		assert.Equal(t, "", response)
+	})
+
+	t.Run("should error out while decrypting secret due to malformed encoded IV", func(t *testing.T) {
+		client := gocd.NewClient(
+			"http://localhost:8156/go",
+			"admin",
+			"admin",
+			"info",
+			nil,
+		)
+
+		response, err := client.DecryptText("AES:wefxe343348xnwh43x4ux==:4zVLtLx9msGleK+pLOOUHg==", "kencehcf84nnkcxjrfjx48")
+		assert.EqualError(t, err, "illegal base64 data at input byte 21")
+		assert.Equal(t, "", response)
+	})
+
+	t.Run("should error out while decrypting secret as no secret or cipher is passed", func(t *testing.T) {
+		client := gocd.NewClient(
+			"http://localhost:8156/go",
+			"admin",
+			"admin",
+			"info",
+			nil,
+		)
+
+		response, err := client.DecryptText("", "")
+		assert.EqualError(t, err, "value or cipher key cannot be empty")
+		assert.Equal(t, "", response)
+	})
+
+	t.Run("should be able to decrypt the secret successfully", func(t *testing.T) {
+		client := gocd.NewClient(
+			"http://localhost:8156/go",
+			"admin",
+			"admin",
+			"info",
+			nil,
+		)
+
+		response, err := client.DecryptText("AES:wSOqnltxM6Rp9j0Tb8uWpw==:4zVLtLx9msGleK+pLOOUHg==", "cb533bc2b64169f487412301afa6f5f")
+		assert.EqualError(t, err, "encoding/hex: odd length hex string")
+		assert.Equal(t, "", response)
+	})
+}
