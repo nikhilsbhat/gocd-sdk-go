@@ -161,7 +161,7 @@ func (conf *client) ConfigRepoTriggerUpdate(name string) (map[string]string, err
 		return nil, fmt.Errorf("call made to trigger update configrepo '%s' errored with: %w", name, err)
 	}
 
-	if (resp.StatusCode() != http.StatusOK) && (resp.StatusCode() != http.StatusConflict) {
+	if (resp.StatusCode() != http.StatusCreated) && (resp.StatusCode() != http.StatusConflict) {
 		return nil, APIErrorWithBody(resp.String(), resp.StatusCode())
 	}
 

@@ -312,7 +312,7 @@ func Test_client_ConfigRepoTriggerUpdate(t *testing.T) {
 	correctConfigHeader := map[string]string{"Accept": gocd.HeaderVersionFour, "X-GoCD-Confirm": "true"}
 
 	t.Run("Should be able to trigger update for a config repo successfully", func(t *testing.T) {
-		server := mockServer([]byte(`{"message": "OK"}`), http.StatusOK, correctConfigHeader, false, nil)
+		server := mockServer([]byte(`{"message": "OK"}`), http.StatusCreated, correctConfigHeader, false, nil)
 		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		expected := map[string]string{
@@ -325,7 +325,7 @@ func Test_client_ConfigRepoTriggerUpdate(t *testing.T) {
 	})
 
 	t.Run("Should error out while triggering config repo update as server returned malformed response", func(t *testing.T) {
-		server := mockServer([]byte(`{"message": }`), http.StatusOK, correctConfigHeader, false, nil)
+		server := mockServer([]byte(`{"message": }`), http.StatusCreated, correctConfigHeader, false, nil)
 		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		actual, err := client.ConfigRepoTriggerUpdate("config_repo_1")
