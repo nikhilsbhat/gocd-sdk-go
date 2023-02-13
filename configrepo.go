@@ -184,7 +184,7 @@ func (conf *client) ConfigRepoStatus(repo string) (map[string]bool, error) {
 		SetHeaders(map[string]string{
 			"Accept": HeaderVersionFour,
 		}).
-		Get(filepath.Join(ConfigReposEndpoint, repo, "trigger_update"))
+		Get(filepath.Join(ConfigReposEndpoint, repo, "status"))
 	if err != nil {
 		return nil, fmt.Errorf("call made to get status of configrepo '%s' errored with: %w", repo, err)
 	}

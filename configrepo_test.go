@@ -430,7 +430,7 @@ func Test_client_ConfigRepoStatus(t *testing.T) {
 
 		actual, err := client.ConfigRepoStatus("config_repo_1")
 		assert.EqualError(t, err, "call made to get status of configrepo 'config_repo_1' errored with: "+
-			"Get \"http://localhost:8156/go/api/admin/config_repos/config_repo_1/trigger_update\": dial tcp [::1]:8156: connect: connection refused")
+			"Get \"http://localhost:8156/go/api/admin/config_repos/config_repo_1/status\": dial tcp [::1]:8156: connect: connection refused")
 		assert.Nil(t, actual)
 	})
 }
