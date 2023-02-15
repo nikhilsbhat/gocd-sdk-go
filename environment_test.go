@@ -289,21 +289,21 @@ func Test_client_PatchEnvironment(t *testing.T) {
 		patch := gocd.PatchEnvironment{
 			Name: "new_environment",
 			Pipelines: struct {
-				Add    []string `json:"add,omitempty"`
-				Remove []string `json:"remove,omitempty"`
+				Add    []string `json:"add,omitempty" yaml:"add,omitempty"`
+				Remove []string `json:"remove,omitempty" yaml:"remove,omitempty"`
 			}{
 				Add: []string{"up42"},
 			},
 			EnvVars: struct {
 				Add []struct {
-					Name  string `json:"name,omitempty"`
-					Value string `json:"value,omitempty"`
-				} `json:"add,omitempty"`
-				Remove []string `json:"remove,omitempty"`
+					Name  string `json:"name,omitempty" yaml:"name,omitempty"`
+					Value string `json:"value,omitempty" yaml:"value,omitempty"`
+				} `json:"add,omitempty" yaml:"add,omitempty"`
+				Remove []string `json:"remove,omitempty" yaml:"remove,omitempty"`
 			}{
 				Add: []struct {
-					Name  string `json:"name,omitempty"`
-					Value string `json:"value,omitempty"`
+					Name  string `json:"name,omitempty" yaml:"name,omitempty"`
+					Value string `json:"value,omitempty" yaml:"value,omitempty"`
 				}{
 					{
 						Name:  "GO_SERVER_URL",

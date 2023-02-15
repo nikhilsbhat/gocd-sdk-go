@@ -43,7 +43,7 @@ func Test_client_GetPluginsInfo(t *testing.T) {
 						},
 					},
 					Status: struct {
-						State string `json:"state,omitempty"`
+						State string `json:"state,omitempty" yaml:"state,omitempty"`
 					}(struct{ State string }{State: "active"}),
 				},
 			},
@@ -131,7 +131,7 @@ func Test_client_GetPluginInfo(t *testing.T) {
 				},
 			},
 			Status: struct {
-				State string `json:"state,omitempty"`
+				State string `json:"state,omitempty" yaml:"state,omitempty"`
 			}(struct{ State string }{State: "active"}),
 		}
 

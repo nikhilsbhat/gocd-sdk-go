@@ -39,7 +39,7 @@ func Test_client_GetPackageRepositories(t *testing.T) {
 					},
 				},
 				Packages: struct {
-					Packages []gocd.CommonConfig `json:"packages,omitempty"`
+					Packages []gocd.CommonConfig `json:"packages,omitempty" yaml:"packages,omitempty"`
 				}(struct{ Packages []gocd.CommonConfig }{
 					Packages: []gocd.CommonConfig{
 						{
@@ -131,7 +131,7 @@ func Test_client_GetPackageRepository(t *testing.T) {
 				},
 			},
 			Packages: struct {
-				Packages []gocd.CommonConfig `json:"packages,omitempty"`
+				Packages []gocd.CommonConfig `json:"packages,omitempty" yaml:"packages,omitempty"`
 			}{
 				Packages: []gocd.CommonConfig{
 					{
@@ -222,7 +222,7 @@ func Test_client_CreatePackageRepository(t *testing.T) {
 				},
 			},
 			Packages: struct {
-				Packages []gocd.CommonConfig `json:"packages,omitempty"`
+				Packages []gocd.CommonConfig `json:"packages,omitempty" yaml:"packages,omitempty"`
 			}{
 				Packages: []gocd.CommonConfig{
 					{
@@ -321,7 +321,7 @@ func Test_client_UpdatePackageRepository(t *testing.T) {
 				},
 			},
 			Packages: struct {
-				Packages []gocd.CommonConfig `json:"packages,omitempty"`
+				Packages []gocd.CommonConfig `json:"packages,omitempty" yaml:"packages,omitempty"`
 			}{
 				Packages: []gocd.CommonConfig{
 					{

@@ -25,8 +25,8 @@ func Test_client_GetArtifactConfig(t *testing.T) {
 		expected := gocd.ArtifactInfo{
 			ArtifactsDir: "foo",
 			PurgeSettings: struct {
-				PurgeStartDiskSpace float64 `json:"purge_start_disk_space,omitempty"`
-				PurgeUptoDiskSpace  float64 `json:"purge_upto_disk_space,omitempty"`
+				PurgeStartDiskSpace float64 `json:"purge_start_disk_space,omitempty" yaml:"purge_start_disk_space,omitempty"`
+				PurgeUptoDiskSpace  float64 `json:"purge_upto_disk_space,omitempty" yaml:"purge_upto_disk_space,omitempty"`
 			}{PurgeStartDiskSpace: 10, PurgeUptoDiskSpace: 20},
 			ETAG: "17f5a9edf150884e5fc4315b4a7814cd",
 		}
@@ -90,8 +90,8 @@ func Test_client_UpdateArtifactConfig(t *testing.T) {
 		artifactConfig := gocd.ArtifactInfo{
 			ArtifactsDir: "foo",
 			PurgeSettings: struct {
-				PurgeStartDiskSpace float64 `json:"purge_start_disk_space,omitempty"`
-				PurgeUptoDiskSpace  float64 `json:"purge_upto_disk_space,omitempty"`
+				PurgeStartDiskSpace float64 `json:"purge_start_disk_space,omitempty" yaml:"purge_start_disk_space,omitempty"`
+				PurgeUptoDiskSpace  float64 `json:"purge_upto_disk_space,omitempty" yaml:"purge_upto_disk_space,omitempty"`
 			}{
 				PurgeStartDiskSpace: 20.0,
 			},
@@ -128,8 +128,8 @@ func Test_client_UpdateArtifactConfig(t *testing.T) {
 		artifactConfig := gocd.ArtifactInfo{
 			ArtifactsDir: "foo",
 			PurgeSettings: struct {
-				PurgeStartDiskSpace float64 `json:"purge_start_disk_space,omitempty"`
-				PurgeUptoDiskSpace  float64 `json:"purge_upto_disk_space,omitempty"`
+				PurgeStartDiskSpace float64 `json:"purge_start_disk_space,omitempty" yaml:"purge_start_disk_space,omitempty"`
+				PurgeUptoDiskSpace  float64 `json:"purge_upto_disk_space,omitempty" yaml:"purge_upto_disk_space,omitempty"`
 			}{
 				PurgeStartDiskSpace: 20.0,
 			},
