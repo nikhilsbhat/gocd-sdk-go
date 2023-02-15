@@ -27,7 +27,8 @@ type GoCd interface {
 	DeleteAgent(id string) (string, error)
 	DeleteAgentBulk(agent Agent) (string, error)
 	AgentKillTask(agent Agent) error
-	GetHealthMessages() ([]ServerHealth, error)
+	GetServerHealthMessages() ([]ServerHealth, error)
+	GetServerHealth() (map[string]string, error)
 	GetConfigRepos() ([]ConfigRepo, error)
 	GetConfigRepo(repo string) (ConfigRepo, error)
 	CreateConfigRepo(repoObj ConfigRepo) error
