@@ -2,8 +2,9 @@ package gocd
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
+
+	"github.com/nikhilsbhat/gocd-sdk-go/pkg/errors"
 
 	"github.com/jinzhu/copier"
 )
@@ -22,14 +23,14 @@ func (conf *client) GetServerHealthMessages() ([]ServerHealth, error) {
 		}).
 		SetResult(&health).Get(ServerHealthEndpoint)
 	if err != nil {
-		return nil, fmt.Errorf("call made to get health info errored with %w", err)
+		return nil, &errors.APIError{Err: err, Message: "get health info"}
 	}
 	if resp.StatusCode() != http.StatusOK {
-		return nil, APIWithCodeError(resp.StatusCode())
+		return nil, &errors.NonOkError{Code: resp.StatusCode(), Response: resp}
 	}
 
 	if err = json.Unmarshal(resp.Body(), &health); err != nil {
-		return nil, ResponseReadError(err.Error())
+		return nil, &errors.MarshalError{Err: err}
 	}
 
 	return health, nil
@@ -45,15 +46,15 @@ func (conf *client) GetServerHealth() (map[string]string, error) {
 	resp, err := newClient.httpClient.R().
 		SetResult(&health).Get(HealthEndpoint)
 	if err != nil {
-		return health, fmt.Errorf("call made to get server health errored with %w", err)
+		return health, &errors.APIError{Err: err, Message: "get server health"}
 	}
 
 	if resp.StatusCode() != http.StatusOK {
-		return health, APIErrorWithBody(resp.String(), resp.StatusCode())
+		return health, &errors.NonOkError{Code: resp.StatusCode(), Response: resp}
 	}
 
 	if err = json.Unmarshal(resp.Body(), &health); err != nil {
-		return health, ResponseReadError(err.Error())
+		return health, &errors.MarshalError{Err: err}
 	}
 
 	return health, nil

@@ -6,6 +6,8 @@ import (
 	"net/http"
 	"path/filepath"
 
+	"github.com/nikhilsbhat/gocd-sdk-go/pkg/errors"
+
 	"github.com/jinzhu/copier"
 )
 
@@ -25,11 +27,11 @@ func (conf *client) GetAuthConfigs() ([]CommonConfig, error) {
 		}).
 		Get(AuthConfigEndpoint)
 	if err != nil {
-		return nil, fmt.Errorf("call made to get auth configs errored with: %w", err)
+		return nil, &errors.APIError{Err: err, Message: "get auth configs"}
 	}
 
 	if resp.StatusCode() != http.StatusOK {
-		return nil, APIErrorWithBody(resp.String(), resp.StatusCode())
+		return nil, &errors.NonOkError{Code: resp.StatusCode(), Response: resp}
 	}
 
 	if err = json.Unmarshal(resp.Body(), &auth); err != nil {
@@ -53,11 +55,11 @@ func (conf *client) GetAuthConfig(name string) (CommonConfig, error) {
 		}).
 		Get(filepath.Join(AuthConfigEndpoint, name))
 	if err != nil {
-		return auth, fmt.Errorf("call made to get auth config '%s' errored with: %w", name, err)
+		return auth, &errors.APIError{Err: err, Message: fmt.Sprintf("get auth config '%s'", name)}
 	}
 
 	if resp.StatusCode() != http.StatusOK {
-		return auth, APIErrorWithBody(resp.String(), resp.StatusCode())
+		return auth, &errors.NonOkError{Code: resp.StatusCode(), Response: resp}
 	}
 
 	if err = json.Unmarshal(resp.Body(), &auth); err != nil {
@@ -85,11 +87,11 @@ func (conf *client) CreateAuthConfig(config CommonConfig) (CommonConfig, error) 
 		SetBody(config).
 		Post(AuthConfigEndpoint)
 	if err != nil {
-		return auth, fmt.Errorf("call made to create auth config '%s' errored with: %w", config.ID, err)
+		return auth, &errors.APIError{Err: err, Message: fmt.Sprintf("create auth config '%s'", config.ID)}
 	}
 
 	if resp.StatusCode() != http.StatusOK {
-		return auth, APIErrorWithBody(resp.String(), resp.StatusCode())
+		return auth, &errors.NonOkError{Code: resp.StatusCode(), Response: resp}
 	}
 
 	if err = json.Unmarshal(resp.Body(), &auth); err != nil {
@@ -118,11 +120,11 @@ func (conf *client) UpdateAuthConfig(config CommonConfig) (CommonConfig, error) 
 		SetBody(config).
 		Put(AuthConfigEndpoint)
 	if err != nil {
-		return auth, fmt.Errorf("call made to update auth config '%s' errored with: %w", config.ID, err)
+		return auth, &errors.APIError{Err: err, Message: fmt.Sprintf("update auth config '%s'", config.ID)}
 	}
 
 	if resp.StatusCode() != http.StatusOK {
-		return auth, APIErrorWithBody(resp.String(), resp.StatusCode())
+		return auth, &errors.NonOkError{Code: resp.StatusCode(), Response: resp}
 	}
 
 	if err = json.Unmarshal(resp.Body(), &auth); err != nil {
@@ -147,11 +149,11 @@ func (conf *client) DeleteAuthConfig(name string) error {
 		}).
 		Delete(filepath.Join(AuthConfigEndpoint, name))
 	if err != nil {
-		return fmt.Errorf("call made to delete auth config '%s' errored with: %w", name, err)
+		return &errors.APIError{Err: err, Message: fmt.Sprintf("delete auth config '%s'", name)}
 	}
 
 	if resp.StatusCode() != http.StatusOK {
-		return APIErrorWithBody(resp.String(), resp.StatusCode())
+		return &errors.NonOkError{Code: resp.StatusCode(), Response: resp}
 	}
 
 	return nil

@@ -36,7 +36,8 @@ func Test_client_GetAdminsInfo(t *testing.T) {
 		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		actual, err := client.GetSystemAdmins()
-		assert.EqualError(t, err, gocd.APIWithCodeError(http.StatusBadGateway).Error())
+		assert.EqualError(t, err, "got 502 from GoCD while making GET call for "+server.URL+
+			"/api/admin/security/system_admins\nwith BODY:backupJSON")
 		assert.Equal(t, gocd.SystemAdmins{}, actual)
 	})
 
@@ -54,7 +55,8 @@ func Test_client_GetAdminsInfo(t *testing.T) {
 		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		actual, err := client.GetSystemAdmins()
-		assert.EqualError(t, err, "goCd server returned code 404 with message")
+		assert.EqualError(t, err, "got 404 from GoCD while making GET call for "+server.URL+
+			"/api/admin/security/system_admins\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 		assert.Equal(t, gocd.SystemAdmins{}, actual)
 	})
 
@@ -115,7 +117,8 @@ func Test_client_UpdateSystemAdmins(t *testing.T) {
 		}
 
 		actual, err := client.UpdateSystemAdmins(users)
-		assert.EqualError(t, err, "body: <html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html> httpcode: 404")
+		assert.EqualError(t, err, "got 404 from GoCD while making PUT call for "+server.URL+
+			"/api/admin/security/system_admins\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 		assert.Equal(t, gocd.SystemAdmins{}, actual)
 	})
 
@@ -131,7 +134,8 @@ func Test_client_UpdateSystemAdmins(t *testing.T) {
 		}
 
 		actual, err := client.UpdateSystemAdmins(users)
-		assert.EqualError(t, err, "body: <html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html> httpcode: 404")
+		assert.EqualError(t, err, "got 404 from GoCD while making PUT call for "+server.URL+
+			"/api/admin/security/system_admins\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 		assert.Equal(t, gocd.SystemAdmins{}, actual)
 	})
 

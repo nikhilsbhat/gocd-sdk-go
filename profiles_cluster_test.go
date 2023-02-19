@@ -56,7 +56,8 @@ func Test_client_GetClusterProfiles(t *testing.T) {
 		}
 
 		actual, err := client.GetClusterProfiles()
-		assert.EqualError(t, err, "body: <html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html> httpcode: 404")
+		assert.EqualError(t, err, "got 404 from GoCD while making GET call for "+server.URL+
+			"/api/admin/elastic/cluster_profiles\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 		assert.Equal(t, expected, actual)
 	})
 
@@ -70,7 +71,8 @@ func Test_client_GetClusterProfiles(t *testing.T) {
 		}
 
 		actual, err := client.GetClusterProfiles()
-		assert.EqualError(t, err, "body: <html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html> httpcode: 404")
+		assert.EqualError(t, err, "got 404 from GoCD while making GET call for "+server.URL+
+			"/api/admin/elastic/cluster_profiles\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 		assert.Equal(t, expected, actual)
 	})
 
@@ -140,7 +142,8 @@ func Test_client_GetClusterProfile(t *testing.T) {
 		expected := gocd.CommonConfig{}
 
 		actual, err := client.GetClusterProfile(profileName)
-		assert.EqualError(t, err, "body: <html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html> httpcode: 404")
+		assert.EqualError(t, err, "got 404 from GoCD while making GET call for "+server.URL+
+			"/api/admin/elastic/cluster_profiles/prod-cluster\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 		assert.Equal(t, expected, actual)
 	})
 
@@ -152,7 +155,8 @@ func Test_client_GetClusterProfile(t *testing.T) {
 		expected := gocd.CommonConfig{}
 
 		actual, err := client.GetClusterProfile(profileName)
-		assert.EqualError(t, err, "body: <html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html> httpcode: 404")
+		assert.EqualError(t, err, "got 404 from GoCD while making GET call for "+server.URL+
+			"/api/admin/elastic/cluster_profiles/prod-cluster\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 		assert.Equal(t, expected, actual)
 	})
 
@@ -221,7 +225,8 @@ func Test_client_CreateClusterProfile(t *testing.T) {
 		expected := profileCfg
 
 		actual, err := client.UpdateClusterProfile(profileCfg)
-		assert.EqualError(t, err, "body: <html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html> httpcode: 404")
+		assert.EqualError(t, err, "got 404 from GoCD while making PUT call for "+server.URL+
+			"/api/admin/elastic/cluster_profiles\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 		assert.Equal(t, expected, actual)
 	})
 
@@ -234,7 +239,8 @@ func Test_client_CreateClusterProfile(t *testing.T) {
 		expected := profileCfg
 
 		actual, err := client.CreateClusterProfile(profileCfg)
-		assert.EqualError(t, err, "body: <html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html> httpcode: 404")
+		assert.EqualError(t, err, "got 404 from GoCD while making POST call for "+server.URL+
+			"/api/admin/elastic/cluster_profiles\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 		assert.Equal(t, expected, actual)
 	})
 
@@ -305,7 +311,8 @@ func Test_client_UpdateClusterProfile(t *testing.T) {
 		expected := profileCfg
 
 		actual, err := client.UpdateClusterProfile(profileCfg)
-		assert.EqualError(t, err, "body: <html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html> httpcode: 404")
+		assert.EqualError(t, err, "got 404 from GoCD while making PUT call for "+server.URL+
+			"/api/admin/elastic/cluster_profiles\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 		assert.Equal(t, expected, actual)
 	})
 
@@ -318,7 +325,8 @@ func Test_client_UpdateClusterProfile(t *testing.T) {
 		expected := profileCfg
 
 		actual, err := client.UpdateClusterProfile(profileCfg)
-		assert.EqualError(t, err, "body: <html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html> httpcode: 404")
+		assert.EqualError(t, err, "got 404 from GoCD while making PUT call for "+server.URL+
+			"/api/admin/elastic/cluster_profiles\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 		assert.Equal(t, expected, actual)
 	})
 
@@ -370,7 +378,8 @@ func Test_client_DeleteClusterProfile(t *testing.T) {
 		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		err := client.DeleteClusterProfile("prod-cluster")
-		assert.EqualError(t, err, "body: <html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html> httpcode: 404")
+		assert.EqualError(t, err, "got 404 from GoCD while making DELETE call for "+server.URL+
+			"/api/admin/elastic/cluster_profiles/prod-cluster\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 	})
 
 	t.Run("should error out while deleting a cluster profile due to missing headers", func(t *testing.T) {
@@ -380,7 +389,8 @@ func Test_client_DeleteClusterProfile(t *testing.T) {
 		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		err := client.DeleteClusterProfile("prod-cluster")
-		assert.EqualError(t, err, "body: <html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html> httpcode: 404")
+		assert.EqualError(t, err, "got 404 from GoCD while making DELETE call for "+server.URL+
+			"/api/admin/elastic/cluster_profiles/prod-cluster\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 	})
 
 	t.Run("should error out while deleting a cluster profile as GoCD server is not reachable", func(t *testing.T) {

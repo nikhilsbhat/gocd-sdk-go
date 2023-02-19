@@ -6,6 +6,8 @@ import (
 	"net/http"
 	"path/filepath"
 
+	"github.com/nikhilsbhat/gocd-sdk-go/pkg/errors"
+
 	"github.com/jinzhu/copier"
 )
 
@@ -23,15 +25,15 @@ func (conf *client) GetPluginSettings(name string) (PluginSettings, error) {
 		}).
 		Get(filepath.Join(PluginSettingsEndpoint, name))
 	if err != nil {
-		return setting, fmt.Errorf("call made to get '%s' plugin setting errored with: %w", name, err)
+		return setting, &errors.APIError{Err: err, Message: fmt.Sprintf("get '%s' plugin setting", name)}
 	}
 
 	if resp.StatusCode() != http.StatusOK {
-		return setting, APIErrorWithBody(resp.String(), resp.StatusCode())
+		return setting, &errors.NonOkError{Code: resp.StatusCode(), Response: resp}
 	}
 
 	if err = json.Unmarshal(resp.Body(), &setting); err != nil {
-		return setting, ResponseReadError(err.Error())
+		return setting, &errors.MarshalError{Err: err}
 	}
 
 	setting.ETAG = resp.Header().Get("ETag")
@@ -55,15 +57,15 @@ func (conf *client) CreatePluginSettings(settings PluginSettings) (PluginSetting
 		SetBody(settings).
 		Post(PluginSettingsEndpoint)
 	if err != nil {
-		return setting, fmt.Errorf("call made to create plugin setting of '%s' errored with: %w", settings.ID, err)
+		return setting, &errors.APIError{Err: err, Message: fmt.Sprintf("create plugin setting of '%s'", settings.ID)}
 	}
 
 	if resp.StatusCode() != http.StatusOK {
-		return setting, APIErrorWithBody(resp.String(), resp.StatusCode())
+		return setting, &errors.NonOkError{Code: resp.StatusCode(), Response: resp}
 	}
 
 	if err = json.Unmarshal(resp.Body(), &setting); err != nil {
-		return setting, ResponseReadError(err.Error())
+		return setting, &errors.MarshalError{Err: err}
 	}
 
 	return setting, nil
@@ -86,15 +88,15 @@ func (conf *client) UpdatePluginSettings(settings PluginSettings) (PluginSetting
 		SetBody(settings).
 		Put(filepath.Join(PluginSettingsEndpoint, settings.ID))
 	if err != nil {
-		return setting, fmt.Errorf("call made to update plugin setting of '%s' errored with: %w", settings.ID, err)
+		return setting, &errors.APIError{Err: err, Message: fmt.Sprintf("update plugin setting of '%s'", settings.ID)}
 	}
 
 	if resp.StatusCode() != http.StatusOK {
-		return setting, APIErrorWithBody(resp.String(), resp.StatusCode())
+		return setting, &errors.NonOkError{Code: resp.StatusCode(), Response: resp}
 	}
 
 	if err = json.Unmarshal(resp.Body(), &setting); err != nil {
-		return setting, ResponseReadError(err.Error())
+		return setting, &errors.MarshalError{Err: err}
 	}
 
 	return setting, nil

@@ -41,7 +41,8 @@ func Test_client_GetMailServerConfig(t *testing.T) {
 		expected := gocd.MailServerConfig{}
 
 		actual, err := client.GetMailServerConfig()
-		assert.EqualError(t, err, "body: <html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html> httpcode: 404")
+		assert.EqualError(t, err, "got 404 from GoCD while making GET call for "+server.URL+
+			"/api/config/mailserver\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 		assert.Equal(t, expected, actual)
 	})
 
@@ -53,7 +54,8 @@ func Test_client_GetMailServerConfig(t *testing.T) {
 		expected := gocd.MailServerConfig{}
 
 		actual, err := client.GetMailServerConfig()
-		assert.EqualError(t, err, "body: <html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html> httpcode: 404")
+		assert.EqualError(t, err, "got 404 from GoCD while making GET call for "+server.URL+
+			"/api/config/mailserver\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 		assert.Equal(t, expected, actual)
 	})
 
@@ -100,7 +102,8 @@ func Test_client_DeleteMailServerConfig(t *testing.T) {
 		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		err := client.DeleteMailServerConfig()
-		assert.EqualError(t, err, "body: <html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html> httpcode: 404")
+		assert.EqualError(t, err, "got 404 from GoCD while making DELETE call for "+server.URL+
+			"/api/config/mailserver\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 	})
 
 	t.Run("should error out while deleting mail server configuration due to missing headers", func(t *testing.T) {
@@ -109,7 +112,8 @@ func Test_client_DeleteMailServerConfig(t *testing.T) {
 		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		err := client.DeleteMailServerConfig()
-		assert.EqualError(t, err, "body: <html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html> httpcode: 404")
+		assert.EqualError(t, err, "got 404 from GoCD while making DELETE call for "+server.URL+
+			"/api/config/mailserver\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 	})
 
 	t.Run("should error out while deleting mail server configuration as server is not reachable", func(t *testing.T) {
@@ -156,7 +160,8 @@ func Test_client_CreateOrUpdateMailServerConfig(t *testing.T) {
 		expected := input
 
 		actual, err := client.CreateOrUpdateMailServerConfig(input)
-		assert.EqualError(t, err, "body: <html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html> httpcode: 404")
+		assert.EqualError(t, err, "got 404 from GoCD while making GET call for "+server.URL+
+			"/api/config/mailserver\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 		assert.Equal(t, expected, actual)
 	})
 
@@ -169,7 +174,8 @@ func Test_client_CreateOrUpdateMailServerConfig(t *testing.T) {
 		expected := input
 
 		actual, err := client.CreateOrUpdateMailServerConfig(input)
-		assert.EqualError(t, err, "body: <html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html> httpcode: 404")
+		assert.EqualError(t, err, "got 404 from GoCD while making GET call for "+server.URL+
+			"/api/config/mailserver\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 		assert.Equal(t, expected, actual)
 	})
 

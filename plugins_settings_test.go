@@ -59,7 +59,8 @@ func Test_client_GetPluginSettings(t *testing.T) {
 		expected := gocd.PluginSettings{}
 
 		actual, err := client.GetPluginSettings(pluginName)
-		assert.EqualError(t, err, "body: <html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html> httpcode: 404")
+		assert.EqualError(t, err, "got 404 from GoCD while making GET call for "+server.URL+
+			"/api/admin/plugin_settings/github.oauth.login\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 		assert.Equal(t, expected, actual)
 	})
 
@@ -71,7 +72,8 @@ func Test_client_GetPluginSettings(t *testing.T) {
 		expected := gocd.PluginSettings{}
 
 		actual, err := client.GetPluginSettings(pluginName)
-		assert.EqualError(t, err, "body: <html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html> httpcode: 404")
+		assert.EqualError(t, err, "got 404 from GoCD while making GET call for "+server.URL+
+			"/api/admin/plugin_settings/github.oauth.login\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 		assert.Equal(t, expected, actual)
 	})
 
@@ -148,7 +150,8 @@ func Test_client_CreatePluginSettings(t *testing.T) {
 		expected := gocd.PluginSettings{}
 
 		actual, err := client.CreatePluginSettings(pluginSettings)
-		assert.EqualError(t, err, "body: <html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html> httpcode: 404")
+		assert.EqualError(t, err, "got 404 from GoCD while making POST call for "+server.URL+
+			"/api/admin/plugin_settings\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 		assert.Equal(t, expected, actual)
 	})
 
@@ -161,7 +164,8 @@ func Test_client_CreatePluginSettings(t *testing.T) {
 		expected := gocd.PluginSettings{}
 
 		actual, err := client.CreatePluginSettings(pluginSettings)
-		assert.EqualError(t, err, "body: <html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html> httpcode: 404")
+		assert.EqualError(t, err, "got 404 from GoCD while making POST call for "+server.URL+
+			"/api/admin/plugin_settings\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 		assert.Equal(t, expected, actual)
 	})
 
@@ -241,7 +245,8 @@ func Test_client_UpdatePluginSettings(t *testing.T) {
 		expected := gocd.PluginSettings{}
 
 		actual, err := client.UpdatePluginSettings(pluginSettings)
-		assert.EqualError(t, err, "body: <html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html> httpcode: 404")
+		assert.EqualError(t, err, "got 404 from GoCD while making PUT call for "+server.URL+
+			"/api/admin/plugin_settings/github.oauth.login\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 		assert.Equal(t, expected, actual)
 	})
 
@@ -254,7 +259,8 @@ func Test_client_UpdatePluginSettings(t *testing.T) {
 		expected := gocd.PluginSettings{}
 
 		actual, err := client.UpdatePluginSettings(pluginSettings)
-		assert.EqualError(t, err, "body: <html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html> httpcode: 404")
+		assert.EqualError(t, err, "got 404 from GoCD while making PUT call for "+server.URL+
+			"/api/admin/plugin_settings/github.oauth.login\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 		assert.Equal(t, expected, actual)
 	})
 

@@ -6,6 +6,8 @@ import (
 	"net/http"
 	"path/filepath"
 
+	"github.com/nikhilsbhat/gocd-sdk-go/pkg/errors"
+
 	"github.com/jinzhu/copier"
 )
 
@@ -26,11 +28,11 @@ func (conf *client) GetClusterProfiles() (ProfilesConfig, error) {
 	}
 
 	if resp.StatusCode() != http.StatusOK {
-		return ProfilesConfig{}, APIErrorWithBody(resp.String(), resp.StatusCode())
+		return ProfilesConfig{}, &errors.NonOkError{Code: resp.StatusCode(), Response: resp}
 	}
 
 	if err = json.Unmarshal(resp.Body(), &profilesCfg); err != nil {
-		return ProfilesConfig{}, ResponseReadError(err.Error())
+		return ProfilesConfig{}, &errors.MarshalError{Err: err}
 	}
 
 	profilesCfg.ProfilesConfigs.ETAG = resp.Header().Get("ETag")
@@ -55,11 +57,11 @@ func (conf *client) GetClusterProfile(name string) (CommonConfig, error) {
 	}
 
 	if resp.StatusCode() != http.StatusOK {
-		return CommonConfig{}, APIErrorWithBody(resp.String(), resp.StatusCode())
+		return CommonConfig{}, &errors.NonOkError{Code: resp.StatusCode(), Response: resp}
 	}
 
 	if err = json.Unmarshal(resp.Body(), &profilesCfg); err != nil {
-		return CommonConfig{}, ResponseReadError(err.Error())
+		return CommonConfig{}, &errors.MarshalError{Err: err}
 	}
 
 	profilesCfg.ETAG = resp.Header().Get("ETag")
@@ -82,15 +84,15 @@ func (conf *client) CreateClusterProfile(config CommonConfig) (CommonConfig, err
 		SetBody(config).
 		Post(ClusterProfileEndpoint)
 	if err != nil {
-		return CommonConfig{}, fmt.Errorf("call made to create cluster profile '%s' errored with: %w", config.ID, err)
+		return CommonConfig{}, &errors.APIError{Err: err, Message: fmt.Sprintf("create cluster profile '%s'", config.ID)}
 	}
 
 	if resp.StatusCode() != http.StatusOK {
-		return CommonConfig{}, APIErrorWithBody(resp.String(), resp.StatusCode())
+		return CommonConfig{}, &errors.NonOkError{Code: resp.StatusCode(), Response: resp}
 	}
 
 	if err = json.Unmarshal(resp.Body(), &profileCfg); err != nil {
-		return CommonConfig{}, ResponseReadError(err.Error())
+		return CommonConfig{}, &errors.MarshalError{Err: err}
 	}
 
 	profileCfg.ETAG = resp.Header().Get("ETag")
@@ -114,15 +116,15 @@ func (conf *client) UpdateClusterProfile(config CommonConfig) (CommonConfig, err
 		SetBody(config).
 		Put(filepath.Join(ClusterProfileEndpoint, config.ID))
 	if err != nil {
-		return CommonConfig{}, fmt.Errorf("call made to update cluster profile '%s' errored with: %w", config.ID, err)
+		return CommonConfig{}, &errors.APIError{Err: err, Message: fmt.Sprintf("update cluster profile '%s'", config.ID)}
 	}
 
 	if resp.StatusCode() != http.StatusOK {
-		return CommonConfig{}, APIErrorWithBody(resp.String(), resp.StatusCode())
+		return CommonConfig{}, &errors.NonOkError{Code: resp.StatusCode(), Response: resp}
 	}
 
 	if err = json.Unmarshal(resp.Body(), &storeCfg); err != nil {
-		return CommonConfig{}, ResponseReadError(err.Error())
+		return CommonConfig{}, &errors.MarshalError{Err: err}
 	}
 
 	storeCfg.ETAG = resp.Header().Get("ETag")
@@ -142,11 +144,11 @@ func (conf *client) DeleteClusterProfile(name string) error {
 		}).
 		Delete(filepath.Join(ClusterProfileEndpoint, name))
 	if err != nil {
-		return fmt.Errorf("call made to delete cluster profile '%s' errored with: %w", name, err)
+		return &errors.APIError{Err: err, Message: fmt.Sprintf("delete cluster profile '%s'", name)}
 	}
 
 	if resp.StatusCode() != http.StatusOK {
-		return APIErrorWithBody(resp.String(), resp.StatusCode())
+		return &errors.NonOkError{Code: resp.StatusCode(), Response: resp}
 	}
 
 	return nil

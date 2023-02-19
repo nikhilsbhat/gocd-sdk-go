@@ -2,8 +2,9 @@ package gocd
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
+
+	"github.com/nikhilsbhat/gocd-sdk-go/pkg/errors"
 
 	"github.com/jinzhu/copier"
 )
@@ -21,15 +22,15 @@ func (conf *client) GetMaterials() ([]Material, error) {
 		}).
 		Get(MaterialEndpoint)
 	if err != nil {
-		return nil, fmt.Errorf("call made to get all available materials errored with: %w", err)
+		return nil, &errors.APIError{Err: err, Message: "get all available materials"}
 	}
 
 	if resp.StatusCode() != http.StatusOK {
-		return nil, APIErrorWithBody(resp.String(), resp.StatusCode())
+		return nil, &errors.NonOkError{Code: resp.StatusCode(), Response: resp}
 	}
 
 	if err = json.Unmarshal(resp.Body(), &materials); err != nil {
-		return nil, ResponseReadError(err.Error())
+		return nil, &errors.MarshalError{Err: err}
 	}
 
 	return materials.Materials.Materials, nil

@@ -36,7 +36,8 @@ func Test_client_GetSiteURL(t *testing.T) {
 		expected := gocd.SiteURLConfig{}
 
 		actual, err := client.GetSiteURL()
-		assert.EqualError(t, err, "body: <html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html> httpcode: 404")
+		assert.EqualError(t, err, "got 404 from GoCD while making GET call for "+server.URL+
+			"/api/admin/security/site_urls\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 		assert.Equal(t, expected, actual)
 	})
 
@@ -48,7 +49,8 @@ func Test_client_GetSiteURL(t *testing.T) {
 		expected := gocd.SiteURLConfig{}
 
 		actual, err := client.GetSiteURL()
-		assert.EqualError(t, err, "body: <html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html> httpcode: 404")
+		assert.EqualError(t, err, "got 404 from GoCD while making GET call for "+server.URL+
+			"/api/admin/security/site_urls\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 		assert.Equal(t, expected, actual)
 	})
 
@@ -108,7 +110,8 @@ func Test_client_CreateOrUpdateSiteURL(t *testing.T) {
 		expected := gocd.SiteURLConfig{}
 
 		actual, err := client.CreateOrUpdateSiteURL(gocd.SiteURLConfig{})
-		assert.EqualError(t, err, "body: <html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html> httpcode: 404")
+		assert.EqualError(t, err, "got 404 from GoCD while making POST call for "+server.URL+
+			"/api/admin/security/site_urls\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 		assert.Equal(t, expected, actual)
 	})
 
@@ -120,7 +123,8 @@ func Test_client_CreateOrUpdateSiteURL(t *testing.T) {
 		expected := gocd.SiteURLConfig{}
 
 		actual, err := client.CreateOrUpdateSiteURL(gocd.SiteURLConfig{})
-		assert.EqualError(t, err, "body: <html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html> httpcode: 404")
+		assert.EqualError(t, err, "got 404 from GoCD while making POST call for "+server.URL+
+			"/api/admin/security/site_urls\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 		assert.Equal(t, expected, actual)
 	})
 

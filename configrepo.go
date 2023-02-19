@@ -6,6 +6,8 @@ import (
 	"net/http"
 	"path/filepath"
 
+	"github.com/nikhilsbhat/gocd-sdk-go/pkg/errors"
+
 	"github.com/jinzhu/copier"
 )
 
@@ -23,14 +25,14 @@ func (conf *client) GetConfigRepo(repo string) (ConfigRepo, error) {
 		}).
 		Get(filepath.Join(ConfigReposEndpoint, repo))
 	if err != nil {
-		return ConfigRepo{}, fmt.Errorf("call made to get config repo errored with %w", err)
+		return ConfigRepo{}, &errors.APIError{Err: err, Message: "get config repo"}
 	}
 	if resp.StatusCode() != http.StatusOK {
-		return ConfigRepo{}, APIErrorWithBody(resp.String(), resp.StatusCode())
+		return ConfigRepo{}, &errors.NonOkError{Code: resp.StatusCode(), Response: resp}
 	}
 
 	if err = json.Unmarshal(resp.Body(), &repoConf); err != nil {
-		return ConfigRepo{}, ResponseReadError(err.Error())
+		return ConfigRepo{}, &errors.MarshalError{Err: err}
 	}
 
 	if len(resp.Header().Get("ETag")) == 0 {
@@ -56,14 +58,14 @@ func (conf *client) GetConfigRepos() ([]ConfigRepo, error) {
 		}).
 		Get(ConfigReposEndpoint)
 	if err != nil {
-		return nil, fmt.Errorf("call made to get config repos errored with %w", err)
+		return nil, &errors.APIError{Err: err, Message: "get config repos"}
 	}
 	if resp.StatusCode() != http.StatusOK {
-		return nil, APIErrorWithBody(resp.String(), resp.StatusCode())
+		return nil, &errors.NonOkError{Code: resp.StatusCode(), Response: resp}
 	}
 
 	if err = json.Unmarshal(resp.Body(), &reposConf); err != nil {
-		return nil, ResponseReadError(err.Error())
+		return nil, &errors.MarshalError{Err: err}
 	}
 
 	return reposConf.ConfigRepos.ConfigRepos, nil
@@ -84,11 +86,11 @@ func (conf *client) CreateConfigRepo(repoObj ConfigRepo) error {
 		SetBody(repoObj).
 		Post(ConfigReposEndpoint)
 	if err != nil {
-		return fmt.Errorf("call made to create config repo errored with: %w", err)
+		return &errors.APIError{Err: err, Message: "create config repo"}
 	}
 
 	if resp.StatusCode() != http.StatusOK {
-		return APIErrorWithBody(resp.String(), resp.StatusCode())
+		return &errors.NonOkError{Code: resp.StatusCode(), Response: resp}
 	}
 
 	return nil
@@ -110,11 +112,11 @@ func (conf *client) UpdateConfigRepo(repo ConfigRepo) (string, error) {
 		SetBody(repo).
 		Put(filepath.Join(ConfigReposEndpoint, repo.ID))
 	if err != nil {
-		return "", fmt.Errorf("put call made to update config repo errored with: %w", err)
+		return "", &errors.APIError{Err: err, Message: "call made to update config repo"}
 	}
 
 	if resp.StatusCode() != http.StatusOK {
-		return "", APIErrorWithBody(resp.String(), resp.StatusCode())
+		return "", &errors.NonOkError{Code: resp.StatusCode(), Response: resp}
 	}
 
 	return resp.Header().Get("ETag"), nil
@@ -134,11 +136,11 @@ func (conf *client) DeleteConfigRepo(repo string) error {
 		}).
 		Delete(filepath.Join(ConfigReposEndpoint, repo))
 	if err != nil {
-		return fmt.Errorf("call made to delete config repo '%s' errored with: %w", repo, err)
+		return &errors.APIError{Err: err, Message: fmt.Sprintf("delete config repo '%s'", repo)}
 	}
 
 	if resp.StatusCode() != http.StatusOK {
-		return APIErrorWithBody(resp.String(), resp.StatusCode())
+		return &errors.NonOkError{Code: resp.StatusCode(), Response: resp}
 	}
 
 	return nil
@@ -158,16 +160,16 @@ func (conf *client) ConfigRepoTriggerUpdate(name string) (map[string]string, err
 		}).
 		Post(filepath.Join(ConfigReposEndpoint, name, "trigger_update"))
 	if err != nil {
-		return nil, fmt.Errorf("call made to trigger update configrepo '%s' errored with: %w", name, err)
+		return nil, &errors.APIError{Err: err, Message: fmt.Sprintf("trigger update configrepo '%s'", name)}
 	}
 
 	if (resp.StatusCode() != http.StatusCreated) && (resp.StatusCode() != http.StatusConflict) {
-		return nil, APIErrorWithBody(resp.String(), resp.StatusCode())
+		return nil, &errors.NonOkError{Code: resp.StatusCode(), Response: resp}
 	}
 
 	var response map[string]string
 	if err = json.Unmarshal(resp.Body(), &response); err != nil {
-		return response, ResponseReadError(err.Error())
+		return response, &errors.MarshalError{Err: err}
 	}
 
 	return response, nil
@@ -186,16 +188,16 @@ func (conf *client) ConfigRepoStatus(repo string) (map[string]bool, error) {
 		}).
 		Get(filepath.Join(ConfigReposEndpoint, repo, "status"))
 	if err != nil {
-		return nil, fmt.Errorf("call made to get status of configrepo '%s' errored with: %w", repo, err)
+		return nil, &errors.APIError{Err: err, Message: fmt.Sprintf("get status of configrepo '%s'", repo)}
 	}
 
 	if resp.StatusCode() != http.StatusOK {
-		return nil, APIErrorWithBody(resp.String(), resp.StatusCode())
+		return nil, &errors.NonOkError{Code: resp.StatusCode(), Response: resp}
 	}
 
 	var response map[string]bool
 	if err = json.Unmarshal(resp.Body(), &response); err != nil {
-		return response, ResponseReadError(err.Error())
+		return response, &errors.MarshalError{Err: err}
 	}
 
 	return response, nil

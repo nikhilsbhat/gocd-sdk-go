@@ -6,6 +6,8 @@ import (
 	"net/http"
 	"path/filepath"
 
+	"github.com/nikhilsbhat/gocd-sdk-go/pkg/errors"
+
 	"github.com/jinzhu/copier"
 )
 
@@ -26,10 +28,10 @@ func (conf *client) CreatePipelineGroup(group PipelineGroup) error {
 		}).
 		Post(PipelineGroupEndpoint)
 	if err != nil {
-		return fmt.Errorf("call made to create pipeline group '%s' information errored with %w", group.Name, err)
+		return &errors.APIError{Err: err, Message: fmt.Sprintf("create pipeline group '%s'", group.Name)}
 	}
 	if resp.StatusCode() != http.StatusOK {
-		return APIErrorWithBody(resp.String(), resp.StatusCode())
+		return &errors.NonOkError{Code: resp.StatusCode(), Response: resp}
 	}
 
 	return nil
@@ -49,14 +51,14 @@ func (conf *client) GetPipelineGroups() ([]PipelineGroup, error) {
 		}).
 		Get(PipelineGroupEndpoint)
 	if err != nil {
-		return nil, fmt.Errorf("call made to get pipeline group information errored with %w", err)
+		return nil, &errors.APIError{Err: err, Message: "get pipeline groups information"}
 	}
 	if resp.StatusCode() != http.StatusOK {
-		return nil, APIWithCodeError(resp.StatusCode())
+		return nil, &errors.NonOkError{Code: resp.StatusCode(), Response: resp}
 	}
 
 	if err = json.Unmarshal(resp.Body(), &groupConf); err != nil {
-		return nil, ResponseReadError(err.Error())
+		return nil, &errors.MarshalError{Err: err}
 	}
 
 	updatedGroupConf := make([]PipelineGroup, 0)
@@ -84,11 +86,11 @@ func (conf *client) DeletePipelineGroup(name string) error {
 		}).
 		Delete(filepath.Join(PipelineGroupEndpoint, name))
 	if err != nil {
-		return fmt.Errorf("call made to delete pipeline group errored with %w", err)
+		return &errors.APIError{Err: err, Message: "delete pipeline group"}
 	}
 
 	if resp.StatusCode() != http.StatusOK {
-		return APIErrorWithBody(resp.String(), resp.StatusCode())
+		return &errors.NonOkError{Code: resp.StatusCode(), Response: resp}
 	}
 
 	return nil
@@ -118,15 +120,15 @@ func (conf *client) GetPipelineGroup(name string) (PipelineGroup, error) {
 		}).
 		Get(filepath.Join(PipelineGroupEndpoint, name))
 	if err != nil {
-		return pipelineGroup, fmt.Errorf("call made to fetch pipeline group errored with %w", err)
+		return pipelineGroup, &errors.APIError{Err: err, Message: "fetch pipeline group"}
 	}
 
 	if resp.StatusCode() != http.StatusOK {
-		return pipelineGroup, APIErrorWithBody(resp.String(), resp.StatusCode())
+		return pipelineGroup, &errors.NonOkError{Code: resp.StatusCode(), Response: resp}
 	}
 
 	if err = json.Unmarshal(resp.Body(), &pipelineGroup); err != nil {
-		return pipelineGroup, ResponseReadError(err.Error())
+		return pipelineGroup, &errors.MarshalError{Err: err}
 	}
 
 	pipelineGroup.ETAG = resp.Header().Get("ETag")
@@ -151,15 +153,15 @@ func (conf *client) UpdatePipelineGroup(group PipelineGroup) (PipelineGroup, err
 		SetBody(group).
 		Put(filepath.Join(PipelineGroupEndpoint, group.Name))
 	if err != nil {
-		return pipelineGroup, fmt.Errorf("call made to update pipeline group '%s' errored with %w", group.Name, err)
+		return pipelineGroup, &errors.APIError{Err: err, Message: fmt.Sprintf("update pipeline group '%s'", group.Name)}
 	}
 
 	if resp.StatusCode() != http.StatusOK {
-		return pipelineGroup, APIErrorWithBody(resp.String(), resp.StatusCode())
+		return pipelineGroup, &errors.NonOkError{Code: resp.StatusCode(), Response: resp}
 	}
 
 	if err = json.Unmarshal(resp.Body(), &pipelineGroup); err != nil {
-		return pipelineGroup, ResponseReadError(err.Error())
+		return pipelineGroup, &errors.MarshalError{Err: err}
 	}
 
 	pipelineGroup.ETAG = resp.Header().Get("ETag")

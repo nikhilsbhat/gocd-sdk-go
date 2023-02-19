@@ -26,7 +26,7 @@ func Test_client_GetPipelineGroupInfo(t *testing.T) {
 		client.SetRetryWaitTime(1)
 
 		actual, err := client.GetPipelineGroups()
-		assert.EqualError(t, err, "call made to get pipeline group information errored with "+
+		assert.EqualError(t, err, "call made to get pipeline groups information errored with: "+
 			"Get \"http://localhost:8156/go/api/admin/pipeline_groups\": dial tcp [::1]:8156: connect: connection refused")
 		assert.Nil(t, actual)
 	})
@@ -36,7 +36,8 @@ func Test_client_GetPipelineGroupInfo(t *testing.T) {
 		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		actual, err := client.GetPipelineGroups()
-		assert.EqualError(t, err, gocd.APIWithCodeError(http.StatusBadGateway).Error())
+		assert.EqualError(t, err, "got 502 from GoCD while making GET call for "+server.URL+
+			"/api/admin/pipeline_groups\nwith BODY:backupJSON")
 		assert.Nil(t, actual)
 	})
 
@@ -106,7 +107,8 @@ func Test_client_DeletePipelineGroup(t *testing.T) {
 		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		err := client.DeletePipelineGroup("pipeline_group_1")
-		assert.EqualError(t, err, "body: <html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html> httpcode: 404")
+		assert.EqualError(t, err, "got 404 from GoCD while making DELETE call for "+server.URL+
+			"/api/admin/pipeline_groups/pipeline_group_1\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 	})
 
 	t.Run("should error out while deleting pipeline group due to missing headers", func(t *testing.T) {
@@ -114,7 +116,8 @@ func Test_client_DeletePipelineGroup(t *testing.T) {
 		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		err := client.DeletePipelineGroup("pipeline_group_1")
-		assert.EqualError(t, err, "body: <html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html> httpcode: 404")
+		assert.EqualError(t, err, "got 404 from GoCD while making DELETE call for "+server.URL+
+			"/api/admin/pipeline_groups/pipeline_group_1\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 	})
 
 	t.Run("should error out while deleting pipeline group as server is not reachable", func(t *testing.T) {
@@ -124,8 +127,8 @@ func Test_client_DeletePipelineGroup(t *testing.T) {
 		client.SetRetryWaitTime(1)
 
 		err := client.DeletePipelineGroup("pipeline_group_1")
-		assert.EqualError(t, err, "call made to delete pipeline group errored with Delete "+
-			"\"http://localhost:8156/go/api/admin/pipeline_groups/pipeline_group_1\": dial tcp [::1]:8156: connect: connection refused")
+		assert.EqualError(t, err, "call made to delete pipeline group errored with:"+
+			" Delete \"http://localhost:8156/go/api/admin/pipeline_groups/pipeline_group_1\": dial tcp [::1]:8156: connect: connection refused")
 	})
 }
 
@@ -164,7 +167,8 @@ func Test_client_GetPipelineGroup(t *testing.T) {
 		expected := gocd.PipelineGroup{}
 
 		actual, err := client.GetPipelineGroup("first")
-		assert.EqualError(t, err, "body: <html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html> httpcode: 404")
+		assert.EqualError(t, err, "got 404 from GoCD while making GET call for "+server.URL+
+			"/api/admin/pipeline_groups/first\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 		assert.Equal(t, expected, actual)
 	})
 
@@ -174,7 +178,8 @@ func Test_client_GetPipelineGroup(t *testing.T) {
 		expected := gocd.PipelineGroup{}
 
 		actual, err := client.GetPipelineGroup("first")
-		assert.EqualError(t, err, "body: <html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html> httpcode: 404")
+		assert.EqualError(t, err, "got 404 from GoCD while making GET call for "+server.URL+
+			"/api/admin/pipeline_groups/first\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 		assert.Equal(t, expected, actual)
 	})
 
@@ -199,7 +204,7 @@ func Test_client_GetPipelineGroup(t *testing.T) {
 		expected := gocd.PipelineGroup{}
 
 		actual, err := client.GetPipelineGroup("first")
-		assert.EqualError(t, err, "call made to fetch pipeline group errored with "+
+		assert.EqualError(t, err, "call made to fetch pipeline group errored with: "+
 			"Get \"http://localhost:8156/go/api/admin/pipeline_groups/first\": dial tcp [::1]:8156: connect: connection refused")
 		assert.Equal(t, expected, actual)
 	})
@@ -238,7 +243,8 @@ func Test_client_CreatePipelineGroup(t *testing.T) {
 		group := gocd.PipelineGroup{}
 
 		err := client.CreatePipelineGroup(group)
-		assert.EqualError(t, err, "body: <html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html> httpcode: 404")
+		assert.EqualError(t, err, "got 404 from GoCD while making POST call for "+server.URL+
+			"/api/admin/pipeline_groups\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 	})
 
 	t.Run("should error out while creating pipeline group from GoCD server due to missing headers", func(t *testing.T) {
@@ -247,7 +253,8 @@ func Test_client_CreatePipelineGroup(t *testing.T) {
 		group := gocd.PipelineGroup{}
 
 		err := client.CreatePipelineGroup(group)
-		assert.EqualError(t, err, "body: <html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html> httpcode: 404")
+		assert.EqualError(t, err, "got 404 from GoCD while making POST call for "+server.URL+
+			"/api/admin/pipeline_groups\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 	})
 
 	t.Run("should error out while creating pipeline group as server is not reachable", func(t *testing.T) {
@@ -259,7 +266,7 @@ func Test_client_CreatePipelineGroup(t *testing.T) {
 		group := gocd.PipelineGroup{Name: "first"}
 
 		err := client.CreatePipelineGroup(group)
-		assert.EqualError(t, err, "call made to create pipeline group 'first' information errored with "+
+		assert.EqualError(t, err, "call made to create pipeline group 'first' errored with: "+
 			"Post \"http://localhost:8156/go/api/admin/pipeline_groups\": dial tcp [::1]:8156: connect: connection refused")
 	})
 }
@@ -325,7 +332,8 @@ func Test_client_UpdatePipelineGroup(t *testing.T) {
 		expected := gocd.PipelineGroup{}
 
 		actual, err := client.UpdatePipelineGroup(group)
-		assert.EqualError(t, err, "body: <html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html> httpcode: 404")
+		assert.EqualError(t, err, "got 404 from GoCD while making PUT call for "+server.URL+
+			"/api/admin/pipeline_groups\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 		assert.Equal(t, expected, actual)
 	})
 
@@ -341,7 +349,8 @@ func Test_client_UpdatePipelineGroup(t *testing.T) {
 		expected := gocd.PipelineGroup{}
 
 		actual, err := client.UpdatePipelineGroup(group)
-		assert.EqualError(t, err, "body: <html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html> httpcode: 404")
+		assert.EqualError(t, err, "got 404 from GoCD while making PUT call for "+server.URL+
+			"/api/admin/pipeline_groups\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 		assert.Equal(t, expected, actual)
 	})
 
@@ -375,8 +384,8 @@ func Test_client_UpdatePipelineGroup(t *testing.T) {
 		expected := gocd.PipelineGroup{}
 
 		actual, err := client.UpdatePipelineGroup(group)
-		assert.EqualError(t, err, "call made to update pipeline group 'first' errored with"+
-			" Put \"http://localhost:8156/go/api/admin/pipeline_groups/first\": dial tcp [::1]:8156: connect: connection refused")
+		assert.EqualError(t, err, "call made to update pipeline group 'first' errored with: "+
+			"Put \"http://localhost:8156/go/api/admin/pipeline_groups/first\": dial tcp [::1]:8156: connect: connection refused")
 		assert.Equal(t, expected, actual)
 	})
 }

@@ -2,8 +2,9 @@ package gocd
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
+
+	"github.com/nikhilsbhat/gocd-sdk-go/pkg/errors"
 
 	"github.com/jinzhu/copier"
 )
@@ -25,15 +26,15 @@ func (conf *client) UpdateArtifactConfig(info ArtifactInfo) (ArtifactInfo, error
 		SetBody(info).
 		Post(ArtifactInfoEndpoint)
 	if err != nil {
-		return ArtifactInfo{}, fmt.Errorf("call made to update artifacts info errored with %w", err)
+		return ArtifactInfo{}, &errors.APIError{Err: err, Message: "update artifacts info"}
 	}
 
 	if resp.StatusCode() != http.StatusOK {
-		return ArtifactInfo{}, APIErrorWithBody(resp.String(), resp.StatusCode())
+		return ArtifactInfo{}, &errors.NonOkError{Code: resp.StatusCode(), Response: resp}
 	}
 
 	if err = json.Unmarshal(resp.Body(), &artifactInfo); err != nil {
-		return ArtifactInfo{}, ResponseReadError(err.Error())
+		return ArtifactInfo{}, &errors.MarshalError{Err: err}
 	}
 
 	return artifactInfo, nil
@@ -53,15 +54,15 @@ func (conf *client) GetArtifactConfig() (ArtifactInfo, error) {
 		}).
 		Get(ArtifactInfoEndpoint)
 	if err != nil {
-		return ArtifactInfo{}, fmt.Errorf("call made to get artifacts info errored with %w", err)
+		return ArtifactInfo{}, &errors.APIError{Err: err, Message: "get artifacts info"}
 	}
 
 	if resp.StatusCode() != http.StatusOK {
-		return ArtifactInfo{}, APIErrorWithBody(resp.String(), resp.StatusCode())
+		return ArtifactInfo{}, &errors.NonOkError{Code: resp.StatusCode(), Response: resp}
 	}
 
 	if err = json.Unmarshal(resp.Body(), &artifactInfo); err != nil {
-		return ArtifactInfo{}, ResponseReadError(err.Error())
+		return ArtifactInfo{}, &errors.MarshalError{Err: err}
 	}
 
 	artifactInfo.ETAG = resp.Header().Get("ETag")

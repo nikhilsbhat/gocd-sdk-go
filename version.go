@@ -2,8 +2,9 @@ package gocd
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
+
+	"github.com/nikhilsbhat/gocd-sdk-go/pkg/errors"
 
 	"github.com/jinzhu/copier"
 )
@@ -22,15 +23,15 @@ func (conf *client) GetVersionInfo() (VersionInfo, error) {
 		}).
 		Get(VersionEndpoint)
 	if err != nil {
-		return version, fmt.Errorf("call made to get version information errored with: %w", err)
+		return version, &errors.APIError{Err: err, Message: "get version information"}
 	}
 
 	if resp.StatusCode() != http.StatusOK {
-		return version, APIWithCodeError(resp.StatusCode())
+		return version, &errors.NonOkError{Code: resp.StatusCode(), Response: resp}
 	}
 
 	if err = json.Unmarshal(resp.Body(), &version); err != nil {
-		return version, ResponseReadError(err.Error())
+		return version, &errors.MarshalError{Err: err}
 	}
 
 	return version, nil

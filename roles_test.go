@@ -86,7 +86,8 @@ func Test_client_GetRoles(t *testing.T) {
 		expected := gocd.RolesConfig{}
 
 		actual, err := client.GetRoles()
-		assert.EqualError(t, err, "body: <html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html> httpcode: 404")
+		assert.EqualError(t, err, "got 404 from GoCD while making GET call for "+server.URL+
+			"/api/admin/security/roles\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 		assert.Equal(t, expected, actual)
 	})
 
@@ -98,7 +99,8 @@ func Test_client_GetRoles(t *testing.T) {
 		expected := gocd.RolesConfig{}
 
 		actual, err := client.GetRoles()
-		assert.EqualError(t, err, "body: <html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html> httpcode: 404")
+		assert.EqualError(t, err, "got 404 from GoCD while making GET call for "+server.URL+
+			"/api/admin/security/roles\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 		assert.Equal(t, expected, actual)
 	})
 
@@ -173,7 +175,8 @@ func Test_client_GetRole(t *testing.T) {
 		expected := gocd.Role{}
 
 		actual, err := client.GetRole(roleName)
-		assert.EqualError(t, err, "body: <html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html> httpcode: 404")
+		assert.EqualError(t, err, "got 404 from GoCD while making GET call for "+server.URL+
+			"/api/admin/security/roles/blackbird\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 		assert.Equal(t, expected, actual)
 	})
 
@@ -185,7 +188,8 @@ func Test_client_GetRole(t *testing.T) {
 		expected := gocd.Role{}
 
 		actual, err := client.GetRole(roleName)
-		assert.EqualError(t, err, "body: <html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html> httpcode: 404")
+		assert.EqualError(t, err, "got 404 from GoCD while making GET call for "+server.URL+
+			"/api/admin/security/roles/blackbird\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 		assert.Equal(t, expected, actual)
 	})
 
@@ -236,7 +240,8 @@ func Test_client_DeleteRole(t *testing.T) {
 		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		err := client.DeleteRole(roleName)
-		assert.EqualError(t, err, "body: <html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html> httpcode: 404")
+		assert.EqualError(t, err, "got 404 from GoCD while making DELETE call for "+server.URL+
+			"/api/admin/security/roles/blackbird\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 	})
 
 	t.Run("should error out while deleting role due to missing headers", func(t *testing.T) {
@@ -246,7 +251,8 @@ func Test_client_DeleteRole(t *testing.T) {
 		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		err := client.DeleteRole(roleName)
-		assert.EqualError(t, err, "body: <html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html> httpcode: 404")
+		assert.EqualError(t, err, "got 404 from GoCD while making DELETE call for "+server.URL+
+			"/api/admin/security/roles/blackbird\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 	})
 
 	t.Run("should error out while deleting role as GoCD server is not reachable", func(t *testing.T) {
@@ -305,7 +311,8 @@ func Test_client_GetRolesByType(t *testing.T) {
 		expected := gocd.RolesConfig{}
 
 		actual, err := client.GetRolesByType(roleType)
-		assert.EqualError(t, err, "body: <html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html> httpcode: 404")
+		assert.EqualError(t, err, "got 404 from GoCD while making GET call for "+server.URL+
+			"/api/admin/security/roles?type=gocd\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 		assert.Equal(t, expected, actual)
 	})
 
@@ -317,7 +324,8 @@ func Test_client_GetRolesByType(t *testing.T) {
 		expected := gocd.RolesConfig{}
 
 		actual, err := client.GetRolesByType(roleType)
-		assert.EqualError(t, err, "body: <html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html> httpcode: 404")
+		assert.EqualError(t, err, "got 404 from GoCD while making GET call for "+server.URL+
+			"/api/admin/security/roles?type=gocd\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 		assert.Equal(t, expected, actual)
 	})
 
@@ -393,7 +401,8 @@ func Test_client_CreateRole(t *testing.T) {
 		expected := role
 
 		actual, err := client.CreateRole(role)
-		assert.EqualError(t, err, "body: <html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html> httpcode: 404")
+		assert.EqualError(t, err, "got 404 from GoCD while making POST call for "+server.URL+
+			"/api/admin/security/roles\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 		assert.Equal(t, expected, actual)
 	})
 
@@ -406,7 +415,8 @@ func Test_client_CreateRole(t *testing.T) {
 		expected := role
 
 		actual, err := client.CreateRole(role)
-		assert.EqualError(t, err, "body: <html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html> httpcode: 404")
+		assert.EqualError(t, err, "got 404 from GoCD while making POST call for "+server.URL+
+			"/api/admin/security/roles\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 		assert.Equal(t, expected, actual)
 	})
 
@@ -487,7 +497,8 @@ func Test_client_UpdateRole(t *testing.T) {
 		expected := role
 
 		actual, err := client.UpdateRole(role)
-		assert.EqualError(t, err, "body: <html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html> httpcode: 404")
+		assert.EqualError(t, err, "got 404 from GoCD while making PUT call for "+server.URL+
+			"/api/admin/security/roles\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 		assert.Equal(t, expected, actual)
 	})
 
@@ -500,7 +511,8 @@ func Test_client_UpdateRole(t *testing.T) {
 		expected := role
 
 		actual, err := client.UpdateRole(role)
-		assert.EqualError(t, err, "body: <html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html> httpcode: 404")
+		assert.EqualError(t, err, "got 404 from GoCD while making PUT call for "+server.URL+
+			"/api/admin/security/roles\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 		assert.Equal(t, expected, actual)
 	})
 

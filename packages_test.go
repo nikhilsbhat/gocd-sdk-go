@@ -83,7 +83,8 @@ func Test_client_GetPackages(t *testing.T) {
 		var expected []gocd.Package
 
 		actual, err := client.GetPackages()
-		assert.EqualError(t, err, "body: <html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html> httpcode: 404")
+		assert.EqualError(t, err, "got 404 from GoCD while making GET call for "+server.URL+
+			"/api/admin/packages\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 		assert.Equal(t, expected, actual)
 	})
 
@@ -95,7 +96,8 @@ func Test_client_GetPackages(t *testing.T) {
 		var expected []gocd.Package
 
 		actual, err := client.GetPackages()
-		assert.EqualError(t, err, "body: <html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html> httpcode: 404")
+		assert.EqualError(t, err, "got 404 from GoCD while making GET call for "+server.URL+
+			"/api/admin/packages\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 		assert.Equal(t, expected, actual)
 	})
 
@@ -168,7 +170,8 @@ func Test_client_GetPackage(t *testing.T) {
 		expected := gocd.Package{}
 
 		actual, err := client.GetPackage(repositoryID)
-		assert.EqualError(t, err, "body: <html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html> httpcode: 404")
+		assert.EqualError(t, err, "got 404 from GoCD while making GET call for "+server.URL+
+			"/api/admin/packages/dd8926c0-3b4a-4c9e-8012-957b179cec5b\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 		assert.Equal(t, expected, actual)
 	})
 
@@ -180,7 +183,8 @@ func Test_client_GetPackage(t *testing.T) {
 		expected := gocd.Package{}
 
 		actual, err := client.GetPackage(repositoryID)
-		assert.EqualError(t, err, "body: <html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html> httpcode: 404")
+		assert.EqualError(t, err, "got 404 from GoCD while making GET call for "+server.URL+
+			"/api/admin/packages/dd8926c0-3b4a-4c9e-8012-957b179cec5b\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 		assert.Equal(t, expected, actual)
 	})
 
@@ -255,7 +259,8 @@ func Test_client_CreatePackage(t *testing.T) {
 		expected := packageCfg
 
 		actual, err := client.CreatePackage(packageCfg)
-		assert.EqualError(t, err, "body: <html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html> httpcode: 404")
+		assert.EqualError(t, err, "got 404 from GoCD while making POST call for "+server.URL+
+			"/api/admin/packages\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 		assert.Equal(t, expected, actual)
 	})
 
@@ -268,7 +273,8 @@ func Test_client_CreatePackage(t *testing.T) {
 		expected := packageCfg
 
 		actual, err := client.CreatePackage(packageCfg)
-		assert.EqualError(t, err, "body: <html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html> httpcode: 404")
+		assert.EqualError(t, err, "got 404 from GoCD while making POST call for "+server.URL+
+			"/api/admin/packages\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 		assert.Equal(t, expected, actual)
 	})
 
@@ -351,7 +357,8 @@ func Test_client_UpdatePackage(t *testing.T) {
 		expected := packageCfg
 
 		actual, err := client.UpdatePackage(packageCfg)
-		assert.EqualError(t, err, "body: <html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html> httpcode: 404")
+		assert.EqualError(t, err, "got 404 from GoCD while making PUT call for "+server.URL+
+			"/api/admin/packages\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 		assert.Equal(t, expected, actual)
 	})
 
@@ -364,7 +371,8 @@ func Test_client_UpdatePackage(t *testing.T) {
 		expected := packageCfg
 
 		actual, err := client.UpdatePackage(packageCfg)
-		assert.EqualError(t, err, "body: <html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html> httpcode: 404")
+		assert.EqualError(t, err, "got 404 from GoCD while making PUT call for "+server.URL+
+			"/api/admin/packages\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 		assert.Equal(t, expected, actual)
 	})
 
@@ -421,7 +429,8 @@ func Test_client_DeletePackage(t *testing.T) {
 		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		err := client.DeletePackage(repositoryID)
-		assert.EqualError(t, err, "body: <html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html> httpcode: 404")
+		assert.EqualError(t, err, "got 404 from GoCD while making DELETE call for "+server.URL+
+			"/api/admin/packages/dd8926c0-3b4a-4c9e-8012-957b179cec5b\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 	})
 
 	t.Run("should error out while deleting a package due to missing headers", func(t *testing.T) {
@@ -431,7 +440,8 @@ func Test_client_DeletePackage(t *testing.T) {
 		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		err := client.DeletePackage(repositoryID)
-		assert.EqualError(t, err, "body: <html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html> httpcode: 404")
+		assert.EqualError(t, err, "got 404 from GoCD while making DELETE call for "+server.URL+
+			"/api/admin/packages/dd8926c0-3b4a-4c9e-8012-957b179cec5b\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 	})
 
 	t.Run("should error out while deleting a package as GoCD server is not reachable", func(t *testing.T) {

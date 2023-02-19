@@ -31,7 +31,7 @@ func TestConfig_GetConfigRepoInfo(t *testing.T) {
 		client.SetRetryWaitTime(1)
 
 		actual, err := client.GetConfigRepos()
-		assert.EqualError(t, err, "call made to get config repos errored with "+
+		assert.EqualError(t, err, "call made to get config repos errored with: "+
 			"Get \"http://localhost:8156/go/api/admin/config_repos\": dial tcp [::1]:8156: connect: connection refused")
 		assert.Nil(t, actual)
 	})
@@ -41,7 +41,8 @@ func TestConfig_GetConfigRepoInfo(t *testing.T) {
 		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		actual, err := client.GetConfigRepos()
-		assert.EqualError(t, err, gocd.APIErrorWithBody("backupJSON", http.StatusBadGateway).Error())
+		assert.EqualError(t, err, "got 502 from GoCD while making GET call for "+server.URL+
+			"/api/admin/config_repos\nwith BODY:backupJSON")
 		assert.Nil(t, actual)
 	})
 
@@ -109,7 +110,8 @@ func Test_client_CreateConfigRepoInfo(t *testing.T) {
 		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		err := client.CreateConfigRepo(gocd.ConfigRepo{})
-		assert.EqualError(t, err, "body: json: cannot unmarshal string into Go value of type gocd.ConfigRepo httpcode: 500")
+		assert.EqualError(t, err, "got 500 from GoCD while making POST call for "+server.URL+
+			"/api/admin/config_repos\nwith BODY:json: cannot unmarshal string into Go value of type gocd.ConfigRepo")
 	})
 
 	t.Run("should error out while making client call to create config repo", func(t *testing.T) {
@@ -150,7 +152,8 @@ func Test_client_DeleteConfigRepo(t *testing.T) {
 		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		err := client.DeleteConfigRepo(repoName)
-		assert.EqualError(t, err, "body: <html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html> httpcode: 404")
+		assert.EqualError(t, err, "got 404 from GoCD while making DELETE call for "+server.URL+
+			"/api/admin/config_repos/repo1\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 	})
 
 	t.Run("should be able to delete config repo successfully", func(t *testing.T) {
@@ -169,7 +172,8 @@ func Test_client_GetConfigRepo(t *testing.T) {
 		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		actual, err := client.GetConfigRepo(repoName)
-		assert.EqualError(t, err, "body: json: cannot unmarshal string into Go value of type gocd.ConfigRepo httpcode: 500")
+		assert.EqualError(t, err, "got 500 from GoCD while making GET call for "+server.URL+
+			"/api/admin/config_repos/repo1\nwith BODY:json: cannot unmarshal string into Go value of type gocd.ConfigRepo")
 		assert.Equal(t, gocd.ConfigRepo{}, actual)
 	})
 
@@ -188,8 +192,8 @@ func Test_client_GetConfigRepo(t *testing.T) {
 		client.SetRetryWaitTime(1)
 
 		actual, err := client.GetConfigRepo(repoName)
-		assert.EqualError(t, err, "call made to get config repo errored with Get "+
-			"\"http://localhost:8156/go/api/admin/config_repos/repo1\": dial tcp [::1]:8156: connect: connection refused")
+		assert.EqualError(t, err, "call made to get config repo errored with: "+
+			"Get \"http://localhost:8156/go/api/admin/config_repos/repo1\": dial tcp [::1]:8156: connect: connection refused")
 		assert.Equal(t, gocd.ConfigRepo{}, actual)
 	})
 
@@ -198,7 +202,8 @@ func Test_client_GetConfigRepo(t *testing.T) {
 		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		actual, err := client.GetConfigRepo(repoName)
-		assert.EqualError(t, err, "body: <html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html> httpcode: 404")
+		assert.EqualError(t, err, "got 404 from GoCD while making GET call for "+server.URL+
+			"/api/admin/config_repos/repo1\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 		assert.Equal(t, gocd.ConfigRepo{}, actual)
 	})
 
@@ -207,7 +212,8 @@ func Test_client_GetConfigRepo(t *testing.T) {
 		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		actual, err := client.GetConfigRepo(repoName)
-		assert.EqualError(t, err, "body: <html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html> httpcode: 404")
+		assert.EqualError(t, err, "got 404 from GoCD while making GET call for "+server.URL+
+			"/api/admin/config_repos/repo1\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 		assert.Equal(t, gocd.ConfigRepo{}, actual)
 	})
 
@@ -246,7 +252,8 @@ func Test_client_UpdateConfigRepo(t *testing.T) {
 		client.SetRetryWaitTime(1)
 		actual, err := client.UpdateConfigRepo(*configRepo)
 
-		assert.EqualError(t, err, "body: json: cannot unmarshal string into Go value of type gocd.ConfigRepo httpcode: 500")
+		assert.EqualError(t, err, "got 500 from GoCD while making PUT call for "+server.URL+
+			"/api/admin/config_repos/repo1\nwith BODY:json: cannot unmarshal string into Go value of type gocd.ConfigRepo")
 		assert.Equal(t, "", actual)
 	})
 
@@ -256,8 +263,8 @@ func Test_client_UpdateConfigRepo(t *testing.T) {
 		client.SetRetryWaitTime(1)
 
 		actual, err := client.UpdateConfigRepo(*configRepo)
-		assert.EqualError(t, err, "put call made to update config repo errored with: Put "+
-			"\"http://localhost:8156/go/api/admin/config_repos/repo1\": dial tcp [::1]:8156: connect: connection refused")
+		assert.EqualError(t, err, "call made to call made to update config repo errored with: "+
+			"Put \"http://localhost:8156/go/api/admin/config_repos/repo1\": dial tcp [::1]:8156: connect: connection refused")
 		assert.Equal(t, "", actual)
 	})
 
@@ -271,7 +278,8 @@ func Test_client_UpdateConfigRepo(t *testing.T) {
 		client.SetRetryWaitTime(1)
 
 		actual, err := client.UpdateConfigRepo(*newConfigRepo)
-		assert.EqualError(t, err, "body: <html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html> httpcode: 404")
+		assert.EqualError(t, err, "got 404 from GoCD while making PUT call for "+server.URL+
+			"/api/admin/config_repos/repo1\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 		assert.Equal(t, "", actual)
 	})
 
@@ -280,7 +288,8 @@ func Test_client_UpdateConfigRepo(t *testing.T) {
 		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		actual, err := client.UpdateConfigRepo(*configRepo)
-		assert.EqualError(t, err, "body: <html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html> httpcode: 404")
+		assert.EqualError(t, err, "got 404 from GoCD while making PUT call for "+server.URL+
+			"/api/admin/config_repos/repo1\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 		assert.Equal(t, "", actual)
 	})
 
@@ -292,7 +301,8 @@ func Test_client_UpdateConfigRepo(t *testing.T) {
 		server := mockConfigRepoServer(newConfigRepo, http.MethodPut, newCorrectHeader, true)
 		client := gocd.NewClient(server.URL, auth, "info", nil)
 		actual, err := client.UpdateConfigRepo(*newConfigRepo)
-		assert.EqualError(t, err, "body: lost update httpcode: 406")
+		assert.EqualError(t, err, "got 406 from GoCD while making PUT call for "+server.URL+
+			"/api/admin/config_repos/repo1\nwith BODY:lost update")
 		assert.Equal(t, "", actual)
 	})
 
@@ -352,7 +362,8 @@ func Test_client_ConfigRepoTriggerUpdate(t *testing.T) {
 		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		actual, err := client.ConfigRepoTriggerUpdate("config_repo_1")
-		assert.EqualError(t, err, "body: <html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html> httpcode: 404")
+		assert.EqualError(t, err, "got 404 from GoCD while making POST call for "+server.URL+
+			"/api/admin/config_repos/config_repo_1/trigger_update\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 		assert.Equal(t, map[string]string(nil), actual)
 	})
 
@@ -361,7 +372,8 @@ func Test_client_ConfigRepoTriggerUpdate(t *testing.T) {
 		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		actual, err := client.ConfigRepoTriggerUpdate("config_repo_1")
-		assert.EqualError(t, err, "body: <html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html> httpcode: 404")
+		assert.EqualError(t, err, "got 404 from GoCD while making POST call for "+server.URL+
+			"/api/admin/config_repos/config_repo_1/trigger_update\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 		assert.Equal(t, map[string]string(nil), actual)
 	})
 
@@ -409,7 +421,8 @@ func Test_client_ConfigRepoStatus(t *testing.T) {
 		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		actual, err := client.ConfigRepoStatus("config_repo_1")
-		assert.EqualError(t, err, "body: <html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html> httpcode: 404")
+		assert.EqualError(t, err, "got 404 from GoCD while making GET call for "+server.URL+
+			"/api/admin/config_repos/config_repo_1/status\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 		assert.Equal(t, map[string]bool(nil), actual)
 	})
 
@@ -418,7 +431,8 @@ func Test_client_ConfigRepoStatus(t *testing.T) {
 		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		actual, err := client.ConfigRepoStatus("config_repo_1")
-		assert.EqualError(t, err, "body: <html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html> httpcode: 404")
+		assert.EqualError(t, err, "got 404 from GoCD while making GET call for "+server.URL+
+			"/api/admin/config_repos/config_repo_1/status\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 		assert.Equal(t, map[string]bool(nil), actual)
 	})
 

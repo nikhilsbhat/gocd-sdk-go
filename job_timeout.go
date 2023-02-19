@@ -2,9 +2,10 @@ package gocd
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 	"strconv"
+
+	"github.com/nikhilsbhat/gocd-sdk-go/pkg/errors"
 
 	"github.com/jinzhu/copier"
 )
@@ -22,15 +23,15 @@ func (conf *client) GetDefaultJobTimeout() (map[string]string, error) {
 		}).
 		Get(DefaultTimeoutEndpoint)
 	if err != nil {
-		return timeout, fmt.Errorf("call made to get default job timeout errored with: %w", err)
+		return timeout, &errors.APIError{Err: err, Message: "get default job timeout"}
 	}
 
 	if resp.StatusCode() != http.StatusOK {
-		return timeout, APIErrorWithBody(resp.String(), resp.StatusCode())
+		return timeout, &errors.NonOkError{Code: resp.StatusCode(), Response: resp}
 	}
 
 	if err = json.Unmarshal(resp.Body(), &timeout); err != nil {
-		return timeout, ResponseReadError(err.Error())
+		return timeout, &errors.MarshalError{Err: err}
 	}
 
 	return timeout, nil
@@ -53,11 +54,11 @@ func (conf *client) UpdateDefaultJobTimeout(timeoutMinutes int) error {
 		).
 		Post(DefaultTimeoutEndpoint)
 	if err != nil {
-		return fmt.Errorf("call made to update default job timeout errored with: %w", err)
+		return &errors.APIError{Err: err, Message: "update default job timeout"}
 	}
 
 	if resp.StatusCode() != http.StatusOK {
-		return APIErrorWithBody(resp.String(), resp.StatusCode())
+		return &errors.NonOkError{Code: resp.StatusCode(), Response: resp}
 	}
 
 	return nil

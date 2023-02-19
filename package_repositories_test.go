@@ -65,7 +65,8 @@ func Test_client_GetPackageRepositories(t *testing.T) {
 		var expected []gocd.PackageRepository
 
 		actual, err := client.GetPackageRepositories()
-		assert.EqualError(t, err, "body: <html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html> httpcode: 404")
+		assert.EqualError(t, err, "got 404 from GoCD while making GET call for "+server.URL+
+			"/api/admin/repositories\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 		assert.Equal(t, expected, actual)
 	})
 
@@ -77,7 +78,8 @@ func Test_client_GetPackageRepositories(t *testing.T) {
 		var expected []gocd.PackageRepository
 
 		actual, err := client.GetPackageRepositories()
-		assert.EqualError(t, err, "body: <html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html> httpcode: 404")
+		assert.EqualError(t, err, "got 404 from GoCD while making GET call for "+server.URL+
+			"/api/admin/repositories\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 		assert.Equal(t, expected, actual)
 	})
 
@@ -157,7 +159,8 @@ func Test_client_GetPackageRepository(t *testing.T) {
 		expected := gocd.PackageRepository{}
 
 		actual, err := client.GetPackageRepository(repositoryID)
-		assert.EqualError(t, err, "body: <html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html> httpcode: 404")
+		assert.EqualError(t, err, "got 404 from GoCD while making GET call for "+server.URL+
+			"/api/admin/repositories/dd8926c0-3b4a-4c9e-8012-957b179cec5b\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 		assert.Equal(t, expected, actual)
 	})
 
@@ -169,7 +172,8 @@ func Test_client_GetPackageRepository(t *testing.T) {
 		expected := gocd.PackageRepository{}
 
 		actual, err := client.GetPackageRepository(repositoryID)
-		assert.EqualError(t, err, "body: <html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html> httpcode: 404")
+		assert.EqualError(t, err, "got 404 from GoCD while making GET call for "+server.URL+
+			"/api/admin/repositories/dd8926c0-3b4a-4c9e-8012-957b179cec5b\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 		assert.Equal(t, expected, actual)
 	})
 
@@ -251,7 +255,8 @@ func Test_client_CreatePackageRepository(t *testing.T) {
 		expected := repositoryCfg
 
 		actual, err := client.UpdatePackageRepository(repositoryCfg)
-		assert.EqualError(t, err, "body: <html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html> httpcode: 404")
+		assert.EqualError(t, err, "got 404 from GoCD while making PUT call for "+server.URL+
+			"/api/admin/repositories\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 		assert.Equal(t, expected, actual)
 	})
 
@@ -264,7 +269,8 @@ func Test_client_CreatePackageRepository(t *testing.T) {
 		expected := repositoryCfg
 
 		actual, err := client.CreatePackageRepository(repositoryCfg)
-		assert.EqualError(t, err, "body: <html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html> httpcode: 404")
+		assert.EqualError(t, err, "got 404 from GoCD while making POST call for "+server.URL+
+			"/api/admin/repositories\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 		assert.Equal(t, expected, actual)
 	})
 
@@ -350,7 +356,8 @@ func Test_client_UpdatePackageRepository(t *testing.T) {
 		expected := repositoryCfg
 
 		actual, err := client.UpdatePackageRepository(repositoryCfg)
-		assert.EqualError(t, err, "body: <html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html> httpcode: 404")
+		assert.EqualError(t, err, "got 404 from GoCD while making PUT call for "+server.URL+
+			"/api/admin/repositories\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 		assert.Equal(t, expected, actual)
 	})
 
@@ -363,7 +370,8 @@ func Test_client_UpdatePackageRepository(t *testing.T) {
 		expected := repositoryCfg
 
 		actual, err := client.UpdatePackageRepository(repositoryCfg)
-		assert.EqualError(t, err, "body: <html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html> httpcode: 404")
+		assert.EqualError(t, err, "got 404 from GoCD while making PUT call for "+server.URL+
+			"/api/admin/repositories\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 		assert.Equal(t, expected, actual)
 	})
 
@@ -416,7 +424,8 @@ func Test_client_DeletePackageRepository(t *testing.T) {
 		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		err := client.DeletePackageRepository(repositoryID)
-		assert.EqualError(t, err, "body: <html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html> httpcode: 404")
+		assert.EqualError(t, err, "got 404 from GoCD while making DELETE call for "+server.URL+
+			"/api/admin/repositories/dd8926c0-3b4a-4c9e-8012-957b179cec5b\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 	})
 
 	t.Run("should error out while deleting a package repository due to missing headers", func(t *testing.T) {
@@ -426,7 +435,8 @@ func Test_client_DeletePackageRepository(t *testing.T) {
 		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		err := client.DeletePackageRepository(repositoryID)
-		assert.EqualError(t, err, "body: <html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html> httpcode: 404")
+		assert.EqualError(t, err, "got 404 from GoCD while making DELETE call for "+server.URL+
+			"/api/admin/repositories/dd8926c0-3b4a-4c9e-8012-957b179cec5b\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 	})
 
 	t.Run("should error out while deleting a package repository as GoCD server is not reachable", func(t *testing.T) {

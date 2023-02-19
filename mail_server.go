@@ -2,8 +2,9 @@ package gocd
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
+
+	"github.com/nikhilsbhat/gocd-sdk-go/pkg/errors"
 
 	"github.com/jinzhu/copier"
 )
@@ -21,15 +22,15 @@ func (conf *client) GetMailServerConfig() (MailServerConfig, error) {
 		}).
 		Get(MailServerConfigEndpoint)
 	if err != nil {
-		return mailConfig, fmt.Errorf("call made to get mail server config errored with: %w", err)
+		return mailConfig, &errors.APIError{Err: err, Message: "get mail server config"}
 	}
 
 	if resp.StatusCode() != http.StatusOK {
-		return mailConfig, APIErrorWithBody(resp.String(), resp.StatusCode())
+		return mailConfig, &errors.NonOkError{Code: resp.StatusCode(), Response: resp}
 	}
 
 	if err = json.Unmarshal(resp.Body(), &mailConfig); err != nil {
-		return mailConfig, ResponseReadError(err.Error())
+		return mailConfig, &errors.MarshalError{Err: err}
 	}
 
 	return mailConfig, nil
@@ -50,15 +51,15 @@ func (conf *client) CreateOrUpdateMailServerConfig(mailCfg MailServerConfig) (Ma
 		SetBody(mailCfg).
 		Get(MailServerConfigEndpoint)
 	if err != nil {
-		return mailConfig, fmt.Errorf("call made to create or update mail server config errored with: %w", err)
+		return mailConfig, &errors.APIError{Err: err, Message: "create or update mail server config"}
 	}
 
 	if resp.StatusCode() != http.StatusOK {
-		return mailConfig, APIErrorWithBody(resp.String(), resp.StatusCode())
+		return mailConfig, &errors.NonOkError{Code: resp.StatusCode(), Response: resp}
 	}
 
 	if err = json.Unmarshal(resp.Body(), &mailConfig); err != nil {
-		return mailConfig, ResponseReadError(err.Error())
+		return mailConfig, &errors.MarshalError{Err: err}
 	}
 
 	return mailConfig, nil
@@ -76,11 +77,11 @@ func (conf *client) DeleteMailServerConfig() error {
 		}).
 		Delete(MailServerConfigEndpoint)
 	if err != nil {
-		return fmt.Errorf("call made to delete mail server config errored with: %w", err)
+		return &errors.APIError{Err: err, Message: "delete mail server config"}
 	}
 
 	if resp.StatusCode() != http.StatusOK {
-		return APIErrorWithBody(resp.String(), resp.StatusCode())
+		return &errors.NonOkError{Code: resp.StatusCode(), Response: resp}
 	}
 
 	return nil

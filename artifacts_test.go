@@ -42,7 +42,8 @@ func Test_client_GetArtifactConfig(t *testing.T) {
 		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		actual, err := client.GetArtifactConfig()
-		assert.EqualError(t, err, "body: <html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html> httpcode: 404")
+		assert.EqualError(t, err, "got 404 from GoCD while making GET call for "+server.URL+
+			"/api/admin/config/server/artifact_config\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 		assert.Equal(t, gocd.ArtifactInfo{}, actual)
 	})
 
@@ -51,7 +52,8 @@ func Test_client_GetArtifactConfig(t *testing.T) {
 		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		actual, err := client.GetArtifactConfig()
-		assert.EqualError(t, err, "body: <html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html> httpcode: 404")
+		assert.EqualError(t, err, "got 404 from GoCD while making GET call for "+server.URL+
+			"/api/admin/config/server/artifact_config\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 		assert.Equal(t, gocd.ArtifactInfo{}, actual)
 	})
 
@@ -71,7 +73,7 @@ func Test_client_GetArtifactConfig(t *testing.T) {
 		client.SetRetryWaitTime(1)
 
 		actual, err := client.GetArtifactConfig()
-		assert.EqualError(t, err, "call made to get artifacts info errored with "+
+		assert.EqualError(t, err, "call made to get artifacts info errored with: "+
 			"Get \"http://localhost:8156/go/api/admin/config/server/artifact_config\": dial tcp [::1]:8156: connect: connection refused")
 		assert.Equal(t, gocd.ArtifactInfo{}, actual)
 	})
@@ -108,7 +110,8 @@ func Test_client_UpdateArtifactConfig(t *testing.T) {
 		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		actual, err := client.UpdateArtifactConfig(gocd.ArtifactInfo{})
-		assert.EqualError(t, err, "body: <html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html> httpcode: 404")
+		assert.EqualError(t, err, "got 404 from GoCD while making POST call for "+server.URL+
+			"/api/admin/config/server/artifact_config\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 		assert.Equal(t, gocd.ArtifactInfo{}, actual)
 	})
 
@@ -117,7 +120,8 @@ func Test_client_UpdateArtifactConfig(t *testing.T) {
 		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		actual, err := client.UpdateArtifactConfig(gocd.ArtifactInfo{})
-		assert.EqualError(t, err, "body: <html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html> httpcode: 404")
+		assert.EqualError(t, err, "got 404 from GoCD while making POST call for "+server.URL+
+			"/api/admin/config/server/artifact_config\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 		assert.Equal(t, gocd.ArtifactInfo{}, actual)
 	})
 
@@ -148,8 +152,8 @@ func Test_client_UpdateArtifactConfig(t *testing.T) {
 		client.SetRetryWaitTime(1)
 
 		actual, err := client.UpdateArtifactConfig(gocd.ArtifactInfo{})
-		assert.EqualError(t, err, "call made to update artifacts info errored with Post "+
-			"\"http://localhost:8156/go/api/admin/config/server/artifact_config\": dial tcp [::1]:8156: connect: connection refused")
+		assert.EqualError(t, err, "call made to update artifacts info errored with: "+
+			"Post \"http://localhost:8156/go/api/admin/config/server/artifact_config\": dial tcp [::1]:8156: connect: connection refused")
 		assert.Equal(t, gocd.ArtifactInfo{}, actual)
 	})
 }

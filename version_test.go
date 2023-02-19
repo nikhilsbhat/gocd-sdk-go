@@ -30,7 +30,7 @@ func Test_config_GetVersionInfo(t *testing.T) {
 		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		actual, err := client.GetVersionInfo()
-		assert.EqualError(t, err, gocd.APIWithCodeError(http.StatusBadGateway).Error())
+		assert.EqualError(t, err, "got 502 from GoCD while making GET call for "+server.URL+"/api/version\nwith BODY:backupJSON")
 		assert.Equal(t, gocd.VersionInfo{}, actual)
 	})
 

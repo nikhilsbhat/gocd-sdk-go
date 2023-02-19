@@ -29,7 +29,7 @@ func Test_client_GetEnvironmentInfo(t *testing.T) {
 		client.SetRetryWaitTime(1)
 
 		actual, err := client.GetEnvironments()
-		assert.EqualError(t, err, "call made to get environments errored with "+
+		assert.EqualError(t, err, "call made to get environments errored with: "+
 			"Get \"http://localhost:8156/go/api/admin/environments\": dial tcp [::1]:8156: connect: connection refused")
 		assert.Nil(t, actual)
 	})
@@ -39,7 +39,8 @@ func Test_client_GetEnvironmentInfo(t *testing.T) {
 		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		actual, err := client.GetEnvironments()
-		assert.EqualError(t, err, gocd.APIWithCodeError(http.StatusBadGateway).Error())
+		assert.EqualError(t, err, "got 502 from GoCD while making GET call for "+server.URL+
+			"/api/admin/environments\nwith BODY:backupJSON")
 		assert.Nil(t, actual)
 	})
 
@@ -143,7 +144,8 @@ func Test_client_CreateEnvironments(t *testing.T) {
 		environment := gocd.Environment{}
 
 		err := client.CreateEnvironment(environment)
-		assert.EqualError(t, err, "body: <html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html> httpcode: 404")
+		assert.EqualError(t, err, "got 404 from GoCD while making POST call for "+server.URL+
+			"/api/admin/environments\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 	})
 
 	t.Run("should error out while creating environment due to missing", func(t *testing.T) {
@@ -153,7 +155,8 @@ func Test_client_CreateEnvironments(t *testing.T) {
 		environment := gocd.Environment{}
 
 		err := client.CreateEnvironment(environment)
-		assert.EqualError(t, err, "body: <html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html> httpcode: 404")
+		assert.EqualError(t, err, "got 404 from GoCD while making POST call for "+server.URL+
+			"/api/admin/environments\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 	})
 
 	t.Run("should error out while creating environment due to missing", func(t *testing.T) {
@@ -162,10 +165,10 @@ func Test_client_CreateEnvironments(t *testing.T) {
 		client.SetRetryCount(1)
 		client.SetRetryWaitTime(1)
 
-		environment := gocd.Environment{}
+		environment := gocd.Environment{Name: "test"}
 		err := client.CreateEnvironment(environment)
-		assert.EqualError(t, err, "call made to create environment errored with Post"+
-			" \"http://localhost:8156/go/api/admin/environments\": dial tcp [::1]:8156: connect: connection refused")
+		assert.EqualError(t, err, "call made to create environment 'test' errored with: "+
+			"Post \"http://localhost:8156/go/api/admin/environments\": dial tcp [::1]:8156: connect: connection refused")
 	})
 }
 
@@ -183,7 +186,8 @@ func Test_client_DeleteEnvironment(t *testing.T) {
 		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		err := client.DeleteEnvironment("env1")
-		assert.EqualError(t, err, "body: <html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html> httpcode: 404")
+		assert.EqualError(t, err, "got 404 from GoCD while making DELETE call for "+server.URL+
+			"/api/admin/environments/env1\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 	})
 
 	t.Run("should error out while deleting the environment as no headers set", func(t *testing.T) {
@@ -191,7 +195,8 @@ func Test_client_DeleteEnvironment(t *testing.T) {
 		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		err := client.DeleteEnvironment("env1")
-		assert.EqualError(t, err, "body: <html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html> httpcode: 404")
+		assert.EqualError(t, err, "got 404 from GoCD while making DELETE call for "+server.URL+
+			"/api/admin/environments/env1\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 	})
 
 	t.Run("should error out while deleting the environment as server is not reachable", func(t *testing.T) {
@@ -201,7 +206,7 @@ func Test_client_DeleteEnvironment(t *testing.T) {
 		client.SetRetryWaitTime(1)
 
 		err := client.DeleteEnvironment("env1")
-		assert.EqualError(t, err, "call made to delete environment env1 errored with "+
+		assert.EqualError(t, err, "call made to delete environment 'env1' errored with: "+
 			"Delete \"http://localhost:8156/go/api/admin/environments/env1\": dial tcp [::1]:8156: connect: connection refused")
 	})
 }
@@ -239,7 +244,8 @@ func Test_client_UpdateEnvironment(t *testing.T) {
 
 		environment := gocd.Environment{}
 		actual, err := client.UpdateEnvironment(environment)
-		assert.EqualError(t, err, "body: <html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html> httpcode: 404")
+		assert.EqualError(t, err, "got 404 from GoCD while making PUT call for "+server.URL+
+			"/api/admin/environments\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 		assert.Equal(t, gocd.Environment{}, actual)
 	})
 
@@ -249,7 +255,8 @@ func Test_client_UpdateEnvironment(t *testing.T) {
 
 		environment := gocd.Environment{}
 		actual, err := client.UpdateEnvironment(environment)
-		assert.EqualError(t, err, "body: <html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html> httpcode: 404")
+		assert.EqualError(t, err, "got 404 from GoCD while making PUT call for "+server.URL+
+			"/api/admin/environments\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 		assert.Equal(t, gocd.Environment{}, actual)
 	})
 
@@ -271,11 +278,11 @@ func Test_client_UpdateEnvironment(t *testing.T) {
 		client.SetRetryCount(1)
 		client.SetRetryWaitTime(1)
 
-		environment := gocd.Environment{}
+		environment := gocd.Environment{Name: "test"}
 
 		actual, err := client.UpdateEnvironment(environment)
-		assert.EqualError(t, err, "call made to update environment errored with Put "+
-			"\"http://localhost:8156/go/api/admin/environments\": dial tcp [::1]:8156: connect: connection refused")
+		assert.EqualError(t, err, "call made to update environment 'test' errored with: "+
+			"Put \"http://localhost:8156/go/api/admin/environments/test\": dial tcp [::1]:8156: connect: connection refused")
 		assert.Equal(t, gocd.Environment{}, actual)
 	})
 }
@@ -328,7 +335,8 @@ func Test_client_PatchEnvironment(t *testing.T) {
 		patch := gocd.PatchEnvironment{}
 
 		actual, err := client.PatchEnvironment(patch)
-		assert.EqualError(t, err, "body: <html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html> httpcode: 404")
+		assert.EqualError(t, err, "got 404 from GoCD while making PATCH call for "+server.URL+
+			"/api/admin/environments\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 		assert.Equal(t, gocd.Environment{}, actual)
 	})
 
@@ -338,7 +346,8 @@ func Test_client_PatchEnvironment(t *testing.T) {
 		patch := gocd.PatchEnvironment{}
 
 		actual, err := client.PatchEnvironment(patch)
-		assert.EqualError(t, err, "body: <html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html> httpcode: 404")
+		assert.EqualError(t, err, "got 404 from GoCD while making PATCH call for "+server.URL+
+			"/api/admin/environments\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 		assert.Equal(t, gocd.Environment{}, actual)
 	})
 
@@ -358,11 +367,11 @@ func Test_client_PatchEnvironment(t *testing.T) {
 		client.SetRetryCount(1)
 		client.SetRetryWaitTime(1)
 
-		patch := gocd.PatchEnvironment{}
+		patch := gocd.PatchEnvironment{Name: "test"}
 
 		actual, err := client.PatchEnvironment(patch)
-		assert.EqualError(t, err, "call made to patch environment errored with Patch "+
-			"\"http://localhost:8156/go/api/admin/environments\": dial tcp [::1]:8156: connect: connection refused")
+		assert.EqualError(t, err, "call made to patch environment 'test' errored with: "+
+			"Patch \"http://localhost:8156/go/api/admin/environments/test\": dial tcp [::1]:8156: connect: connection refused")
 		assert.Equal(t, gocd.Environment{}, actual)
 	})
 }
@@ -401,7 +410,8 @@ func Test_client_GetEnvironment(t *testing.T) {
 		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		actual, err := client.GetEnvironment(envName)
-		assert.EqualError(t, err, "body: <html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html> httpcode: 404")
+		assert.EqualError(t, err, "got 404 from GoCD while making GET call for "+server.URL+
+			"/api/admin/environments/my_environment\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 		assert.Equal(t, gocd.Environment{}, actual)
 	})
 
@@ -410,7 +420,8 @@ func Test_client_GetEnvironment(t *testing.T) {
 		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		actual, err := client.GetEnvironment(envName)
-		assert.EqualError(t, err, "body: <html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html> httpcode: 404")
+		assert.EqualError(t, err, "got 404 from GoCD while making GET call for "+server.URL+
+			"/api/admin/environments/my_environment\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 		assert.Equal(t, gocd.Environment{}, actual)
 	})
 
@@ -430,8 +441,8 @@ func Test_client_GetEnvironment(t *testing.T) {
 		client.SetRetryWaitTime(1)
 
 		actual, err := client.GetEnvironment(envName)
-		assert.EqualError(t, err, "call made to get environment errored with Get "+
-			"\"http://localhost:8156/go/api/admin/environments/my_environment\": dial tcp [::1]:8156: connect: connection refused")
+		assert.EqualError(t, err, "call made to get environment 'my_environment' errored with: "+
+			"Get \"http://localhost:8156/go/api/admin/environments/my_environment\": dial tcp [::1]:8156: connect: connection refused")
 		assert.Equal(t, gocd.Environment{}, actual)
 	})
 }

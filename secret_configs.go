@@ -6,6 +6,8 @@ import (
 	"net/http"
 	"path/filepath"
 
+	"github.com/nikhilsbhat/gocd-sdk-go/pkg/errors"
+
 	"github.com/jinzhu/copier"
 )
 
@@ -22,15 +24,15 @@ func (conf *client) GetSecretConfigs() (SecretsConfig, error) {
 		}).
 		Get(SecretsConfigEndpoint)
 	if err != nil {
-		return SecretsConfig{}, fmt.Errorf("call made to get secret configs errored with: %w", err)
+		return SecretsConfig{}, &errors.APIError{Err: err, Message: "get secret configs"}
 	}
 
 	if resp.StatusCode() != http.StatusOK {
-		return SecretsConfig{}, APIErrorWithBody(resp.String(), resp.StatusCode())
+		return SecretsConfig{}, &errors.NonOkError{Code: resp.StatusCode(), Response: resp}
 	}
 
 	if err = json.Unmarshal(resp.Body(), &secretsCfg); err != nil {
-		return SecretsConfig{}, ResponseReadError(err.Error())
+		return SecretsConfig{}, &errors.MarshalError{Err: err}
 	}
 
 	secretsCfg.SecretsConfigs.ETAG = resp.Header().Get("ETag")
@@ -51,15 +53,15 @@ func (conf *client) GetSecretConfig(name string) (CommonConfig, error) {
 		}).
 		Get(filepath.Join(SecretsConfigEndpoint, name))
 	if err != nil {
-		return CommonConfig{}, fmt.Errorf("call made to get secret config '%s' errored with: %w", name, err)
+		return CommonConfig{}, &errors.APIError{Err: err, Message: fmt.Sprintf("get secret config '%s'", name)}
 	}
 
 	if resp.StatusCode() != http.StatusOK {
-		return CommonConfig{}, APIErrorWithBody(resp.String(), resp.StatusCode())
+		return CommonConfig{}, &errors.NonOkError{Code: resp.StatusCode(), Response: resp}
 	}
 
 	if err = json.Unmarshal(resp.Body(), &secretCfg); err != nil {
-		return CommonConfig{}, ResponseReadError(err.Error())
+		return CommonConfig{}, &errors.MarshalError{Err: err}
 	}
 
 	secretCfg.ETAG = resp.Header().Get("ETag")
@@ -82,15 +84,15 @@ func (conf *client) CreateSecretConfig(config CommonConfig) (CommonConfig, error
 		SetBody(config).
 		Post(SecretsConfigEndpoint)
 	if err != nil {
-		return CommonConfig{}, fmt.Errorf("call made to create secrets config '%s' errored with: %w", config.ID, err)
+		return CommonConfig{}, &errors.APIError{Err: err, Message: fmt.Sprintf("create secrets config '%s'", config.ID)}
 	}
 
 	if resp.StatusCode() != http.StatusOK {
-		return CommonConfig{}, APIErrorWithBody(resp.String(), resp.StatusCode())
+		return CommonConfig{}, &errors.NonOkError{Code: resp.StatusCode(), Response: resp}
 	}
 
 	if err = json.Unmarshal(resp.Body(), &secretsCfg); err != nil {
-		return CommonConfig{}, ResponseReadError(err.Error())
+		return CommonConfig{}, &errors.MarshalError{Err: err}
 	}
 
 	secretsCfg.ETAG = resp.Header().Get("ETag")
@@ -114,15 +116,15 @@ func (conf *client) UpdateSecretConfig(config CommonConfig) (CommonConfig, error
 		SetBody(config).
 		Put(filepath.Join(SecretsConfigEndpoint, config.ID))
 	if err != nil {
-		return CommonConfig{}, fmt.Errorf("call made to update secret config '%s' errored with: %w", config.ID, err)
+		return CommonConfig{}, &errors.APIError{Err: err, Message: fmt.Sprintf("update secret config '%s'", config.ID)}
 	}
 
 	if resp.StatusCode() != http.StatusOK {
-		return CommonConfig{}, APIErrorWithBody(resp.String(), resp.StatusCode())
+		return CommonConfig{}, &errors.NonOkError{Code: resp.StatusCode(), Response: resp}
 	}
 
 	if err = json.Unmarshal(resp.Body(), &secretsCfg); err != nil {
-		return CommonConfig{}, ResponseReadError(err.Error())
+		return CommonConfig{}, &errors.MarshalError{Err: err}
 	}
 
 	secretsCfg.ETAG = resp.Header().Get("ETag")
@@ -142,11 +144,11 @@ func (conf *client) DeleteSecretConfig(name string) error {
 		}).
 		Delete(filepath.Join(SecretsConfigEndpoint, name))
 	if err != nil {
-		return fmt.Errorf("call made to delete secret config '%s' errored with: %w", name, err)
+		return &errors.APIError{Err: err, Message: fmt.Sprintf("delete secret config '%s'", name)}
 	}
 
 	if resp.StatusCode() != http.StatusOK {
-		return APIErrorWithBody(resp.String(), resp.StatusCode())
+		return &errors.NonOkError{Code: resp.StatusCode(), Response: resp}
 	}
 
 	return nil

@@ -6,6 +6,8 @@ import (
 	"net/http"
 	"path/filepath"
 
+	"github.com/nikhilsbhat/gocd-sdk-go/pkg/errors"
+
 	"github.com/jinzhu/copier"
 )
 
@@ -22,15 +24,15 @@ func (conf *client) GetElasticAgentProfiles() (ProfilesConfig, error) {
 		}).
 		Get(AgentProfileEndpoint)
 	if err != nil {
-		return ProfilesConfig{}, fmt.Errorf("call made to get elastic agent profiles errored with: %w", err)
+		return ProfilesConfig{}, &errors.APIError{Err: err, Message: "get elastic agent profiles"}
 	}
 
 	if resp.StatusCode() != http.StatusOK {
-		return ProfilesConfig{}, APIErrorWithBody(resp.String(), resp.StatusCode())
+		return ProfilesConfig{}, &errors.NonOkError{Code: resp.StatusCode(), Response: resp}
 	}
 
 	if err = json.Unmarshal(resp.Body(), &elasticAgentCfg); err != nil {
-		return ProfilesConfig{}, ResponseReadError(err.Error())
+		return ProfilesConfig{}, &errors.MarshalError{Err: err}
 	}
 
 	elasticAgentCfg.ProfilesConfigs.ETAG = resp.Header().Get("ETag")
@@ -51,15 +53,15 @@ func (conf *client) GetElasticAgentProfile(name string) (CommonConfig, error) {
 		}).
 		Get(filepath.Join(AgentProfileEndpoint, name))
 	if err != nil {
-		return CommonConfig{}, fmt.Errorf("call made to get elastic agent profile '%s' errored with: %w", name, err)
+		return CommonConfig{}, &errors.APIError{Err: err, Message: fmt.Sprintf("get elastic agent profile '%s'", name)}
 	}
 
 	if resp.StatusCode() != http.StatusOK {
-		return CommonConfig{}, APIErrorWithBody(resp.String(), resp.StatusCode())
+		return CommonConfig{}, &errors.NonOkError{Code: resp.StatusCode(), Response: resp}
 	}
 
 	if err = json.Unmarshal(resp.Body(), &elasticAgentCfg); err != nil {
-		return CommonConfig{}, ResponseReadError(err.Error())
+		return CommonConfig{}, &errors.MarshalError{Err: err}
 	}
 
 	elasticAgentCfg.ETAG = resp.Header().Get("ETag")
@@ -82,15 +84,15 @@ func (conf *client) CreateElasticAgentProfile(config CommonConfig) (CommonConfig
 		SetBody(config).
 		Post(AgentProfileEndpoint)
 	if err != nil {
-		return CommonConfig{}, fmt.Errorf("call made to create elastic agent profile '%s' errored with: %w", config.ID, err)
+		return CommonConfig{}, &errors.APIError{Err: err, Message: fmt.Sprintf("create elastic agent profile '%s'", config.ID)}
 	}
 
 	if resp.StatusCode() != http.StatusOK {
-		return CommonConfig{}, APIErrorWithBody(resp.String(), resp.StatusCode())
+		return CommonConfig{}, &errors.NonOkError{Code: resp.StatusCode(), Response: resp}
 	}
 
 	if err = json.Unmarshal(resp.Body(), &elasticAgentCfg); err != nil {
-		return CommonConfig{}, ResponseReadError(err.Error())
+		return CommonConfig{}, &errors.MarshalError{Err: err}
 	}
 
 	elasticAgentCfg.ETAG = resp.Header().Get("ETag")
@@ -114,15 +116,15 @@ func (conf *client) UpdateElasticAgentProfile(config CommonConfig) (CommonConfig
 		SetBody(config).
 		Put(filepath.Join(AgentProfileEndpoint, config.ID))
 	if err != nil {
-		return CommonConfig{}, fmt.Errorf("call made to update elastic agent profile '%s' errored with: %w", config.ID, err)
+		return CommonConfig{}, &errors.APIError{Err: err, Message: fmt.Sprintf("update elastic agent profile '%s'", config.ID)}
 	}
 
 	if resp.StatusCode() != http.StatusOK {
-		return CommonConfig{}, APIErrorWithBody(resp.String(), resp.StatusCode())
+		return CommonConfig{}, &errors.NonOkError{Code: resp.StatusCode(), Response: resp}
 	}
 
 	if err = json.Unmarshal(resp.Body(), &elasticAgentCfg); err != nil {
-		return CommonConfig{}, ResponseReadError(err.Error())
+		return CommonConfig{}, &errors.MarshalError{Err: err}
 	}
 
 	elasticAgentCfg.ETAG = resp.Header().Get("ETag")
@@ -142,11 +144,11 @@ func (conf *client) DeleteElasticAgentProfile(name string) error {
 		}).
 		Delete(filepath.Join(AgentProfileEndpoint, name))
 	if err != nil {
-		return fmt.Errorf("call made to delete elastic agent profile '%s' errored with: %w", name, err)
+		return &errors.APIError{Err: err, Message: fmt.Sprintf("delete elastic agent profile '%s'", name)}
 	}
 
 	if resp.StatusCode() != http.StatusOK {
-		return APIErrorWithBody(resp.String(), resp.StatusCode())
+		return &errors.NonOkError{Code: resp.StatusCode(), Response: resp}
 	}
 
 	return nil

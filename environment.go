@@ -6,6 +6,8 @@ import (
 	"net/http"
 	"path/filepath"
 
+	"github.com/nikhilsbhat/gocd-sdk-go/pkg/errors"
+
 	"github.com/jinzhu/copier"
 )
 
@@ -23,14 +25,14 @@ func (conf *client) GetEnvironments() ([]Environment, error) {
 		}).
 		Get(EnvironmentEndpoint)
 	if err != nil {
-		return nil, fmt.Errorf("call made to get environments errored with %w", err)
+		return nil, &errors.APIError{Err: err, Message: "get environments"}
 	}
 	if resp.StatusCode() != http.StatusOK {
-		return nil, APIWithCodeError(resp.StatusCode())
+		return nil, &errors.NonOkError{Code: resp.StatusCode(), Response: resp}
 	}
 
 	if err = json.Unmarshal(resp.Body(), &envConf); err != nil {
-		return nil, ResponseReadError(err.Error())
+		return nil, &errors.MarshalError{Err: err}
 	}
 
 	return envConf.Environments.Environments, nil
@@ -50,14 +52,14 @@ func (conf *client) GetEnvironment(name string) (Environment, error) {
 		}).
 		Get(filepath.Join(EnvironmentEndpoint, name))
 	if err != nil {
-		return env, fmt.Errorf("call made to get environment errored with %w", err)
+		return env, &errors.APIError{Err: err, Message: fmt.Sprintf("get environment '%s'", name)}
 	}
 	if resp.StatusCode() != http.StatusOK {
-		return env, APIErrorWithBody(resp.String(), resp.StatusCode())
+		return env, &errors.NonOkError{Code: resp.StatusCode(), Response: resp}
 	}
 
 	if err = json.Unmarshal(resp.Body(), &env); err != nil {
-		return env, ResponseReadError(err.Error())
+		return env, &errors.MarshalError{Err: err}
 	}
 
 	env.ETAG = resp.Header().Get("ETag")
@@ -80,11 +82,11 @@ func (conf *client) CreateEnvironment(environment Environment) error {
 		SetBody(environment).
 		Post(EnvironmentEndpoint)
 	if err != nil {
-		return fmt.Errorf("call made to create environment errored with %w", err)
+		return &errors.APIError{Err: err, Message: fmt.Sprintf("create environment '%s'", environment.Name)}
 	}
 
 	if resp.StatusCode() != http.StatusOK {
-		return APIErrorWithBody(resp.String(), resp.StatusCode())
+		return &errors.NonOkError{Code: resp.StatusCode(), Response: resp}
 	}
 
 	return nil
@@ -107,15 +109,15 @@ func (conf *client) PatchEnvironment(environment any) (Environment, error) {
 		SetBody(envPatch).
 		Patch(filepath.Join(EnvironmentEndpoint, envPatch.Name))
 	if err != nil {
-		return env, fmt.Errorf("call made to patch environment errored with %w", err)
+		return env, &errors.APIError{Err: err, Message: fmt.Sprintf("patch environment '%s'", envPatch.Name)}
 	}
 
 	if resp.StatusCode() != http.StatusOK {
-		return env, APIErrorWithBody(resp.String(), resp.StatusCode())
+		return env, &errors.NonOkError{Code: resp.StatusCode(), Response: resp}
 	}
 
 	if err := json.Unmarshal(resp.Body(), &env); err != nil {
-		return env, ResponseReadError(err.Error())
+		return env, &errors.MarshalError{Err: err}
 	}
 
 	return env, nil
@@ -138,15 +140,15 @@ func (conf *client) UpdateEnvironment(environment Environment) (Environment, err
 		SetBody(environment).
 		Put(filepath.Join(EnvironmentEndpoint, environment.Name))
 	if err != nil {
-		return env, fmt.Errorf("call made to update environment errored with %w", err)
+		return env, &errors.APIError{Err: err, Message: fmt.Sprintf("update environment '%s'", environment.Name)}
 	}
 
 	if resp.StatusCode() != http.StatusOK {
-		return env, APIErrorWithBody(resp.String(), resp.StatusCode())
+		return env, &errors.NonOkError{Code: resp.StatusCode(), Response: resp}
 	}
 
 	if err = json.Unmarshal(resp.Body(), &env); err != nil {
-		return env, ResponseReadError(err.Error())
+		return env, &errors.MarshalError{Err: err}
 	}
 
 	env.ETAG = resp.Header().Get("ETag")
@@ -166,11 +168,11 @@ func (conf *client) DeleteEnvironment(name string) error {
 			"Accept": HeaderVersionThree,
 		}).Delete(filepath.Join(EnvironmentEndpoint, name))
 	if err != nil {
-		return fmt.Errorf("call made to delete environment %s errored with %w", name, err)
+		return &errors.APIError{Err: err, Message: fmt.Sprintf("delete environment '%s'", name)}
 	}
 
 	if resp.StatusCode() != http.StatusOK {
-		return APIErrorWithBody(resp.String(), resp.StatusCode())
+		return &errors.NonOkError{Code: resp.StatusCode(), Response: resp}
 	}
 
 	return nil

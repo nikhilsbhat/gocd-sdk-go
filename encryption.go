@@ -6,15 +6,13 @@ import (
 	"encoding/base64"
 	"encoding/hex"
 	"encoding/json"
-	"errors"
-	"fmt"
 	"net/http"
 	"strings"
 
+	"github.com/nikhilsbhat/gocd-sdk-go/pkg/errors"
+
 	"github.com/jinzhu/copier"
 )
-
-var errValueCipher = errors.New("value or cipher key cannot be empty")
 
 func (conf *client) EncryptText(value string) (Encrypted, error) {
 	var encryptedValue Encrypted
@@ -32,15 +30,15 @@ func (conf *client) EncryptText(value string) (Encrypted, error) {
 		SetBody(valueObj).
 		Post(EncryptEndpoint)
 	if err != nil {
-		return encryptedValue, fmt.Errorf("call made to encrypt a value errored with: %w", err)
+		return encryptedValue, &errors.APIError{Err: err, Message: "encrypt a value"}
 	}
 
 	if resp.StatusCode() != http.StatusOK {
-		return encryptedValue, APIErrorWithBody(resp.String(), resp.StatusCode())
+		return encryptedValue, &errors.NonOkError{Code: resp.StatusCode(), Response: resp}
 	}
 
 	if err = json.Unmarshal(resp.Body(), &encryptedValue); err != nil {
-		return encryptedValue, ResponseReadError(err.Error())
+		return encryptedValue, &errors.MarshalError{Err: err}
 	}
 
 	return encryptedValue, nil
@@ -54,7 +52,7 @@ func (conf *client) DecryptText(value, cipherKey string) (string, error) {
 	}
 
 	if len(value) == 0 || len(cipherKey) == 0 {
-		return "", errValueCipher
+		return "", &errors.CipherError{}
 	}
 	// AES encrypted value should be split to get encoded IV and data from it.
 	// Sample AES encrypted value: 'AES:wSOqnltxM6Rp9j0Tb8uWpw==:4zVLtLx9msGleK+pLOOUHg=='. Upon splitting we would get three elements

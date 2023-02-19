@@ -42,4 +42,6 @@ const (
 	goCdAPILoggerName = "gocd-sdk-go"
 	ContentJSON       = "application/json"
 	HeaderConfirm     = "X-GoCD-Confirm"
+	PipelinePrefix    = "/go/api/feed/pipelines/"
+	PipelineSuffix    = "/stages.xml"
 )

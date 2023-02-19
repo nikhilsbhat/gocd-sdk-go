@@ -6,6 +6,8 @@ import (
 	"net/http"
 	"path/filepath"
 
+	"github.com/nikhilsbhat/gocd-sdk-go/pkg/errors"
+
 	"github.com/jinzhu/copier"
 )
 
@@ -23,15 +25,15 @@ func (conf *client) GetAgents() ([]Agent, error) {
 		}).
 		Get(AgentsEndpoint)
 	if err != nil {
-		return nil, fmt.Errorf("call made to get agents information errored with: %w", err)
+		return nil, &errors.APIError{Err: err, Message: "get agents information"}
 	}
 
 	if resp.StatusCode() != http.StatusOK {
-		return nil, APIWithCodeError(resp.StatusCode())
+		return nil, &errors.NonOkError{Code: resp.StatusCode(), Response: resp}
 	}
 
 	if err = json.Unmarshal(resp.Body(), &agentsConf); err != nil {
-		return nil, ResponseReadError(err.Error())
+		return nil, &errors.MarshalError{Err: err}
 	}
 
 	return agentsConf.Config.Config, nil
@@ -52,14 +54,14 @@ func (conf *client) GetAgentJobRunHistory(agentID string) (AgentJobHistory, erro
 		SetQueryParam("sort_order", "DESC").
 		Get(fmt.Sprintf(JobRunHistoryEndpoint, agentID))
 	if err != nil {
-		return AgentJobHistory{}, fmt.Errorf("call made to get agent job run history errored with %w", err)
+		return AgentJobHistory{}, &errors.APIError{Err: err, Message: "get agent job run history"}
 	}
 	if resp.StatusCode() != http.StatusOK {
-		return AgentJobHistory{}, APIWithCodeError(resp.StatusCode())
+		return AgentJobHistory{}, &errors.NonOkError{Code: resp.StatusCode(), Response: resp}
 	}
 
 	if err = json.Unmarshal(resp.Body(), &jobHistoryConf); err != nil {
-		return AgentJobHistory{}, ResponseReadError(err.Error())
+		return AgentJobHistory{}, &errors.MarshalError{Err: err}
 	}
 
 	return jobHistoryConf, nil
@@ -80,11 +82,11 @@ func (conf *client) UpdateAgent(agentID string, agent Agent) error {
 		SetBody(agent).
 		Patch(filepath.Join(AgentsEndpoint, agentID))
 	if err != nil {
-		return fmt.Errorf("call made to update %s agent information errored with: %w", agent.Name, err)
+		return &errors.APIError{Err: err, Message: fmt.Sprintf("update %s agent information", agent.Name)}
 	}
 
 	if resp.StatusCode() != http.StatusOK {
-		return APIErrorWithBody(resp.String(), resp.StatusCode())
+		return &errors.NonOkError{Code: resp.StatusCode(), Response: resp}
 	}
 
 	return nil
@@ -105,11 +107,11 @@ func (conf *client) UpdateAgentBulk(agent Agent) error {
 		SetBody(agent).
 		Patch(AgentsEndpoint)
 	if err != nil {
-		return fmt.Errorf("call made to bulk update %v agents information errored with: %w", agent.UUIDS, err)
+		return &errors.APIError{Err: err, Message: fmt.Sprintf("bulk update %v agents information", agent.UUIDS)}
 	}
 
 	if resp.StatusCode() != http.StatusOK {
-		return APIErrorWithBody(resp.String(), resp.StatusCode())
+		return &errors.NonOkError{Code: resp.StatusCode(), Response: resp}
 	}
 
 	return nil
@@ -128,11 +130,11 @@ func (conf *client) DeleteAgent(agentID string) (string, error) {
 		}).
 		Delete(filepath.Join(AgentsEndpoint, agentID))
 	if err != nil {
-		return "", fmt.Errorf("call made delete agent %s errored with: %w", agentID, err)
+		return "", &errors.APIError{Err: err, Message: fmt.Sprintf("delete agent %s", agentID)}
 	}
 
 	if resp.StatusCode() != http.StatusOK {
-		return "", APIErrorWithBody(resp.String(), resp.StatusCode())
+		return "", &errors.NonOkError{Code: resp.StatusCode(), Response: resp}
 	}
 
 	return resp.String(), nil
@@ -152,11 +154,11 @@ func (conf *client) DeleteAgentBulk(agent Agent) (string, error) {
 		SetBody(agent).
 		Delete(AgentsEndpoint)
 	if err != nil {
-		return "", fmt.Errorf("call made delete agents %s errored with: %w", agent.UUIDS, err)
+		return "", &errors.APIError{Err: err, Message: fmt.Sprintf("delete agents %s", agent.UUIDS)}
 	}
 
 	if resp.StatusCode() != http.StatusOK {
-		return "", APIErrorWithBody(resp.String(), resp.StatusCode())
+		return "", &errors.NonOkError{Code: resp.StatusCode(), Response: resp}
 	}
 
 	return resp.String(), nil
@@ -176,11 +178,11 @@ func (conf *client) AgentKillTask(agent Agent) error {
 		}).
 		Post(filepath.Join(AgentsEndpoint, agent.ID, "kill_running_tasks"))
 	if err != nil {
-		return fmt.Errorf("call made for killing tasks from agent %s errored with: %w", agent.ID, err)
+		return &errors.APIError{Err: err, Message: fmt.Sprintf("kill tasks from agent %s", agent.ID)}
 	}
 
 	if resp.StatusCode() != http.StatusOK {
-		return APIErrorWithBody(resp.String(), resp.StatusCode())
+		return &errors.NonOkError{Code: resp.StatusCode(), Response: resp}
 	}
 
 	return nil

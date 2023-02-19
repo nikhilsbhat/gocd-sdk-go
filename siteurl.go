@@ -2,8 +2,9 @@ package gocd
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
+
+	"github.com/nikhilsbhat/gocd-sdk-go/pkg/errors"
 
 	"github.com/jinzhu/copier"
 )
@@ -22,11 +23,11 @@ func (conf *client) GetSiteURL() (SiteURLConfig, error) {
 		}).
 		Get(SiteURLEndpoint)
 	if err != nil {
-		return site, fmt.Errorf("call made to get site url errored with: %w", err)
+		return site, &errors.APIError{Err: err, Message: "get site url"}
 	}
 
 	if resp.StatusCode() != http.StatusOK {
-		return site, APIErrorWithBody(resp.String(), resp.StatusCode())
+		return site, &errors.NonOkError{Code: resp.StatusCode(), Response: resp}
 	}
 
 	if err = json.Unmarshal(resp.Body(), &site); err != nil {
@@ -52,11 +53,11 @@ func (conf *client) CreateOrUpdateSiteURL(config SiteURLConfig) (SiteURLConfig, 
 		SetBody(config).
 		Post(SiteURLEndpoint)
 	if err != nil {
-		return site, fmt.Errorf("call made to create/update site url errored with: %w", err)
+		return site, &errors.APIError{Err: err, Message: "create/update site url"}
 	}
 
 	if resp.StatusCode() != http.StatusOK {
-		return site, APIErrorWithBody(resp.String(), resp.StatusCode())
+		return site, &errors.NonOkError{Code: resp.StatusCode(), Response: resp}
 	}
 
 	if err = json.Unmarshal(resp.Body(), &site); err != nil {

@@ -2,9 +2,10 @@ package gocd
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 	"path/filepath"
+
+	"github.com/nikhilsbhat/gocd-sdk-go/pkg/errors"
 
 	"github.com/jinzhu/copier"
 )
@@ -23,11 +24,11 @@ func (conf *client) EnableMaintenanceMode() error {
 		}).
 		Post(filepath.Join(MaintenanceEndpoint, "enable"))
 	if err != nil {
-		return fmt.Errorf("call made to enable maintenance mode errored with %w", err)
+		return &errors.APIError{Err: err, Message: "enable maintenance mode"}
 	}
 
 	if resp.StatusCode() != http.StatusNoContent {
-		return APIErrorWithBody(resp.String(), resp.StatusCode())
+		return &errors.NonOkError{Code: resp.StatusCode(), Response: resp}
 	}
 
 	return nil
@@ -47,15 +48,15 @@ func (conf *client) GetMaintenanceModeInfo() (Maintenance, error) {
 		}).
 		Get(filepath.Join(MaintenanceEndpoint, "info"))
 	if err != nil {
-		return Maintenance{}, fmt.Errorf("call made to enable maintenance mode errored with %w", err)
+		return Maintenance{}, &errors.APIError{Err: err, Message: "get maintenance mode information"}
 	}
 
 	if resp.StatusCode() != http.StatusOK {
-		return Maintenance{}, APIErrorWithBody(resp.String(), resp.StatusCode())
+		return Maintenance{}, &errors.NonOkError{Code: resp.StatusCode(), Response: resp}
 	}
 
 	if err = json.Unmarshal(resp.Body(), &maintenanceInfo); err != nil {
-		return Maintenance{}, ResponseReadError(err.Error())
+		return Maintenance{}, &errors.MarshalError{Err: err}
 	}
 
 	return maintenanceInfo, nil
@@ -75,11 +76,11 @@ func (conf *client) DisableMaintenanceMode() error {
 		}).
 		Post(filepath.Join(MaintenanceEndpoint, "disable"))
 	if err != nil {
-		return fmt.Errorf("call made to enable maintenance mode errored with %w", err)
+		return &errors.APIError{Err: err, Message: "disable maintenance mode"}
 	}
 
 	if resp.StatusCode() != http.StatusNoContent {
-		return APIErrorWithBody(resp.String(), resp.StatusCode())
+		return &errors.NonOkError{Code: resp.StatusCode(), Response: resp}
 	}
 
 	return nil

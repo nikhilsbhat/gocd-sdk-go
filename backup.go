@@ -2,8 +2,9 @@ package gocd
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
+
+	"github.com/nikhilsbhat/gocd-sdk-go/pkg/errors"
 
 	"github.com/jinzhu/copier"
 )
@@ -22,15 +23,15 @@ func (conf *client) GetBackupConfig() (BackupConfig, error) {
 		}).
 		Get(BackupConfigEndpoint)
 	if err != nil {
-		return BackupConfig{}, fmt.Errorf("call made to get backup information errored with %w", err)
+		return BackupConfig{}, &errors.APIError{Err: err, Message: "get backup information"}
 	}
 
 	if resp.StatusCode() != http.StatusOK {
-		return BackupConfig{}, APIErrorWithBody(resp.String(), resp.StatusCode())
+		return BackupConfig{}, &errors.NonOkError{Code: resp.StatusCode(), Response: resp}
 	}
 
 	if err = json.Unmarshal(resp.Body(), &backUpConf); err != nil {
-		return BackupConfig{}, ResponseReadError(err.Error())
+		return BackupConfig{}, &errors.MarshalError{Err: err}
 	}
 
 	return backUpConf, nil
@@ -51,11 +52,11 @@ func (conf *client) CreateOrUpdateBackupConfig(backup BackupConfig) error {
 		SetBody(backup).
 		Post(BackupConfigEndpoint)
 	if err != nil {
-		return fmt.Errorf("call made to create/udpate backup configuration errored with %w", err)
+		return &errors.APIError{Err: err, Message: "create/update backup configuration"}
 	}
 
 	if resp.StatusCode() != http.StatusOK {
-		return APIErrorWithBody(resp.String(), resp.StatusCode())
+		return &errors.NonOkError{Code: resp.StatusCode(), Response: resp}
 	}
 
 	return nil
@@ -74,11 +75,11 @@ func (conf *client) DeleteBackupConfig() error {
 		}).
 		Delete(BackupConfigEndpoint)
 	if err != nil {
-		return fmt.Errorf("call made to get backup information errored with: %w", err)
+		return &errors.APIError{Err: err, Message: "delete backup configuration"}
 	}
 
 	if resp.StatusCode() != http.StatusOK {
-		return APIErrorWithBody(resp.String(), resp.StatusCode())
+		return &errors.NonOkError{Code: resp.StatusCode(), Response: resp}
 	}
 
 	return nil

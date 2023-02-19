@@ -10,6 +10,8 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/nikhilsbhat/gocd-sdk-go/pkg/errors"
+
 	"github.com/jinzhu/copier"
 )
 
@@ -24,14 +26,14 @@ func (conf *client) GetPipelines() (PipelinesInfo, error) {
 	resp, err := newClient.httpClient.R().
 		Get(APIFeedPipelineEndpoint)
 	if err != nil {
-		return PipelinesInfo{}, fmt.Errorf("call made to get pipelines errored with %w", err)
+		return PipelinesInfo{}, &errors.APIError{Err: err, Message: "get pipelines"}
 	}
 	if resp.StatusCode() != http.StatusOK {
-		return PipelinesInfo{}, APIWithCodeError(resp.StatusCode())
+		return PipelinesInfo{}, &errors.NonOkError{Code: resp.StatusCode(), Response: resp}
 	}
 
 	if err = xml.Unmarshal(resp.Body(), &pipelinesInfo); err != nil {
-		return PipelinesInfo{}, ResponseReadError(err.Error())
+		return PipelinesInfo{}, &errors.MarshalError{Err: err}
 	}
 
 	return pipelinesInfo, nil
@@ -51,14 +53,14 @@ func (conf *client) GetPipelineState(pipeline string) (PipelineState, error) {
 		}).
 		Get(fmt.Sprintf(PipelineStatus, pipeline))
 	if err != nil {
-		return PipelineState{}, fmt.Errorf("call made to get pipeline state errored with %w", err)
+		return PipelineState{}, &errors.APIError{Err: err, Message: "get pipeline state"}
 	}
 	if resp.StatusCode() != http.StatusOK {
-		return PipelineState{}, APIWithCodeError(resp.StatusCode())
+		return PipelineState{}, &errors.NonOkError{Code: resp.StatusCode(), Response: resp}
 	}
 
 	if err = json.Unmarshal(resp.Body(), &pipelinesStatus); err != nil {
-		return PipelineState{}, ResponseReadError(err.Error())
+		return PipelineState{}, &errors.MarshalError{Err: err}
 	}
 	pipelinesStatus.Name = pipeline
 
@@ -87,11 +89,11 @@ func (conf *client) PipelinePause(name string, message any) error {
 		}).
 		Post(filepath.Join(PipelinesEndpoint, name, "pause"))
 	if err != nil {
-		return fmt.Errorf("call made to pause pipeline errored with %w", err)
+		return &errors.APIError{Err: err, Message: "pause pipeline"}
 	}
 
 	if resp.StatusCode() != http.StatusOK {
-		return APIErrorWithBody(resp.String(), resp.StatusCode())
+		return &errors.NonOkError{Code: resp.StatusCode(), Response: resp}
 	}
 
 	return nil
@@ -111,11 +113,11 @@ func (conf *client) PipelineUnPause(name string) error {
 		}).
 		Post(filepath.Join(PipelinesEndpoint, name, "unpause"))
 	if err != nil {
-		return fmt.Errorf("call made to unpause pipeline errored with %w", err)
+		return &errors.APIError{Err: err, Message: "unpause pipeline"}
 	}
 
 	if resp.StatusCode() != http.StatusOK {
-		return APIErrorWithBody(resp.String(), resp.StatusCode())
+		return &errors.NonOkError{Code: resp.StatusCode(), Response: resp}
 	}
 
 	return nil
@@ -135,11 +137,11 @@ func (conf *client) PipelineUnlock(name string) error {
 		}).
 		Post(filepath.Join(PipelinesEndpoint, name, "unlock"))
 	if err != nil {
-		return fmt.Errorf("call made to unlock pipeline errored with %w", err)
+		return &errors.APIError{Err: err, Message: "unlock pipeline"}
 	}
 
 	if resp.StatusCode() != http.StatusOK {
-		return APIErrorWithBody(resp.String(), resp.StatusCode())
+		return &errors.NonOkError{Code: resp.StatusCode(), Response: resp}
 	}
 
 	return nil
@@ -160,11 +162,11 @@ func (conf *client) SchedulePipeline(name string, schedule Schedule) error {
 		SetBody(schedule).
 		Post(filepath.Join(PipelinesEndpoint, name, "schedule"))
 	if err != nil {
-		return fmt.Errorf("call made to schedule pipeline '%s' errored with %w", name, err)
+		return &errors.APIError{Err: err, Message: fmt.Sprintf("schedule pipeline '%s'", name)}
 	}
 
 	if resp.StatusCode() != http.StatusAccepted {
-		return APIErrorWithBody(resp.String(), resp.StatusCode())
+		return &errors.NonOkError{Code: resp.StatusCode(), Response: resp}
 	}
 
 	return nil
@@ -174,16 +176,16 @@ func (conf *client) SchedulePipeline(name string, schedule Schedule) error {
 func GetPipelineName(link string) (string, error) {
 	parsedURL, err := url.Parse(link)
 	if err != nil {
-		return "", fmt.Errorf("parsing URL errored with %w", err)
+		return "", &errors.GoCDError{Message: "parsing URL errored with:", Err: err}
 	}
 
-	return strings.TrimSuffix(strings.TrimPrefix(parsedURL.Path, "/go/api/feed/pipelines/"), "/stages.xml"), nil
+	return strings.TrimSuffix(strings.TrimPrefix(parsedURL.Path, PipelinePrefix), PipelineSuffix), nil
 }
 
 // CommentOnPipeline publishes comment on specified pipeline.
 func (conf *client) CommentOnPipeline(comment PipelineObject) error {
 	if len(comment.Message) == 0 {
-		return fmt.Errorf("comment message cannot be empty") //nolint:goerr113
+		return &errors.GoCDError{Message: "comment message cannot be empty"}
 	}
 
 	newClient := &client{}
@@ -199,11 +201,11 @@ func (conf *client) CommentOnPipeline(comment PipelineObject) error {
 		SetBody(map[string]string{"comment": comment.Message}).
 		Post(filepath.Join(PipelinesEndpoint, comment.Name, strconv.Itoa(comment.Counter), "comment"))
 	if err != nil {
-		return fmt.Errorf("call made to comment on pipeline '%s' errored with %w", comment.Name, err)
+		return &errors.APIError{Err: err, Message: fmt.Sprintf("comment on pipeline '%s'", comment.Name)}
 	}
 
 	if resp.StatusCode() != http.StatusOK {
-		return APIErrorWithBody(resp.String(), resp.StatusCode())
+		return &errors.NonOkError{Code: resp.StatusCode(), Response: resp}
 	}
 
 	return nil
@@ -223,15 +225,15 @@ func (conf *client) GetPipelineInstance(pipeline PipelineObject) (map[string]int
 		}).
 		Get(filepath.Join(PipelinesEndpoint, pipeline.Name, strconv.Itoa(pipeline.Counter)))
 	if err != nil {
-		return pipelineInstance, fmt.Errorf("call made to fetch pipeline instance '%s' errored with %w", pipeline.Name, err)
+		return pipelineInstance, &errors.APIError{Err: err, Message: fmt.Sprintf("fetch pipeline instance '%s'", pipeline.Name)}
 	}
 
 	if resp.StatusCode() != http.StatusOK {
-		return pipelineInstance, APIErrorWithBody(resp.String(), resp.StatusCode())
+		return pipelineInstance, &errors.NonOkError{Code: resp.StatusCode(), Response: resp}
 	}
 
 	if err = json.Unmarshal(resp.Body(), &pipelineInstance); err != nil {
-		return pipelineInstance, ResponseReadError(err.Error())
+		return pipelineInstance, &errors.MarshalError{Err: err}
 	}
 
 	return pipelineInstance, nil
@@ -261,15 +263,15 @@ func (conf *client) GetPipelineHistory(name string, defaultSize, defaultAfter in
 			}).
 			Get(filepath.Join(PipelinesEndpoint, name, "history"))
 		if err != nil {
-			return history, fmt.Errorf("call made to fetch pipeline history '%s' errored with %w", name, err)
+			return history, &errors.APIError{Err: err, Message: fmt.Sprintf("fetch pipeline history '%s'", name)}
 		}
 
 		if resp.StatusCode() != http.StatusOK {
-			return history, APIErrorWithBody(resp.String(), resp.StatusCode())
+			return history, &errors.NonOkError{Code: resp.StatusCode(), Response: resp}
 		}
 
 		if err = json.Unmarshal(resp.Body(), &pipelineHistory); err != nil {
-			return history, ResponseReadError(err.Error())
+			return history, &errors.MarshalError{Err: err}
 		}
 
 		if (len(pipelineHistory.Pipelines) == 0) || (pipelineHistory.Links["next"] == nil) {

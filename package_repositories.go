@@ -6,6 +6,8 @@ import (
 	"net/http"
 	"path/filepath"
 
+	"github.com/nikhilsbhat/gocd-sdk-go/pkg/errors"
+
 	"github.com/jinzhu/copier"
 )
 
@@ -22,15 +24,15 @@ func (conf *client) GetPackageRepositories() ([]PackageRepository, error) {
 		}).
 		Get(PackageRepositoriesEndpoint)
 	if err != nil {
-		return nil, fmt.Errorf("call made to get package repositories errored with: %w", err)
+		return nil, &errors.APIError{Err: err, Message: "get package repositories"}
 	}
 
 	if resp.StatusCode() != http.StatusOK {
-		return nil, APIErrorWithBody(resp.String(), resp.StatusCode())
+		return nil, &errors.NonOkError{Code: resp.StatusCode(), Response: resp}
 	}
 
 	if err = json.Unmarshal(resp.Body(), &packageRepositoriesCfg); err != nil {
-		return nil, ResponseReadError(err.Error())
+		return nil, &errors.MarshalError{Err: err}
 	}
 
 	return packageRepositoriesCfg.Repositories.PackageRepositories, nil
@@ -49,15 +51,15 @@ func (conf *client) GetPackageRepository(repoID string) (PackageRepository, erro
 		}).
 		Get(filepath.Join(PackageRepositoriesEndpoint, repoID))
 	if err != nil {
-		return PackageRepository{}, fmt.Errorf("call made to get package repository '%s' errored with: %w", repoID, err)
+		return PackageRepository{}, &errors.APIError{Err: err, Message: fmt.Sprintf("get package repository '%s'", repoID)}
 	}
 
 	if resp.StatusCode() != http.StatusOK {
-		return PackageRepository{}, APIErrorWithBody(resp.String(), resp.StatusCode())
+		return PackageRepository{}, &errors.NonOkError{Code: resp.StatusCode(), Response: resp}
 	}
 
 	if err = json.Unmarshal(resp.Body(), &repositoryCfg); err != nil {
-		return PackageRepository{}, ResponseReadError(err.Error())
+		return PackageRepository{}, &errors.MarshalError{Err: err}
 	}
 
 	repositoryCfg.ETAG = resp.Header().Get("ETag")
@@ -80,15 +82,15 @@ func (conf *client) CreatePackageRepository(config PackageRepository) (PackageRe
 		SetBody(config).
 		Post(PackageRepositoriesEndpoint)
 	if err != nil {
-		return PackageRepository{}, fmt.Errorf("call made to create package repository '%s' errored with: %w", config.ID, err)
+		return PackageRepository{}, &errors.APIError{Err: err, Message: fmt.Sprintf("create package repository '%s'", config.ID)}
 	}
 
 	if resp.StatusCode() != http.StatusOK {
-		return PackageRepository{}, APIErrorWithBody(resp.String(), resp.StatusCode())
+		return PackageRepository{}, &errors.NonOkError{Code: resp.StatusCode(), Response: resp}
 	}
 
 	if err = json.Unmarshal(resp.Body(), &repositoryCfg); err != nil {
-		return PackageRepository{}, ResponseReadError(err.Error())
+		return PackageRepository{}, &errors.MarshalError{Err: err}
 	}
 
 	repositoryCfg.ETAG = resp.Header().Get("ETag")
@@ -112,15 +114,15 @@ func (conf *client) UpdatePackageRepository(config PackageRepository) (PackageRe
 		SetBody(config).
 		Put(filepath.Join(PackageRepositoriesEndpoint, config.ID))
 	if err != nil {
-		return PackageRepository{}, fmt.Errorf("call made to update package repository '%s' errored with: %w", config.ID, err)
+		return PackageRepository{}, &errors.APIError{Err: err, Message: fmt.Sprintf("update package repository '%s'", config.ID)}
 	}
 
 	if resp.StatusCode() != http.StatusOK {
-		return PackageRepository{}, APIErrorWithBody(resp.String(), resp.StatusCode())
+		return PackageRepository{}, &errors.NonOkError{Code: resp.StatusCode(), Response: resp}
 	}
 
 	if err = json.Unmarshal(resp.Body(), &repositoryCfg); err != nil {
-		return PackageRepository{}, ResponseReadError(err.Error())
+		return PackageRepository{}, &errors.MarshalError{Err: err}
 	}
 
 	repositoryCfg.ETAG = resp.Header().Get("ETag")
@@ -140,11 +142,11 @@ func (conf *client) DeletePackageRepository(repoID string) error {
 		}).
 		Delete(filepath.Join(PackageRepositoriesEndpoint, repoID))
 	if err != nil {
-		return fmt.Errorf("call made to delete package repository '%s' errored with: %w", repoID, err)
+		return &errors.APIError{Err: err, Message: fmt.Sprintf("delete package repository '%s'", repoID)}
 	}
 
 	if resp.StatusCode() != http.StatusOK {
-		return APIErrorWithBody(resp.String(), resp.StatusCode())
+		return &errors.NonOkError{Code: resp.StatusCode(), Response: resp}
 	}
 
 	return nil

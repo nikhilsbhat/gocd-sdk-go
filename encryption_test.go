@@ -30,7 +30,7 @@ func Test_client_EncryptText(t *testing.T) {
 		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		actual, err := client.EncryptText("value_to_encrypt")
-		assert.EqualError(t, err, "body: encryptionJSON httpcode: 502")
+		assert.EqualError(t, err, "got 502 from GoCD while making POST call for "+server.URL+"/api/admin/encrypt\nwith BODY:encryptionJSON")
 		assert.Equal(t, gocd.Encrypted{}, actual)
 	})
 

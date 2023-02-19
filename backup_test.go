@@ -25,7 +25,7 @@ func TestConfig_GetBackupInfo(t *testing.T) {
 		client.SetRetryWaitTime(1)
 
 		actual, err := client.GetBackupConfig()
-		assert.EqualError(t, err, "call made to get backup information errored with "+
+		assert.EqualError(t, err, "call made to get backup information errored with: "+
 			"Get \"http://localhost:8156/go/api/config/backup\": dial tcp [::1]:8156: connect: connection refused")
 		assert.Equal(t, gocd.BackupConfig{}, actual)
 	})
@@ -35,7 +35,7 @@ func TestConfig_GetBackupInfo(t *testing.T) {
 		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		actual, err := client.GetBackupConfig()
-		assert.EqualError(t, err, "body: backupJSON httpcode: 502")
+		assert.EqualError(t, err, "got 502 from GoCD while making GET call for "+server.URL+"/api/config/backup\nwith BODY:backupJSON")
 		assert.Equal(t, gocd.BackupConfig{}, actual)
 	})
 
@@ -99,7 +99,8 @@ func Test_client_CreateOrUpdateBackup(t *testing.T) {
 		}
 
 		err := client.CreateOrUpdateBackupConfig(backupObj)
-		assert.EqualError(t, err, "body: <html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html> httpcode: 404")
+		assert.EqualError(t, err, "got 404 from GoCD while making POST call for "+server.URL+
+			"/api/config/backup\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 	})
 
 	t.Run("should error while creating or updating backup configuration due to missing headers", func(t *testing.T) {
@@ -114,7 +115,8 @@ func Test_client_CreateOrUpdateBackup(t *testing.T) {
 		}
 
 		err := client.CreateOrUpdateBackupConfig(backupObj)
-		assert.EqualError(t, err, "body: <html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html> httpcode: 404")
+		assert.EqualError(t, err, "got 404 from GoCD while making POST call for "+server.URL+
+			"/api/config/backup\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 	})
 
 	t.Run("should error while creating or updating backup configuration as malformed data sent to server", func(t *testing.T) {
@@ -129,7 +131,8 @@ func Test_client_CreateOrUpdateBackup(t *testing.T) {
 		}
 
 		err := client.CreateOrUpdateBackupConfig(backupObj)
-		assert.EqualError(t, err, "body: json: cannot unmarshal string into Go value of type gocd.BackupConfig httpcode: 500")
+		assert.EqualError(t, err, "got 500 from GoCD while making POST call for "+server.URL+
+			"/api/config/backup\nwith BODY:json: cannot unmarshal string into Go value of type gocd.BackupConfig")
 	})
 
 	t.Run("should error while creating or updating backup configuration as server was not reachable", func(t *testing.T) {
@@ -146,8 +149,8 @@ func Test_client_CreateOrUpdateBackup(t *testing.T) {
 		}
 
 		err := client.CreateOrUpdateBackupConfig(backupObj)
-		assert.EqualError(t, err, "call made to create/udpate backup configuration errored with Post "+
-			"\"http://localhost:8156/go/api/config/backup\": dial tcp [::1]:8156: connect: connection refused")
+		assert.EqualError(t, err, "call made to create/update backup configuration errored with: "+
+			"Post \"http://localhost:8156/go/api/config/backup\": dial tcp [::1]:8156: connect: connection refused")
 	})
 }
 
@@ -167,7 +170,8 @@ func Test_client_DeleteBackupConfig(t *testing.T) {
 		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		err := client.DeleteBackupConfig()
-		assert.EqualError(t, err, "body: <html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html> httpcode: 404")
+		assert.EqualError(t, err, "got 404 from GoCD while making DELETE call for "+server.URL+
+			"/api/config/backup\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 	})
 
 	t.Run("should error out while deleting the backup configurations as server is not reachable", func(t *testing.T) {
@@ -177,7 +181,7 @@ func Test_client_DeleteBackupConfig(t *testing.T) {
 		client.SetRetryWaitTime(1)
 
 		err := client.DeleteBackupConfig()
-		assert.EqualError(t, err, "call made to get backup information errored with: "+
+		assert.EqualError(t, err, "call made to delete backup configuration errored with: "+
 			"Delete \"http://localhost:8156/go/api/config/backup\": dial tcp [::1]:8156: connect: connection refused")
 	})
 }

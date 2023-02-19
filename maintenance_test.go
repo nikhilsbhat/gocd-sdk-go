@@ -26,7 +26,8 @@ func Test_client_EnableMaintenanceMode(t *testing.T) {
 		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		err := client.EnableMaintenanceMode()
-		assert.EqualError(t, err, "body: <html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html> httpcode: 404")
+		assert.EqualError(t, err, "got 404 from GoCD while making POST call for "+server.URL+
+			"/api/admin/maintenance_mode/enable\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 	})
 
 	t.Run("should error out while making client call to enable maintenance mode", func(t *testing.T) {
@@ -36,8 +37,8 @@ func Test_client_EnableMaintenanceMode(t *testing.T) {
 		client.SetRetryWaitTime(1)
 
 		err := client.EnableMaintenanceMode()
-		assert.EqualError(t, err, "call made to enable maintenance mode errored with Post "+
-			"\"http://localhost:8156/go/api/admin/maintenance_mode/enable\": dial tcp [::1]:8156: connect: connection refused")
+		assert.EqualError(t, err, "call made to enable maintenance mode errored with: "+
+			"Post \"http://localhost:8156/go/api/admin/maintenance_mode/enable\": dial tcp [::1]:8156: connect: connection refused")
 	})
 }
 
@@ -55,7 +56,8 @@ func Test_client_DisableMaintenanceMode(t *testing.T) {
 		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		err := client.DisableMaintenanceMode()
-		assert.EqualError(t, err, "body: <html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html> httpcode: 404")
+		assert.EqualError(t, err, "got 404 from GoCD while making POST call for "+server.URL+
+			"/api/admin/maintenance_mode/disable\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 	})
 
 	t.Run("should error out while making client call to disable maintenance mode", func(t *testing.T) {
@@ -65,8 +67,8 @@ func Test_client_DisableMaintenanceMode(t *testing.T) {
 		client.SetRetryWaitTime(1)
 
 		err := client.DisableMaintenanceMode()
-		assert.EqualError(t, err, "call made to enable maintenance mode errored with Post "+
-			"\"http://localhost:8156/go/api/admin/maintenance_mode/disable\": dial tcp [::1]:8156: connect: connection refused")
+		assert.EqualError(t, err, "call made to disable maintenance mode errored with: "+
+			"Post \"http://localhost:8156/go/api/admin/maintenance_mode/disable\": dial tcp [::1]:8156: connect: connection refused")
 	})
 }
 
@@ -99,7 +101,8 @@ func Test_client_GetMaintenanceModeInfo(t *testing.T) {
 		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		actual, err := client.GetMaintenanceModeInfo()
-		assert.EqualError(t, err, "body: <html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html> httpcode: 404")
+		assert.EqualError(t, err, "got 404 from GoCD while making GET call for "+server.URL+
+			"/api/admin/maintenance_mode/info\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 		assert.Equal(t, gocd.Maintenance{}, actual)
 	})
 
@@ -110,7 +113,7 @@ func Test_client_GetMaintenanceModeInfo(t *testing.T) {
 		client.SetRetryWaitTime(1)
 
 		actual, err := client.GetMaintenanceModeInfo()
-		assert.EqualError(t, err, "call made to enable maintenance mode errored with "+
+		assert.EqualError(t, err, "call made to get maintenance mode information errored with: "+
 			"Get \"http://localhost:8156/go/api/admin/maintenance_mode/info\": dial tcp [::1]:8156: connect: connection refused")
 		assert.Equal(t, gocd.Maintenance{}, actual)
 	})

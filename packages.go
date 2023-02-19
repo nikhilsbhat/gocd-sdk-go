@@ -6,6 +6,8 @@ import (
 	"net/http"
 	"path/filepath"
 
+	"github.com/nikhilsbhat/gocd-sdk-go/pkg/errors"
+
 	"github.com/jinzhu/copier"
 )
 
@@ -22,15 +24,15 @@ func (conf *client) GetPackages() ([]Package, error) {
 		}).
 		Get(PackagesEndpoint)
 	if err != nil {
-		return nil, fmt.Errorf("call made to get all packages errored with: %w", err)
+		return nil, &errors.APIError{Err: err, Message: "get all packages"}
 	}
 
 	if resp.StatusCode() != http.StatusOK {
-		return nil, APIErrorWithBody(resp.String(), resp.StatusCode())
+		return nil, &errors.NonOkError{Code: resp.StatusCode(), Response: resp}
 	}
 
 	if err = json.Unmarshal(resp.Body(), &packagesCfg); err != nil {
-		return nil, ResponseReadError(err.Error())
+		return nil, &errors.MarshalError{Err: err}
 	}
 
 	return packagesCfg.Packages.Packages, nil
@@ -49,15 +51,15 @@ func (conf *client) GetPackage(repoID string) (Package, error) {
 		}).
 		Get(filepath.Join(PackagesEndpoint, repoID))
 	if err != nil {
-		return Package{}, fmt.Errorf("call made to get package '%s' errored with: %w", repoID, err)
+		return Package{}, &errors.APIError{Err: err, Message: fmt.Sprintf("get package '%s'", repoID)}
 	}
 
 	if resp.StatusCode() != http.StatusOK {
-		return Package{}, APIErrorWithBody(resp.String(), resp.StatusCode())
+		return Package{}, &errors.NonOkError{Code: resp.StatusCode(), Response: resp}
 	}
 
 	if err = json.Unmarshal(resp.Body(), &packageCfg); err != nil {
-		return Package{}, ResponseReadError(err.Error())
+		return Package{}, &errors.MarshalError{Err: err}
 	}
 
 	packageCfg.ETAG = resp.Header().Get("ETag")
@@ -80,15 +82,15 @@ func (conf *client) CreatePackage(config Package) (Package, error) {
 		SetBody(config).
 		Post(PackagesEndpoint)
 	if err != nil {
-		return Package{}, fmt.Errorf("call made to create package '%s' errored with: %w", config.ID, err)
+		return Package{}, &errors.APIError{Err: err, Message: fmt.Sprintf("create package '%s'", config.ID)}
 	}
 
 	if resp.StatusCode() != http.StatusOK {
-		return Package{}, APIErrorWithBody(resp.String(), resp.StatusCode())
+		return Package{}, &errors.NonOkError{Code: resp.StatusCode(), Response: resp}
 	}
 
 	if err = json.Unmarshal(resp.Body(), &packageCfg); err != nil {
-		return Package{}, ResponseReadError(err.Error())
+		return Package{}, &errors.MarshalError{Err: err}
 	}
 
 	packageCfg.ETAG = resp.Header().Get("ETag")
@@ -112,15 +114,15 @@ func (conf *client) UpdatePackage(config Package) (Package, error) {
 		SetBody(config).
 		Put(filepath.Join(PackagesEndpoint, config.ID))
 	if err != nil {
-		return Package{}, fmt.Errorf("call made to update package '%s' errored with: %w", config.ID, err)
+		return Package{}, &errors.APIError{Err: err, Message: fmt.Sprintf("update package '%s'", config.ID)}
 	}
 
 	if resp.StatusCode() != http.StatusOK {
-		return Package{}, APIErrorWithBody(resp.String(), resp.StatusCode())
+		return Package{}, &errors.NonOkError{Code: resp.StatusCode(), Response: resp}
 	}
 
 	if err = json.Unmarshal(resp.Body(), &packageCfg); err != nil {
-		return Package{}, ResponseReadError(err.Error())
+		return Package{}, &errors.MarshalError{Err: err}
 	}
 
 	packageCfg.ETAG = resp.Header().Get("ETag")
@@ -140,11 +142,11 @@ func (conf *client) DeletePackage(repoID string) error {
 		}).
 		Delete(filepath.Join(PackagesEndpoint, repoID))
 	if err != nil {
-		return fmt.Errorf("call made to delete package '%s' errored with: %w", repoID, err)
+		return &errors.APIError{Err: err, Message: fmt.Sprintf("delete package '%s'", repoID)}
 	}
 
 	if resp.StatusCode() != http.StatusOK {
-		return APIErrorWithBody(resp.String(), resp.StatusCode())
+		return &errors.NonOkError{Code: resp.StatusCode(), Response: resp}
 	}
 
 	return nil

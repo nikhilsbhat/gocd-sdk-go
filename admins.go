@@ -2,8 +2,9 @@ package gocd
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
+
+	"github.com/nikhilsbhat/gocd-sdk-go/pkg/errors"
 
 	"github.com/jinzhu/copier"
 )
@@ -22,14 +23,14 @@ func (conf *client) GetSystemAdmins() (SystemAdmins, error) {
 		}).
 		Get(SystemAdminEndpoint)
 	if err != nil {
-		return SystemAdmins{}, fmt.Errorf("call made to get system admin errored with: %w", err)
+		return SystemAdmins{}, &errors.APIError{Err: err, Message: "get system admin"}
 	}
 	if resp.StatusCode() != http.StatusOK {
-		return SystemAdmins{}, APIWithCodeError(resp.StatusCode())
+		return SystemAdmins{}, &errors.NonOkError{Code: resp.StatusCode(), Response: resp}
 	}
 
 	if err = json.Unmarshal(resp.Body(), &adminsConf); err != nil {
-		return adminsConf, ResponseReadError(err.Error())
+		return adminsConf, &errors.MarshalError{Err: err}
 	}
 
 	return adminsConf, nil
@@ -51,14 +52,14 @@ func (conf *client) UpdateSystemAdmins(data SystemAdmins) (SystemAdmins, error) 
 		}).
 		Put(SystemAdminEndpoint)
 	if err != nil {
-		return admins, fmt.Errorf("call made to update system admin errored with: %w", err)
+		return admins, &errors.APIError{Err: err, Message: "update system admin"}
 	}
 	if resp.StatusCode() != http.StatusOK {
-		return admins, APIErrorWithBody(resp.String(), resp.StatusCode())
+		return admins, &errors.NonOkError{Code: resp.StatusCode(), Response: resp}
 	}
 
 	if err = json.Unmarshal(resp.Body(), &admins); err != nil {
-		return admins, ResponseReadError(err.Error())
+		return admins, &errors.MarshalError{Err: err}
 	}
 
 	admins.ETAG = resp.Header().Get("Etag")

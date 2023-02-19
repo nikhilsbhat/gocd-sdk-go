@@ -7,6 +7,8 @@ import (
 	"path/filepath"
 	"strings"
 
+	"github.com/nikhilsbhat/gocd-sdk-go/pkg/errors"
+
 	"github.com/jinzhu/copier"
 )
 
@@ -23,15 +25,15 @@ func (conf *client) GetRoles() (RolesConfig, error) {
 		}).
 		Get(RolesEndpoint)
 	if err != nil {
-		return RolesConfig{}, fmt.Errorf("call made to get all roles errored with: %w", err)
+		return RolesConfig{}, &errors.APIError{Err: err, Message: "get all roles"}
 	}
 
 	if resp.StatusCode() != http.StatusOK {
-		return RolesConfig{}, APIErrorWithBody(resp.String(), resp.StatusCode())
+		return RolesConfig{}, &errors.NonOkError{Code: resp.StatusCode(), Response: resp}
 	}
 
 	if err = json.Unmarshal(resp.Body(), &rolesCfg); err != nil {
-		return RolesConfig{}, ResponseReadError(err.Error())
+		return RolesConfig{}, &errors.MarshalError{Err: err}
 	}
 
 	rolesCfg.RolesConfigs.ETAG = resp.Header().Get("ETag")
@@ -52,15 +54,15 @@ func (conf *client) GetRole(name string) (Role, error) {
 		}).
 		Get(filepath.Join(RolesEndpoint, name))
 	if err != nil {
-		return roleCfg, fmt.Errorf("call made to get role '%s' errored with: %w", name, err)
+		return roleCfg, &errors.APIError{Err: err, Message: fmt.Sprintf("get role '%s'", name)}
 	}
 
 	if resp.StatusCode() != http.StatusOK {
-		return roleCfg, APIErrorWithBody(resp.String(), resp.StatusCode())
+		return roleCfg, &errors.NonOkError{Code: resp.StatusCode(), Response: resp}
 	}
 
 	if err = json.Unmarshal(resp.Body(), &roleCfg); err != nil {
-		return roleCfg, ResponseReadError(err.Error())
+		return roleCfg, &errors.MarshalError{Err: err}
 	}
 
 	roleCfg.ETAG = resp.Header().Get("ETag")
@@ -82,15 +84,15 @@ func (conf *client) GetRolesByType(roleType string) (RolesConfig, error) {
 		SetQueryParam("type", strings.ToLower(roleType)).
 		Get(RolesEndpoint)
 	if err != nil {
-		return RolesConfig{}, fmt.Errorf("call made to get role by type '%s' errored with: %w", roleType, err)
+		return RolesConfig{}, &errors.APIError{Err: err, Message: fmt.Sprintf("get role by type '%s'", roleType)}
 	}
 
 	if resp.StatusCode() != http.StatusOK {
-		return RolesConfig{}, APIErrorWithBody(resp.String(), resp.StatusCode())
+		return RolesConfig{}, &errors.NonOkError{Code: resp.StatusCode(), Response: resp}
 	}
 
 	if err = json.Unmarshal(resp.Body(), &roleCfg); err != nil {
-		return RolesConfig{}, ResponseReadError(err.Error())
+		return RolesConfig{}, &errors.MarshalError{Err: err}
 	}
 
 	roleCfg.RolesConfigs.ETAG = resp.Header().Get("ETag")
@@ -113,15 +115,15 @@ func (conf *client) CreateRole(config Role) (Role, error) {
 		SetBody(config).
 		Post(RolesEndpoint)
 	if err != nil {
-		return roleCfg, fmt.Errorf("call made to create role '%s' errored with: %w", config.Name, err)
+		return roleCfg, &errors.APIError{Err: err, Message: fmt.Sprintf("create role '%s'", config.Name)}
 	}
 
 	if resp.StatusCode() != http.StatusOK {
-		return roleCfg, APIErrorWithBody(resp.String(), resp.StatusCode())
+		return roleCfg, &errors.NonOkError{Code: resp.StatusCode(), Response: resp}
 	}
 
 	if err = json.Unmarshal(resp.Body(), &roleCfg); err != nil {
-		return roleCfg, ResponseReadError(err.Error())
+		return roleCfg, &errors.MarshalError{Err: err}
 	}
 
 	roleCfg.ETAG = resp.Header().Get("ETag")
@@ -145,15 +147,15 @@ func (conf *client) UpdateRole(config Role) (Role, error) {
 		SetBody(config).
 		Put(RolesEndpoint)
 	if err != nil {
-		return roleCfg, fmt.Errorf("call made to update role '%s' errored with: %w", config.Name, err)
+		return roleCfg, &errors.APIError{Err: err, Message: fmt.Sprintf("update role '%s'", config.Name)}
 	}
 
 	if resp.StatusCode() != http.StatusOK {
-		return roleCfg, APIErrorWithBody(resp.String(), resp.StatusCode())
+		return roleCfg, &errors.NonOkError{Code: resp.StatusCode(), Response: resp}
 	}
 
 	if err = json.Unmarshal(resp.Body(), &roleCfg); err != nil {
-		return roleCfg, ResponseReadError(err.Error())
+		return roleCfg, &errors.MarshalError{Err: err}
 	}
 
 	roleCfg.ETAG = resp.Header().Get("ETag")
@@ -173,11 +175,11 @@ func (conf *client) DeleteRole(name string) error {
 		}).
 		Delete(filepath.Join(RolesEndpoint, name))
 	if err != nil {
-		return fmt.Errorf("call made to delete role '%s' errored with: %w", name, err)
+		return &errors.APIError{Err: err, Message: fmt.Sprintf("delete role '%s'", name)}
 	}
 
 	if resp.StatusCode() != http.StatusOK {
-		return APIErrorWithBody(resp.String(), resp.StatusCode())
+		return &errors.NonOkError{Code: resp.StatusCode(), Response: resp}
 	}
 
 	return nil

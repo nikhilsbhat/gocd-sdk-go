@@ -6,6 +6,8 @@ import (
 	"net/http"
 	"path/filepath"
 
+	"github.com/nikhilsbhat/gocd-sdk-go/pkg/errors"
+
 	"github.com/jinzhu/copier"
 )
 
@@ -22,15 +24,15 @@ func (conf *client) GetArtifactStores() (ArtifactStoresConfig, error) {
 		}).
 		Get(ArtifactStoreEndpoint)
 	if err != nil {
-		return ArtifactStoresConfig{}, fmt.Errorf("call made to get artifact stores errored with: %w", err)
+		return ArtifactStoresConfig{}, &errors.APIError{Err: err, Message: "get artifact stores"}
 	}
 
 	if resp.StatusCode() != http.StatusOK {
-		return ArtifactStoresConfig{}, APIErrorWithBody(resp.String(), resp.StatusCode())
+		return ArtifactStoresConfig{}, &errors.NonOkError{Code: resp.StatusCode(), Response: resp}
 	}
 
 	if err = json.Unmarshal(resp.Body(), &storeCfg); err != nil {
-		return ArtifactStoresConfig{}, ResponseReadError(err.Error())
+		return ArtifactStoresConfig{}, &errors.MarshalError{Err: err}
 	}
 
 	storeCfg.ArtifactStoresConfigs.ETAG = resp.Header().Get("ETag")
@@ -51,15 +53,15 @@ func (conf *client) GetArtifactStore(name string) (CommonConfig, error) {
 		}).
 		Get(filepath.Join(ArtifactStoreEndpoint, name))
 	if err != nil {
-		return CommonConfig{}, fmt.Errorf("call made to get artifact store %s errored with: %w", name, err)
+		return CommonConfig{}, &errors.APIError{Err: err, Message: fmt.Sprintf("get artifact store %s", name)}
 	}
 
 	if resp.StatusCode() != http.StatusOK {
-		return CommonConfig{}, APIErrorWithBody(resp.String(), resp.StatusCode())
+		return CommonConfig{}, &errors.NonOkError{Code: resp.StatusCode(), Response: resp}
 	}
 
 	if err = json.Unmarshal(resp.Body(), &storeCfg); err != nil {
-		return CommonConfig{}, ResponseReadError(err.Error())
+		return CommonConfig{}, &errors.MarshalError{Err: err}
 	}
 
 	storeCfg.ETAG = resp.Header().Get("ETag")
@@ -82,15 +84,15 @@ func (conf *client) CreateArtifactStore(config CommonConfig) (CommonConfig, erro
 		SetBody(config).
 		Post(ArtifactStoreEndpoint)
 	if err != nil {
-		return CommonConfig{}, fmt.Errorf("call made to create artifact store %s errored with: %w", config.ID, err)
+		return CommonConfig{}, &errors.APIError{Err: err, Message: fmt.Sprintf("create artifact store %s", config.ID)}
 	}
 
 	if resp.StatusCode() != http.StatusOK {
-		return CommonConfig{}, APIErrorWithBody(resp.String(), resp.StatusCode())
+		return CommonConfig{}, &errors.NonOkError{Code: resp.StatusCode(), Response: resp}
 	}
 
 	if err = json.Unmarshal(resp.Body(), &storeCfg); err != nil {
-		return CommonConfig{}, ResponseReadError(err.Error())
+		return CommonConfig{}, &errors.MarshalError{Err: err}
 	}
 
 	storeCfg.ETAG = resp.Header().Get("ETag")
@@ -114,15 +116,15 @@ func (conf *client) UpdateArtifactStore(config CommonConfig) (CommonConfig, erro
 		SetBody(config).
 		Put(filepath.Join(ArtifactStoreEndpoint, config.ID))
 	if err != nil {
-		return CommonConfig{}, fmt.Errorf("call made to update artifact store %s errored with: %w", config.ID, err)
+		return CommonConfig{}, &errors.APIError{Err: err, Message: fmt.Sprintf("update artifact store %s", config.ID)}
 	}
 
 	if resp.StatusCode() != http.StatusOK {
-		return CommonConfig{}, APIErrorWithBody(resp.String(), resp.StatusCode())
+		return CommonConfig{}, &errors.NonOkError{Code: resp.StatusCode(), Response: resp}
 	}
 
 	if err = json.Unmarshal(resp.Body(), &storeCfg); err != nil {
-		return CommonConfig{}, ResponseReadError(err.Error())
+		return CommonConfig{}, &errors.MarshalError{Err: err}
 	}
 
 	storeCfg.ETAG = resp.Header().Get("ETag")
@@ -142,11 +144,11 @@ func (conf *client) DeleteArtifactStore(name string) error {
 		}).
 		Delete(filepath.Join(ArtifactStoreEndpoint, name))
 	if err != nil {
-		return fmt.Errorf("call made to delete artifact store %s errored with: %w", name, err)
+		return &errors.APIError{Err: err, Message: fmt.Sprintf("delete artifact store %s", name)}
 	}
 
 	if resp.StatusCode() != http.StatusOK {
-		return APIErrorWithBody(resp.String(), resp.StatusCode())
+		return &errors.NonOkError{Code: resp.StatusCode(), Response: resp}
 	}
 
 	return nil

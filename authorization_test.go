@@ -44,7 +44,8 @@ func Test_client_GetAuthConfigs(t *testing.T) {
 		expected := []gocd.CommonConfig(nil)
 
 		actual, err := client.GetAuthConfigs()
-		assert.EqualError(t, err, "body: <html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html> httpcode: 404")
+		assert.EqualError(t, err, "got 404 from GoCD while making GET call for "+server.URL+
+			"/api/admin/security/auth_configs\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 		assert.Equal(t, expected, actual)
 	})
 
@@ -56,7 +57,8 @@ func Test_client_GetAuthConfigs(t *testing.T) {
 		expected := []gocd.CommonConfig(nil)
 
 		actual, err := client.GetAuthConfigs()
-		assert.EqualError(t, err, "body: <html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html> httpcode: 404")
+		assert.EqualError(t, err, "got 404 from GoCD while making GET call for "+server.URL+
+			"/api/admin/security/auth_configs\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 		assert.Equal(t, expected, actual)
 	})
 
@@ -122,7 +124,8 @@ func Test_client_GetAuthConfig(t *testing.T) {
 		expected := gocd.CommonConfig{}
 
 		actual, err := client.GetAuthConfig("ldap")
-		assert.EqualError(t, err, "body: <html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html> httpcode: 404")
+		assert.EqualError(t, err, "got 404 from GoCD while making GET call for "+server.URL+
+			"/api/admin/security/auth_configs/ldap\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 		assert.Equal(t, expected, actual)
 	})
 
@@ -134,7 +137,8 @@ func Test_client_GetAuthConfig(t *testing.T) {
 		expected := gocd.CommonConfig{}
 
 		actual, err := client.GetAuthConfig("ldap")
-		assert.EqualError(t, err, "body: <html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html> httpcode: 404")
+		assert.EqualError(t, err, "got 404 from GoCD while making GET call for "+server.URL+
+			"/api/admin/security/auth_configs/ldap\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 		assert.Equal(t, expected, actual)
 	})
 
@@ -203,7 +207,8 @@ func Test_client_CreateAuthConfig(t *testing.T) {
 		expected := gocd.CommonConfig{}
 
 		actual, err := client.CreateAuthConfig(gocd.CommonConfig{})
-		assert.EqualError(t, err, "body: <html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html> httpcode: 404")
+		assert.EqualError(t, err, "got 404 from GoCD while making POST call for "+server.URL+
+			"/api/admin/security/auth_configs\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 		assert.Equal(t, expected, actual)
 	})
 
@@ -215,7 +220,8 @@ func Test_client_CreateAuthConfig(t *testing.T) {
 		expected := gocd.CommonConfig{}
 
 		actual, err := client.CreateAuthConfig(gocd.CommonConfig{})
-		assert.EqualError(t, err, "body: <html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html> httpcode: 404")
+		assert.EqualError(t, err, "got 404 from GoCD while making POST call for "+server.URL+
+			"/api/admin/security/auth_configs\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 		assert.Equal(t, expected, actual)
 	})
 
@@ -285,7 +291,8 @@ func Test_client_UpdateAuthConfig(t *testing.T) {
 		expected := gocd.CommonConfig{}
 
 		actual, err := client.UpdateAuthConfig(gocd.CommonConfig{})
-		assert.EqualError(t, err, "body: <html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html> httpcode: 404")
+		assert.EqualError(t, err, "got 404 from GoCD while making PUT call for "+server.URL+
+			"/api/admin/security/auth_configs\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 		assert.Equal(t, expected, actual)
 	})
 
@@ -297,7 +304,8 @@ func Test_client_UpdateAuthConfig(t *testing.T) {
 		expected := gocd.CommonConfig{}
 
 		actual, err := client.UpdateAuthConfig(gocd.CommonConfig{})
-		assert.EqualError(t, err, "body: <html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html> httpcode: 404")
+		assert.EqualError(t, err, "got 404 from GoCD while making PUT call for "+server.URL+
+			"/api/admin/security/auth_configs\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 		assert.Equal(t, expected, actual)
 	})
 
@@ -344,7 +352,8 @@ func Test_client_DeleteAuthConfig(t *testing.T) {
 		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		err := client.DeleteAuthConfig("ldap")
-		assert.EqualError(t, err, "body: <html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html> httpcode: 404")
+		assert.EqualError(t, err, "got 404 from GoCD while making DELETE call for "+server.URL+
+			"/api/admin/security/auth_configs/ldap\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 	})
 
 	t.Run("should error out while deleting auth config due to missing headers", func(t *testing.T) {
@@ -352,7 +361,8 @@ func Test_client_DeleteAuthConfig(t *testing.T) {
 		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		err := client.DeleteAuthConfig("ldap")
-		assert.EqualError(t, err, "body: <html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html> httpcode: 404")
+		assert.EqualError(t, err, "got 404 from GoCD while making DELETE call for "+server.URL+
+			"/api/admin/security/auth_configs/ldap\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 	})
 
 	t.Run("should error out while deleting auth config as server is not reachable", func(t *testing.T) {

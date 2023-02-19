@@ -63,7 +63,8 @@ func Test_client_GetPluginsInfo(t *testing.T) {
 		expected := gocd.PluginsInfo{}
 
 		actual, err := client.GetPluginsInfo()
-		assert.EqualError(t, err, "body: <html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html> httpcode: 404")
+		assert.EqualError(t, err, "got 404 from GoCD while making GET call for "+server.URL+
+			"/api/admin/plugin_info\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 		assert.Equal(t, expected, actual)
 	})
 
@@ -75,7 +76,8 @@ func Test_client_GetPluginsInfo(t *testing.T) {
 		expected := gocd.PluginsInfo{}
 
 		actual, err := client.GetPluginsInfo()
-		assert.EqualError(t, err, "body: <html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html> httpcode: 404")
+		assert.EqualError(t, err, "got 404 from GoCD while making GET call for "+server.URL+
+			"/api/admin/plugin_info\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 		assert.Equal(t, expected, actual)
 	})
 
@@ -149,7 +151,8 @@ func Test_client_GetPluginInfo(t *testing.T) {
 		expected := gocd.Plugin{}
 
 		actual, err := client.GetPluginInfo("")
-		assert.EqualError(t, err, "body: <html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html> httpcode: 404")
+		assert.EqualError(t, err, "got 404 from GoCD while making GET call for "+server.URL+
+			"/api/admin/plugin_info\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 		assert.Equal(t, expected, actual)
 	})
 
@@ -161,7 +164,8 @@ func Test_client_GetPluginInfo(t *testing.T) {
 		expected := gocd.Plugin{}
 
 		actual, err := client.GetPluginInfo("")
-		assert.EqualError(t, err, "body: <html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html> httpcode: 404")
+		assert.EqualError(t, err, "got 404 from GoCD while making GET call for "+server.URL+
+			"/api/admin/plugin_info\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 		assert.Equal(t, expected, actual)
 	})
 
