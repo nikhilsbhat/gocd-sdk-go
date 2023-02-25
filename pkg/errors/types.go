@@ -24,3 +24,8 @@ type GoCDError struct {
 	Message string
 	Err     error
 }
+
+type NilHeaderError struct {
+	Header  string
+	Message string
+}

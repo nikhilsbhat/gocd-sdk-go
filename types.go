@@ -115,6 +115,15 @@ type BackupConfig struct {
 	PostBackupScript string `json:"post_backup_script,omitempty" yaml:"post_backup_script,omitempty"`
 }
 
+// BackupStats holds information about the backup that was taken.
+type BackupStats struct {
+	Time           string `json:"time,omitempty" yaml:"time,omitempty"`
+	Path           string `json:"path,omitempty" yaml:"path,omitempty"`
+	Status         string `json:"status,omitempty" yaml:"status,omitempty"`
+	ProgressStatus string `json:"progress_status,omitempty" yaml:"progress_status,omitempty"`
+	Message        string `json:"message,omitempty" yaml:"message,omitempty"`
+}
+
 // PipelineSize holds information of the pipeline size.
 type PipelineSize struct {
 	Size float64

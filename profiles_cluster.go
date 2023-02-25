@@ -24,7 +24,7 @@ func (conf *client) GetClusterProfiles() (ProfilesConfig, error) {
 		}).
 		Get(ClusterProfileEndpoint)
 	if err != nil {
-		return ProfilesConfig{}, fmt.Errorf("call made to get cluster profiles errored with: %w", err)
+		return ProfilesConfig{}, &errors.APIError{Err: err, Message: "get cluster profiles"}
 	}
 
 	if resp.StatusCode() != http.StatusOK {
@@ -53,7 +53,7 @@ func (conf *client) GetClusterProfile(name string) (CommonConfig, error) {
 		}).
 		Get(filepath.Join(ClusterProfileEndpoint, name))
 	if err != nil {
-		return CommonConfig{}, fmt.Errorf("call made to get cluster profile '%s' errored with: %w", name, err)
+		return CommonConfig{}, &errors.APIError{Err: err, Message: fmt.Sprintf("get cluster profile '%s'", name)}
 	}
 
 	if resp.StatusCode() != http.StatusOK {

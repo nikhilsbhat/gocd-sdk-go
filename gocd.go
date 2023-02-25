@@ -56,6 +56,8 @@ type GoCd interface {
 	GetBackupConfig() (BackupConfig, error)
 	CreateOrUpdateBackupConfig(backup BackupConfig) error
 	DeleteBackupConfig() error
+	GetBackup(ID string) (BackupStats, error)
+	ScheduleBackup() (map[string]string, error)
 	GetPipelines() (PipelinesInfo, error)
 	GetPipelineState(pipeline string) (PipelineState, error)
 	PipelinePause(name string, message any) error

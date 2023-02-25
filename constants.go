@@ -7,6 +7,7 @@ const (
 	ConfigReposEndpoint         = "/api/admin/config_repos"
 	SystemAdminEndpoint         = "/api/admin/security/system_admins"
 	BackupConfigEndpoint        = "/api/config/backup"
+	BackupStatsEndpoint         = "/api/backups"
 	PipelineGroupEndpoint       = "/api/admin/pipeline_groups"
 	EnvironmentEndpoint         = "/api/admin/environments"
 	JobRunHistoryEndpoint       = "/api/agents/%s/job_run_history"
@@ -44,4 +45,5 @@ const (
 	HeaderConfirm     = "X-GoCD-Confirm"
 	PipelinePrefix    = "/go/api/feed/pipelines/"
 	PipelineSuffix    = "/stages.xml"
+	LocationHeader    = "Location"
 )

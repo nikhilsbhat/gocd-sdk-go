@@ -14,8 +14,12 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-//go:embed internal/fixtures/backup.json
-var backupJSON string
+var (
+	//go:embed internal/fixtures/backup.json
+	backupJSON string
+	//go:embed internal/fixtures/backup_stats.json
+	backupStats string
+)
 
 func TestConfig_GetBackupInfo(t *testing.T) {
 	correctBackupHeader := map[string]string{"Accept": gocd.HeaderVersionOne}
@@ -183,6 +187,146 @@ func Test_client_DeleteBackupConfig(t *testing.T) {
 		err := client.DeleteBackupConfig()
 		assert.EqualError(t, err, "call made to delete backup configuration errored with: "+
 			"Delete \"http://localhost:8156/go/api/config/backup\": dial tcp [::1]:8156: connect: connection refused")
+	})
+}
+
+func Test_client_GetBackup(t *testing.T) {
+	correctArtifactHeader := map[string]string{"Accept": gocd.HeaderVersionTwo}
+	t.Run("should be able to fetch the backup stats successfully", func(t *testing.T) {
+		server := mockServer([]byte(backupStats), http.StatusOK,
+			correctArtifactHeader, false, nil)
+
+		client := gocd.NewClient(server.URL, auth, "info", nil)
+
+		expected := gocd.BackupStats{
+			Time:           "2015-08-07T10:07:19.868Z",
+			Path:           "/var/lib/go-server/serverBackups/backup_20150807-153719",
+			Status:         "COMPLETED",
+			ProgressStatus: "BACKUP_DATABASE",
+			Message:        "Backup was generated successfully.",
+		}
+
+		actual, err := client.GetBackup("backup_20150807-153719")
+		assert.NoError(t, err)
+		assert.Equal(t, expected, actual)
+	})
+
+	t.Run("should error out while fetching backup stats present in GoCD due to wrong headers", func(t *testing.T) {
+		server := mockServer([]byte(backupStats), http.StatusOK,
+			map[string]string{"Accept": gocd.HeaderVersionThree}, false, nil)
+
+		client := gocd.NewClient(server.URL, auth, "info", nil)
+
+		expected := gocd.BackupStats{}
+
+		actual, err := client.GetBackup("backup_20150807-153719")
+		assert.EqualError(t, err, "got 404 from GoCD while making GET call for "+server.URL+
+			"/api/backups/backup_20150807-153719\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
+		assert.Equal(t, expected, actual)
+	})
+
+	t.Run("should error out while fetching backup stats present in GoCD due to missing headers", func(t *testing.T) {
+		server := mockServer([]byte(backupStats), http.StatusOK,
+			nil, false, nil)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
+
+		expected := gocd.BackupStats{}
+
+		actual, err := client.GetBackup("backup_20150807-153719")
+		assert.EqualError(t, err, "got 404 from GoCD while making GET call for "+server.URL+
+			"/api/backups/backup_20150807-153719\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
+		assert.Equal(t, expected, actual)
+	})
+
+	t.Run("should error out while fetching backup stats from GoCD as server returned malformed response", func(t *testing.T) {
+		server := mockServer([]byte("backupStats"), http.StatusOK, correctArtifactHeader,
+			false, map[string]string{"ETag": "cbc5f2d5b9c13a2cc1b1efb3d8a6155d"})
+		client := gocd.NewClient(server.URL, auth, "info", nil)
+
+		expected := gocd.BackupStats{}
+
+		actual, err := client.GetBackup("backup_20150807-153719")
+		assert.EqualError(t, err, "reading response body errored with: invalid character 'b' looking for beginning of value")
+		assert.Equal(t, expected, actual)
+	})
+
+	t.Run("should error out while fetching backup stats present in GoCD as server is not reachable", func(t *testing.T) {
+		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
+
+		client.SetRetryCount(1)
+		client.SetRetryWaitTime(1)
+
+		expected := gocd.BackupStats{}
+
+		actual, err := client.GetBackup("backup_20150807-153719")
+		assert.EqualError(t, err, "call made to get backup stats errored with: "+
+			"Get \"http://localhost:8156/go/api/backups/backup_20150807-153719\": dial tcp [::1]:8156: connect: connection refused")
+		assert.Equal(t, expected, actual)
+	})
+}
+
+func Test_client_ScheduleBackup(t *testing.T) {
+	scheduleBackupHeader := map[string]string{"Accept": gocd.HeaderVersionTwo}
+	t.Run("should be able to schedule the backup successfully", func(t *testing.T) {
+		server := mockServer([]byte(backupStats), http.StatusAccepted,
+			scheduleBackupHeader, false,
+			map[string]string{gocd.LocationHeader: "/var/lib/go-server/serverBackups/backup_20150807-153719", "Retry-After": "10"})
+
+		expected := map[string]string{
+			"BackUpID":   "backup_20150807-153719",
+			"RetryAfter": "10",
+		}
+
+		client := gocd.NewClient(server.URL, auth, "info", nil)
+
+		actual, err := client.ScheduleBackup()
+		assert.NoError(t, err)
+		assert.Equal(t, expected, actual)
+	})
+
+	t.Run("should error out while scheduling backup in GoCD due to wrong headers", func(t *testing.T) {
+		server := mockServer([]byte(backupStats), http.StatusOK,
+			map[string]string{"Accept": gocd.HeaderVersionThree}, false, nil)
+
+		client := gocd.NewClient(server.URL, auth, "info", nil)
+
+		actual, err := client.ScheduleBackup()
+		assert.EqualError(t, err, "got 404 from GoCD while making POST call for "+server.URL+
+			"/api/backups\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
+		assert.Nil(t, actual)
+	})
+
+	t.Run("should error out while scheduling backup in GoCD due to missing headers", func(t *testing.T) {
+		server := mockServer([]byte(backupStats), http.StatusOK,
+			nil, false, nil)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
+
+		actual, err := client.ScheduleBackup()
+		assert.EqualError(t, err, "got 404 from GoCD while making POST call for "+server.URL+
+			"/api/backups\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
+		assert.Nil(t, actual)
+	})
+
+	t.Run("should error out while scheduling backup in GoCD as headers missing from server response", func(t *testing.T) {
+		server := mockServer([]byte("backupStats"), http.StatusAccepted, scheduleBackupHeader,
+			false, map[string]string{"ETag": "cbc5f2d5b9c13a2cc1b1efb3d8a6155d"})
+		client := gocd.NewClient(server.URL, auth, "info", nil)
+
+		actual, err := client.ScheduleBackup()
+		assert.EqualError(t, err, "header Location not set, this will impact while getting backup stats")
+		assert.Nil(t, actual)
+	})
+
+	t.Run("should error out while scheduling backup in GoCD as server is not reachable", func(t *testing.T) {
+		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
+
+		client.SetRetryCount(1)
+		client.SetRetryWaitTime(1)
+
+		actual, err := client.ScheduleBackup()
+		assert.EqualError(t, err, "call made to schedule backup errored with: Post "+
+			"\"http://localhost:8156/go/api/backups\": dial tcp [::1]:8156: connect: connection refused")
+		assert.Nil(t, actual)
 	})
 }
 

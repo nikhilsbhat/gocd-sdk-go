@@ -36,7 +36,7 @@ func (conf *client) GetConfigRepo(repo string) (ConfigRepo, error) {
 	}
 
 	if len(resp.Header().Get("ETag")) == 0 {
-		return repoConf, fmt.Errorf("header ETag not set, this will impact while updating configrepo") //nolint:goerr113
+		return repoConf, &errors.NilHeaderError{Header: "ETag", Message: "updating configrepo"}
 	}
 
 	repoConf.ETAG = resp.Header().Get("ETag")

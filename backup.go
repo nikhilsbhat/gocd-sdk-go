@@ -3,6 +3,7 @@ package gocd
 import (
 	"encoding/json"
 	"net/http"
+	"path/filepath"
 
 	"github.com/nikhilsbhat/gocd-sdk-go/pkg/errors"
 
@@ -83,4 +84,67 @@ func (conf *client) DeleteBackupConfig() error {
 	}
 
 	return nil
+}
+
+// GetBackup gets the information of the backup which was taken earlier.
+func (conf *client) GetBackup(backupID string) (BackupStats, error) {
+	newClient := &client{}
+	if err := copier.CopyWithOption(newClient, conf, copier.Option{IgnoreEmpty: true, DeepCopy: true}); err != nil {
+		return BackupStats{}, err
+	}
+
+	var backUpStats BackupStats
+	resp, err := newClient.httpClient.R().
+		SetHeaders(map[string]string{
+			"Accept": HeaderVersionTwo,
+		}).
+		Get(filepath.Join(BackupStatsEndpoint, backupID))
+	if err != nil {
+		return backUpStats, &errors.APIError{Err: err, Message: "get backup stats"}
+	}
+
+	if resp.StatusCode() != http.StatusOK {
+		return backUpStats, &errors.NonOkError{Code: resp.StatusCode(), Response: resp}
+	}
+
+	if err = json.Unmarshal(resp.Body(), &backUpStats); err != nil {
+		return backUpStats, &errors.MarshalError{Err: err}
+	}
+
+	return backUpStats, nil
+}
+
+func (conf *client) ScheduleBackup() (map[string]string, error) {
+	var backupStats map[string]string
+	newClient := &client{}
+	if err := copier.CopyWithOption(newClient, conf, copier.Option{IgnoreEmpty: true, DeepCopy: true}); err != nil {
+		return backupStats, err
+	}
+
+	resp, err := newClient.httpClient.R().
+		SetHeaders(map[string]string{
+			"Accept":      HeaderVersionTwo,
+			HeaderConfirm: "true",
+		}).
+		Post(BackupStatsEndpoint)
+	if err != nil {
+		return backupStats, &errors.APIError{Err: err, Message: "schedule backup"}
+	}
+
+	if resp.StatusCode() != http.StatusAccepted {
+		return backupStats, &errors.NonOkError{Code: resp.StatusCode(), Response: resp}
+	}
+
+	if len(resp.Header().Get(LocationHeader)) == 0 {
+		return backupStats, &errors.NilHeaderError{Header: "Location", Message: "getting backup stats"}
+	}
+
+	_, backUpID := filepath.Split(resp.Header().Get(LocationHeader))
+
+	backupStats = map[string]string{
+		"BackUpID":   backUpID,
+		"RetryAfter": resp.Header().Get("Retry-After"),
+	}
+
+	return backupStats, nil
 }

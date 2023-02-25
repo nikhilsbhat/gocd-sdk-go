@@ -3,6 +3,7 @@
 [![Go Report Card](https://goreportcard.com/badge/github.com/nikhilsbhat/gocd-sdk-go)](https://goreportcard.com/report/github.com/nikhilsbhat/gocd-sdk-go)
 [![shields](https://img.shields.io/badge/license-MIT-blue)](https://github.com/nikhilsbhat/gocd-sdk-go/blob/master/LICENSE)
 [![shields](https://godoc.org/github.com/nikhilsbhat/gocd-sdk-go?status.svg)](https://godoc.org/github.com/nikhilsbhat/gocd-sdk-go)
+[![shields](https://img.shields.io/github/v/tag/nikhilsbhat/gocd-sdk-go.svg)](https://github.com/nikhilsbhat/gocd-sdk-go/tags)
 
 Golang client library for [GoCD API](https://api.gocd.org/current/) (Not all the API is supported).
 

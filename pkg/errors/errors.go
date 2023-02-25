@@ -28,3 +28,7 @@ func (err MarshalError) Error() string {
 func (err GoCDError) Error() string {
 	return fmt.Sprintf("%s %v", err.Message, err.Err)
 }
+
+func (err NilHeaderError) Error() string {
+	return fmt.Sprintf("header %s not set, this will impact while %s", err.Header, err.Message)
+}
