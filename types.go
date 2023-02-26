@@ -490,3 +490,30 @@ type Plugin struct {
 	About              map[string]interface{} `json:"about,omitempty" yaml:"about,omitempty"`
 	ETAG               string
 }
+
+// Users holds information of all users present in GoCD.
+type Users struct {
+	GoCDUsers struct {
+		Users []User `json:"users,omitempty" yaml:"users,omitempty"`
+	} `json:"_embedded,omitempty" yaml:"_embedded,omitempty"`
+}
+
+// User holds information of the users present in GoCD.
+// This is golang implementation of GoCD's user API https://api.gocd.org/current/#the-user-object.
+type User struct {
+	Name         string     `json:"display_name,omitempty" yaml:"display_name,omitempty"`
+	LoginName    string     `json:"login_name,omitempty" yaml:"login_name,omitempty"`
+	Enabled      bool       `json:"enabled,omitempty" yaml:"enabled,omitempty"`
+	EmailID      string     `json:"email,omitempty" yaml:"email,omitempty"`
+	EmailMe      bool       `json:"email_me,omitempty" yaml:"email_me,omitempty"`
+	Admin        bool       `json:"admin,omitempty" yaml:"admin,omitempty"`
+	CheckInAlias []string   `json:"checkin_aliases,omitempty" yaml:"checkin_aliases,omitempty"`
+	Roles        []UserRole `json:"roles,omitempty" yaml:"roles,omitempty"`
+}
+
+// UserRole holds information of the user role present in GoCD.
+// This is golang implementation of GoCD's role API https://api.gocd.org/current/#the-user-role-object
+type UserRole struct {
+	Name string `json:"name,omitempty" yaml:"name,omitempty"`
+	Type string `json:"type,omitempty" yaml:"type,omitempty"`
+}

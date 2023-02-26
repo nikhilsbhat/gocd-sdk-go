@@ -125,6 +125,13 @@ type GoCd interface {
 	DeleteRole(name string) error
 	GetPluginsInfo() (PluginsInfo, error)
 	GetPluginInfo(name string) (Plugin, error)
+	GetUsers() ([]User, error)
+	GetUser(user string) (User, error)
+	CreateUser(user User) (User, error)
+	UpdateUser(user User) (User, error)
+	DeleteUser(user string) error
+	BulkDeleteUsers(users map[string]interface{}) error
+	BulkEnableDisableUsers(users map[string]interface{}) error
 	SetRetryCount(count int)
 	SetRetryWaitTime(count int)
 }

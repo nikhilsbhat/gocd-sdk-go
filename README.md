@@ -97,9 +97,9 @@ Below are the list of supported APIs:
     - [x] Get Backup Info
     - [x] Create or Update Backup
     - [x] Delete Backup Info
-- [ ] [Backup](https://api.gocd.org/current/#backups)
-    - [ ] Schedule Backup
-    - [ ] Get Backup
+- [x] [Backup](https://api.gocd.org/current/#backups)
+    - [x] Schedule Backup
+    - [x] Get Backup
 - [ ] [Pipeline](https://api.gocd.org/current/#pipelines)
     - [x] Get pipeline status
     - [x] Pause Pipeline
@@ -217,6 +217,14 @@ Below are the list of supported APIs:
     - [ ] Get all tokens for all users
     - [ ] Get one token for any user
     - [ ] Revoke token for any user
+- [x] [Local Users](https://api.gocd.org/current/#users)
+    - [x] Get all users
+    - [x] Get a user
+    - [x] Create a user
+    - [x] Update a user
+    - [x] Delete a user
+    - [x] Bulk delete users
+    - [x] Bulk enable/disable users
 - [ ] [Notification Filter](https://api.gocd.org/current/#notification-filters)
     - [ ] Get all notification filters
     - [ ] Get a notification filter
