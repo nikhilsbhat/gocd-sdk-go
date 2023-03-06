@@ -29,3 +29,7 @@ type NilHeaderError struct {
 	Header  string
 	Message string
 }
+
+type GoCDSDKError struct {
+	Message string
+}

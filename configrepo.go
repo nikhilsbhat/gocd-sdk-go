@@ -4,12 +4,19 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"os"
 	"path/filepath"
+	"strings"
 
 	"github.com/nikhilsbhat/gocd-sdk-go/pkg/errors"
 
 	"github.com/jinzhu/copier"
 )
+
+type PipelineFiles struct {
+	Name string
+	Path string
+}
 
 // GetConfigRepo fetches information of a specific config-repo from GoCD server.
 func (conf *client) GetConfigRepo(repo string) (ConfigRepo, error) {
@@ -201,4 +208,113 @@ func (conf *client) ConfigRepoStatus(repo string) (map[string]bool, error) {
 	}
 
 	return response, nil
+}
+
+// ConfigRepoPreflightCheck runs the pre-flight checks on the config-repo with the provided pipeline files.
+// Checks posted definition file(s) for syntax and merge errors without updating the current GoCD configuration.
+func (conf *client) ConfigRepoPreflightCheck(pipelines map[string]string, pluginID string, repoID string) (bool, error) {
+	newClient := &client{}
+	if err := copier.CopyWithOption(newClient, conf, copier.Option{IgnoreEmpty: true, DeepCopy: true}); err != nil {
+		return false, err
+	}
+
+	resp, err := newClient.httpClient.R().
+		SetHeaders(map[string]string{
+			"Accept": HeaderVersionOne,
+		}).
+		SetQueryParam("pluginId", pluginID).
+		SetQueryParam("repoId", repoID).
+		SetFiles(pipelines).
+		Post(PreflightCheckEndpoint)
+	if err != nil {
+		return false, &errors.APIError{Err: err, Message: fmt.Sprintf("preflight check of confirepo '%s'", repoID)}
+	}
+
+	if resp.StatusCode() != http.StatusOK {
+		return false, &errors.NonOkError{Code: resp.StatusCode(), Response: resp}
+	}
+
+	var response map[string]interface{}
+	if err = json.Unmarshal(resp.Body(), &response); err != nil {
+		return false, &errors.MarshalError{Err: err}
+	}
+
+	if value, ok := response["errors"]; ok {
+		errorSlice := GetSLice(value)
+		if len(errorSlice) != 0 {
+			return false, &errors.GoCDSDKError{Message: strings.Join(errorSlice, "\n")}
+		}
+	}
+
+	return response["valid"].(bool), nil
+}
+
+// SetPipelineFiles transforms an array of pipeline files([]PipelineFiles) to map which could be utilised by ConfigRepoPreflightCheck.
+func (conf *client) SetPipelineFiles(pipelines []PipelineFiles) map[string]string {
+	fileMap := make(map[string]string)
+	for _, pipeline := range pipelines {
+		fileMap[pipeline.Name] = pipeline.Path
+	}
+
+	return fileMap
+}
+
+// GetPipelineFiles reads the pipeline file or recursively read the directory to get all the pipelines matching the pattern and transforms to []PipelineFiles
+// So that SetPipelineFiles can convert them to format that ConfigRepoPreflightCheck understands.
+func (conf *client) GetPipelineFiles(pathAndPattern ...string) ([]PipelineFiles, error) {
+	path := pathAndPattern[0]
+
+	var pipelineFiles []PipelineFiles
+
+	fileInfo, err := os.Stat(pathAndPattern[0])
+	if err != nil {
+		return nil, err
+	}
+
+	if fileInfo.IsDir() {
+		if len(pathAndPattern) <= 1 {
+			return nil, &errors.GoCDSDKError{Message: "pipeline files pattern not passed (ex: *.gocd.yaml)"}
+		}
+
+		pattern := pathAndPattern[1]
+		conf.logger.Debugf("pipeline files path '%s' is a directory, finding all the files matching the pattern '%s'", path, pattern)
+
+		files, err := filepath.Glob(filepath.Join(path, pattern))
+		if err != nil {
+			return nil, err
+		}
+
+		conf.logger.Debugf("found files '%v' which are matching the pattern '%s'. decoding it to type PipelineFiles", files, pattern)
+
+		for _, file := range files {
+			absFilePath, err := filepath.Abs(file)
+			if err != nil {
+				return pipelineFiles, err
+			}
+
+			_, fileName := filepath.Split(absFilePath)
+
+			pipelineFiles = append(pipelineFiles, PipelineFiles{
+				Name: fileName,
+				Path: absFilePath,
+			})
+		}
+
+		return pipelineFiles, nil
+	}
+
+	conf.logger.Debugf("pipeline files path '%s' is a file finding absolute path of the same", path)
+
+	absFilePath, err := filepath.Abs(path)
+	if err != nil {
+		return pipelineFiles, err
+	}
+
+	_, fileName := filepath.Split(absFilePath)
+	pipelineFiles = append(pipelineFiles, PipelineFiles{
+		Name: fileName,
+		Path: absFilePath,
+	})
+
+	return pipelineFiles, nil
 }

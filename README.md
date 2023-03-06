@@ -73,8 +73,8 @@ Below are the list of supported APIs:
     - [x] Delete Config repo
     - [x] Get Config repo status
     - [x] Trigger config repo update
+    - [x] Preflight check of config repo configurations
     - [ ] Export pipeline config to config repo format
-    - [ ] Preflight check of config repo configurations
     - [ ] Definitions defined in config repo
 - [x] [Maintenance Mode](https://api.gocd.org/current/#maintenance-mode)
     - [x] Enable Maintenance Mode

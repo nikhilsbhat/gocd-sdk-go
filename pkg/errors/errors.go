@@ -32,3 +32,7 @@ func (err GoCDError) Error() string {
 func (err NilHeaderError) Error() string {
 	return fmt.Sprintf("header %s not set, this will impact while %s", err.Header, err.Message)
 }
+
+func (err GoCDSDKError) Error() string {
+	return fmt.Sprintf("%s", err.Message) //nolint:gosimple
+}

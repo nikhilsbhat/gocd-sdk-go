@@ -180,7 +180,7 @@ func (conf *client) BulkEnableDisableUsers(users map[string]interface{}) error {
 			"Content-Type": ContentJSON,
 		}).
 		SetBody(users).
-		Patch(AdminOperationState)
+		Patch(AdminOperationStateEndpoint)
 	if err != nil {
 		return &errors.APIError{Err: err, Message: "bulk enable/disable users"}
 	}

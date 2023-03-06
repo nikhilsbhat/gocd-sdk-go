@@ -449,6 +449,218 @@ func Test_client_ConfigRepoStatus(t *testing.T) {
 	})
 }
 
+func Test_client_ConfigRepoPreflightCheck(t *testing.T) {
+	correctPreflightHeader := map[string]string{"Accept": gocd.HeaderVersionOne}
+	preflightCheckJSON := `{"errors" : [],"valid" : true}`
+	t.Run("should be able to run config-repo preflight checks successfully", func(t *testing.T) {
+		server := mockServer([]byte(preflightCheckJSON), http.StatusOK,
+			correctPreflightHeader, false, nil)
+
+		client := gocd.NewClient(server.URL, auth, "info", nil)
+
+		pipelineFiles, err := client.GetPipelineFiles("internal/fixtures", "*_config.json")
+		assert.NoError(t, err)
+
+		pipelineMap := client.SetPipelineFiles(pipelineFiles)
+
+		actual, err := client.ConfigRepoPreflightCheck(pipelineMap, "yaml.config.plugin", "sample")
+		assert.NoError(t, err)
+		assert.Equal(t, true, actual)
+	})
+
+	t.Run("should error out while running config-repo preflight checks in GoCD due to wrong headers", func(t *testing.T) {
+		server := mockServer([]byte(preflightCheckJSON), http.StatusOK,
+			map[string]string{"Accept": gocd.HeaderVersionThree}, false, nil)
+
+		client := gocd.NewClient(server.URL, auth, "info", nil)
+
+		pipelineFiles, err := client.GetPipelineFiles("internal/fixtures", "*_config.json")
+		assert.NoError(t, err)
+
+		pipelineMap := client.SetPipelineFiles(pipelineFiles)
+
+		actual, err := client.ConfigRepoPreflightCheck(pipelineMap, "yaml.config.plugin", "sample")
+		assert.EqualError(t, err, "got 404 from GoCD while making POST call for "+server.URL+
+			"/api/admin/config_repo_ops/preflight?pluginId=yaml.config.plugin&repoId=sample\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
+		assert.Equal(t, false, actual)
+	})
+
+	t.Run("should error out while running config-repo preflight checks in GoCD due to missing headers", func(t *testing.T) {
+		server := mockServer([]byte(preflightCheckJSON), http.StatusOK,
+			nil, false, nil)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
+
+		pipelineFiles, err := client.GetPipelineFiles("internal/fixtures", "*_config.json")
+		assert.NoError(t, err)
+
+		pipelineMap := client.SetPipelineFiles(pipelineFiles)
+
+		actual, err := client.ConfigRepoPreflightCheck(pipelineMap, "yaml.config.plugin", "sample")
+		assert.EqualError(t, err, "got 404 from GoCD while making POST call for "+server.URL+
+			"/api/admin/config_repo_ops/preflight?pluginId=yaml.config.plugin&repoId=sample\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
+		assert.Equal(t, false, actual)
+	})
+
+	t.Run("should error out while running config-repo preflight checks in GoCD as preflight checks failed", func(t *testing.T) {
+		preflightCheckJSONNew := `{"errors" : ["invalid merge configurations, duplicate key TEST","invalid merge configurations, duplicate key ENV"],"valid" : false}`
+		server := mockServer([]byte(preflightCheckJSONNew), http.StatusOK, correctPreflightHeader,
+			false, nil)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
+
+		pipelineFiles, err := client.GetPipelineFiles("internal/fixtures", "*_config.json")
+		assert.NoError(t, err)
+
+		pipelineMap := client.SetPipelineFiles(pipelineFiles)
+
+		actual, err := client.ConfigRepoPreflightCheck(pipelineMap, "yaml.config.plugin", "sample")
+		assert.EqualError(t, err, "invalid merge configurations, duplicate key TEST\ninvalid merge configurations, duplicate key ENV")
+		assert.Equal(t, false, actual)
+	})
+
+	t.Run("should error out while running config-repo preflight checks in GoCD as server returned malformed response", func(t *testing.T) {
+		server := mockServer([]byte("preflightCheckJSON"), http.StatusOK, correctPreflightHeader,
+			false, nil)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
+
+		pipelineFiles, err := client.GetPipelineFiles("internal/fixtures", "*_config.json")
+		assert.NoError(t, err)
+
+		pipelineMap := client.SetPipelineFiles(pipelineFiles)
+
+		actual, err := client.ConfigRepoPreflightCheck(pipelineMap, "yaml.config.plugin", "sample")
+		assert.EqualError(t, err, "reading response body errored with: invalid character 'p' looking for beginning of value")
+		assert.Equal(t, false, actual)
+	})
+
+	t.Run("should error out while running config-repo preflight checks in GoCD as server is not reachable", func(t *testing.T) {
+		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
+
+		client.SetRetryCount(1)
+		client.SetRetryWaitTime(1)
+
+		pipelineFiles, err := client.GetPipelineFiles("internal/fixtures", "*_config.json")
+		assert.NoError(t, err)
+
+		pipelineMap := client.SetPipelineFiles(pipelineFiles)
+
+		actual, err := client.ConfigRepoPreflightCheck(pipelineMap, "yaml.config.plugin", "sample")
+		assert.EqualError(t, err, "call made to preflight check of confirepo 'sample' errored with: "+
+			"Post \"http://localhost:8156/go/api/admin/config_repo_ops/preflight?pluginId=yaml.config.plugin&repoId=sample\": "+
+			"dial tcp [::1]:8156: connect: connection refused")
+		assert.Equal(t, false, actual)
+	})
+}
+
+func Test_client_SetPipelineFiles(t *testing.T) {
+	t.Run("should be able to return the map equivalent of []gocd.PipelineFiles", func(t *testing.T) {
+		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
+
+		pipelines := []gocd.PipelineFiles{
+			{
+				Name: "pipeline1",
+				Path: "absolute/path/to/pipeline/1",
+			},
+			{
+				Name: "pipeline2",
+				Path: "absolute/path/to/pipeline/2",
+			},
+			{
+				Name: "pipeline3",
+				Path: "absolute/path/to/pipeline/3",
+			},
+			{
+				Name: "pipeline4",
+				Path: "absolute/path/to/pipeline/4",
+			},
+			{
+				Name: "pipeline5",
+				Path: "absolute/path/to/pipeline/5",
+			},
+		}
+
+		expected := map[string]string{
+			"pipeline1": "absolute/path/to/pipeline/1",
+			"pipeline2": "absolute/path/to/pipeline/2",
+			"pipeline3": "absolute/path/to/pipeline/3",
+			"pipeline4": "absolute/path/to/pipeline/4",
+			"pipeline5": "absolute/path/to/pipeline/5",
+		}
+
+		actual := client.SetPipelineFiles(pipelines)
+
+		assert.Equal(t, expected, actual)
+	})
+}
+
+func Test_client_GetPipelineFiles(t *testing.T) {
+	t.Run("should be able to identify the path as directory and fetch the pipelines", func(t *testing.T) {
+		client := gocd.NewClient("http://localhost:8156/go", auth, "debug", nil)
+
+		expected := []gocd.PipelineFiles{
+			{
+				Name: "mail_server_config.json",
+				Path: "/Users/nikhil.bhat/my-opensource/gocd-sdk-go/internal/fixtures/mail_server_config.json",
+			},
+			{
+				Name: "role_config.json",
+				Path: "/Users/nikhil.bhat/my-opensource/gocd-sdk-go/internal/fixtures/role_config.json",
+			},
+			{
+				Name: "roles_config.json",
+				Path: "/Users/nikhil.bhat/my-opensource/gocd-sdk-go/internal/fixtures/roles_config.json",
+			},
+			{
+				Name: "secrets_config.json",
+				Path: "/Users/nikhil.bhat/my-opensource/gocd-sdk-go/internal/fixtures/secrets_config.json",
+			},
+		}
+
+		actual, err := client.GetPipelineFiles("internal/fixtures", "*_config.json")
+		assert.NoError(t, err)
+		assert.Equal(t, len(expected), len(actual))
+		assert.Equal(t, expected, actual)
+	})
+
+	t.Run("should error out while parsing directory to fetch the pipelines since pattern is missing", func(t *testing.T) {
+		client := gocd.NewClient("http://localhost:8156/go", auth, "debug", nil)
+
+		actual, err := client.GetPipelineFiles("internal/fixture", "*_config.json")
+		assert.EqualError(t, err, "stat internal/fixture: no such file or directory")
+		assert.Nil(t, actual)
+	})
+
+	t.Run("should error out while parsing directory due to wrong path", func(t *testing.T) {
+		client := gocd.NewClient("http://localhost:8156/go", auth, "debug", nil)
+
+		actual, err := client.GetPipelineFiles("internal/fixtures")
+		assert.EqualError(t, err, "pipeline files pattern not passed (ex: *.gocd.yaml)")
+		assert.Nil(t, actual)
+	})
+
+	t.Run("should be able to identify the path as file", func(t *testing.T) {
+		client := gocd.NewClient("http://localhost:8156/go", auth, "debug", nil)
+
+		expected := []gocd.PipelineFiles{
+			{
+				Name: "mail_server_config.json",
+				Path: "/Users/nikhil.bhat/my-opensource/gocd-sdk-go/internal/fixtures/mail_server_config.json",
+			},
+		}
+
+		actual, err := client.GetPipelineFiles("internal/fixtures/mail_server_config.json")
+		assert.NoError(t, err)
+		assert.Equal(t, expected, actual)
+	})
+
+	t.Run("should error out while identifying the pipeline files due to wrong path", func(t *testing.T) {
+		client := gocd.NewClient("http://localhost:8156/go", auth, "debug", nil)
+
+		actual, err := client.GetPipelineFiles("internal/fixture/mail_server_config.json")
+		assert.EqualError(t, err, "stat internal/fixture/mail_server_config.json: no such file or directory")
+		assert.Nil(t, actual)
+	})
+}
+
 func mockConfigRepoServer(request interface{}, method string, header map[string]string, etag bool) *httptest.Server {
 	return httptest.NewServer(http.HandlerFunc(func(writer http.ResponseWriter, req *http.Request) {
 		if header == nil {

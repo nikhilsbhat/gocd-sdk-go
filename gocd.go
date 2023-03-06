@@ -36,6 +36,9 @@ type GoCd interface {
 	DeleteConfigRepo(repo string) error
 	ConfigRepoStatus(repo string) (map[string]bool, error)
 	ConfigRepoTriggerUpdate(name string) (map[string]string, error)
+	ConfigRepoPreflightCheck(pipelines map[string]string, pluginID string, repoID string) (bool, error)
+	SetPipelineFiles(pipelines []PipelineFiles) map[string]string
+	GetPipelineFiles(pathAndPattern ...string) ([]PipelineFiles, error)
 	EnableMaintenanceMode() error
 	DisableMaintenanceMode() error
 	GetMaintenanceModeInfo() (Maintenance, error)
