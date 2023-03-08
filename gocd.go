@@ -21,8 +21,9 @@ type client struct {
 // GoCd implements methods to get various information from GoCD.
 type GoCd interface {
 	GetAgents() ([]Agent, error)
+	GetAgent(agentID string) (Agent, error)
 	GetAgentJobRunHistory(agent string) (AgentJobHistory, error)
-	UpdateAgent(id string, agent Agent) error
+	UpdateAgent(agent Agent) error
 	UpdateAgentBulk(agent Agent) error
 	DeleteAgent(id string) (string, error)
 	DeleteAgentBulk(agent Agent) (string, error)

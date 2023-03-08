@@ -26,12 +26,20 @@ type Agent struct {
 	CurrentState       string        `json:"agent_state,omitempty" yaml:"agent_state,omitempty"`
 	OS                 string        `json:"operating_system,omitempty" yaml:"operating_system,omitempty"`
 	ConfigState        string        `json:"agent_config_state,omitempty" yaml:"agent_config_state,omitempty"`
+	BuildState         string        `json:"build_state,omitempty" yaml:"build_state,omitempty"`
 	Sandbox            string        `json:"sandbox,omitempty" yaml:"sandbox,omitempty"`
-	DiskSpaceAvailable interface{}   `json:"free_space,omitempty" yaml:"free_space,omitempty"`
+	DiskSpaceAvailable float64       `json:"free_space,omitempty" yaml:"free_space,omitempty"`
 	Resources          []string      `json:"resources,omitempty" yaml:"resources,omitempty"`
-	Environments       []interface{} `json:"environments,omitempty" yaml:"environments,omitempty"`
+	Environments       []Environment `json:"environments,omitempty" yaml:"environments,omitempty"`
+	BuildDetails       BuildInfo     `json:"build_details,omitempty" yaml:"build_details,omitempty"`
 	Operations         Operations    `json:"operations,omitempty" yaml:"operations,omitempty"`
 	UUIDS              []string      `json:"uuids,omitempty" yaml:"uuids,omitempty"`
+}
+
+type BuildInfo struct {
+	Pipeline string `json:"pipeline_name,omitempty" yaml:"pipeline_name,omitempty"`
+	Stage    string `json:"stage_name,omitempty" yaml:"stage_name,omitempty"`
+	Job      string `json:"job_name,omitempty" yaml:"job_name,omitempty"`
 }
 
 // Operations holds information of the operations to be performed on GoCD agent.

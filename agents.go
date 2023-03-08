@@ -39,6 +39,34 @@ func (conf *client) GetAgents() ([]Agent, error) {
 	return agentsConf.Config.Config, nil
 }
 
+// GetAgent implements method that fetches the details of a specific agent present in GoCD server.
+func (conf *client) GetAgent(agentID string) (Agent, error) {
+	newClient := &client{}
+	if err := copier.CopyWithOption(newClient, conf, copier.Option{IgnoreEmpty: true, DeepCopy: true}); err != nil {
+		return Agent{}, err
+	}
+
+	var agentConf Agent
+	resp, err := newClient.httpClient.R().
+		SetHeaders(map[string]string{
+			"Accept": HeaderVersionSeven,
+		}).
+		Get(filepath.Join(AgentsEndpoint, agentID))
+	if err != nil {
+		return Agent{}, &errors.APIError{Err: err, Message: fmt.Sprintf("get agent '%s' information", agentID)}
+	}
+
+	if resp.StatusCode() != http.StatusOK {
+		return Agent{}, &errors.NonOkError{Code: resp.StatusCode(), Response: resp}
+	}
+
+	if err = json.Unmarshal(resp.Body(), &agentConf); err != nil {
+		return Agent{}, &errors.MarshalError{Err: err}
+	}
+
+	return agentConf, nil
+}
+
 // GetAgentJobRunHistory implements method that fetches job run history from selected agents.
 func (conf *client) GetAgentJobRunHistory(agentID string) (AgentJobHistory, error) {
 	newClient := &client{}
@@ -68,7 +96,7 @@ func (conf *client) GetAgentJobRunHistory(agentID string) (AgentJobHistory, erro
 }
 
 // UpdateAgent updates specific agent with updated configuration passed.
-func (conf *client) UpdateAgent(agentID string, agent Agent) error {
+func (conf *client) UpdateAgent(agent Agent) error {
 	newClient := &client{}
 	if err := copier.CopyWithOption(newClient, conf, copier.Option{IgnoreEmpty: true, DeepCopy: true}); err != nil {
 		return err
@@ -80,7 +108,7 @@ func (conf *client) UpdateAgent(agentID string, agent Agent) error {
 			"Content-Type": ContentJSON,
 		}).
 		SetBody(agent).
-		Patch(filepath.Join(AgentsEndpoint, agentID))
+		Patch(filepath.Join(AgentsEndpoint, agent.ID))
 	if err != nil {
 		return &errors.APIError{Err: err, Message: fmt.Sprintf("update %s agent information", agent.Name)}
 	}

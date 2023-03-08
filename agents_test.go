@@ -15,6 +15,9 @@ import (
 )
 
 var (
+	//go:embed internal/fixtures/agent.json
+	agentJSON string
+
 	//go:embed internal/fixtures/agents.json
 	agentsJSON string
 
@@ -75,12 +78,107 @@ func Test_client_GetAgentsInfo(t *testing.T) {
 				Sandbox:            "/Users/ketanpadegaonkar/projects/gocd/gocd/agent",
 				DiskSpaceAvailable: 8.4983328768e+10,
 				Resources:          []string{"java", "linux", "firefox"},
-				Environments:       make([]interface{}, 0),
+				BuildState:         "Idle",
 			},
 		}
 
 		actual, err := client.GetAgents()
 		assert.NoError(t, err)
+		assert.Equal(t, expected, actual)
+	})
+}
+
+func Test_client_GetAgent(t *testing.T) {
+	correctAgentHeader := map[string]string{"Accept": gocd.HeaderVersionSeven}
+	agentID := "adb9540a-b954-4571-9d9b-2f330739d4da"
+	t.Run("should be able to fetch a specific agent successfully", func(t *testing.T) {
+		server := mockServer([]byte(agentJSON), http.StatusOK,
+			correctAgentHeader, false, nil)
+
+		client := gocd.NewClient(server.URL, auth, "info", nil)
+
+		expected := gocd.Agent{
+			Name:               "ketanpkr.corporate.thoughtworks.com",
+			IPAddress:          "10.12.20.47",
+			ID:                 "adb9540a-b954-4571-9d9b-2f330739d4da",
+			Version:            "20.5.0",
+			CurrentState:       "Building",
+			OS:                 "Mac OS X",
+			ConfigState:        "Enabled",
+			Sandbox:            "/Users/ketanpadegaonkar/projects/gocd/gocd/agent",
+			DiskSpaceAvailable: 85890146304,
+			Resources:          []string{"java", "linux", "firefox"},
+			Environments: []gocd.Environment{
+				{
+					Name: "perf",
+				},
+				{
+					Name: "UAT",
+				},
+			},
+			BuildState: "Building",
+			BuildDetails: gocd.BuildInfo{
+				Pipeline: "up42",
+				Stage:    "up42_stage",
+				Job:      "up42_job",
+			},
+		}
+
+		actual, err := client.GetAgent(agentID)
+		assert.NoError(t, err)
+		assert.Equal(t, expected, actual)
+	})
+
+	t.Run("should error out while fetching a specific agent present in GoCD due to wrong headers", func(t *testing.T) {
+		server := mockServer([]byte(agentJSON), http.StatusOK,
+			map[string]string{"Accept": gocd.HeaderVersionThree}, false, nil)
+
+		client := gocd.NewClient(server.URL, auth, "info", nil)
+
+		expected := gocd.Agent{}
+
+		actual, err := client.GetAgent(agentID)
+		assert.EqualError(t, err, "got 404 from GoCD while making GET call for "+server.URL+
+			"/api/agents/adb9540a-b954-4571-9d9b-2f330739d4da\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
+		assert.Equal(t, expected, actual)
+	})
+
+	t.Run("should error out while fetching a specific agent present in GoCD due to missing headers", func(t *testing.T) {
+		server := mockServer([]byte(agentJSON), http.StatusOK,
+			nil, false, nil)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
+
+		expected := gocd.Agent{}
+
+		actual, err := client.GetAgent(agentID)
+		assert.EqualError(t, err, "got 404 from GoCD while making GET call for "+server.URL+
+			"/api/agents/adb9540a-b954-4571-9d9b-2f330739d4da\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
+		assert.Equal(t, expected, actual)
+	})
+
+	t.Run("should error out while fetching a specific agent from GoCD as server returned malformed response", func(t *testing.T) {
+		server := mockServer([]byte("agentJSON"), http.StatusOK, correctAgentHeader,
+			false, nil)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
+
+		expected := gocd.Agent{}
+
+		actual, err := client.GetAgent(agentID)
+		assert.EqualError(t, err, "reading response body errored with: invalid character 'a' looking for beginning of value")
+		assert.Equal(t, expected, actual)
+	})
+
+	t.Run("should error out while fetching a specific agent present in GoCD as server is not reachable", func(t *testing.T) {
+		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
+
+		client.SetRetryCount(1)
+		client.SetRetryWaitTime(1)
+
+		expected := gocd.Agent{}
+
+		actual, err := client.GetAgent(agentID)
+		assert.EqualError(t, err, "call made to get agent 'adb9540a-b954-4571-9d9b-2f330739d4da' information errored with: "+
+			"Get \"http://localhost:8156/go/api/agents/adb9540a-b954-4571-9d9b-2f330739d4da\": dial tcp [::1]:8156: connect: connection refused")
 		assert.Equal(t, expected, actual)
 	})
 }
@@ -152,21 +250,18 @@ func Test_client_UpdateAgent(t *testing.T) {
 	correctAgentUpdateHeader := map[string]string{"Accept": gocd.HeaderVersionSeven, "Content-Type": gocd.ContentJSON}
 
 	t.Run("should update agent with updated configuration successfully", func(t *testing.T) {
-		var agentInfo gocd.Agent
-		err := json.Unmarshal([]byte(agentUpdateJSON), &agentInfo)
-		assert.NoError(t, err)
+		server := mockServer([]byte(agentUpdateJSON), http.StatusOK,
+			correctAgentUpdateHeader, false, map[string]string{"ETag": "61406622382e51c2079c11dcbdb978fb"})
 
-		server := agentMockServer(agentInfo, http.MethodPatch, correctAgentUpdateHeader)
 		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		agentUpdateInfo := gocd.Agent{
-			Name:         "agent02.example.com",
-			ConfigState:  "Enabled",
-			Resources:    nil,
-			Environments: nil,
+			ID:          agentID,
+			Name:        "agent02.example.com",
+			ConfigState: "Enabled",
 		}
 
-		err = client.UpdateAgent(agentID, agentUpdateInfo)
+		err := client.UpdateAgent(agentUpdateInfo)
 		assert.NoError(t, err)
 	})
 
@@ -175,13 +270,14 @@ func Test_client_UpdateAgent(t *testing.T) {
 		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		agentUpdateInfo := gocd.Agent{
+			ID:           agentID,
 			Name:         "agent02.example.com",
 			ConfigState:  "Enabled",
 			Resources:    nil,
 			Environments: nil,
 		}
 
-		err := client.UpdateAgent(agentID, agentUpdateInfo)
+		err := client.UpdateAgent(agentUpdateInfo)
 		assert.EqualError(t, err, "got 404 from GoCD while making PATCH call for "+server.URL+
 			"/api/agents/adb9540a-b954-4571-9d9b-2f330739d4da\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 	})
@@ -191,13 +287,14 @@ func Test_client_UpdateAgent(t *testing.T) {
 		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		agentUpdateInfo := gocd.Agent{
+			ID:           agentID,
 			Name:         "agent02.example.com",
 			ConfigState:  "Enabled",
 			Resources:    nil,
 			Environments: nil,
 		}
 
-		err := client.UpdateAgent(agentID, agentUpdateInfo)
+		err := client.UpdateAgent(agentUpdateInfo)
 		assert.EqualError(t, err, "got 404 from GoCD while making PATCH call for "+server.URL+
 			"/api/agents/adb9540a-b954-4571-9d9b-2f330739d4da\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 	})
@@ -207,13 +304,14 @@ func Test_client_UpdateAgent(t *testing.T) {
 		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		agentUpdateInfo := gocd.Agent{
+			ID:           agentID,
 			Name:         "agent02.example.com",
 			ConfigState:  "Enabled",
 			Resources:    nil,
 			Environments: nil,
 		}
 
-		err := client.UpdateAgent(agentID, agentUpdateInfo)
+		err := client.UpdateAgent(agentUpdateInfo)
 		assert.EqualError(t, err, "got 500 from GoCD while making PATCH call for "+server.URL+
 			"/api/agents/adb9540a-b954-4571-9d9b-2f330739d4da\nwith BODY:json: cannot unmarshal string into Go value of type gocd.Agent")
 	})
@@ -225,13 +323,14 @@ func Test_client_UpdateAgent(t *testing.T) {
 		client.SetRetryWaitTime(1)
 
 		agentUpdateInfo := gocd.Agent{
+			ID:           agentID,
 			Name:         "agent02.example.com",
 			ConfigState:  "Enabled",
 			Resources:    nil,
 			Environments: nil,
 		}
 
-		err := client.UpdateAgent(agentID, agentUpdateInfo)
+		err := client.UpdateAgent(agentUpdateInfo)
 		assert.EqualError(t, err, "call made to update agent02.example.com agent information errored with: "+
 			"Patch \"http://localhost:8156/go/api/agents/adb9540a-b954-4571-9d9b-2f330739d4da\": dial tcp [::1]:8156: connect: connection refused")
 	})
