@@ -106,7 +106,7 @@ func Test_client_GetAgent(t *testing.T) {
 			OS:                 "Mac OS X",
 			ConfigState:        "Enabled",
 			Sandbox:            "/Users/ketanpadegaonkar/projects/gocd/gocd/agent",
-			DiskSpaceAvailable: 85890146304,
+			DiskSpaceAvailable: 8.5890146304e+10,
 			Resources:          []string{"java", "linux", "firefox"},
 			Environments: []gocd.Environment{
 				{
