@@ -88,7 +88,7 @@ type ConfigRepo struct {
 	Material      Material              `json:"material,omitempty" yaml:"material,omitempty"`
 	Configuration []PluginConfiguration `json:"configuration,omitempty" yaml:"configuration,omitempty"`
 	Rules         []map[string]string   `json:"rules,omitempty" yaml:"rules,omitempty"`
-	ETAG          string
+	ETAG          string                `json:"etag,omitempty" yaml:"etag,omitempty"`
 }
 
 // PipelineGroupsConfig holds information on the various pipeline groups present in GoCD.
@@ -107,14 +107,14 @@ type PipelineGroup struct {
 	PipelineCount int                    `json:"pipeline_count,omitempty" yaml:"pipeline_count,omitempty"`
 	Pipelines     []Pipeline             `json:"pipelines,omitempty" yaml:"pipelines,omitempty"`
 	Authorization map[string]interface{} `json:"authorization,omitempty" yaml:"authorization,omitempty"`
-	ETAG          string
+	ETAG          string                 `json:"etag,omitempty" yaml:"etag,omitempty"`
 }
 
 // SystemAdmins holds information of the system admins present.
 type SystemAdmins struct {
 	Roles []string `json:"roles,omitempty" yaml:"roles,omitempty"`
 	Users []string `json:"users,omitempty" yaml:"users,omitempty"`
-	ETAG  string
+	ETAG  string   `json:"etag,omitempty" yaml:"etag,omitempty"`
 }
 
 // BackupConfig holds information of the backup configured.
@@ -186,7 +186,7 @@ type Environment struct {
 	Name      string     `json:"name,omitempty" yaml:"name,omitempty"`
 	Pipelines []Pipeline `json:"pipelines,omitempty" yaml:"pipelines,omitempty"`
 	EnvVars   []EnvVars  `json:"environment_variables,omitempty" yaml:"environment_variables,omitempty"`
-	ETAG      string
+	ETAG      string     `json:"etag,omitempty" yaml:"etag,omitempty"`
 }
 
 // EnvVars holds information of environment variables present in GoCD.
@@ -266,7 +266,7 @@ type ArtifactInfo struct {
 		PurgeStartDiskSpace float64 `json:"purge_start_disk_space,omitempty" yaml:"purge_start_disk_space,omitempty"`
 		PurgeUptoDiskSpace  float64 `json:"purge_upto_disk_space,omitempty" yaml:"purge_upto_disk_space,omitempty"`
 	} `json:"purge_settings,omitempty" yaml:"purge_settings,omitempty"`
-	ETAG string
+	ETAG string `json:"etag,omitempty" yaml:"etag,omitempty"`
 }
 
 // Schedule holds config of the pipeline that needs to be scheduled.
@@ -312,7 +312,7 @@ type MailServerConfig struct {
 type PluginSettings struct {
 	ID            string                `json:"plugin_id,omitempty" yaml:"plugin_id,omitempty"`
 	Configuration []PluginConfiguration `json:"configuration,omitempty" yaml:"configuration,omitempty"`
-	ETAG          string
+	ETAG          string                `json:"etag,omitempty" yaml:"etag,omitempty"`
 }
 
 // PipelineObject holds information required to comment/get/history of pipeline or instance of the same.
@@ -336,7 +336,7 @@ type ArtifactStoresConfigs struct {
 // ArtifactStoresConfig holds information of all config-repos present in GoCD.
 type ArtifactStoresConfig struct {
 	CommonConfigs []CommonConfig `json:"artifact_stores,omitempty" yaml:"artifact_stores,omitempty"`
-	ETAG          string
+	ETAG          string         `json:"etag,omitempty" yaml:"etag,omitempty"`
 }
 
 // ProfilesConfigs holds information of the specified artifact-stores/cluster-profiles/agent-profiles.
@@ -347,7 +347,7 @@ type ProfilesConfigs struct {
 // ProfilesConfig holds information of all config-repos present in GoCD.
 type ProfilesConfig struct {
 	CommonConfigs []CommonConfig `json:"profiles,omitempty" yaml:"profiles,omitempty"`
-	ETAG          string
+	ETAG          string         `json:"etag,omitempty" yaml:"etag,omitempty"`
 }
 
 // SecretsConfigs holds information of all secret configs present in GoCD.
@@ -358,7 +358,7 @@ type SecretsConfigs struct {
 // SecretsConfig holds information of a specified secret config present in GoCD.
 type SecretsConfig struct {
 	CommonConfigs []CommonConfig `json:"secret_configs,omitempty" yaml:"secret_configs,omitempty"`
-	ETAG          string
+	ETAG          string         `json:"etag,omitempty" yaml:"etag,omitempty"`
 }
 
 // CommonConfig holds information of the specified artifact store.
@@ -390,7 +390,7 @@ type PackageRepository struct {
 	Packages       struct {
 		Packages []CommonConfig `json:"packages,omitempty" yaml:"packages,omitempty"`
 	} `json:"_embedded,omitempty" yaml:"_embedded,omitempty"`
-	ETAG string
+	ETAG string `json:"etag,omitempty" yaml:"etag,omitempty"`
 }
 
 // Packages holds information of all packages present in GoCD.
@@ -457,7 +457,7 @@ type RolesConfigs struct {
 // RolesConfig holds information of all role configs present in GoCd.
 type RolesConfig struct {
 	Role []Role `json:"roles,omitempty" yaml:"roles,omitempty"`
-	ETAG string
+	ETAG string `json:"etag,omitempty" yaml:"etag,omitempty"`
 }
 
 // Role holds information of a specific role in GoCd.
@@ -468,7 +468,7 @@ type Role struct {
 	Policy       []map[string]string   `json:"policy,omitempty" yaml:"policy,omitempty"`
 	AuthConfigID string                `json:"auth_config_id,omitempty" yaml:"auth_config_id,omitempty"`
 	Properties   []PluginConfiguration `json:"properties,omitempty" yaml:"properties,omitempty"`
-	ETAG         string
+	ETAG         string                `json:"etag,omitempty" yaml:"etag,omitempty"`
 }
 
 // RoleAttribute holds information of a specific attribute of a role in GoCd.
@@ -486,7 +486,7 @@ type PluginsInfos struct {
 // PluginsInfo holds information of all plugins present in GoCd.
 type PluginsInfo struct {
 	Plugins []Plugin `json:"plugin_info,omitempty" yaml:"plugin_info,omitempty"`
-	ETAG    string
+	ETAG    string   `json:"etag,omitempty" yaml:"etag,omitempty"`
 }
 
 // Plugin holds information of a specific plugins present in GoCd.
@@ -498,7 +498,7 @@ type Plugin struct {
 	PluginFileLocation string                 `json:"plugin_file_location,omitempty" yaml:"plugin_file_location,omitempty"`
 	BundledPlugin      bool                   `json:"bundled_plugin,omitempty" yaml:"bundled_plugin,omitempty"`
 	About              map[string]interface{} `json:"about,omitempty" yaml:"about,omitempty"`
-	ETAG               string
+	ETAG               string                 `json:"etag,omitempty" yaml:"etag,omitempty"`
 }
 
 // Users holds information of all users present in GoCD.
