@@ -346,8 +346,9 @@ type ProfilesConfigs struct {
 
 // ProfilesConfig holds information of all config-repos present in GoCD.
 type ProfilesConfig struct {
-	CommonConfigs []CommonConfig `json:"profiles,omitempty" yaml:"profiles,omitempty"`
-	ETAG          string         `json:"etag,omitempty" yaml:"etag,omitempty"`
+	CommonConfigs         []CommonConfig `json:"profiles,omitempty" yaml:"profiles,omitempty"`
+	ClusterProfilesConfig []CommonConfig `json:"cluster_profiles,omitempty" yaml:"cluster_profiles,omitempty"`
+	ETAG                  string         `json:"etag,omitempty" yaml:"etag,omitempty"`
 }
 
 // SecretsConfigs holds information of all secret configs present in GoCD.
