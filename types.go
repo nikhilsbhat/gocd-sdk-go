@@ -19,23 +19,23 @@ type Agents struct {
 
 // Agent holds information of a particular agent.
 type Agent struct {
-	ID                 string        `json:"uuid,omitempty" yaml:"uuid,omitempty"`
-	Name               string        `json:"hostname,omitempty" yaml:"hostname,omitempty"`
-	ElasticAgentID     string        `json:"elastic_agent_id,omitempty" yaml:"elastic_agent_id,omitempty"`
-	ElasticPluginID    string        `json:"elastic_plugin_id,omitempty" yaml:"elastic_plugin_id,omitempty"`
-	IPAddress          string        `json:"ip_address,omitempty" yaml:"ip_address,omitempty"`
-	Sandbox            string        `json:"sandbox,omitempty" yaml:"sandbox,omitempty"`
-	OS                 string        `json:"operating_system,omitempty" yaml:"operating_system,omitempty"`
-	DiskSpaceAvailable interface{}   `json:"free_space,omitempty" yaml:"free_space,omitempty"`
-	ConfigState        string        `json:"agent_config_state,omitempty" yaml:"agent_config_state,omitempty"`
-	CurrentState       string        `json:"agent_state,omitempty" yaml:"agent_state,omitempty"`
-	Version            string        `json:"agent_version,omitempty" yaml:"agent_version,omitempty"`
-	Resources          []string      `json:"resources,omitempty" yaml:"resources,omitempty"`
-	Environments       []Environment `json:"environments,omitempty" yaml:"environments,omitempty"`
-	BuildState         string        `json:"build_state,omitempty" yaml:"build_state,omitempty"`
-	BuildDetails       BuildInfo     `json:"build_details,omitempty" yaml:"build_details,omitempty"`
-	Operations         Operations    `json:"operations,omitempty" yaml:"operations,omitempty"`
-	UUIDS              []string      `json:"uuids,omitempty" yaml:"uuids,omitempty"`
+	ID                 string      `json:"uuid,omitempty" yaml:"uuid,omitempty"`
+	Name               string      `json:"hostname,omitempty" yaml:"hostname,omitempty"`
+	ElasticAgentID     string      `json:"elastic_agent_id,omitempty" yaml:"elastic_agent_id,omitempty"`
+	ElasticPluginID    string      `json:"elastic_plugin_id,omitempty" yaml:"elastic_plugin_id,omitempty"`
+	IPAddress          string      `json:"ip_address,omitempty" yaml:"ip_address,omitempty"`
+	Sandbox            string      `json:"sandbox,omitempty" yaml:"sandbox,omitempty"`
+	OS                 string      `json:"operating_system,omitempty" yaml:"operating_system,omitempty"`
+	DiskSpaceAvailable interface{} `json:"free_space,omitempty" yaml:"free_space,omitempty"`
+	ConfigState        string      `json:"agent_config_state,omitempty" yaml:"agent_config_state,omitempty"`
+	CurrentState       string      `json:"agent_state,omitempty" yaml:"agent_state,omitempty"`
+	Version            string      `json:"agent_version,omitempty" yaml:"agent_version,omitempty"`
+	Resources          []string    `json:"resources,omitempty" yaml:"resources,omitempty"`
+	Environments       any         `json:"environments,omitempty" yaml:"environments,omitempty"`
+	BuildState         string      `json:"build_state,omitempty" yaml:"build_state,omitempty"`
+	BuildDetails       BuildInfo   `json:"build_details,omitempty" yaml:"build_details,omitempty"`
+	Operations         Operations  `json:"operations,omitempty" yaml:"operations,omitempty"`
+	UUIDS              []string    `json:"uuids,omitempty" yaml:"uuids,omitempty"`
 }
 
 type BuildInfo struct {

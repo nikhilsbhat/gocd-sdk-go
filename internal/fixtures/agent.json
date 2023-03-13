@@ -27,35 +27,10 @@
   ],
   "environments": [
     {
-      "name": "perf",
-      "origin": {
-        "type": "gocd",
-        "_links": {
-          "self": {
-            "href": "https://ci.example.com/go/admin/config_xml"
-          },
-          "doc": {
-            "href": "https://api.gocd.org/#get-configuration"
-          }
-        }
-      }
+      "name": "perf"
     },
     {
-      "name": "UAT",
-      "origin": {
-        "type": "config-repo",
-        "_links": {
-          "self": {
-            "href": "https://ci.example.com/go/api/admin/config_repos/foo"
-          },
-          "doc": {
-            "href": "https://api.gocd.org/#config-repos"
-          },
-          "find": {
-            "href": "https://ci.example.com/go/api/admin/config_repos/:id"
-          }
-        }
-      }
+      "name": "UAT"
     }
   ],
   "build_state": "Building",

@@ -108,13 +108,9 @@ func Test_client_GetAgent(t *testing.T) {
 			Sandbox:            "/Users/ketanpadegaonkar/projects/gocd/gocd/agent",
 			DiskSpaceAvailable: 8.5890146304e+10,
 			Resources:          []string{"java", "linux", "firefox"},
-			Environments: []gocd.Environment{
-				{
-					Name: "perf",
-				},
-				{
-					Name: "UAT",
-				},
+			Environments: []interface{}{
+				map[string]interface{}{"name": "perf"},
+				map[string]interface{}{"name": "UAT"},
 			},
 			BuildState: "Building",
 			BuildDetails: gocd.BuildInfo{
@@ -256,9 +252,11 @@ func Test_client_UpdateAgent(t *testing.T) {
 		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		agentUpdateInfo := gocd.Agent{
-			ID:          agentID,
-			Name:        "agent02.example.com",
-			ConfigState: "Enabled",
+			ID:           agentID,
+			Name:         "agent02.example.com",
+			ConfigState:  "Enabled",
+			Resources:    []string{"Java", "Linux"},
+			Environments: []string{"Dev"},
 		}
 
 		err := client.UpdateAgent(agentUpdateInfo)
