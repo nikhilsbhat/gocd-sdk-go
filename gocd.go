@@ -71,6 +71,11 @@ type GoCd interface {
 	GetPipelineInstance(pipeline PipelineObject) (map[string]interface{}, error)
 	GetPipelineHistory(name string, size, after int) ([]map[string]interface{}, error)
 	CommentOnPipeline(comment PipelineObject) error
+	GetPipelineConfig(name string) (PipelineConfig, error)
+	UpdatePipelineConfig(config PipelineConfig) (PipelineConfig, error)
+	CreatePipeline(config PipelineConfig) error
+	DeletePipeline(name string) error
+	ExtractTemplatePipeline(pipeline, template string) (PipelineConfig, error)
 	EncryptText(value string) (Encrypted, error)
 	DecryptText(value, cipherKey string) (string, error)
 	GetArtifactConfig() (ArtifactInfo, error)

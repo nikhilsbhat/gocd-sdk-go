@@ -17,6 +17,7 @@ const (
 	EncryptEndpoint             = "/api/admin/encrypt"
 	ArtifactInfoEndpoint        = "/api/admin/config/server/artifact_config"
 	PipelinesEndpoint           = "/api/pipelines"
+	PipelineConfigEndpoint      = "/api/admin/pipelines"
 	HealthEndpoint              = "/api/v1/health"
 	DefaultTimeoutEndpoint      = "/api/admin/config/server/default_job_timeout"
 	MailServerConfigEndpoint    = "/api/config/mailserver"
@@ -40,6 +41,7 @@ const (
 	HeaderVersionThree          = "application/vnd.go.cd.v3+json"
 	HeaderVersionFour           = "application/vnd.go.cd.v4+json"
 	HeaderVersionSeven          = "application/vnd.go.cd.v7+json"
+	HeaderVersionEleven         = "application/vnd.go.cd.v11+json"
 )
 
 const (

@@ -134,6 +134,15 @@ type BackupStats struct {
 	Message        string `json:"message,omitempty" yaml:"message,omitempty"`
 }
 
+// PipelineConfig holds configuration information of a specific pipeline.
+type PipelineConfig struct {
+	Name          string                 `json:"name,omitempty" yaml:"name,omitempty"`
+	Config        map[string]interface{} `json:"config,omitempty" yaml:"config,omitempty"`
+	PausePipeline bool                   `json:"pause_pipeline,omitempty" yaml:"pause_pipeline,omitempty"`
+	PauseReason   string                 `json:"pause_reason,omitempty" yaml:"pause_reason,omitempty"`
+	ETAG          string                 `json:"etag,omitempty" yaml:"etag,omitempty"`
+}
+
 // PipelineSize holds information of the pipeline size.
 type PipelineSize struct {
 	Size float64

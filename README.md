@@ -111,12 +111,12 @@ Below are the list of supported APIs:
     - [x] Get Pipeline Instance
     - [x] Get Pipeline History
     - [x] Comment on Pipeline
-- [ ] [Pipeline Config](https://api.gocd.org/current/#pipeline-config)
-    - [ ] Get pipeline config
-    - [ ] Edit pipeline config
-    - [ ] Create a pipeline
-    - [ ] Delete a pipeline
-    - [ ] Extract template from pipeline
+- [x] [Pipeline Config](https://api.gocd.org/current/#pipeline-config)
+    - [x] Get pipeline config
+    - [x] Edit pipeline config
+    - [x] Create a pipeline
+    - [x] Delete a pipeline
+    - [x] Extract template from pipeline
 - [ ] [Stage Instances](https://api.gocd.org/current/#stage-instances)
     - [ ] Cancel stage
     - [ ] Get stage instance
@@ -128,9 +128,13 @@ Below are the list of supported APIs:
 - [ ] [Jobs](https://api.gocd.org/current/#jobs)
     - [ ] Get job instance
     - [ ] Get job history
-- [x] [Feeds](https://api.gocd.org/current/#feeds)
+- [ ] [Feeds](https://api.gocd.org/current/#feeds)
     - [x] Get All pipelines
-    - [ ]
+    - [ ] Get Pipeline
+    - [ ] Get Stage
+    - [ ] Get Job
+    - [ ] Get Material
+    - [ ] Scheduled Jobs
 - [x] [Artifact Config](https://api.gocd.org/current/#artifacts-config)
     - [x] Get Artifact Config
     - [x] Update Artifact Config
