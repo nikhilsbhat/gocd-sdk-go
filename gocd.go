@@ -75,6 +75,7 @@ type GoCd interface {
 	UpdatePipelineConfig(config PipelineConfig) (PipelineConfig, error)
 	CreatePipeline(config PipelineConfig) error
 	DeletePipeline(name string) error
+	GetScheduledJobs() (ScheduledJobs, error)
 	ExtractTemplatePipeline(pipeline, template string) (PipelineConfig, error)
 	EncryptText(value string) (Encrypted, error)
 	DecryptText(value, cipherKey string) (string, error)

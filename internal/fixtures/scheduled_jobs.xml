@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scheduledJobs>
+    <job name="job1" id="6">
+        <link rel="self" href="https://ci.example.com/go/tab/build/detail/mypipeline/5/defaultStage/1/job1"/>
+        <link rel="self" href="https://ci.example.com/go/api/feed/pipelines/mypipeline/5/defaultStage/1/job1.xml"/>
+        <link rel="alternate" href="https://ci.example.com/go/tab/build/detail/mypipeline/5/defaultStage/1/job1" title="job1 Job Detail" type="text/html"/>
+        <buildLocator>mypipeline/5/defaultStage/1/job1</buildLocator>
+        <environment>sample_environment</environment>
+    </job>
+</scheduledJobs>

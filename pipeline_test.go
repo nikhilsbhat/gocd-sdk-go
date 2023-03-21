@@ -19,6 +19,8 @@ var (
 	pipelineSchedule string
 	//go:embed internal/fixtures/pipeline_instance.json
 	pipelineInstance string
+	//go:embed internal/fixtures/scheduled_jobs.xml
+	scheduledJobJSON string
 )
 
 var pipelineMap = map[string]interface{}{
@@ -590,3 +592,55 @@ func Test_client_GetPipelineInstance(t *testing.T) {
 //		})
 //	}
 // }
+
+func Test_client_ScheduledJobs(t *testing.T) {
+	t.Run("should error out while fetching scheduled jobs from server", func(t *testing.T) {
+		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
+		client.SetRetryCount(1)
+		client.SetRetryWaitTime(1)
+
+		actual, err := client.GetScheduledJobs()
+		assert.EqualError(t, err, "call made to get scheduled jobs errored with: "+
+			"Get \"http://localhost:8156/go/api/feed/jobs/scheduled.xml\": dial tcp [::1]:8156: connect: connection refused")
+		assert.Equal(t, gocd.ScheduledJobs{}, actual)
+	})
+
+	t.Run("should error out while fetching pipelines as server returned non 200 status code", func(t *testing.T) {
+		server := mockServer([]byte("scheduledJobJSON"), http.StatusBadGateway, nil, true, nil)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
+
+		actual, err := client.GetScheduledJobs()
+		assert.EqualError(t, err, "got 502 from GoCD while making GET call for "+server.URL+
+			"/api/feed/jobs/scheduled.xml\nwith BODY:scheduledJobJSON")
+		assert.Equal(t, gocd.ScheduledJobs{}, actual)
+	})
+
+	t.Run("should error out while fetching pipelines as server returned malformed response", func(t *testing.T) {
+		server := mockServer([]byte(`{"email_on_failure"`), http.StatusOK, nil, true, nil)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
+
+		actual, err := client.GetScheduledJobs()
+		assert.EqualError(t, err, "reading response body errored with: EOF")
+		assert.Equal(t, gocd.ScheduledJobs{}, actual)
+	})
+
+	t.Run("should be able to fetch the pipelines present in GoCD", func(t *testing.T) {
+		server := mockServer([]byte(scheduledJobJSON), http.StatusOK, nil, true, nil)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
+
+		expected := gocd.ScheduledJobs{
+			Job: []gocd.Job{
+				{
+					Name:         "job1",
+					ID:           "6",
+					BuildLocator: "mypipeline/5/defaultStage/1/job1",
+					Environment:  "sample_environment",
+				},
+			},
+		}
+
+		actual, err := client.GetScheduledJobs()
+		assert.NoError(t, err)
+		assert.Equal(t, expected, actual)
+	})
+}

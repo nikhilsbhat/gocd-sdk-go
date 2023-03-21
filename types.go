@@ -160,6 +160,19 @@ type PipelinesInfo struct {
 	} `xml:"pipeline"`
 }
 
+// ScheduledJobs holds information of Scheduled Jobs.
+type ScheduledJobs struct {
+	Job []Job `xml:"job"`
+}
+
+// Job holds information of Scheduled Job.
+type Job struct {
+	Name         string `xml:"name,attr"`
+	ID           string `xml:"id,attr"`
+	BuildLocator string `xml:"buildLocator"`
+	Environment  string `xml:"environment"`
+}
+
 // PipelineState holds information of the latest state of pipeline.
 type PipelineState struct {
 	Name        string `json:"name,omitempty" yaml:"name,omitempty"`

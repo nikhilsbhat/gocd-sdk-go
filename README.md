@@ -134,7 +134,7 @@ Below are the list of supported APIs:
     - [ ] Get Stage
     - [ ] Get Job
     - [ ] Get Material
-    - [ ] Scheduled Jobs
+    - [x] Scheduled Jobs
 - [x] [Artifact Config](https://api.gocd.org/current/#artifacts-config)
     - [x] Get Artifact Config
     - [x] Update Artifact Config

@@ -287,3 +287,27 @@ func (conf *client) GetPipelineHistory(name string, defaultSize, defaultAfter in
 
 	return history, nil
 }
+
+// GetScheduledJobs returns all scheduled jobs from GoCD.
+func (conf *client) GetScheduledJobs() (ScheduledJobs, error) {
+	var scheduledJobs ScheduledJobs
+	newClient := &client{}
+	if err := copier.CopyWithOption(newClient, conf, copier.Option{IgnoreEmpty: true, DeepCopy: true}); err != nil {
+		return scheduledJobs, err
+	}
+
+	resp, err := newClient.httpClient.R().
+		Get(APIJobFeedEndpoint)
+	if err != nil {
+		return scheduledJobs, &errors.APIError{Err: err, Message: "get scheduled jobs"}
+	}
+	if resp.StatusCode() != http.StatusOK {
+		return scheduledJobs, &errors.NonOkError{Code: resp.StatusCode(), Response: resp}
+	}
+
+	if err = xml.Unmarshal(resp.Body(), &scheduledJobs); err != nil {
+		return scheduledJobs, &errors.MarshalError{Err: err}
+	}
+
+	return scheduledJobs, nil
+}

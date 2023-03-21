@@ -35,8 +35,8 @@ func Test_getLoglevel(t *testing.T) {
 func TestGetGoCDMethodNames(t *testing.T) {
 	t.Run("should list all method names", func(t *testing.T) {
 		response := gocd.GetGoCDMethodNames()
-		assert.Equal(t, 123, len(response))
+		assert.Equal(t, 124, len(response))
 		assert.Equal(t, "AgentKillTask", response[0])
-		assert.Equal(t, "UpdateUser", response[122])
+		assert.Equal(t, "UpdateUser", response[123])
 	})
 }
