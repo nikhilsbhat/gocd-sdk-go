@@ -109,7 +109,7 @@ func (conf *client) CreatePipeline(config PipelineConfig) error {
 	resp, err := newClient.httpClient.R().
 		SetHeaders(defaultHeaders).
 		SetBody(config.Config).
-		Post(filepath.Join(PipelineConfigEndpoint, pipelineName))
+		Post(PipelineConfigEndpoint)
 	if err != nil {
 		return &errors.APIError{Err: err, Message: fmt.Sprintf("create pipeline config '%s'", pipelineName)}
 	}
