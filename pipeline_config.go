@@ -96,7 +96,6 @@ func (conf *client) CreatePipeline(config PipelineConfig) error {
 	defaultHeaders := map[string]string{
 		"Accept":       HeaderVersionEleven,
 		"Content-Type": ContentJSON,
-		"If-Match":     config.ETAG,
 	}
 
 	if config.PausePipeline {

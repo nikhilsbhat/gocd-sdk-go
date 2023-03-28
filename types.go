@@ -467,6 +467,8 @@ type Attribute struct {
 	IgnoreForScheduling bool   `json:"ignore_for_scheduling,omitempty" yaml:"ignore_for_scheduling,omitempty"`
 	Destination         string `json:"destination,omitempty" yaml:"destination,omitempty"`
 	InvertFilter        bool   `json:"invert_filter,omitempty" yaml:"invert_filter,omitempty"`
+	SubmoduleFolder     string `json:"submodule_folder,omitempty" yaml:"submodule_folder,omitempty"`
+	ShallowClone        bool   `json:"shallow_clone,omitempty" yaml:"shallow_clone,omitempty"`
 	Filter              struct {
 		Ignore []string `json:"ignore,omitempty" yaml:"ignore,omitempty"`
 	} `json:"filter,omitempty" yaml:"filter,omitempty"`
