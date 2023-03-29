@@ -140,6 +140,7 @@ type PipelineConfig struct {
 	Config        map[string]interface{} `json:"config,omitempty" yaml:"config,omitempty"`
 	PausePipeline bool                   `json:"pause_pipeline,omitempty" yaml:"pause_pipeline,omitempty"`
 	PauseReason   string                 `json:"pause_reason,omitempty" yaml:"pause_reason,omitempty"`
+	Group         string                 `json:"group,omitempty" yaml:"group,omitempty"`
 	ETAG          string                 `json:"etag,omitempty" yaml:"etag,omitempty"`
 }
 
@@ -552,3 +553,100 @@ type UserRole struct {
 	Name string `json:"name,omitempty" yaml:"name,omitempty"`
 	Type string `json:"type,omitempty" yaml:"type,omitempty"`
 }
+
+// type ApprovalConfig struct {
+//	Type          string              `json:"type,omitempty" yaml:"type,omitempty"`
+//	OnlyOnSuccess bool                `json:"allow_only_on_success,omitempty" yaml:"allow_only_on_success,omitempty"`
+//	Authorization AuthorizationConfig `json:"authorization,omitempty" yaml:"authorization,omitempty"`
+//}
+//
+// type TimerConfig struct {
+//	Spec          string `json:"spec,omitempty" yaml:"spec,omitempty"`
+//	OnlyOnChanges bool   `json:"only_on_changes,omitempty" yaml:"only_on_changes,omitempty"`
+//}
+//
+// type EnvironmentVariable struct {
+//	Name           string `json:"name,omitempty" yaml:"name,omitempty"`
+//	Value          string `json:"value,omitempty" yaml:"value,omitempty"`
+//	EncryptedValue string `json:"encrypted_value,omitempty" yaml:"encrypted_value,omitempty"`
+//	IsSecure       bool   `json:"secure,omitempty" yaml:"secure,omitempty"`
+//}
+//
+// type Origin struct {
+//	Type string `json:"type,omitempty" yaml:"type,omitempty"`
+//	ID   string `json:"id,omitempty" yaml:"id,omitempty"`
+//}
+//
+// type AuthorizationConfig struct {
+//	Roles []string `json:"roles,omitempty" yaml:"roles,omitempty"`
+//	Users []string `json:"users,omitempty" yaml:"users,omitempty"`
+// }
+//
+// type TaskConfig struct {
+//	Type       string        `json:"type,omitempty" yaml:"type,omitempty"`
+//	Attributes TaskAttribute `json:"attributes,omitempty" yaml:"attributes,omitempty"`
+// }
+//
+// type TaskAttribute struct {
+//	RunIf            []string `json:"run_if,omitempty" yaml:"run_if,omitempty"`
+//	Command          string   `json:"command,omitempty" yaml:"command,omitempty"`
+//	Args             []string `json:"args,omitempty" yaml:"args,omitempty"`
+//	WorkingDirectory string   `json:"working_directory,omitempty" yaml:"working_directory,omitempty"`
+//	OnCancel         struct {
+//		RunIf            []string `json:"run_if,omitempty" yaml:"run_if,omitempty"`
+//		Command          string   `json:"command,omitempty" yaml:"command,omitempty"`
+//		Args             []string `json:"args,omitempty" yaml:"args,omitempty"`
+//		WorkingDirectory string   `json:"working_directory,omitempty" yaml:"working_directory,omitempty"`
+//	} `json:"on_cancel,omitempty" yaml:"on_cancel,omitempty"`
+// }
+//
+// type ArtifactConfig struct {
+// }
+//
+// type JobConfig struct {
+//	Name                 string                `json:"name,omitempty" yaml:"name,omitempty"`
+//	RunInstanceCount     interface{}           `json:"run_instance_count,omitempty" yaml:"run_instance_count,omitempty"`
+//	Timeout              int                   `json:"timeout,omitempty" yaml:"timeout,omitempty"`
+//	EnvironmentVariables []EnvironmentVariable `json:"environment_variables,omitempty" yaml:"environment_variables,omitempty"`
+//	Resources            []string              `json:"resources,omitempty" yaml:"resources,omitempty"`
+//	Tasks                []TaskConfig          `json:"tasks,omitempty" yaml:"tasks,omitempty"`
+//	Artifacts            []struct {
+//		Type          string `json:"type,omitempty" yaml:"type,omitempty"`
+//		ArtifactID    string `json:"artifact_id,omitempty" yaml:"artifact_id,omitempty"`
+//		StoreID       string `json:"store_id,omitempty" yaml:"store_id,omitempty"`
+//		Configuration []struct {
+//			Key   string `json:"key,omitempty" yaml:"key,omitempty"`
+//			Value string `json:"value,omitempty" yaml:"value,omitempty"`
+//		} `json:"configuration,omitempty" yaml:"configuration,omitempty"`
+//	} `json:"artifacts,omitempty" yaml:"artifacts,omitempty"`
+//	ElasticProfileID string `json:"elastic_profile_id,omitempty" yaml:"elastic_profile_id,omitempty"`
+// }
+//
+// type Stage struct {
+//	Name                  string                `json:"name,omitempty" yaml:"name,omitempty"`
+//	FetchMaterials        bool                  `json:"fetch_materials,omitempty" yaml:"fetch_materials,omitempty"`
+//	CleanWorkingDirectory bool                  `json:"clean_working_directory,omitempty" yaml:"clean-working-directory,omitempty"`
+//	NeverCleanupArtifacts bool                  `json:"never_cleanup_artifacts,omitempty" yaml:"never_cleanup_artifacts,omitempty"`
+//	Approval              ApprovalConfig        `json:"approval,omitempty" yaml:"approval,omitempty"`
+//	EnvironmentVariables  []EnvironmentVariable `json:"environment_variables,omitempty" yaml:"environment_variables,omitempty"`
+//	Jobs                  []JobConfig           `json:"jobs,omitempty" yaml:"jobs,omitempty"`
+// }
+//
+// type Parameter struct {
+//	Name  string `json:"name,omitempty" yaml:"name,omitempty"`
+//	Value string `json:"value,omitempty" yaml:"value,omitempty"`
+// }
+//
+// type AutoGenerated struct {
+//	PipelineGroup        string                `json:"group,omitempty,omitempty" yaml:"group,omitempty"`
+//	LabelTemplate        string                `json:"label_template,omitempty" yaml:"label_template,omitempty"`
+//	LockBehavior         string                `json:"lock_behavior,omitempty" yaml:"lock_behavior,omitempty"`
+//	Name                 string                `json:"name,omitempty" yaml:"name,omitempty"`
+//	Template             string                `json:"template,omitempty" yaml:"template,omitempty"`
+//	Origin               Origin                `json:"origin,omitempty" yaml:"origin,omitempty"`
+//	Parameters           []Parameter           `json:"parameters,omitempty" yaml:"parameters,omitempty"`
+//	EnvironmentVariables []EnvironmentVariable `json:"environment_variables,omitempty" yaml:"environment_variables,omitempty"`
+//	Materials            []Material            `json:"materials,omitempty" yaml:"materials,omitempty"`
+//	Stages               []Stage               `json:"stages,omitempty" yaml:"stages,omitempty"`
+//	Timer                TimerConfig           `json:"timer,omitempty" yaml:"timer,omitempty"`
+// }

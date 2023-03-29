@@ -85,13 +85,18 @@ func (conf *client) UpdatePipelineConfig(config PipelineConfig) (PipelineConfig,
 	return pipelineConfig, nil
 }
 
-func (conf *client) CreatePipeline(config PipelineConfig) error {
+func (conf *client) CreatePipeline(config PipelineConfig) (PipelineConfig, error) {
 	newClient := &client{}
 	if err := copier.CopyWithOption(newClient, conf, copier.Option{IgnoreEmpty: true, DeepCopy: true}); err != nil {
-		return err
+		return PipelineConfig{}, err
 	}
 
 	pipelineName := config.Config["name"].(string)
+
+	pipelineConfig := map[string]interface{}{
+		"pipeline": config.Config,
+		"group":    config.Group,
+	}
 
 	defaultHeaders := map[string]string{
 		"Accept":       HeaderVersionEleven,
@@ -108,17 +113,30 @@ func (conf *client) CreatePipeline(config PipelineConfig) error {
 
 	resp, err := newClient.httpClient.R().
 		SetHeaders(defaultHeaders).
-		SetBody(config.Config).
+		SetBody(pipelineConfig).
 		Post(PipelineConfigEndpoint)
 	if err != nil {
-		return &errors.APIError{Err: err, Message: fmt.Sprintf("create pipeline config '%s'", pipelineName)}
+		return PipelineConfig{}, &errors.APIError{Err: err, Message: fmt.Sprintf("create pipeline config '%s'", pipelineName)}
 	}
 
 	if resp.StatusCode() != http.StatusOK {
-		return &errors.NonOkError{Code: resp.StatusCode(), Response: resp}
+		return PipelineConfig{}, &errors.NonOkError{Code: resp.StatusCode(), Response: resp}
 	}
 
-	return nil
+	var pipelineCfg map[string]interface{}
+	if err = json.Unmarshal(resp.Body(), &pipelineCfg); err != nil {
+		return PipelineConfig{}, &errors.MarshalError{Err: err}
+	}
+
+	delete(pipelineCfg, "_links")
+	delete(pipelineCfg, "origin")
+
+	var cfg PipelineConfig
+
+	cfg.Config = pipelineCfg
+	cfg.ETAG = resp.Header().Get("ETag")
+
+	return cfg, nil
 }
 
 func (conf *client) DeletePipeline(name string) error {

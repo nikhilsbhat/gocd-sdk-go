@@ -487,18 +487,22 @@ func Test_client_CreatePipeline(t *testing.T) {
 	correctPipelineConfigHeader := map[string]string{"Accept": gocd.HeaderVersionEleven}
 	t.Run("should be able to create pipeline configuration successfully", func(t *testing.T) {
 		server := mockServer([]byte(pipelineConfigJSON), http.StatusOK,
-			correctPipelineConfigHeader, false, nil)
+			correctPipelineConfigHeader, false, map[string]string{"ETag": "65dbc5f2d5b9c13a2cwxlfkjdlw23654eofixnwe3b3d8a6155d"})
 
 		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		input := gocd.PipelineConfig{
-			Config:        map[string]interface{}{"name": "new_pipeline"},
+			Group: "new_group",
+			Config: map[string]interface{}{
+				"name": "new_pipeline",
+			},
 			ETAG:          "65dbc5f2d5b9c13a2ccdlw23654b3b3d8a6155d",
 			PausePipeline: true,
 		}
 
-		err := client.CreatePipeline(input)
+		out, err := client.CreatePipeline(input)
 		assert.NoError(t, err)
+		assert.Equal(t, "new_group", out.Config["group"].(string))
 	})
 
 	t.Run("should error out while creating pipeline configuration present in GoCD due to wrong headers", func(t *testing.T) {
@@ -512,9 +516,9 @@ func Test_client_CreatePipeline(t *testing.T) {
 			ETAG:   "65dbc5f2d5b9c13a2ccdlw23654b3b3d8a6155d",
 		}
 
-		err := client.CreatePipeline(input)
+		_, err := client.CreatePipeline(input)
 		assert.EqualError(t, err, "got 404 from GoCD while making POST call for "+server.URL+
-			"/api/admin/pipelines/new_pipeline\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
+			"/api/admin/pipelines\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 	})
 
 	t.Run("should error out while creating pipeline configuration present in GoCD due to missing headers", func(t *testing.T) {
@@ -527,9 +531,9 @@ func Test_client_CreatePipeline(t *testing.T) {
 			ETAG:   "65dbc5f2d5b9c13a2ccdlw23654b3b3d8a6155d",
 		}
 
-		err := client.CreatePipeline(input)
+		_, err := client.CreatePipeline(input)
 		assert.EqualError(t, err, "got 404 from GoCD while making POST call for "+server.URL+
-			"/api/admin/pipelines/new_pipeline\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
+			"/api/admin/pipelines\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 	})
 
 	t.Run("should error out while creating pipeline configuration present in GoCD as server is not reachable", func(t *testing.T) {
@@ -543,8 +547,8 @@ func Test_client_CreatePipeline(t *testing.T) {
 			ETAG:   "65dbc5f2d5b9c13a2ccdlw23654b3b3d8a6155d",
 		}
 
-		err := client.CreatePipeline(input)
+		_, err := client.CreatePipeline(input)
 		assert.EqualError(t, err, "call made to create pipeline config 'new_pipeline' errored with: Post "+
-			"\"http://localhost:8156/go/api/admin/pipelines/new_pipeline\": dial tcp [::1]:8156: connect: connection refused")
+			"\"http://localhost:8156/go/api/admin/pipelines\": dial tcp [::1]:8156: connect: connection refused")
 	})
 }

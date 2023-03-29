@@ -73,7 +73,7 @@ type GoCd interface {
 	CommentOnPipeline(comment PipelineObject) error
 	GetPipelineConfig(name string) (PipelineConfig, error)
 	UpdatePipelineConfig(config PipelineConfig) (PipelineConfig, error)
-	CreatePipeline(config PipelineConfig) error
+	CreatePipeline(config PipelineConfig) (PipelineConfig, error)
 	DeletePipeline(name string) error
 	GetScheduledJobs() (ScheduledJobs, error)
 	ExtractTemplatePipeline(pipeline, template string) (PipelineConfig, error)
