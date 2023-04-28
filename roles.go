@@ -145,7 +145,7 @@ func (conf *client) UpdateRole(config Role) (Role, error) {
 			"If-Match":     config.ETAG,
 		}).
 		SetBody(config).
-		Put(RolesEndpoint)
+		Put(filepath.Join(RolesEndpoint, config.Name))
 	if err != nil {
 		return roleCfg, &errors.APIError{Err: err, Message: fmt.Sprintf("update role '%s'", config.Name)}
 	}

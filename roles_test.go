@@ -542,7 +542,7 @@ func Test_client_UpdateRole(t *testing.T) {
 
 		actual, err := client.UpdateRole(role)
 		assert.EqualError(t, err, "call made to update role 'blackbird' errored with: "+
-			"Put \"http://localhost:8156/go/api/admin/security/roles\": dial tcp [::1]:8156: connect: connection refused")
+			"Put \"http://localhost:8156/go/api/admin/security/roles/blackbird\": dial tcp [::1]:8156: connect: connection refused")
 		assert.Equal(t, expected, actual)
 	})
 }
