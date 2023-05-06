@@ -33,3 +33,7 @@ type NilHeaderError struct {
 type GoCDSDKError struct {
 	Message string
 }
+
+type PipelineValidationError struct {
+	Message string
+}
