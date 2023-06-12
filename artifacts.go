@@ -24,7 +24,7 @@ func (conf *client) UpdateArtifactConfig(info ArtifactInfo) (ArtifactInfo, error
 			"If-Match":     info.ETAG,
 		}).
 		SetBody(info).
-		Post(ArtifactInfoEndpoint)
+		Put(ArtifactInfoEndpoint)
 	if err != nil {
 		return ArtifactInfo{}, &errors.APIError{Err: err, Message: "update artifacts info"}
 	}
