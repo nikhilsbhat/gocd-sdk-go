@@ -1,0 +1,14 @@
+[
+  {
+    "pipeline_name": "pipeline-1",
+    "stage_name": "integration",
+    "job_name": "build",
+    "pipeline_config_origin": "config_repo"
+  },
+  {
+    "pipeline_name": "pipeline-2",
+    "stage_name": "package",
+    "job_name": "default",
+    "pipeline_config_origin": "config_repo"
+  }
+]

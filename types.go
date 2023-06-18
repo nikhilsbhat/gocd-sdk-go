@@ -440,6 +440,11 @@ type Materials struct {
 	} `json:"_embedded,omitempty" yaml:"_embedded,omitempty"`
 }
 
+// MaterialUsage holds information of pipelines using a specific material.
+type MaterialUsage struct {
+	Usages []string `json:"usages,omitempty" yaml:"usages,omitempty"`
+}
+
 // Material holds information of a particular material type present in GoCD.
 type Material struct {
 	Type        string    `json:"type,omitempty" yaml:"type,omitempty"`
@@ -552,6 +557,15 @@ type User struct {
 type UserRole struct {
 	Name string `json:"name,omitempty" yaml:"name,omitempty"`
 	Type string `json:"type,omitempty" yaml:"type,omitempty"`
+}
+
+// ElasticProfileUsage holds information on elastic agent profile being used by a pipeline/stage/job.
+// This is golang implementation of GoCD's internal API 'api/internal/elastic/profiles/<elastic-profile-name>/usages'.
+type ElasticProfileUsage struct {
+	PipelineName         string `json:"pipeline_name,omitempty" yaml:"pipeline_name,omitempty"`
+	StageName            string `json:"stage_name,omitempty" yaml:"stage_name,omitempty"`
+	JobName              string `json:"job_name,omitempty" yaml:"job_name,omitempty"`
+	PipelineConfigOrigin string `json:"pipeline_config_origin,omitempty" yaml:"pipeline_config_origin,omitempty"`
 }
 
 // type ApprovalConfig struct {

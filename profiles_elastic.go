@@ -153,3 +153,30 @@ func (conf *client) DeleteElasticAgentProfile(name string) error {
 
 	return nil
 }
+
+func (conf *client) GetElasticAgentProfileUsage(profileID string) ([]ElasticProfileUsage, error) {
+	newClient := &client{}
+	if err := copier.CopyWithOption(newClient, conf, copier.Option{IgnoreEmpty: true, DeepCopy: true}); err != nil {
+		return nil, err
+	}
+
+	var elasticProfileUsage []ElasticProfileUsage
+	resp, err := newClient.httpClient.R().
+		SetHeaders(map[string]string{
+			"Accept": HeaderVersionOne,
+		}).
+		Get(fmt.Sprintf(ElasticProfileUsageEndpoint, profileID))
+	if err != nil {
+		return nil, &errors.APIError{Err: err, Message: fmt.Sprintf("get elastic agent profile usage '%s'", profileID)}
+	}
+
+	if resp.StatusCode() != http.StatusOK {
+		return nil, &errors.NonOkError{Code: resp.StatusCode(), Response: resp}
+	}
+
+	if err = json.Unmarshal(resp.Body(), &elasticProfileUsage); err != nil {
+		return nil, &errors.MarshalError{Err: err}
+	}
+
+	return elasticProfileUsage, nil
+}

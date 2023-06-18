@@ -95,14 +95,14 @@ func Test_client_UpdateArtifactConfig(t *testing.T) {
 				PurgeStartDiskSpace float64 `json:"purge_start_disk_space,omitempty" yaml:"purge_start_disk_space,omitempty"`
 				PurgeUptoDiskSpace  float64 `json:"purge_upto_disk_space,omitempty" yaml:"purge_upto_disk_space,omitempty"`
 			}{
-				PurgeStartDiskSpace: 20.0,
+				PurgeStartDiskSpace: 10.0,
 			},
 			ETAG: "17f5a9edf150884e5fc4315b4a7814cd",
 		}
 
 		actual, err := client.UpdateArtifactConfig(artifactConfig)
 		assert.NoError(t, err)
-		assert.Equal(t, float64(20), actual.PurgeSettings.PurgeStartDiskSpace)
+		assert.Equal(t, float64(10), actual.PurgeSettings.PurgeStartDiskSpace)
 	})
 
 	t.Run("should error out while updating the artifact information in GoCD due to wrong headers", func(t *testing.T) {
@@ -110,7 +110,7 @@ func Test_client_UpdateArtifactConfig(t *testing.T) {
 		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		actual, err := client.UpdateArtifactConfig(gocd.ArtifactInfo{})
-		assert.EqualError(t, err, "got 404 from GoCD while making POST call for "+server.URL+
+		assert.EqualError(t, err, "got 404 from GoCD while making PUT call for "+server.URL+
 			"/api/admin/config/server/artifact_config\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 		assert.Equal(t, gocd.ArtifactInfo{}, actual)
 	})
@@ -120,13 +120,13 @@ func Test_client_UpdateArtifactConfig(t *testing.T) {
 		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		actual, err := client.UpdateArtifactConfig(gocd.ArtifactInfo{})
-		assert.EqualError(t, err, "got 404 from GoCD while making POST call for "+server.URL+
+		assert.EqualError(t, err, "got 404 from GoCD while making PUT call for "+server.URL+
 			"/api/admin/config/server/artifact_config\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 		assert.Equal(t, gocd.ArtifactInfo{}, actual)
 	})
 
 	t.Run("should error out while updating the artifact information as server returned malformed data", func(t *testing.T) {
-		server := mockArtifactInfoServer([]byte("artifactInfoJSON"), http.StatusInternalServerError, correctArtifactsHeader)
+		server := mockArtifactInfoServer([]byte("artifactInfoJSON"), http.StatusOK, correctArtifactsHeader)
 		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		artifactConfig := gocd.ArtifactInfo{
@@ -153,11 +153,12 @@ func Test_client_UpdateArtifactConfig(t *testing.T) {
 
 		actual, err := client.UpdateArtifactConfig(gocd.ArtifactInfo{})
 		assert.EqualError(t, err, "call made to update artifacts info errored with: "+
-			"Post \"http://localhost:8156/go/api/admin/config/server/artifact_config\": dial tcp [::1]:8156: connect: connection refused")
+			"Put \"http://localhost:8156/go/api/admin/config/server/artifact_config\": dial tcp [::1]:8156: connect: connection refused")
 		assert.Equal(t, gocd.ArtifactInfo{}, actual)
 	})
 }
 
+//nolint:unparam
 func mockArtifactInfoServer(body []byte, statusCode int, header map[string]string) *httptest.Server {
 	return httptest.NewServer(http.HandlerFunc(func(writer http.ResponseWriter, req *http.Request) {
 		if header == nil {

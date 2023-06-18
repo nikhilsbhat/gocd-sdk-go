@@ -14,6 +14,8 @@ var (
 	elasticAgentProfilesJSON string
 	//go:embed internal/fixtures/elastic_agent_profile.json
 	elasticAgentProfileJSON string
+	//go:embed internal/fixtures/elastic_agent_profiles_usage.json
+	elasticAgentProfileUsageJSON string
 )
 
 func Test_client_GetElasticAgentProfiles(t *testing.T) {
@@ -431,5 +433,80 @@ func Test_client_CreateElasticAgentProfile(t *testing.T) {
 		assert.EqualError(t, err, "call made to create elastic agent profile 'unit-tests' errored with: "+
 			"Post \"http://localhost:8156/go/api/elastic/profiles\": dial tcp [::1]:8156: connect: connection refused")
 		assert.Equal(t, expected, actual)
+	})
+}
+
+func Test_client_GetElasticAgentProfileUsage(t *testing.T) {
+	correctArtifactHeader := map[string]string{"Accept": gocd.HeaderVersionOne}
+	profileName := "prod-cluster"
+	t.Run("should be able to fetch usage of an elastic agent profile successfully", func(t *testing.T) {
+		server := mockServer([]byte(elasticAgentProfileUsageJSON), http.StatusOK,
+			correctArtifactHeader, true, nil)
+
+		client := gocd.NewClient(server.URL, auth, "info", nil)
+
+		expected := []gocd.ElasticProfileUsage{
+			{
+				PipelineName:         "pipeline-1",
+				StageName:            "integration",
+				JobName:              "build",
+				PipelineConfigOrigin: "config_repo",
+			},
+			{
+				PipelineName:         "pipeline-2",
+				StageName:            "package",
+				JobName:              "default",
+				PipelineConfigOrigin: "config_repo",
+			},
+		}
+
+		actual, err := client.GetElasticAgentProfileUsage(profileName)
+		assert.NoError(t, err)
+		assert.Equal(t, expected, actual)
+	})
+
+	t.Run("should fail while fetching usage of an elastic agent profile successfully due to wrong headers", func(t *testing.T) {
+		server := mockServer([]byte(elasticAgentProfileUsageJSON), http.StatusOK,
+			map[string]string{"Accept": gocd.HeaderVersionThree}, false, nil)
+
+		client := gocd.NewClient(server.URL, auth, "info", nil)
+
+		actual, err := client.GetElasticAgentProfileUsage(profileName)
+		assert.EqualError(t, err, "got 404 from GoCD while making GET call for "+server.URL+
+			"/api/internal/elastic/profiles/prod-cluster/usages\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
+		assert.Nil(t, actual)
+	})
+
+	t.Run("should error out while fetching a specific elastic agent profile present in GoCD due to missing headers", func(t *testing.T) {
+		server := mockServer([]byte(elasticAgentProfilesJSON), http.StatusOK,
+			nil, false, nil)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
+
+		actual, err := client.GetElasticAgentProfileUsage(profileName)
+		assert.EqualError(t, err, "got 404 from GoCD while making GET call for "+server.URL+
+			"/api/internal/elastic/profiles/prod-cluster/usages\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
+		assert.Nil(t, actual)
+	})
+
+	t.Run("should error out while fetching a specific elastic agent profile present in GoCD as server returned malformed response", func(t *testing.T) {
+		server := mockServer([]byte("elasticAgentProfilesJSON"), http.StatusOK, correctArtifactHeader,
+			false, map[string]string{"ETag": "cbc5f2d5b9c13a2cc1b1efb3d8a6155d"})
+		client := gocd.NewClient(server.URL, auth, "info", nil)
+
+		actual, err := client.GetElasticAgentProfileUsage(profileName)
+		assert.EqualError(t, err, "reading response body errored with: invalid character 'e' looking for beginning of value")
+		assert.Nil(t, actual)
+	})
+
+	t.Run("should error out while fetching a specific elastic agent profile present in GoCD as server is not reachable", func(t *testing.T) {
+		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
+
+		client.SetRetryCount(1)
+		client.SetRetryWaitTime(1)
+
+		actual, err := client.GetElasticAgentProfileUsage(profileName)
+		assert.EqualError(t, err, "call made to get elastic agent profile usage 'prod-cluster' errored with: "+
+			"Get \"http://localhost:8156/go/api/internal/elastic/profiles/prod-cluster/usages\": dial tcp [::1]:8156: connect: connection refused")
+		assert.Nil(t, actual)
 	})
 }

@@ -106,6 +106,7 @@ type GoCd interface {
 	CreateElasticAgentProfile(config CommonConfig) (CommonConfig, error)
 	UpdateElasticAgentProfile(config CommonConfig) (CommonConfig, error)
 	DeleteElasticAgentProfile(name string) error
+	GetElasticAgentProfileUsage(profileID string) ([]ElasticProfileUsage, error)
 	GetArtifactStores() (ArtifactStoresConfig, error)
 	GetArtifactStore(name string) (CommonConfig, error)
 	CreateArtifactStore(config CommonConfig) (CommonConfig, error)
@@ -127,6 +128,7 @@ type GoCd interface {
 	UpdatePackage(config Package) (Package, error)
 	DeletePackage(id string) error
 	GetMaterials() ([]Material, error)
+	GetMaterialUsage(materialID string) ([]string, error)
 	GetRoles() (RolesConfig, error)
 	GetRole(name string) (Role, error)
 	GetRolesByType(roleType string) (RolesConfig, error)

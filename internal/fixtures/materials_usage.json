@@ -1,0 +1,19 @@
+{
+  "_links": {
+    "self": {
+      "href": "https://gocd.example.com/go/api/config/materials/2faa648612e02becba2b6809fb375f1810acec79498fe50908cebdc5ba0a0a5b/usages"
+    },
+    "doc": {
+      "href": "https://api.gocd.org/23.1.0/#materials"
+    }
+  },
+  "usages": [
+    "pipeline_1",
+    "pipeline_2",
+    "pipeline_3",
+    "pipeline_4",
+    "pipeline_5",
+    "pipeline_6",
+    "pipeline_7"
+  ]
+}
