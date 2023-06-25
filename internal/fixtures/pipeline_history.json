@@ -1,0 +1,175 @@
+{
+  "pipelines": [
+    {
+      "name": "helm-images",
+      "counter": 3,
+      "label": "3",
+      "natural_order": 3.0,
+      "can_run": true,
+      "preparing_to_schedule": false,
+      "comment": null,
+      "scheduled_date": 1678470766332,
+      "build_cause": {
+        "trigger_message": "Forced by admin",
+        "trigger_forced": true,
+        "approver": "admin",
+        "material_revisions": [
+          {
+            "changed": false,
+            "material": {
+              "name": "https://github.com/nikhilsbhat/helm-images",
+              "fingerprint": "ea413acf810a2a40e28a2799d9d5338aebc07528836f53f42faafb93d64b88a4",
+              "type": "Git",
+              "description": "URL: https://github.com/nikhilsbhat/helm-images, Branch: master"
+            },
+            "modifications": [
+              {
+                "revision": "53e460445e7c9cd51815ae6b956cd911843678f8",
+                "modified_time": 1677128658000,
+                "user_name": "nikhilsbhat <nikhilsbhat93@gmail.com>",
+                "comment": "Add release downloads shields to README",
+                "email_address": null
+              }
+            ]
+          }
+        ]
+      },
+      "stages": [
+        {
+          "result": "Passed",
+          "status": "Passed",
+          "rerun_of_counter": null,
+          "name": "build",
+          "counter": "1",
+          "scheduled": true,
+          "approval_type": "success",
+          "approved_by": "admin",
+          "operate_permission": true,
+          "can_run": true,
+          "jobs": [
+            {
+              "name": "build",
+              "scheduled_date": 1678470766332,
+              "state": "Completed",
+              "result": "Passed"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "helm-images",
+      "counter": 2,
+      "label": "2",
+      "natural_order": 2.0,
+      "can_run": true,
+      "preparing_to_schedule": false,
+      "comment": null,
+      "scheduled_date": 1677128882155,
+      "build_cause": {
+        "trigger_message": "modified by nikhilsbhat <nikhilsbhat93@gmail.com>",
+        "trigger_forced": false,
+        "approver": "changes",
+        "material_revisions": [
+          {
+            "changed": true,
+            "material": {
+              "name": "https://github.com/nikhilsbhat/helm-images",
+              "fingerprint": "ea413acf810a2a40e28a2799d9d5338aebc07528836f53f42faafb93d64b88a4",
+              "type": "Git",
+              "description": "URL: https://github.com/nikhilsbhat/helm-images, Branch: master"
+            },
+            "modifications": [
+              {
+                "revision": "53e460445e7c9cd51815ae6b956cd911843678f8",
+                "modified_time": 1677128658000,
+                "user_name": "nikhilsbhat <nikhilsbhat93@gmail.com>",
+                "comment": "Add release downloads shields to README",
+                "email_address": null
+              }
+            ]
+          }
+        ]
+      },
+      "stages": [
+        {
+          "result": "Passed",
+          "status": "Passed",
+          "rerun_of_counter": null,
+          "name": "build",
+          "counter": "1",
+          "scheduled": true,
+          "approval_type": "success",
+          "approved_by": "changes",
+          "operate_permission": true,
+          "can_run": true,
+          "jobs": [
+            {
+              "name": "build",
+              "scheduled_date": 1677128882155,
+              "state": "Completed",
+              "result": "Passed"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "helm-images",
+      "counter": 1,
+      "label": "1",
+      "natural_order": 1.0,
+      "can_run": true,
+      "preparing_to_schedule": false,
+      "comment": null,
+      "scheduled_date": 1672544013154,
+      "build_cause": {
+        "trigger_message": "Forced by admin",
+        "trigger_forced": true,
+        "approver": "admin",
+        "material_revisions": [
+          {
+            "changed": true,
+            "material": {
+              "name": "https://github.com/nikhilsbhat/helm-images",
+              "fingerprint": "ea413acf810a2a40e28a2799d9d5338aebc07528836f53f42faafb93d64b88a4",
+              "type": "Git",
+              "description": "URL: https://github.com/nikhilsbhat/helm-images, Branch: master"
+            },
+            "modifications": [
+              {
+                "revision": "13fd57d23c2ea1c987d40341d81115c3f183347d",
+                "modified_time": 1669178542000,
+                "user_name": "nikhilsbhat <nikhilsbhat93@gmail.com>",
+                "comment": "Bumping up the plugin version to 0.0.8",
+                "email_address": null
+              }
+            ]
+          }
+        ]
+      },
+      "stages": [
+        {
+          "result": "Passed",
+          "status": "Passed",
+          "rerun_of_counter": null,
+          "name": "build",
+          "counter": "1",
+          "scheduled": true,
+          "approval_type": "success",
+          "approved_by": "admin",
+          "operate_permission": true,
+          "can_run": true,
+          "jobs": [
+            {
+              "name": "build",
+              "scheduled_date": 1672544013154,
+              "state": "Completed",
+              "result": "Passed"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

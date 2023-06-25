@@ -11,6 +11,7 @@ const (
 	PipelineGroupEndpoint       = "/api/admin/pipeline_groups"
 	EnvironmentEndpoint         = "/api/admin/environments"
 	JobRunHistoryEndpoint       = "/api/agents/%s/job_run_history"
+	LastXPipelineScheduledDates = "/pipelineHistory.json?pipelineName=%s"
 	MaintenanceEndpoint         = "/api/admin/maintenance_mode"
 	APIFeedPipelineEndpoint     = "/api/feed/pipelines.xml"
 	APIJobFeedEndpoint          = "/api/feed/jobs/scheduled.xml"

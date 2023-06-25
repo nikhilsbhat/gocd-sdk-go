@@ -1,0 +1,78 @@
+{
+  "pipelineName": "helm-images",
+  "paused": "false",
+  "pauseCause": "",
+  "pauseBy": "",
+  "canForce": "true",
+  "nextLabel": "",
+  "groups": [
+    {
+      "config": {
+        "stages": [
+          {
+            "name": "build",
+            "isAutoApproved": "true"
+          }
+        ]
+      },
+      "history": [
+        {
+          "pipelineId": 258,
+          "label": "8",
+          "counterOrLabel": "8",
+          "scheduled_date": "25 Jun, 2023 at 12:48:41 [+0530]",
+          "scheduled_timestamp": 1687677521085,
+          "buildCauseBy": "Triggered by admin",
+          "modification_date": "about 1 month ago",
+          "materialRevisions": [],
+          "stages": [
+            {
+              "stageName": "build",
+              "stageId": 261,
+              "stageStatus": "Passed",
+              "stageLocator": "helm-images/8/build/4",
+              "getCanRun": "true",
+              "getCanCancel": "false",
+              "scheduled": "true",
+              "stageCounter": "4",
+              "approvedBy": "admin"
+            }
+          ],
+          "revision": "eeac2c4812b97105f5110bd2d93464220a07a7d8",
+          "comment": null
+        },
+        {
+          "pipelineId": 226,
+          "label": "7",
+          "counterOrLabel": "7",
+          "scheduled_date": "18 Jun, 2023 at 18:39:04 [+0530]",
+          "scheduled_timestamp": 1687093744510,
+          "buildCauseBy": "Triggered by changes",
+          "modification_date": "about 1 month ago",
+          "materialRevisions": [],
+          "stages": [
+            {
+              "stageName": "build",
+              "stageId": 226,
+              "stageStatus": "Passed",
+              "stageLocator": "helm-images/7/build/1",
+              "getCanRun": "true",
+              "getCanCancel": "false",
+              "scheduled": "true",
+              "stageCounter": "1",
+              "approvedBy": "changes"
+            }
+          ],
+          "revision": "eeac2c4812b97105f5110bd2d93464220a07a7d8",
+          "comment": null
+        }
+      ]
+    }
+  ],
+  "forcedBuild": "false",
+  "showForceBuildButton": "false",
+  "canPause": "true",
+  "count": 8,
+  "start": 0,
+  "perPage": 2
+}

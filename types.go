@@ -161,6 +161,41 @@ type PipelinesInfo struct {
 	} `xml:"pipeline"`
 }
 
+// PipelineRunHistory holds information of pipeline run history.
+type PipelineRunHistory struct {
+	Name          string             `json:"name,omitempty" yaml:"name,omitempty"`
+	Counter       int                `json:"counter,omitempty" yaml:"counter,omitempty"`
+	ScheduledDate float64            `json:"scheduled_date,omitempty" yaml:"scheduled_date,omitempty"`
+	BuildCause    PipelineBuildCause `json:"build_cause,omitempty" yaml:"build_cause,omitempty"`
+}
+
+type PipelineBuildCause struct {
+	Message       string `json:"trigger_message,omitempty" yaml:"message,omitempty"`
+	Approver      string `json:"approver,omitempty" yaml:"approver,omitempty"`
+	TriggerForced bool   `json:"trigger_forced,omitempty" yaml:"trigger_forced,omitempty"`
+}
+
+// PipelineSchedules holds information of pipeline schedules.
+type PipelineSchedules struct {
+	Name   string                    `json:"pipelineName,omitempty" yaml:"pipelineName,omitempty"`
+	Count  int                       `json:"count,omitempty" yaml:"count,omitempty"`
+	Groups []PipelineSchedulesGroups `json:"groups,omitempty" yaml:"groups,omitempty"`
+}
+
+// PipelineSchedulesGroups holds information of pipeline schedules group.
+type PipelineSchedulesGroups struct {
+	History []PipelineSchedulesHistory `json:"history,omitempty" yaml:"history,omitempty"`
+}
+
+// PipelineSchedulesHistory holds information of pipeline schedule history.
+type PipelineSchedulesHistory struct {
+	Label              string  `json:"label,omitempty" yaml:"label,omitempty"`
+	ScheduledDate      string  `json:"scheduled_date,omitempty" yaml:"scheduled_date,omitempty"`
+	ScheduledTimestamp float64 `json:"scheduled_timestamp,omitempty" yaml:"scheduled_timestamp,omitempty"`
+	ModificationDate   string  `json:"modification_date,omitempty" yaml:"modification_date,omitempty"`
+	BuildCause         string  `json:"buildCauseBy,omitempty" yaml:"buildCauseBy,omitempty"`
+}
+
 // ScheduledJobs holds information of Scheduled Jobs.
 type ScheduledJobs struct {
 	Job []Job `xml:"job"`

@@ -67,6 +67,74 @@ func (conf *client) GetPipelineState(pipeline string) (PipelineState, error) {
 	return pipelinesStatus, nil
 }
 
+// GetPipelineRunHistory fetches all run history of selected pipeline from GoCD server.
+// This would be an expensive operation; make sure to run it during non-peak hours.
+func (conf *client) GetPipelineRunHistory(pipeline string) ([]PipelineRunHistory, error) {
+	newClient := &client{}
+	if err := copier.CopyWithOption(newClient, conf, copier.Option{IgnoreEmpty: true, DeepCopy: true}); err != nil {
+		return nil, err
+	}
+
+	type runHistory struct {
+		Pipelines []PipelineRunHistory `json:"pipelines,omitempty" yaml:"pipelines,omitempty"`
+	}
+
+	var pipelineRunHistory runHistory
+
+	resp, err := newClient.httpClient.R().
+		SetHeaders(map[string]string{
+			"Accept":       HeaderVersionOne,
+			"Content-Type": ContentJSON,
+		}).
+		Get(filepath.Join(PipelinesEndpoint, pipeline, "history"))
+	if err != nil {
+		return nil, &errors.APIError{Err: err, Message: fmt.Sprintf("get pipeline %s", pipeline)}
+	}
+
+	if resp.StatusCode() != http.StatusOK {
+		return nil, &errors.NonOkError{Code: resp.StatusCode(), Response: resp}
+	}
+
+	if err = json.Unmarshal(resp.Body(), &pipelineRunHistory); err != nil {
+		return nil, &errors.MarshalError{Err: err}
+	}
+
+	return pipelineRunHistory.Pipelines, nil
+}
+
+// GetPipelineSchedules fetches the last X schedules of the selected pipeline from GoCD server.
+func (conf *client) GetPipelineSchedules(pipeline, start, perPage string) (PipelineSchedules, error) {
+	newClient := &client{}
+	if err := copier.CopyWithOption(newClient, conf, copier.Option{IgnoreEmpty: true, DeepCopy: true}); err != nil {
+		return PipelineSchedules{}, err
+	}
+
+	var pipelineSchedules PipelineSchedules
+	resp, err := newClient.httpClient.R().
+		SetHeaders(map[string]string{
+			"Accept":       HeaderVersionZero,
+			"Content-Type": ContentJSON,
+		}).
+		SetQueryParams(map[string]string{
+			"start":   start,
+			"perPage": perPage,
+		}).
+		Get(fmt.Sprintf(LastXPipelineScheduledDates, pipeline))
+	if err != nil {
+		return PipelineSchedules{}, &errors.APIError{Err: err, Message: fmt.Sprintf("get pipeline schedules %s", pipeline)}
+	}
+
+	if resp.StatusCode() != http.StatusOK {
+		return PipelineSchedules{}, &errors.NonOkError{Code: resp.StatusCode(), Response: resp}
+	}
+
+	if err = json.Unmarshal(resp.Body(), &pipelineSchedules); err != nil {
+		return PipelineSchedules{}, &errors.MarshalError{Err: err}
+	}
+
+	return pipelineSchedules, nil
+}
+
 // PipelinePause pauses specified pipeline with valid message passed.
 func (conf *client) PipelinePause(name string, message any) error {
 	newClient := &client{}
@@ -240,53 +308,53 @@ func (conf *client) GetPipelineInstance(pipeline PipelineObject) (map[string]int
 }
 
 // GetPipelineHistory fetches the history of a selected pipeline with counter.
-func (conf *client) GetPipelineHistory(name string, defaultSize, defaultAfter int) ([]map[string]interface{}, error) {
-	var history []map[string]interface{}
-	newClient := &client{}
-	if err := copier.CopyWithOption(newClient, conf, copier.Option{IgnoreEmpty: true, DeepCopy: true}); err != nil {
-		return history, err
-	}
-
-	paginate := true
-	size := defaultSize
-	after := defaultAfter
-
-	for paginate {
-		var pipelineHistory PipelineHistory
-		resp, err := newClient.httpClient.R().
-			SetQueryParams(map[string]string{
-				"page_size": strconv.Itoa(size),
-				"after":     strconv.Itoa(after),
-			}).
-			SetHeaders(map[string]string{
-				"Accept": HeaderVersionOne,
-			}).
-			Get(filepath.Join(PipelinesEndpoint, name, "history"))
-		if err != nil {
-			return history, &errors.APIError{Err: err, Message: fmt.Sprintf("fetch pipeline history '%s'", name)}
-		}
-
-		if resp.StatusCode() != http.StatusOK {
-			return history, &errors.NonOkError{Code: resp.StatusCode(), Response: resp}
-		}
-
-		if err = json.Unmarshal(resp.Body(), &pipelineHistory); err != nil {
-			return history, &errors.MarshalError{Err: err}
-		}
-
-		if (len(pipelineHistory.Pipelines) == 0) || (pipelineHistory.Links["next"] == nil) {
-			conf.logger.Debug("no more pages to paginate, moving out of loop")
-			paginate = false
-		}
-
-		after = size
-		size += defaultSize
-
-		history = append(history, pipelineHistory.Pipelines...)
-	}
-
-	return history, nil
-}
+// func (conf *client) GetPipelineHistory(name string, defaultSize, defaultAfter int) ([]map[string]interface{}, error) {
+//	var history []map[string]interface{}
+//	newClient := &client{}
+//	if err := copier.CopyWithOption(newClient, conf, copier.Option{IgnoreEmpty: true, DeepCopy: true}); err != nil {
+//		return history, err
+//	}
+//
+//	paginate := true
+//	size := defaultSize
+//	after := defaultAfter
+//
+//	for paginate {
+//		var pipelineHistory PipelineHistory
+//		resp, err := newClient.httpClient.R().
+//			SetQueryParams(map[string]string{
+//				"page_size": strconv.Itoa(size),
+//				"after":     strconv.Itoa(after),
+//			}).
+//			SetHeaders(map[string]string{
+//				"Accept": HeaderVersionOne,
+//			}).
+//			Get(filepath.Join(PipelinesEndpoint, name, "history"))
+//		if err != nil {
+//			return history, &errors.APIError{Err: err, Message: fmt.Sprintf("fetch pipeline history '%s'", name)}
+//		}
+//
+//		if resp.StatusCode() != http.StatusOK {
+//			return history, &errors.NonOkError{Code: resp.StatusCode(), Response: resp}
+//		}
+//
+//		if err = json.Unmarshal(resp.Body(), &pipelineHistory); err != nil {
+//			return history, &errors.MarshalError{Err: err}
+//		}
+//
+//		if (len(pipelineHistory.Pipelines) == 0) || (pipelineHistory.Links["next"] == nil) {
+//			conf.logger.Debug("no more pages to paginate, moving out of loop")
+//			paginate = false
+//		}
+//
+//		after = size
+//		size += defaultSize
+//
+//		history = append(history, pipelineHistory.Pipelines...)
+//	}
+//
+//	return history, nil
+//}
 
 // GetScheduledJobs returns all scheduled jobs from GoCD.
 func (conf *client) GetScheduledJobs() (ScheduledJobs, error) {

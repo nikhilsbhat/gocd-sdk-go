@@ -21,6 +21,10 @@ var (
 	pipelineInstance string
 	//go:embed internal/fixtures/scheduled_jobs.xml
 	scheduledJobJSON string
+	//go:embed internal/fixtures/pipeline_schedules.json
+	pipelineSchedulesJSON string
+	//go:embed internal/fixtures/pipeline_history.json
+	pipelineRunHistoryJSON string
 )
 
 var pipelineMap = map[string]interface{}{
@@ -113,6 +117,139 @@ func Test_client_GetPipelines(t *testing.T) {
 		actual, err := client.GetPipelines()
 		assert.NoError(t, err)
 		assert.Equal(t, 3, len(actual.Pipeline))
+	})
+}
+
+func Test_client_GetPipelineSchedules(t *testing.T) {
+	t.Run("should error out while fetching pipeline schedules from server", func(t *testing.T) {
+		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
+		client.SetRetryCount(1)
+		client.SetRetryWaitTime(1)
+
+		actual, err := client.GetPipelineSchedules("helm-images", "0", "2")
+		assert.EqualError(t, err, "call made to get pipeline schedules helm-images errored with: Get "+
+			"\"http://localhost:8156/go/pipelineHistory.json?pipelineName=helm-images&perPage=2&start=0\": dial tcp [::1]:8156: connect: connection refused")
+		assert.Equal(t, gocd.PipelineSchedules{}, actual)
+	})
+
+	t.Run("should error out while fetching pipeline schedules as server returned non 200 status code", func(t *testing.T) {
+		server := mockServer([]byte("pipelineSchedulesJSON"), http.StatusBadGateway, nil, true, nil)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
+
+		actual, err := client.GetPipelineSchedules("helm-images", "0", "2")
+		assert.EqualError(t, err, "got 502 from GoCD while making GET call for "+server.URL+
+			"/pipelineHistory.json?pipelineName=helm-images&perPage=2&start=0\nwith BODY:pipelineSchedulesJSON")
+		assert.Equal(t, gocd.PipelineSchedules{}, actual)
+	})
+
+	t.Run("should error out while fetching pipeline schedules as server returned malformed response", func(t *testing.T) {
+		server := mockServer([]byte(`{"pipelineSchedulesJSON"}`), http.StatusOK, nil, true, nil)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
+
+		actual, err := client.GetPipelineSchedules("helm-images", "0", "2")
+		assert.EqualError(t, err, "reading response body errored with: invalid character '}' after object key")
+		assert.Equal(t, gocd.PipelineSchedules{}, actual)
+	})
+
+	t.Run("should be able to fetch the pipeline schedules present in GoCD", func(t *testing.T) {
+		server := mockServer([]byte(pipelineSchedulesJSON), http.StatusOK, map[string]string{
+			"Accept":       gocd.HeaderVersionZero,
+			"Content-Type": gocd.ContentJSON,
+		}, true, nil)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
+
+		expected := gocd.PipelineSchedules{
+			Name:  "helm-images",
+			Count: 8, Groups: []gocd.PipelineSchedulesGroups{
+				{
+					History: []gocd.PipelineSchedulesHistory{
+						{
+							Label:              "8",
+							ScheduledDate:      "25 Jun, 2023 at 12:48:41 [+0530]",
+							ScheduledTimestamp: 1.687677521085e+12,
+							ModificationDate:   "about 1 month ago",
+							BuildCause:         "Triggered by admin",
+						},
+						{
+							Label:              "7",
+							ScheduledDate:      "18 Jun, 2023 at 18:39:04 [+0530]",
+							ScheduledTimestamp: 1.68709374451e+12,
+							ModificationDate:   "about 1 month ago",
+							BuildCause:         "Triggered by changes",
+						},
+					},
+				},
+			},
+		}
+
+		actual, err := client.GetPipelineSchedules("helm-images", "0", "2")
+		assert.NoError(t, err)
+		assert.Equal(t, expected, actual)
+	})
+}
+
+func Test_client_GetPipelineHistory(t *testing.T) {
+	t.Run("should error out while fetching pipeline run history from server", func(t *testing.T) {
+		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
+		client.SetRetryCount(1)
+		client.SetRetryWaitTime(1)
+
+		actual, err := client.GetPipelineRunHistory("helm-images")
+		assert.EqualError(t, err, "call made to get pipeline helm-images errored with: "+
+			"Get \"http://localhost:8156/go/api/pipelines/helm-images/history\": dial tcp [::1]:8156: connect: connection refused")
+		assert.Nil(t, actual)
+	})
+
+	t.Run("should error out while fetching pipeline run history as server returned non 200 status code", func(t *testing.T) {
+		server := mockServer([]byte("pipelineRunHistoryJSON"), http.StatusBadGateway, nil, true, nil)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
+
+		actual, err := client.GetPipelineRunHistory("helm-images")
+		assert.EqualError(t, err, "got 502 from GoCD while making GET call for "+server.URL+
+			"/api/pipelines/helm-images/history\nwith BODY:pipelineRunHistoryJSON")
+		assert.Nil(t, actual)
+	})
+
+	t.Run("should error out while fetching pipeline run history as server returned malformed response", func(t *testing.T) {
+		server := mockServer([]byte(`{"pipelineRunHistoryJSON"}`), http.StatusOK, nil, true, nil)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
+
+		actual, err := client.GetPipelineRunHistory("helm-images")
+		assert.EqualError(t, err, "reading response body errored with: invalid character '}' after object key")
+		assert.Nil(t, actual)
+	})
+
+	t.Run("should be able to fetch the pipeline run history present in GoCD", func(t *testing.T) {
+		server := mockServer([]byte(pipelineRunHistoryJSON), http.StatusOK, map[string]string{
+			"Accept":       gocd.HeaderVersionOne,
+			"Content-Type": gocd.ContentJSON,
+		}, true, nil)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
+
+		expected := []gocd.PipelineRunHistory{
+			{
+				Name:          "helm-images",
+				Counter:       3,
+				ScheduledDate: 1678470766332,
+				BuildCause:    gocd.PipelineBuildCause{Message: "Forced by admin", Approver: "admin", TriggerForced: true},
+			},
+			{
+				Name:          "helm-images",
+				Counter:       2,
+				ScheduledDate: 1677128882155,
+				BuildCause:    gocd.PipelineBuildCause{Message: "modified by nikhilsbhat <nikhilsbhat93@gmail.com>", Approver: "changes", TriggerForced: false},
+			},
+			{
+				Name:          "helm-images",
+				Counter:       1,
+				ScheduledDate: 1672544013154,
+				BuildCause:    gocd.PipelineBuildCause{Message: "Forced by admin", Approver: "admin", TriggerForced: true},
+			},
+		}
+
+		actual, err := client.GetPipelineRunHistory("helm-images")
+		assert.NoError(t, err)
+		assert.Equal(t, expected, actual)
 	})
 }
 

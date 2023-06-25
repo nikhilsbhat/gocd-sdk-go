@@ -50,6 +50,8 @@ type GoCd interface {
 	GetPipelineGroup(name string) (PipelineGroup, error)
 	DeletePipelineGroup(name string) error
 	UpdatePipelineGroup(group PipelineGroup) (PipelineGroup, error)
+	GetPipelineRunHistory(pipeline string) ([]PipelineRunHistory, error)
+	GetPipelineSchedules(pipeline, start, perPage string) (PipelineSchedules, error)
 	GetEnvironments() ([]Environment, error)
 	GetEnvironment(name string) (Environment, error)
 	CreateEnvironment(environment Environment) error
@@ -69,7 +71,7 @@ type GoCd interface {
 	PipelineUnlock(name string) error
 	SchedulePipeline(name string, schedule Schedule) error
 	GetPipelineInstance(pipeline PipelineObject) (map[string]interface{}, error)
-	GetPipelineHistory(name string, size, after int) ([]map[string]interface{}, error)
+	// GetPipelineHistory(name string, size, after int) ([]map[string]interface{}, error)
 	CommentOnPipeline(comment PipelineObject) error
 	GetPipelineConfig(name string) (PipelineConfig, error)
 	UpdatePipelineConfig(config PipelineConfig) (PipelineConfig, error)
