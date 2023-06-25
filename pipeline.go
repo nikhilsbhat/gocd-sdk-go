@@ -9,6 +9,7 @@ import (
 	"path/filepath"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/nikhilsbhat/gocd-sdk-go/pkg/errors"
 
@@ -69,37 +70,59 @@ func (conf *client) GetPipelineState(pipeline string) (PipelineState, error) {
 
 // GetPipelineRunHistory fetches all run history of selected pipeline from GoCD server.
 // This would be an expensive operation; make sure to run it during non-peak hours.
-func (conf *client) GetPipelineRunHistory(pipeline string) ([]PipelineRunHistory, error) {
-	newClient := &client{}
-	if err := copier.CopyWithOption(newClient, conf, copier.Option{IgnoreEmpty: true, DeepCopy: true}); err != nil {
-		return nil, err
-	}
-
+func (conf *client) GetPipelineRunHistory(pipeline, pageSize string, delay time.Duration) ([]PipelineRunHistory, error) {
 	type runHistory struct {
-		Pipelines []PipelineRunHistory `json:"pipelines,omitempty" yaml:"pipelines,omitempty"`
+		Links     map[string]interface{} `json:"_links,omitempty" yaml:"_links,omitempty"`
+		Pipelines []PipelineRunHistory   `json:"pipelines,omitempty" yaml:"pipelines,omitempty"`
 	}
 
-	var pipelineRunHistory runHistory
+	pipelineRunHistories := make([]PipelineRunHistory, 0)
 
-	resp, err := newClient.httpClient.R().
-		SetHeaders(map[string]string{
-			"Accept":       HeaderVersionOne,
-			"Content-Type": ContentJSON,
-		}).
-		Get(filepath.Join(PipelinesEndpoint, pipeline, "history"))
-	if err != nil {
-		return nil, &errors.APIError{Err: err, Message: fmt.Sprintf("get pipeline %s", pipeline)}
+	after := "0"
+
+	for {
+		newClient := &client{}
+		if err := copier.CopyWithOption(newClient, conf, copier.Option{IgnoreEmpty: true, DeepCopy: true}); err != nil {
+			return nil, err
+		}
+
+		var pipelineRunHistory runHistory
+
+		resp, err := newClient.httpClient.R().
+			SetHeaders(map[string]string{
+				"Accept":       HeaderVersionOne,
+				"Content-Type": ContentJSON,
+			}).
+			SetQueryParams(map[string]string{
+				"page_size": pageSize,
+				"after":     after,
+			}).
+			Get(filepath.Join(PipelinesEndpoint, pipeline, "history"))
+		if err != nil {
+			return nil, &errors.APIError{Err: err, Message: fmt.Sprintf("get pipeline %s", pipeline)}
+		}
+
+		if resp.StatusCode() != http.StatusOK {
+			return nil, &errors.NonOkError{Code: resp.StatusCode(), Response: resp}
+		}
+
+		if err = json.Unmarshal(resp.Body(), &pipelineRunHistory); err != nil {
+			return nil, &errors.MarshalError{Err: err}
+		}
+
+		if nextLnk := pipelineRunHistory.Links["next"]; nextLnk == nil {
+			break
+		}
+
+		nextLink := pipelineRunHistory.Links["next"].(map[string]interface{})["href"].(string)
+		after = strings.Split(nextLink, "after=")[1]
+
+		pipelineRunHistories = append(pipelineRunHistories, pipelineRunHistory.Pipelines...)
+
+		time.Sleep(delay)
 	}
 
-	if resp.StatusCode() != http.StatusOK {
-		return nil, &errors.NonOkError{Code: resp.StatusCode(), Response: resp}
-	}
-
-	if err = json.Unmarshal(resp.Body(), &pipelineRunHistory); err != nil {
-		return nil, &errors.MarshalError{Err: err}
-	}
-
-	return pipelineRunHistory.Pipelines, nil
+	return pipelineRunHistories, nil
 }
 
 // GetPipelineSchedules fetches the last X schedules of the selected pipeline from GoCD server.
@@ -306,55 +329,6 @@ func (conf *client) GetPipelineInstance(pipeline PipelineObject) (map[string]int
 
 	return pipelineInstance, nil
 }
-
-// GetPipelineHistory fetches the history of a selected pipeline with counter.
-// func (conf *client) GetPipelineHistory(name string, defaultSize, defaultAfter int) ([]map[string]interface{}, error) {
-//	var history []map[string]interface{}
-//	newClient := &client{}
-//	if err := copier.CopyWithOption(newClient, conf, copier.Option{IgnoreEmpty: true, DeepCopy: true}); err != nil {
-//		return history, err
-//	}
-//
-//	paginate := true
-//	size := defaultSize
-//	after := defaultAfter
-//
-//	for paginate {
-//		var pipelineHistory PipelineHistory
-//		resp, err := newClient.httpClient.R().
-//			SetQueryParams(map[string]string{
-//				"page_size": strconv.Itoa(size),
-//				"after":     strconv.Itoa(after),
-//			}).
-//			SetHeaders(map[string]string{
-//				"Accept": HeaderVersionOne,
-//			}).
-//			Get(filepath.Join(PipelinesEndpoint, name, "history"))
-//		if err != nil {
-//			return history, &errors.APIError{Err: err, Message: fmt.Sprintf("fetch pipeline history '%s'", name)}
-//		}
-//
-//		if resp.StatusCode() != http.StatusOK {
-//			return history, &errors.NonOkError{Code: resp.StatusCode(), Response: resp}
-//		}
-//
-//		if err = json.Unmarshal(resp.Body(), &pipelineHistory); err != nil {
-//			return history, &errors.MarshalError{Err: err}
-//		}
-//
-//		if (len(pipelineHistory.Pipelines) == 0) || (pipelineHistory.Links["next"] == nil) {
-//			conf.logger.Debug("no more pages to paginate, moving out of loop")
-//			paginate = false
-//		}
-//
-//		after = size
-//		size += defaultSize
-//
-//		history = append(history, pipelineHistory.Pipelines...)
-//	}
-//
-//	return history, nil
-//}
 
 // GetScheduledJobs returns all scheduled jobs from GoCD.
 func (conf *client) GetScheduledJobs() (ScheduledJobs, error) {
