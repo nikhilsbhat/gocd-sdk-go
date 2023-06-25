@@ -189,11 +189,11 @@ type PipelineSchedulesGroups struct {
 
 // PipelineSchedulesHistory holds information of pipeline schedule history.
 type PipelineSchedulesHistory struct {
-	Label              string  `json:"label,omitempty" yaml:"label,omitempty"`
-	ScheduledDate      string  `json:"scheduled_date,omitempty" yaml:"scheduled_date,omitempty"`
-	ScheduledTimestamp float64 `json:"scheduled_timestamp,omitempty" yaml:"scheduled_timestamp,omitempty"`
-	ModificationDate   string  `json:"modification_date,omitempty" yaml:"modification_date,omitempty"`
-	BuildCause         string  `json:"buildCauseBy,omitempty" yaml:"buildCauseBy,omitempty"`
+	Label              string `json:"label,omitempty" yaml:"label,omitempty"`
+	ScheduledDate      string `json:"scheduled_date,omitempty" yaml:"scheduled_date,omitempty"`
+	ScheduledTimestamp int64  `json:"scheduled_timestamp,omitempty" yaml:"scheduled_timestamp,omitempty"`
+	ModificationDate   string `json:"modification_date,omitempty" yaml:"modification_date,omitempty"`
+	BuildCause         string `json:"buildCauseBy,omitempty" yaml:"buildCauseBy,omitempty"`
 }
 
 // ScheduledJobs holds information of Scheduled Jobs.
