@@ -22,6 +22,7 @@ func (conf *client) GetPluginsInfo() (PluginsInfo, error) {
 		SetHeaders(map[string]string{
 			"Accept": HeaderVersionSeven,
 		}).
+		SetQueryParam("include_bad", "true").
 		Get(PluginInfoEndpoint)
 	if err != nil {
 		return PluginsInfo{}, &errors.APIError{Err: err, Message: "get all plugins info"}
