@@ -111,6 +111,8 @@ func (conf *client) GetPipelineRunHistory(pipeline, pageSize string, delay time.
 		}
 
 		if nextLnk := pipelineRunHistory.Links["next"]; nextLnk == nil {
+			pipelineRunHistories = append(pipelineRunHistories, pipelineRunHistory.Pipelines...)
+
 			break
 		}
 
