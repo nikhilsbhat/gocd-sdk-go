@@ -32,6 +32,7 @@ type GoCd interface {
 	GetServerHealth() (map[string]string, error)
 	GetConfigRepos() ([]ConfigRepo, error)
 	GetConfigRepo(repo string) (ConfigRepo, error)
+	GetConfigRepoDefinitions(repo string) (ConfigRepo, error)
 	CreateConfigRepo(repoObj ConfigRepo) error
 	UpdateConfigRepo(repo ConfigRepo) (string, error)
 	DeleteConfigRepo(repo string) error

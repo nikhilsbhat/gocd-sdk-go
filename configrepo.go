@@ -32,7 +32,7 @@ func (conf *client) GetConfigRepo(repo string) (ConfigRepo, error) {
 		}).
 		Get(filepath.Join(ConfigReposEndpoint, repo))
 	if err != nil {
-		return ConfigRepo{}, &errors.APIError{Err: err, Message: "get config repo"}
+		return ConfigRepo{}, &errors.APIError{Err: err, Message: "get config-repo"}
 	}
 	if resp.StatusCode() != http.StatusOK {
 		return ConfigRepo{}, &errors.NonOkError{Code: resp.StatusCode(), Response: resp}
@@ -43,7 +43,7 @@ func (conf *client) GetConfigRepo(repo string) (ConfigRepo, error) {
 	}
 
 	if len(resp.Header().Get("ETag")) == 0 {
-		return repoConf, &errors.NilHeaderError{Header: "ETag", Message: "updating configrepo"}
+		return repoConf, &errors.NilHeaderError{Header: "ETag", Message: "getting config-repo"}
 	}
 
 	repoConf.ETAG = resp.Header().Get("ETag")
@@ -65,7 +65,7 @@ func (conf *client) GetConfigRepos() ([]ConfigRepo, error) {
 		}).
 		Get(ConfigReposEndpoint)
 	if err != nil {
-		return nil, &errors.APIError{Err: err, Message: "get config repos"}
+		return nil, &errors.APIError{Err: err, Message: "get config-repos"}
 	}
 	if resp.StatusCode() != http.StatusOK {
 		return nil, &errors.NonOkError{Code: resp.StatusCode(), Response: resp}
@@ -76,6 +76,33 @@ func (conf *client) GetConfigRepos() ([]ConfigRepo, error) {
 	}
 
 	return reposConf.ConfigRepos.ConfigRepos, nil
+}
+
+// GetConfigRepoDefinitions fetches information of a specific config-repo from GoCD server.
+func (conf *client) GetConfigRepoDefinitions(repo string) (ConfigRepo, error) {
+	newClient := &client{}
+	if err := copier.CopyWithOption(newClient, conf, copier.Option{IgnoreEmpty: true, DeepCopy: true}); err != nil {
+		return ConfigRepo{}, err
+	}
+
+	var repoConf ConfigRepo
+	resp, err := newClient.httpClient.R().
+		SetHeaders(map[string]string{
+			"Accept": HeaderVersionFour,
+		}).
+		Get(filepath.Join(ConfigReposEndpoint, repo, "definitions"))
+	if err != nil {
+		return ConfigRepo{}, &errors.APIError{Err: err, Message: fmt.Sprintf("get config-repo definitions for '%s'", repo)}
+	}
+	if resp.StatusCode() != http.StatusOK {
+		return ConfigRepo{}, &errors.NonOkError{Code: resp.StatusCode(), Response: resp}
+	}
+
+	if err = json.Unmarshal(resp.Body(), &repoConf); err != nil {
+		return ConfigRepo{}, &errors.MarshalError{Err: err}
+	}
+
+	return repoConf, nil
 }
 
 // CreateConfigRepo fetches information of all config-repos in GoCD server.

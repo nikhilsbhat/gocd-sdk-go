@@ -1,0 +1,20 @@
+{
+  "environments": [
+    {
+      "name": "dev"
+    }
+  ],
+  "groups": [
+    {
+      "name": "config-repo-group",
+      "pipelines": [
+        {
+          "name": "pipeline1"
+        },
+        {
+          "name": "pipeline2"
+        }
+      ]
+    }
+  ]
+}
