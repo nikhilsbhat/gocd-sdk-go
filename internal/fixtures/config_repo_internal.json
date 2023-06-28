@@ -1,0 +1,109 @@
+{
+  "_links": {
+    "self": {
+      "href": "http://localhost:8153/go/api/admin/config_repos"
+    }
+  },
+  "_embedded": {
+    "config_repos": [
+      {
+        "_links": {
+          "self": {
+            "href": "http://localhost:8153/go/api/admin/config_repos/gocd-go-sdk"
+          },
+          "doc": {
+            "href": "https://api.gocd.org/22.1.0/#config-repos"
+          },
+          "find": {
+            "href": "http://localhost:8153/go/api/admin/config_repos/:id"
+          }
+        },
+        "id": "gocd-go-sdk",
+        "plugin_id": "json.config.plugin",
+        "material": {
+          "type": "git",
+          "attributes": {
+            "name": null,
+            "auto_update": true,
+            "url": "https://github.com/nikhilsbhat/gocd-sdk-go.git",
+            "branch": "master"
+          }
+        },
+        "configuration": [],
+        "rules": [],
+        "material_update_in_progress": false,
+        "parse_info": {
+          "latest_parsed_modification": {
+            "username": "nikhilsbhat <nikhilsbhat93@gmail.com>",
+            "email_address": null,
+            "revision": "2d1e4525a6f26cf0699c06c2ce36ab6ac512c9e6",
+            "comment": "Add support for GET config-repo definitions API",
+            "modified_time": "2023-06-27T13:46:33Z"
+          },
+          "good_modification": {
+            "username": "nikhilsbhat <nikhilsbhat93@gmail.com>",
+            "email_address": null,
+            "revision": "2d1e4525a6f26cf0699c06c2ce36ab6ac512c9e6",
+            "comment": "Add support for GET config-repo definitions API",
+            "modified_time": "2023-06-27T13:46:33Z"
+          },
+          "error": null
+        }
+      },
+      {
+        "_links": {
+          "self": {
+            "href": "http://localhost:8153/go/api/admin/config_repos/sample_config_repo"
+          },
+          "doc": {
+            "href": "https://api.gocd.org/22.1.0/#config-repos"
+          },
+          "find": {
+            "href": "http://localhost:8153/go/api/admin/config_repos/:id"
+          }
+        },
+        "id": "sample_config_repo",
+        "plugin_id": "yaml.config.plugin",
+        "material": {
+          "type": "git",
+          "attributes": {
+            "name": null,
+            "auto_update": true,
+            "url": "https://github.com/config-repo/gocd-json-config-example.git",
+            "username": "bob",
+            "encrypted_password": "AES:I/umvAruOKkDyHJFflavCQ==:4hikK7OSpJN50E4SerstZw==",
+            "branch": "master"
+          }
+        },
+        "configuration": [
+          {
+            "key": "url",
+            "value": "https://github.com/config-repo/gocd-json-config-example.git"
+          },
+          {
+            "key": "username",
+            "value": "admin"
+          },
+          {
+            "key": "password",
+            "value": "admin"
+          }
+        ],
+        "rules": [
+          {
+            "directive": "allow",
+            "action": "refer",
+            "type": "pipeline_group",
+            "resource": "*"
+          }
+        ],
+        "material_update_in_progress": false,
+        "parse_info": {
+          "latest_parsed_modification": null,
+          "good_modification": null,
+          "error": "MODIFICATION CHECK FAILED FOR MATERIAL: URL: HTTPS://GITHUB.COM/CONFIG-REPO/GOCD-JSON-CONFIG-EXAMPLE.GIT, BRANCH: MASTER\nNO PIPELINES ARE AFFECTED BY THIS MATERIAL, PERHAPS THIS MATERIAL IS UNUSED.\nFailed to run git clone command STDERR: Cloning into '/Users/nikhil.bhat/idfc/gocd-setup/go-server-22.1.0/pipelines/flyweight/2b3feb60-efd7-41d3-8041-3e0d3208285e'...\nSTDERR: remote: Support for password authentication was removed on August 13, 2021.\nSTDERR: remote: Please see https://docs.github.com/en/get-started/getting-started-with-git/about-remote-repositories#cloning-with-https-urls for information on currently recommended modes of authentication.\nSTDERR: fatal: Authentication failed for 'https://github.com/config-repo/gocd-json-config-example.git/'"
+        }
+      }
+    ]
+  }
+}

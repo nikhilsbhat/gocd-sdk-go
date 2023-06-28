@@ -83,14 +83,21 @@ type ConfigRepos struct {
 
 // ConfigRepo holds information of the specified config-repo.
 type ConfigRepo struct {
-	PluginID      string                `json:"plugin_id,omitempty" yaml:"plugin_id,omitempty"`
-	ID            string                `json:"id,omitempty" yaml:"id,omitempty"`
-	Material      Material              `json:"material,omitempty" yaml:"material,omitempty"`
-	Configuration []PluginConfiguration `json:"configuration,omitempty" yaml:"configuration,omitempty"`
-	Rules         []map[string]string   `json:"rules,omitempty" yaml:"rules,omitempty"`
-	ETAG          string                `json:"etag,omitempty" yaml:"etag,omitempty"`
-	Environments  []Environment         `json:"environments,omitempty" yaml:"environments,omitempty"`
-	Groups        []PipelineGroup       `json:"groups,omitempty" yaml:"groups,omitempty"`
+	PluginID            string                `json:"plugin_id,omitempty" yaml:"plugin_id,omitempty"`
+	ID                  string                `json:"id,omitempty" yaml:"id,omitempty"`
+	Material            Material              `json:"material,omitempty" yaml:"material,omitempty"`
+	Configuration       []PluginConfiguration `json:"configuration,omitempty" yaml:"configuration,omitempty"`
+	Rules               []map[string]string   `json:"rules,omitempty" yaml:"rules,omitempty"`
+	ETAG                string                `json:"etag,omitempty" yaml:"etag,omitempty"`
+	Environments        []Environment         `json:"environments,omitempty" yaml:"environments,omitempty"`
+	Groups              []PipelineGroup       `json:"groups,omitempty" yaml:"groups,omitempty"`
+	ConfigRepoParseInfo ConfigRepoParseInfo   `json:"parse_info,omitempty" yaml:"parse_info,omitempty"`
+}
+
+type ConfigRepoParseInfo struct {
+	LatestParsedModification map[string]interface{} `json:"latest_parsed_modification,omitempty" yaml:"latest_parsed_modification,omitempty"`
+	Error                    string                 `json:"error,omitempty" yaml:"error,omitempty"`
+	GoodModification         map[string]interface{} `json:"good_modification,omitempty" yaml:"good_modification,omitempty"`
 }
 
 // PipelineGroupsConfig holds information on the various pipeline groups present in GoCD.

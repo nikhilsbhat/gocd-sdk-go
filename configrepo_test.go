@@ -21,9 +21,11 @@ var (
 	configRepoJSON string
 	//go:embed internal/fixtures/config_repo_definitions.json
 	configRepoDefinition string
-	eTag                 = "05548388f7ef5042cd39f7fe42e85735"
-	correctHeader        = map[string]string{"Accept": gocd.HeaderVersionFour}
-	configRepo           = testGetConfigRepoObj()
+	//go:embed internal/fixtures/config_repo_internal.json
+	configRepoInternalJSON string
+	eTag                   = "05548388f7ef5042cd39f7fe42e85735"
+	correctHeader          = map[string]string{"Accept": gocd.HeaderVersionFour}
+	configRepo             = testGetConfigRepoObj()
 )
 
 func TestConfig_GetConfigRepoInfo(t *testing.T) {
@@ -101,6 +103,125 @@ func TestConfig_GetConfigRepoInfo(t *testing.T) {
 			},
 		}
 		actual, err := client.GetConfigRepos()
+		assert.NoError(t, err)
+		assert.Equal(t, expected, actual)
+	})
+}
+
+func TestConfig_GetConfigReposInternal(t *testing.T) {
+	t.Run("should error out while fetching config repos information from server using GoCD's internal API", func(t *testing.T) {
+		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
+		client.SetRetryCount(1)
+		client.SetRetryWaitTime(1)
+
+		actual, err := client.GetConfigReposInternal()
+		assert.EqualError(t, err, "call made to get config-repos using internal API errored with: "+
+			"Get \"http://localhost:8156/go/api/internal/config_repos\": dial tcp [::1]:8156: connect: connection refused")
+		assert.Nil(t, actual)
+	})
+
+	t.Run("should error out while fetching config repos information using GoCD's internal API, as server returned non 200 status code", func(t *testing.T) {
+		server := mockServer([]byte("backupJSON"), http.StatusBadGateway, correctHeader, false, nil)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
+
+		actual, err := client.GetConfigReposInternal()
+		assert.EqualError(t, err, "got 502 from GoCD while making GET call for "+server.URL+
+			"/api/internal/config_repos\nwith BODY:backupJSON")
+		assert.Nil(t, actual)
+	})
+
+	t.Run("should error out while fetching config repos information using GoCD's internal API, as server returned malformed response", func(t *testing.T) {
+		server := mockServer([]byte(`{"email_on_failure"}`), http.StatusOK, correctHeader, false, nil)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
+
+		actual, err := client.GetConfigReposInternal()
+		assert.EqualError(t, err, "reading response body errored with: invalid character '}' after object key")
+		assert.Nil(t, actual)
+	})
+
+	t.Run("should be able retrieve config repos information using GoCD's internal API", func(t *testing.T) {
+		server := mockServer([]byte(configRepoInternalJSON), http.StatusOK, correctHeader, false, nil)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
+
+		expected := []gocd.ConfigRepo{
+			{
+				PluginID: "json.config.plugin",
+				ID:       "gocd-go-sdk",
+				Material: gocd.Material{
+					Type: "git",
+					Attributes: gocd.Attribute{
+						URL:        "https://github.com/nikhilsbhat/gocd-sdk-go.git",
+						Branch:     "master",
+						AutoUpdate: true,
+					},
+				},
+				Configuration: []gocd.PluginConfiguration{},
+				Rules:         []map[string]string{},
+				ConfigRepoParseInfo: gocd.ConfigRepoParseInfo{
+					LatestParsedModification: map[string]interface{}{
+						"comment":       "Add support for GET config-repo definitions API",
+						"email_address": interface{}(nil),
+						"modified_time": "2023-06-27T13:46:33Z",
+						"revision":      "2d1e4525a6f26cf0699c06c2ce36ab6ac512c9e6",
+						"username":      "nikhilsbhat <nikhilsbhat93@gmail.com>",
+					},
+					GoodModification: map[string]interface{}{
+						"comment":       "Add support for GET config-repo definitions API",
+						"email_address": interface{}(nil), "modified_time": "2023-06-27T13:46:33Z",
+						"revision": "2d1e4525a6f26cf0699c06c2ce36ab6ac512c9e6",
+						"username": "nikhilsbhat <nikhilsbhat93@gmail.com>",
+					},
+				},
+			},
+			{
+				PluginID: "yaml.config.plugin",
+				ID:       "sample_config_repo",
+				Material: gocd.Material{
+					Type: "git",
+					Attributes: gocd.Attribute{
+						URL:               "https://github.com/config-repo/gocd-json-config-example.git",
+						Username:          "bob",
+						EncryptedPassword: "AES:I/umvAruOKkDyHJFflavCQ==:4hikK7OSpJN50E4SerstZw==",
+						Branch:            "master",
+						AutoUpdate:        true,
+					},
+				},
+				Configuration: []gocd.PluginConfiguration{
+					{
+						Key:   "url",
+						Value: "https://github.com/config-repo/gocd-json-config-example.git",
+					},
+					{
+						Key:   "username",
+						Value: "admin",
+					},
+					{
+						Key:   "password",
+						Value: "admin",
+					},
+				},
+				Rules: []map[string]string{
+					{
+						"action":    "refer",
+						"directive": "allow",
+						"resource":  "*",
+						"type":      "pipeline_group",
+					},
+				},
+				ConfigRepoParseInfo: gocd.ConfigRepoParseInfo{
+					Error: "MODIFICATION CHECK FAILED FOR MATERIAL: " +
+						"URL: HTTPS://GITHUB.COM/CONFIG-REPO/GOCD-JSON-CONFIG-EXAMPLE.GIT, " +
+						"BRANCH: MASTER\nNO PIPELINES ARE AFFECTED BY THIS MATERIAL, " +
+						"PERHAPS THIS MATERIAL IS UNUSED.\nFailed to run git clone command " +
+						"STDERR: Cloning into '/Users/nikhil.bhat/idfc/gocd-setup/go-server-22.1.0/pipelines/flyweight/2b3feb60-efd7-41d3-8041-3e0d3208285e'...\n" +
+						"STDERR: remote: Support for password authentication was removed on August 13, 2021.\n" +
+						"STDERR: remote: Please see https://docs.github.com/en/get-started/getting-started-with-git/about-remote-repositories#cloning-with-https-urls " +
+						"for information on currently recommended modes of authentication.\n" +
+						"STDERR: fatal: Authentication failed for 'https://github.com/config-repo/gocd-json-config-example.git/'",
+				},
+			},
+		}
+		actual, err := client.GetConfigReposInternal()
 		assert.NoError(t, err)
 		assert.Equal(t, expected, actual)
 	})

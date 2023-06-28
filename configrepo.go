@@ -78,6 +78,34 @@ func (conf *client) GetConfigRepos() ([]ConfigRepo, error) {
 	return reposConf.ConfigRepos.ConfigRepos, nil
 }
 
+// GetConfigReposInternal fetches information about all config repos from the GoCD server using GoCD's internal API.
+// Use GetConfigRepos for fetching all config-repos information; use this only if you know why it is being used.
+func (conf *client) GetConfigReposInternal() ([]ConfigRepo, error) {
+	newClient := &client{}
+	if err := copier.CopyWithOption(newClient, conf, copier.Option{IgnoreEmpty: true, DeepCopy: true}); err != nil {
+		return nil, err
+	}
+
+	var reposConf ConfigRepoConfig
+	resp, err := newClient.httpClient.R().
+		SetHeaders(map[string]string{
+			"Accept": HeaderVersionFour,
+		}).
+		Get(ConfigReposInternalEndpoint)
+	if err != nil {
+		return nil, &errors.APIError{Err: err, Message: "get config-repos using internal API"}
+	}
+	if resp.StatusCode() != http.StatusOK {
+		return nil, &errors.NonOkError{Code: resp.StatusCode(), Response: resp}
+	}
+
+	if err = json.Unmarshal(resp.Body(), &reposConf); err != nil {
+		return nil, &errors.MarshalError{Err: err}
+	}
+
+	return reposConf.ConfigRepos.ConfigRepos, nil
+}
+
 // GetConfigRepoDefinitions fetches information of a specific config-repo from GoCD server.
 func (conf *client) GetConfigRepoDefinitions(repo string) (ConfigRepo, error) {
 	newClient := &client{}

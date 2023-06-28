@@ -5,6 +5,7 @@ const (
 	VersionEndpoint             = "/api/version"
 	ServerHealthEndpoint        = "/api/server_health_messages"
 	ConfigReposEndpoint         = "/api/admin/config_repos"
+	ConfigReposInternalEndpoint = "/api/internal/config_repos"
 	SystemAdminEndpoint         = "/api/admin/security/system_admins"
 	BackupConfigEndpoint        = "/api/config/backup"
 	BackupStatsEndpoint         = "/api/backups"
