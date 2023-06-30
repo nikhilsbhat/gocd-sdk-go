@@ -1,6 +1,7 @@
 package gocd
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -273,14 +274,23 @@ func (conf *client) ConfigRepoPreflightCheck(pipelines map[string]string, plugin
 		return false, err
 	}
 
-	resp, err := newClient.httpClient.R().
+	request := newClient.httpClient.R().
 		SetHeaders(map[string]string{
 			"Accept": HeaderVersionOne,
 		}).
 		SetQueryParam("pluginId", pluginID).
-		SetQueryParam("repoId", repoID).
-		SetFiles(pipelines).
-		Post(PreflightCheckEndpoint)
+		SetQueryParam("repoId", repoID)
+
+	for name, path := range pipelines {
+		pipelineBytes, err := os.ReadFile(path)
+		if err != nil {
+			return false, err
+		}
+
+		request.SetFileReader("files[]", name, bytes.NewReader(pipelineBytes))
+	}
+
+	resp, err := request.Post(PreflightCheckEndpoint)
 	if err != nil {
 		return false, &errors.APIError{Err: err, Message: fmt.Sprintf("preflight check of confirepo '%s'", repoID)}
 	}

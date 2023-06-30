@@ -7,6 +7,8 @@ import (
 	"log"
 	"net/http"
 	"net/http/httptest"
+	"os"
+	"path/filepath"
 	"testing"
 
 	"github.com/nikhilsbhat/gocd-sdk-go"
@@ -671,6 +673,26 @@ func Test_client_ConfigRepoPreflightCheck(t *testing.T) {
 			"Post \"http://localhost:8156/go/api/admin/config_repo_ops/preflight?pluginId=yaml.config.plugin&repoId=sample\": "+
 			"dial tcp [::1]:8156: connect: connection refused")
 		assert.Equal(t, false, actual)
+	})
+
+	t.Run("should be able to run config-repo preflight checks successfully", func(t *testing.T) {
+		goCDAuth := gocd.Auth{
+			UserName: "admin",
+			Password: "admin",
+		}
+		client := gocd.NewClient("http://localhost:8153/go", goCDAuth, "info", nil)
+
+		homeDir, err := os.UserHomeDir()
+		assert.NoError(t, err)
+
+		pipelineFiles, err := client.GetPipelineFiles(filepath.Join(homeDir, "opensource/gocd-git-path-sample"), "*.gocd.yaml")
+		assert.NoError(t, err)
+
+		pipeliness := client.SetPipelineFiles(pipelineFiles)
+
+		actual, err := client.ConfigRepoPreflightCheck(pipeliness, "yaml.config.plugin", "sample-repo")
+		assert.NoError(t, err)
+		assert.Equal(t, true, actual)
 	})
 }
 
