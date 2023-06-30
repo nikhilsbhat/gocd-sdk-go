@@ -118,6 +118,7 @@ Below are the list of supported APIs:
     - [x] Create a pipeline
     - [x] Delete a pipeline
     - [x] Extract template from pipeline
+    - [x] Validate pipeline config syntax
 - [ ] [Stage Instances](https://api.gocd.org/current/#stage-instances)
     - [ ] Cancel stage
     - [ ] Get stage instance

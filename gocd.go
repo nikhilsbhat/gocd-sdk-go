@@ -8,6 +8,8 @@ import (
 	"strings"
 	"time"
 
+	"github.com/nikhilsbhat/gocd-sdk-go/pkg/plugin"
+
 	"github.com/go-resty/resty/v2"
 	log "github.com/sirupsen/logrus"
 )
@@ -54,6 +56,7 @@ type GoCd interface {
 	UpdatePipelineGroup(group PipelineGroup) (PipelineGroup, error)
 	GetPipelineRunHistory(pipeline, pageSize string, delay time.Duration) ([]PipelineRunHistory, error)
 	GetPipelineSchedules(pipeline, start, perPage string) (PipelineSchedules, error)
+	ValidatePipelineSyntax(pluginCfg plugin.Plugin, pipelines []string) (bool, error)
 	GetEnvironments() ([]Environment, error)
 	GetEnvironment(name string) (Environment, error)
 	CreateEnvironment(environment Environment) error
