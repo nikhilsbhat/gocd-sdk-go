@@ -119,6 +119,14 @@ type PipelineGroup struct {
 	ETAG          string                 `json:"etag,omitempty" yaml:"etag,omitempty"`
 }
 
+// PipelineExport holds information of the pipeline that is exported to a specific config repo format.
+type PipelineExport struct {
+	PluginID         string `json:"plugin_id,omitempty" yaml:"plugin_id,omitempty"`
+	PipelineFileName string `json:"pipeline_file_name,omitempty" yaml:"pipeline_file_name,omitempty"`
+	PipelineContent  string `json:"pipeline_content,omitempty" yaml:"pipeline_content,omitempty"`
+	ETAG             string `json:"etag,omitempty" yaml:"etag,omitempty"`
+}
+
 // SystemAdmins holds information of the system admins present.
 type SystemAdmins struct {
 	Roles []string `json:"roles,omitempty" yaml:"roles,omitempty"`

@@ -355,3 +355,37 @@ func (conf *client) GetScheduledJobs() (ScheduledJobs, error) {
 
 	return scheduledJobs, nil
 }
+
+func (conf *client) ExportPipelineToConfigRepoFormat(pipelineName, pluginID string) (PipelineExport, error) {
+	newClient := &client{}
+	if err := copier.CopyWithOption(newClient, conf, copier.Option{IgnoreEmpty: true, DeepCopy: true}); err != nil {
+		return PipelineExport{}, err
+	}
+
+	resp, err := newClient.httpClient.R().
+		SetHeaders(map[string]string{
+			"Accept": HeaderVersionOne,
+		}).
+		SetQueryParams(map[string]string{
+			"plugin_id": pluginID,
+		}).
+		Get(filepath.Join(PipelineExportEndpoint, pipelineName))
+	if err != nil {
+		return PipelineExport{}, &errors.APIError{Err: err, Message: fmt.Sprintf("export pipeline '%s' to format '%s'", pipelineName, pluginID)}
+	}
+
+	if resp.StatusCode() != http.StatusOK {
+		return PipelineExport{}, &errors.NonOkError{Code: resp.StatusCode(), Response: resp}
+	}
+
+	disposition := strings.Split(resp.Header().Get("Content-Disposition"), "=")
+
+	pipelineExport := PipelineExport{
+		PluginID:         pluginID,
+		PipelineFileName: strings.Trim(disposition[1], `"`),
+		PipelineContent:  resp.String(),
+		ETAG:             resp.Header().Get("ETag"),
+	}
+
+	return pipelineExport, nil
+}

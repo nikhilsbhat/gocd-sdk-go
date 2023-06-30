@@ -24,6 +24,8 @@ var (
 	scheduledJobJSON string
 	//go:embed internal/fixtures/pipeline_schedules.json
 	pipelineSchedulesJSON string
+	//go:embed internal/fixtures/pipeline_extraction.json
+	pipelineExtractionJSON string
 )
 
 var pipelineMap = map[string]interface{}{
@@ -692,4 +694,73 @@ func Test_client_ScheduledJobs(t *testing.T) {
 		assert.NoError(t, err)
 		assert.Equal(t, expected, actual)
 	})
+}
+
+func Test_client_ExportPipelineToConfigRepoFormat(t *testing.T) {
+	correctPipelineExportHeader := map[string]string{"Accept": gocd.HeaderVersionOne}
+
+	t.Run("should be able to export pipeline to yaml format", func(t *testing.T) {
+		server := mockServer([]byte(pipelineExtractionJSON), http.StatusOK, correctPipelineExportHeader, false,
+			map[string]string{
+				"ETag":                "\"0a32dea47847b89db0cdd3e113e97e9e93b395996511ba25a361abe1b44c7809--gzip\"",
+				"Content-Disposition": "attachment; filename=\"action-movies.gopipeline.json\"",
+			})
+		client := gocd.NewClient(server.URL, auth, "info", nil)
+
+		expected := gocd.PipelineExport{
+			PluginID:         "json.config.plugin",
+			PipelineFileName: "action-movies.gopipeline.json",
+			ETAG:             "\"0a32dea47847b89db0cdd3e113e97e9e93b395996511ba25a361abe1b44c7809--gzip\"",
+			PipelineContent: "{\n  \"group\": \"movies\",\n  \"name\": \"action-movies\",\n  \"display_order_weight\": -1.0,\n  \"label_template\": \"${COUNT}\"," +
+				"\n  \"lock_behavior\": \"none\",\n  \"environment_variables\": [],\n  \"parameters\": [],\n  \"materials\": [\n    {\n      " +
+				"\"scm_id\": \"53bb2c69-9b15-45da-91a2-0a7b37530fe9\",\n      \"filter\": {\n        \"ignore\": [],\n        \"includes\": []\n      }," +
+				"\n      \"configuration\": [],\n      \"name\": \"action\",\n      \"type\": \"plugin\"\n    }\n  ],\n  \"stages\": [\n    {\n      " +
+				"\"name\": \"build\",\n      \"fetch_materials\": true,\n      \"never_cleanup_artifacts\": false,\n      \"clean_working_directory\": false," +
+				"\n      \"approval\": {\n        \"type\": \"success\",\n        \"users\": [],\n        \"roles\": [],\n        " +
+				"\"allow_only_on_success\": false\n      },\n      \"environment_variables\": [],\n      \"jobs\": [\n        {\n          \"name\": \"build\"," +
+				"\n          \"environment_variables\": [],\n          \"tabs\": [],\n          \"resources\": [],\n          \"artifacts\": [],\n" +
+				"          \"timeout\": 0.0,\n          \"tasks\": [\n            {\n              \"plugin_configuration\": {\n                \"id\": \"script-executor\"," +
+				"\n                \"version\": \"1\"\n              },\n              \"configuration\": [\n                " +
+				"{\n                  \"key\": \"script\",\n                  \"value\": \"./run.sh action\"\n                }\n              ]," +
+				"\n              \"run_if\": \"passed\",\n              \"type\": \"plugin\"\n            }\n          ]\n        }\n      ]\n    }\n  ]\n}",
+		}
+
+		resp, err := client.ExportPipelineToConfigRepoFormat("action-movies", "json.config.plugin")
+		assert.NoError(t, err)
+		assert.Equal(t, expected, resp)
+	})
+
+	t.Run("should error out while exporting pipeline to yaml format due to wrong headers set", func(t *testing.T) {
+		server := mockServer([]byte(pipelineExtractionJSON), http.StatusOK, map[string]string{"Accept": gocd.HeaderVersionFour}, false, nil)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
+
+		resp, err := client.ExportPipelineToConfigRepoFormat("action-movies", "json.config.plugin")
+		assert.EqualError(t, err, "got 404 from GoCD while making GET call for "+server.URL+
+			"/api/admin/export/pipelines/action-movies?plugin_id=json.config.plugin\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
+		assert.Equal(t, gocd.PipelineExport{}, resp)
+	})
+
+	t.Run("should error out while exporting pipeline to yaml format due to missing headers set", func(t *testing.T) {
+		server := mockServer([]byte(pipelineExtractionJSON), http.StatusOK, nil, false, nil)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
+
+		resp, err := client.ExportPipelineToConfigRepoFormat("action-movies", "json.config.plugin")
+		assert.EqualError(t, err, "got 404 from GoCD while making GET call for "+server.URL+
+			"/api/admin/export/pipelines/action-movies?plugin_id=json.config.plugin\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
+		assert.Equal(t, gocd.PipelineExport{}, resp)
+	})
+
+	// t.Run("should error out while exporting pipeline to yaml format as GoCD server returned malformed response", func(t *testing.T) {
+	//	server := mockServer([]byte("pipelineExtractionJSON"), http.StatusOK, correctPipelineExportHeader, false,
+	//		map[string]string{
+	//			"ETag":                "\"0a32dea47847b89db0cdd3e113e97e9e93b395996511ba25a361abe1b44c7809--gzip\"",
+	//			"Content-Disposition": "attachment; filename=\"action-movies.gopipeline.json\"",
+	//		})
+	//	client := gocd.NewClient(server.URL, auth, "info", nil)
+	//
+	//	resp, err := client.ExportPipelineToConfigRepoFormat("action-movies", "json.config.plugin")
+	//	assert.EqualError(t, err, "got 404 from GoCD while making GET call for "+server.URL+
+	//		"/api/admin/export/pipelines/action-movies?plugin_id=json.config.plugin\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
+	//	assert.Equal(t, gocd.PipelineExport{}, resp)
+	// })
 }

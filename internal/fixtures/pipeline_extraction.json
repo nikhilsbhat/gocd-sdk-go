@@ -1,0 +1,62 @@
+{
+  "group": "movies",
+  "name": "action-movies",
+  "display_order_weight": -1.0,
+  "label_template": "${COUNT}",
+  "lock_behavior": "none",
+  "environment_variables": [],
+  "parameters": [],
+  "materials": [
+    {
+      "scm_id": "53bb2c69-9b15-45da-91a2-0a7b37530fe9",
+      "filter": {
+        "ignore": [],
+        "includes": []
+      },
+      "configuration": [],
+      "name": "action",
+      "type": "plugin"
+    }
+  ],
+  "stages": [
+    {
+      "name": "build",
+      "fetch_materials": true,
+      "never_cleanup_artifacts": false,
+      "clean_working_directory": false,
+      "approval": {
+        "type": "success",
+        "users": [],
+        "roles": [],
+        "allow_only_on_success": false
+      },
+      "environment_variables": [],
+      "jobs": [
+        {
+          "name": "build",
+          "environment_variables": [],
+          "tabs": [],
+          "resources": [],
+          "artifacts": [],
+          "timeout": 0.0,
+          "tasks": [
+            {
+              "plugin_configuration": {
+                "id": "script-executor",
+                "version": "1"
+              },
+              "configuration": [
+                {
+                  "key": "script",
+                  "value": "./run.sh action"
+                }
+              ],
+              "run_if": "passed",
+              "type": "plugin"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
