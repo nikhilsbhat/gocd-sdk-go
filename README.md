@@ -75,7 +75,7 @@ Below are the list of supported APIs:
     - [x] Trigger config repo update
     - [x] Preflight check of config repo configurations
     - [ ] Export pipeline config to config repo format
-    - [ ] Definitions defined in config repo
+    - [x] Definitions defined in config repo
 - [x] [Maintenance Mode](https://api.gocd.org/current/#maintenance-mode)
     - [x] Enable Maintenance Mode
     - [x] Disable Maintenance Mode
@@ -106,6 +106,7 @@ Below are the list of supported APIs:
     - [x] UnPause Pipeline
     - [x] UnLock Pipeline
     - [x] Schedule Pipeline
+    - [x] Get Pipeline Schedules
     - [ ] Compare pipeline instances
 - [x] [Pipeline Instances](https://api.gocd.org/current/#pipeline-instances)
     - [x] Get Pipeline Instance
@@ -156,6 +157,7 @@ Below are the list of supported APIs:
     - [x] Create Elastic Agent Profile
     - [x] Update Elastic Agent Profile
     - [x] Delete Elastic Agent Profile
+    - [x] Get Elastic Agent Profile Usage
 - [x] [Secret Configs](https://api.gocd.org/current/#secret-configs)
     - [x] Get Secret Configs
     - [x] Get Secret Config
@@ -176,6 +178,7 @@ Below are the list of supported APIs:
     - [x] Delete Package Material
 - [x] [Materials](hhttps://api.gocd.org/current/#materials)
     - [x] Get All Materials
+    - [x] Get Materials Usage
     - [ ] Get material modifications
 - [x] [Site URL](https://api.gocd.org/current/#siteurls-config)
     - [x] Get Site URL
