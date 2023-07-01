@@ -1,6 +1,7 @@
 package plugin
 
 import (
+	"encoding/json"
 	"fmt"
 	"net/http"
 	"net/url"
@@ -20,6 +21,10 @@ var (
 	yamlPluginURLTemplate   = "https://github.com/tomzo/gocd-yaml-config-plugin/releases/download/%s/yaml-config-plugin-%s.jar"
 	jsonPluginURLTemplate   = "https://github.com/tomzo/gocd-json-config-plugin/releases/download/%s/json-config-plugin-%s.jar"
 	groovyPluginURLTemplate = "https://github.com/gocd-contrib/gocd-groovy-dsl-config-plugin/releases/download/v%s/gocd-groovy-dsl-config-plugin-%s.jar"
+	githubAPIBaseURL        = "https://api.github.com/repos/%s"
+	yamlPluginAPIURL        = fmt.Sprintf(githubAPIBaseURL, "tomzo/gocd-yaml-config-plugin/tags")
+	jsonPluginAPIURL        = fmt.Sprintf(githubAPIBaseURL, "tomzo/gocd-json-config-plugin/tags")
+	groovyPluginAPIURL      = fmt.Sprintf(githubAPIBaseURL, "gocd-contrib/gocd-groovy-dsl-config-plugin")
 )
 
 type Plugin interface {
@@ -34,6 +39,10 @@ type Config struct {
 	URL          string `json:"url,omitempty" yaml:"url,omitempty" mapstructure:"url"`
 	log          *log.Logger
 	PipelineType string
+}
+
+type GithubTags struct {
+	Name string `json:"name,omitempty" yaml:"name,omitempty"`
 }
 
 func (cfg *Config) ValidatePlugin(pipelines []string) (bool, error) {
@@ -99,6 +108,72 @@ func (cfg *Config) Type(pipelines []string) error {
 	return nil
 }
 
+func (cfg *Config) GetLatestRelease(pluginURL string) (string, error) {
+	var tags []GithubTags
+
+	cfg.log.Debugf("fetching latest version information using '%s'", pluginURL)
+
+	httpClient := resty.New()
+	resp, err := httpClient.R().Get(pluginURL)
+	if err != nil {
+		return "", err
+	}
+
+	if resp.StatusCode() != http.StatusOK {
+		return "", &errors.NonOkError{Code: resp.StatusCode(), Response: resp}
+	}
+
+	if err = json.Unmarshal(resp.Body(), &tags); err != nil {
+		return "", &errors.MarshalError{Err: err}
+	}
+
+	return tags[0].Name, nil
+}
+
+func (cfg *Config) setURL() error {
+	if len(cfg.URL) != 0 {
+		return nil
+	}
+
+	cfg.log.Debugf("plugin download url is not passed, setting it to default (github release) value")
+
+	switch cfg.PipelineType {
+	case "yaml":
+		if len(cfg.Version) == 0 {
+			version, err := cfg.GetLatestRelease(yamlPluginAPIURL)
+			if err != nil {
+				return err
+			}
+			cfg.Version = version
+		}
+		cfg.URL = fmt.Sprintf(yamlPluginURLTemplate, cfg.Version, cfg.Version)
+	case "json":
+		if len(cfg.Version) == 0 {
+			version, err := cfg.GetLatestRelease(jsonPluginAPIURL)
+			if err != nil {
+				return err
+			}
+			cfg.Version = version
+		}
+		cfg.URL = fmt.Sprintf(jsonPluginURLTemplate, cfg.Version, cfg.Version)
+	case "groovy":
+		if len(cfg.Version) == 0 {
+			version, err := cfg.GetLatestRelease(groovyPluginAPIURL)
+			if err != nil {
+				return err
+			}
+			cfg.Version = version
+		}
+		cfg.URL = fmt.Sprintf(groovyPluginURLTemplate, cfg.Version, cfg.Version)
+	default:
+		return &errors.PipelineValidationError{
+			Message: fmt.Sprintf("unknown filetype '%s', supported are yaml|json|groovy", cfg.PipelineType),
+		}
+	}
+
+	return nil
+}
+
 func (cfg *Config) Download() (string, error) {
 	if len(cfg.Path) != 0 {
 		cfg.log.Debugf("local path to plugin is set to '%s', skipping downloading plugin", cfg.Path)
@@ -106,33 +181,18 @@ func (cfg *Config) Download() (string, error) {
 		return cfg.Path, nil
 	}
 
-	pluginURL := cfg.URL
-
-	if len(pluginURL) == 0 {
-		cfg.log.Debugf("plugin download url is not passed, setting it to default (github release) value")
-
-		switch cfg.PipelineType {
-		case "yaml":
-			pluginURL = fmt.Sprintf(yamlPluginURLTemplate, cfg.Version, cfg.Version)
-		case "json":
-			pluginURL = fmt.Sprintf(jsonPluginURLTemplate, cfg.Version, cfg.Version)
-		case "groovy":
-			pluginURL = fmt.Sprintf(groovyPluginURLTemplate, cfg.Version, cfg.Version)
-		default:
-			return "", &errors.PipelineValidationError{
-				Message: fmt.Sprintf("unknown filetype '%s', supported are yaml|json|groovy", cfg.PipelineType),
-			}
-		}
+	if err := cfg.setURL(); err != nil {
+		return "", err
 	}
 
-	cfg.log.Debugf("plugin download url is set to '%s'", pluginURL)
+	cfg.log.Debugf("plugin download url is set to '%s'", cfg.URL)
 
 	home, err := os.UserHomeDir()
 	if err != nil {
 		return "", err
 	}
 
-	parsedURL, err := url.Parse(pluginURL)
+	parsedURL, err := url.Parse(cfg.URL)
 	if err != nil {
 		return "", err
 	}
@@ -153,7 +213,7 @@ func (cfg *Config) Download() (string, error) {
 
 	resp, err := httpClient.R().
 		SetOutput(pluginLocalPath).
-		Get(pluginURL)
+		Get(cfg.URL)
 	if err != nil {
 		return "", err
 	}

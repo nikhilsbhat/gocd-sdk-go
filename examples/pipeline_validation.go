@@ -10,7 +10,7 @@ import (
 )
 
 func main() {
-	pluginCfg := plugin.NewPluginConfig("0.13.0", "", "")
+	pluginCfg := plugin.NewPluginConfig("", "", "")
 	auth := gocd.Auth{
 		UserName: "admin",
 		Password: "admin",
