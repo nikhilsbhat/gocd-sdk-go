@@ -68,7 +68,7 @@ func (cfg *Config) ValidatePlugin(pipelines []string) (bool, error) {
 		}
 	}
 
-	cfg.log.Infof("validating pipeline against plugin returned '%s'", string(out))
+	cfg.log.Debugf("validating pipeline against plugin returned '%s'", string(out))
 
 	return true, nil
 }
@@ -97,7 +97,7 @@ func (cfg *Config) Type(pipelines []string) error {
 		if len(fileType) != 0 {
 			if fileType != strings.TrimPrefix(filepath.Ext(pipeline), ".") {
 				return &errors.PipelineValidationError{
-					Message: "cannot club multiple pipeline files for validation, should be one of yaml|json|groovy",
+					Message: "cannot club multiple pipeline file types for validation, should be one of yaml|json|groovy",
 				}
 			}
 		}

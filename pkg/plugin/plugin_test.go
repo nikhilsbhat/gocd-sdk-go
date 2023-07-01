@@ -46,7 +46,7 @@ func (suite *YAMLPluginTestSuite) TestValidatePluginTests_ShouldFailValidatingPi
 
 	pipelines := []string{yamlPipelinePath, jsonPipelinePath}
 	err := suite.config.Type(pipelines)
-	suite.EqualError(err, "cannot club multiple pipeline files for validation, should be one of yaml|json|groovy")
+	suite.EqualError(err, "cannot club multiple pipeline file types for validation, should be one of yaml|json|groovy")
 }
 
 func (suite *YAMLPluginTestSuite) TestValidatePluginTests_ShouldFailValidatingYAMLPipelineDueToWrongPath() {
