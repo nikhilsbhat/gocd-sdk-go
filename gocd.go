@@ -5,9 +5,9 @@ import (
 	"crypto/x509"
 	"reflect"
 	"sort"
-	"strings"
 	"time"
 
+	goCdLogger "github.com/nikhilsbhat/gocd-sdk-go/pkg/logger"
 	"github.com/nikhilsbhat/gocd-sdk-go/pkg/plugin"
 
 	"github.com/go-resty/resty/v2"
@@ -165,7 +165,7 @@ type Auth struct {
 // NewClient returns new instance of httpClient when invoked.
 func NewClient(baseURL string, auth Auth, logLevel string, caContent []byte) GoCd {
 	logger := log.New()
-	logger.SetLevel(GetLoglevel(logLevel))
+	logger.SetLevel(goCdLogger.GetLoglevel(logLevel))
 	logger.WithField(goCdAPILoggerName, true)
 	logger.SetFormatter(&log.JSONFormatter{})
 
@@ -193,24 +193,6 @@ func NewClient(baseURL string, auth Auth, logLevel string, caContent []byte) GoC
 	return &client{
 		httpClient: newClient,
 		logger:     logger,
-	}
-}
-
-// GetLoglevel sets the loglevel to the kind of log asked for.
-func GetLoglevel(level string) log.Level {
-	switch strings.ToLower(level) {
-	case log.WarnLevel.String():
-		return log.WarnLevel
-	case log.DebugLevel.String():
-		return log.DebugLevel
-	case log.TraceLevel.String():
-		return log.TraceLevel
-	case log.FatalLevel.String():
-		return log.FatalLevel
-	case log.ErrorLevel.String():
-		return log.ErrorLevel
-	default:
-		return log.InfoLevel
 	}
 }
 

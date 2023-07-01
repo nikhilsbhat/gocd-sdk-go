@@ -18,7 +18,7 @@ type YAMLPluginTestSuite struct {
 }
 
 func (suite *YAMLPluginTestSuite) SetupTest() {
-	cfg := plugin.NewPluginConfig("0.13.0", "", "")
+	cfg := plugin.NewPluginConfig("0.13.0", "", "", "debug")
 
 	homePath, err := os.UserHomeDir()
 	suite.NoError(err)
@@ -103,7 +103,7 @@ type JOSNPluginTestSuite struct {
 }
 
 func (suite *JOSNPluginTestSuite) SetupTest() {
-	cfg := plugin.NewPluginConfig("0.6.0", "", "")
+	cfg := plugin.NewPluginConfig("0.6.0", "", "", "debug")
 
 	homePath, err := os.UserHomeDir()
 	suite.NoError(err)
@@ -179,7 +179,7 @@ type GroovyPluginTestSuite struct {
 }
 
 func (suite *GroovyPluginTestSuite) SetupTest() {
-	cfg := plugin.NewPluginConfig("2.1.3-512", "", "")
+	cfg := plugin.NewPluginConfig("2.1.3-512", "", "", "debug")
 
 	homePath, err := os.UserHomeDir()
 	suite.NoError(err)
@@ -250,7 +250,7 @@ func TestGroovyPipelineValidateTestSuite(t *testing.T) {
 
 func TestConfig_Download(t *testing.T) {
 	t.Run("should be able to download the plugin successfully", func(t *testing.T) {
-		cfg := plugin.NewPluginConfig("0.13.0", "", "")
+		cfg := plugin.NewPluginConfig("0.13.0", "", "", "debug")
 
 		homePath, err := os.UserHomeDir()
 		assert.NoError(t, err)
@@ -268,7 +268,7 @@ func TestConfig_Download(t *testing.T) {
 	})
 
 	t.Run("should error out due to unsupported plugin type", func(t *testing.T) {
-		cfg := plugin.NewPluginConfig("0.13.0", "", "")
+		cfg := plugin.NewPluginConfig("0.13.0", "", "", "debug")
 
 		homePath, err := os.UserHomeDir()
 		assert.NoError(t, err)
@@ -284,7 +284,7 @@ func TestConfig_Download(t *testing.T) {
 	})
 
 	t.Run("should error out due to wrong url set", func(t *testing.T) {
-		cfg := plugin.NewPluginConfig("0.13.0", "", "://github.com/gocd-contrib/gocd-groovy-dsl-config-plugin")
+		cfg := plugin.NewPluginConfig("0.13.0", "", "://github.com/gocd-contrib/gocd-groovy-dsl-config-plugin", "debug")
 
 		homePath, err := os.UserHomeDir()
 		assert.NoError(t, err)

@@ -12,6 +12,7 @@ import (
 	"strings"
 
 	"github.com/nikhilsbhat/gocd-sdk-go/pkg/errors"
+	goCdLogger "github.com/nikhilsbhat/gocd-sdk-go/pkg/logger"
 
 	"github.com/go-resty/resty/v2"
 	log "github.com/sirupsen/logrus"
@@ -231,9 +232,9 @@ func (cfg *Config) Download() (string, error) {
 	return pluginLocalPath, nil
 }
 
-func NewPluginConfig(version, path, url string) Plugin {
+func NewPluginConfig(version, path, url, loglevel string) Plugin {
 	logger := log.New()
-	logger.SetLevel(log.TraceLevel)
+	logger.SetLevel(goCdLogger.GetLoglevel(loglevel))
 	logger.WithField("pipeline-validator", true)
 	logger.SetFormatter(&log.JSONFormatter{})
 
