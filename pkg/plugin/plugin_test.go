@@ -30,7 +30,7 @@ func (suite *YAMLPluginTestSuite) SetupTest() {
 func (suite *YAMLPluginTestSuite) TearDownSuite() {
 	pipelinePath := filepath.Join(suite.homePath, "my-opensource/gocd-sdk-go/internal/fixtures/sample-pipeline.gocd.yaml")
 
-	err := suite.config.Type([]string{pipelinePath})
+	err := suite.config.SetType([]string{pipelinePath})
 	suite.NoError(err)
 
 	pluginPath, err := suite.config.Download()
@@ -45,7 +45,7 @@ func (suite *YAMLPluginTestSuite) TestValidatePluginTests_ShouldFailValidatingPi
 	jsonPipelinePath := filepath.Join(suite.homePath, "gocd-sdk-go/internal/fixtures/agent_run_history.json")
 
 	pipelines := []string{yamlPipelinePath, jsonPipelinePath}
-	err := suite.config.Type(pipelines)
+	err := suite.config.SetType(pipelines)
 	suite.EqualError(err, "cannot club multiple pipeline file types for validation, should be one of yaml|json|groovy")
 }
 
@@ -53,7 +53,7 @@ func (suite *YAMLPluginTestSuite) TestValidatePluginTests_ShouldFailValidatingYA
 	pipelinePath := filepath.Join(suite.homePath, "gocd-sdk-go/internal/fixtures/sample-pipeline.gocd.yaml")
 	expectedError := fmt.Sprintf("failed to validate pipelines, following pipelines are not found '%s'", pipelinePath)
 
-	err := suite.config.Type([]string{pipelinePath})
+	err := suite.config.SetType([]string{pipelinePath})
 	suite.NoError(err)
 
 	_, err = suite.config.Download()
@@ -67,7 +67,7 @@ func (suite *YAMLPluginTestSuite) TestValidatePluginTests_ShouldFailValidatingYA
 func (suite *YAMLPluginTestSuite) TestValidatePluginTests_ShouldSuccessfullyValidateTheYAMLPipelineFile() {
 	pipelinePath := filepath.Join(suite.homePath, "my-opensource/gocd-sdk-go/internal/fixtures/sample-pipeline.gocd.yaml")
 
-	err := suite.config.Type([]string{pipelinePath})
+	err := suite.config.SetType([]string{pipelinePath})
 	suite.NoError(err)
 
 	_, err = suite.config.Download()
@@ -81,7 +81,7 @@ func (suite *YAMLPluginTestSuite) TestValidatePluginTests_ShouldSuccessfullyVali
 func (suite *YAMLPluginTestSuite) TestValidatePluginTests_ValidationShouldFailDueToErrorsInYAMLPipelineFile() {
 	pipelinePath := filepath.Join(suite.homePath, "my-opensource/gocd-sdk-go/internal/fixtures/sample-pipeline-defect.gocd.yaml")
 
-	err := suite.config.Type([]string{pipelinePath})
+	err := suite.config.SetType([]string{pipelinePath})
 	suite.NoError(err)
 
 	_, err = suite.config.Download()
@@ -115,7 +115,7 @@ func (suite *JOSNPluginTestSuite) SetupTest() {
 func (suite *JOSNPluginTestSuite) TearDownSuite() {
 	pipelinePath := filepath.Join(suite.homePath, "my-opensource/gocd-sdk-go/internal/fixtures/sample-pipeline.gocd.json")
 
-	err := suite.config.Type([]string{pipelinePath})
+	err := suite.config.SetType([]string{pipelinePath})
 	suite.NoError(err)
 
 	pluginPath, err := suite.config.Download()
@@ -129,7 +129,7 @@ func (suite *JOSNPluginTestSuite) TestValidatePluginTests_ShouldFailValidatingJS
 	pipelinePath := filepath.Join(suite.homePath, "gocd-sdk-go/internal/fixtures/sample-pipeline.gocd.json")
 	expectedError := fmt.Sprintf("failed to validate pipelines, following pipelines are not found '%s'", pipelinePath)
 
-	err := suite.config.Type([]string{pipelinePath})
+	err := suite.config.SetType([]string{pipelinePath})
 	suite.NoError(err)
 
 	_, err = suite.config.Download()
@@ -143,7 +143,7 @@ func (suite *JOSNPluginTestSuite) TestValidatePluginTests_ShouldFailValidatingJS
 func (suite *JOSNPluginTestSuite) TestValidatePluginTests_ShouldSuccessfullyValidateTheJSONPipelineFile() {
 	pipelinePath := filepath.Join(suite.homePath, "my-opensource/gocd-sdk-go/internal/fixtures/sample-pipeline.gocd.json")
 
-	err := suite.config.Type([]string{pipelinePath})
+	err := suite.config.SetType([]string{pipelinePath})
 	suite.NoError(err)
 
 	_, err = suite.config.Download()
@@ -157,7 +157,7 @@ func (suite *JOSNPluginTestSuite) TestValidatePluginTests_ShouldSuccessfullyVali
 func (suite *JOSNPluginTestSuite) TestValidatePluginTests_ValidationShouldFailDueToErrorsInJSONPipelineFile() {
 	pipelinePath := filepath.Join(suite.homePath, "my-opensource/gocd-sdk-go/internal/fixtures/sample-pipeline-defect.gocd.json")
 
-	err := suite.config.Type([]string{pipelinePath})
+	err := suite.config.SetType([]string{pipelinePath})
 	suite.NoError(err)
 
 	_, err = suite.config.Download()
@@ -191,7 +191,7 @@ func (suite *GroovyPluginTestSuite) SetupTest() {
 func (suite *GroovyPluginTestSuite) TearDownSuite() {
 	pipelinePath := filepath.Join(suite.homePath, "my-opensource/gocd-sdk-go/internal/fixtures/sample-pipeline.gocd.groovy")
 
-	err := suite.config.Type([]string{pipelinePath})
+	err := suite.config.SetType([]string{pipelinePath})
 	suite.NoError(err)
 
 	pluginPath, err := suite.config.Download()
@@ -205,7 +205,7 @@ func (suite *GroovyPluginTestSuite) TestValidatePluginTests_ShouldFailValidating
 	pipelinePath := filepath.Join(suite.homePath, "gocd-sdk-go/internal/fixtures/sample-pipeline.gocd.groovy")
 	expectedError := fmt.Sprintf("failed to validate pipelines, following pipelines are not found '%s'", pipelinePath)
 
-	err := suite.config.Type([]string{pipelinePath})
+	err := suite.config.SetType([]string{pipelinePath})
 	suite.NoError(err)
 
 	_, err = suite.config.Download()
@@ -219,7 +219,7 @@ func (suite *GroovyPluginTestSuite) TestValidatePluginTests_ShouldFailValidating
 func (suite *GroovyPluginTestSuite) TestValidatePluginTests_ShouldSuccessfullyValidateTheGroovyPipelineFile() {
 	pipelinePath := filepath.Join(suite.homePath, "my-opensource/gocd-sdk-go/internal/fixtures/sample-pipeline.gocd.groovy")
 
-	err := suite.config.Type([]string{pipelinePath})
+	err := suite.config.SetType([]string{pipelinePath})
 	suite.NoError(err)
 
 	_, err = suite.config.Download()
@@ -233,7 +233,7 @@ func (suite *GroovyPluginTestSuite) TestValidatePluginTests_ShouldSuccessfullyVa
 func (suite *GroovyPluginTestSuite) TestValidatePluginTests_ValidationShouldFailDueToErrorsInGroovyPipelineFile() {
 	pipelinePath := filepath.Join(suite.homePath, "my-opensource/gocd-sdk-go/internal/fixtures/sample-pipeline-defect.gocd.groovy")
 
-	err := suite.config.Type([]string{pipelinePath})
+	err := suite.config.SetType([]string{pipelinePath})
 	suite.NoError(err)
 
 	_, err = suite.config.Download()
@@ -257,7 +257,7 @@ func TestConfig_Download(t *testing.T) {
 
 		pipelinePath := filepath.Join(homePath, "gocd-sdk-go/internal/fixtures/sample-pipeline.gocd.yaml")
 
-		err = cfg.Type([]string{pipelinePath})
+		err = cfg.SetType([]string{pipelinePath})
 		assert.NoError(t, err)
 
 		expectedPluginPath := filepath.Join(homePath, ".gocd/plugins/yaml-config-plugin-0.13.0.jar")
@@ -275,7 +275,7 @@ func TestConfig_Download(t *testing.T) {
 
 		pipelinePath := filepath.Join(homePath, "gocd-sdk-go/internal/fixtures/sample-pipeline.gocd.toml")
 
-		err = cfg.Type([]string{pipelinePath})
+		err = cfg.SetType([]string{pipelinePath})
 		assert.NoError(t, err)
 
 		pluginPath, err := cfg.Download()
@@ -291,7 +291,7 @@ func TestConfig_Download(t *testing.T) {
 
 		pipelinePath := filepath.Join(homePath, "gocd-sdk-go/internal/fixtures/sample-pipeline.gocd.yaml")
 
-		err = cfg.Type([]string{pipelinePath})
+		err = cfg.SetType([]string{pipelinePath})
 		assert.NoError(t, err)
 
 		pluginPath, err := cfg.Download()

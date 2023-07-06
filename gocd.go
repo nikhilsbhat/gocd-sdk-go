@@ -56,7 +56,7 @@ type GoCd interface {
 	UpdatePipelineGroup(group PipelineGroup) (PipelineGroup, error)
 	GetPipelineRunHistory(pipeline, pageSize string, delay time.Duration) ([]PipelineRunHistory, error)
 	GetPipelineSchedules(pipeline, start, perPage string) (PipelineSchedules, error)
-	ValidatePipelineSyntax(pluginCfg plugin.Plugin, pipelines []string) (bool, error)
+	ValidatePipelineSyntax(pluginCfg plugin.Plugin, pipelines []string, fetchVersionFromServer bool) (bool, error)
 	GetEnvironments() ([]Environment, error)
 	GetEnvironment(name string) (Environment, error)
 	CreateEnvironment(environment Environment) error

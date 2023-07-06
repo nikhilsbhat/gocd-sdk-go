@@ -31,7 +31,10 @@ var (
 type Plugin interface {
 	ValidatePlugin(pipelines []string) (bool, error)
 	Download() (string, error)
-	Type(pipelines []string) error
+	SetType(pipelines []string) error
+	GetType() string
+	SetVersion(version string)
+	GetVersion() string
 }
 
 type Config struct {
@@ -90,7 +93,7 @@ func (cfg *Config) exists(pipelines []string) ([]string, bool) {
 	return nil, true
 }
 
-func (cfg *Config) Type(pipelines []string) error {
+func (cfg *Config) SetType(pipelines []string) error {
 	var fileType string
 
 	for _, pipeline := range pipelines {
@@ -107,6 +110,18 @@ func (cfg *Config) Type(pipelines []string) error {
 	cfg.PipelineType = fileType
 
 	return nil
+}
+
+func (cfg *Config) GetType() string {
+	return cfg.PipelineType
+}
+
+func (cfg *Config) SetVersion(version string) {
+	cfg.Version = version
+}
+
+func (cfg *Config) GetVersion() string {
+	return cfg.Version
 }
 
 func (cfg *Config) GetLatestRelease(pluginURL string) (string, error) {

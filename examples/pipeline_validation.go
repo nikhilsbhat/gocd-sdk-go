@@ -10,7 +10,7 @@ import (
 )
 
 func main() {
-	pluginCfg := plugin.NewPluginConfig("", "", "")
+	pluginCfg := plugin.NewPluginConfig("", "", "", "debug")
 	auth := gocd.Auth{
 		UserName: "admin",
 		Password: "admin",
@@ -23,7 +23,7 @@ func main() {
 	}
 
 	pipelinePath := filepath.Join(homePath, "gocd-sdk-go/internal/fixtures/sample-pipeline.gocd.yaml")
-	success, err := client.ValidatePipelineSyntax(pluginCfg, []string{pipelinePath})
+	success, err := client.ValidatePipelineSyntax(pluginCfg, []string{pipelinePath}, true)
 	if err != nil {
 		log.Fatalln(err)
 	}
