@@ -64,6 +64,33 @@ func (conf *client) GetUser(user string) (User, error) {
 	return userObj, nil
 }
 
+func (conf *client) GetCurrentUser() (User, error) {
+	newClient := &client{}
+	if err := copier.CopyWithOption(newClient, conf, copier.Option{IgnoreEmpty: true, DeepCopy: true}); err != nil {
+		return User{}, err
+	}
+
+	var userObj User
+	resp, err := newClient.httpClient.R().
+		SetHeaders(map[string]string{
+			"Accept": HeaderVersionOne,
+		}).
+		Get(CurrentUserEndpoint)
+	if err != nil {
+		return userObj, &errors.APIError{Err: err, Message: "get current user information"}
+	}
+
+	if resp.StatusCode() != http.StatusOK {
+		return userObj, &errors.NonOkError{Code: resp.StatusCode(), Response: resp}
+	}
+
+	if err = json.Unmarshal(resp.Body(), &userObj); err != nil {
+		return userObj, &errors.MarshalError{Err: err}
+	}
+
+	return userObj, nil
+}
+
 func (conf *client) CreateUser(user User) (User, error) {
 	newClient := &client{}
 	if err := copier.CopyWithOption(newClient, conf, copier.Option{IgnoreEmpty: true, DeepCopy: true}); err != nil {
@@ -120,6 +147,35 @@ func (conf *client) UpdateUser(user User) (User, error) {
 	}
 
 	return userConfig, nil
+}
+
+func (conf *client) UpdateCurrentUser(user User) (User, error) {
+	newClient := &client{}
+	if err := copier.CopyWithOption(newClient, conf, copier.Option{IgnoreEmpty: true, DeepCopy: true}); err != nil {
+		return User{}, err
+	}
+
+	var userObj User
+	resp, err := newClient.httpClient.R().
+		SetHeaders(map[string]string{
+			"Accept":       HeaderVersionOne,
+			"Content-Type": ContentJSON,
+		}).
+		SetBody(user).
+		Patch(CurrentUserEndpoint)
+	if err != nil {
+		return userObj, &errors.APIError{Err: err, Message: "update current user information"}
+	}
+
+	if resp.StatusCode() != http.StatusOK {
+		return userObj, &errors.NonOkError{Code: resp.StatusCode(), Response: resp}
+	}
+
+	if err = json.Unmarshal(resp.Body(), &userObj); err != nil {
+		return userObj, &errors.MarshalError{Err: err}
+	}
+
+	return userObj, nil
 }
 
 func (conf *client) DeleteUser(user string) error {
