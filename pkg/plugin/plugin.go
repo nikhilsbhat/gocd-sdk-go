@@ -25,7 +25,7 @@ var (
 	githubAPIBaseURL        = "https://api.github.com/repos/%s"
 	yamlPluginAPIURL        = fmt.Sprintf(githubAPIBaseURL, "tomzo/gocd-yaml-config-plugin/tags")
 	jsonPluginAPIURL        = fmt.Sprintf(githubAPIBaseURL, "tomzo/gocd-json-config-plugin/tags")
-	groovyPluginAPIURL      = fmt.Sprintf(githubAPIBaseURL, "gocd-contrib/gocd-groovy-dsl-config-plugin")
+	groovyPluginAPIURL      = fmt.Sprintf(githubAPIBaseURL, "gocd-contrib/gocd-groovy-dsl-config-plugin/tags")
 )
 
 type Plugin interface {
