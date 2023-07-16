@@ -204,11 +204,11 @@ Below are the list of supported APIs:
     - [x] Create Auth config
     - [x] Update Auth config
     - [x] Delete Auth config
-- [ ] [System Admin](https://api.gocd.org/current/#system-admins)
+- [x] [System Admin](https://api.gocd.org/current/#system-admins)
     - [x] Get All system admins
     - [x] Update system Admin
     - [ ] <del>Bulk update system admins<del>
-- [ ] [Role](https://api.gocd.org/current/#roles)
+- [x] [Role](https://api.gocd.org/current/#roles)
     - [x] Get all roles
     - [X] Get all roles by type
     - [x] Get Specific role
@@ -225,6 +225,9 @@ Below are the list of supported APIs:
     - [ ] Get all tokens for all users
     - [ ] Get one token for any user
     - [ ] Revoke token for any user
+- [x] [current-user](https://api.gocd.org/current/#current-user)
+    - [x] Get current user
+    - [x] Update current user info
 - [x] [Local Users](https://api.gocd.org/current/#users)
     - [x] Get all users
     - [x] Get a user
