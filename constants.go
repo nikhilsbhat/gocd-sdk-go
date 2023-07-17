@@ -16,6 +16,8 @@ const (
 	MaintenanceEndpoint         = "/api/admin/maintenance_mode"
 	APIFeedPipelineEndpoint     = "/api/feed/pipelines.xml"
 	APIJobFeedEndpoint          = "/api/feed/jobs/scheduled.xml"
+	JobsAPIEndpoint             = "/api/jobs"
+	StageEndpoint               = "/api/stages"
 	PipelineStatus              = "/api/pipelines/%s/status"
 	EncryptEndpoint             = "/api/admin/encrypt"
 	ArtifactInfoEndpoint        = "/api/admin/config/server/artifact_config"

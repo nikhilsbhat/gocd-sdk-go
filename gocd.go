@@ -83,6 +83,10 @@ type GoCd interface {
 	DeletePipeline(name string) error
 	ExportPipelineToConfigRepoFormat(pipelineName, pluginID string) (PipelineExport, error)
 	GetScheduledJobs() (ScheduledJobs, error)
+	RunFailedJobs(stage Stage) (string, error)
+	RunJobs(stage Stage) (string, error)
+	RunStage(stage Stage) (string, error)
+	CancelStage(stage Stage) (string, error)
 	ExtractTemplatePipeline(pipeline, template string) (PipelineConfig, error)
 	EncryptText(value string) (Encrypted, error)
 	DecryptText(value, cipherKey string) (string, error)

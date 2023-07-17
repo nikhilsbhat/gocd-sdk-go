@@ -65,7 +65,7 @@ Below are the list of supported APIs:
     - [x] Delete Agents bulk
     - [x] Kill running tasks iin Agent
     - [x] Agent job run history
-- [ ] [ConfigRepo](https://api.gocd.org/current/#config-repo)
+- [x] [ConfigRepo](https://api.gocd.org/current/#config-repo)
     - [x] Get All Config repo
     - [x] Get Specific Config repo
     - [x] Create Config repo
@@ -120,13 +120,13 @@ Below are the list of supported APIs:
     - [x] Extract template from pipeline
     - [x] Validate pipeline config syntax
 - [ ] [Stage Instances](https://api.gocd.org/current/#stage-instances)
-    - [ ] Cancel stage
+    - [x] Cancel stage
     - [ ] Get stage instance
     - [ ] Get stage history
-    - [ ] Run failed jobs
-    - [ ] Run selected jobs
-- [ ] [Stages](https://api.gocd.org/current/#stages)
-    - [ ] Run stage
+    - [x] Run failed jobs
+    - [x] Run selected jobs
+- [x] [Stages](https://api.gocd.org/current/#stages)
+    - [x] Run stage
 - [ ] [Jobs](https://api.gocd.org/current/#jobs)
     - [ ] Get job instance
     - [ ] Get job history

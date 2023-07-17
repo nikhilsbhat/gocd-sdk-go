@@ -71,8 +71,8 @@ func (conf *client) DisableMaintenanceMode() error {
 
 	resp, err := newClient.httpClient.R().
 		SetHeaders(map[string]string{
-			"Accept":         HeaderVersionOne,
-			"X-GoCD-Confirm": "true",
+			"Accept":      HeaderVersionOne,
+			HeaderConfirm: "true",
 		}).
 		Post(filepath.Join(MaintenanceEndpoint, "disable"))
 	if err != nil {

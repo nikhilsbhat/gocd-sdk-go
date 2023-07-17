@@ -620,6 +620,15 @@ type ElasticProfileUsage struct {
 	PipelineConfigOrigin string `json:"pipeline_config_origin,omitempty" yaml:"pipeline_config_origin,omitempty"`
 }
 
+// Stage holds information of GoCd stage.
+type Stage struct {
+	Pipeline         string   `json:"pipeline,omitempty" yaml:"pipeline,omitempty"`
+	PipelineInstance string   `json:"pipeline_instance,omitempty" yaml:"pipeline_instance,omitempty"`
+	StageCounter     string   `json:"stage_counter,omitempty" yaml:"stage_counter,omitempty"`
+	Name             string   `json:"name,omitempty" yaml:"name,omitempty"`
+	Jobs             []string `json:"jobs,omitempty" yaml:"jobs,omitempty"`
+}
+
 // type ApprovalConfig struct {
 //	Type          string              `json:"type,omitempty" yaml:"type,omitempty"`
 //	OnlyOnSuccess bool                `json:"allow_only_on_success,omitempty" yaml:"allow_only_on_success,omitempty"`
