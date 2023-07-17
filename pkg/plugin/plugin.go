@@ -178,7 +178,7 @@ func (cfg *Config) setURL() error {
 			if err != nil {
 				return err
 			}
-			cfg.Version = version
+			cfg.Version = version[1:]
 		}
 		cfg.URL = fmt.Sprintf(groovyPluginURLTemplate, cfg.Version, cfg.Version)
 	default:
