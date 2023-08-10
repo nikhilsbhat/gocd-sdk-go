@@ -336,12 +336,15 @@ type Encrypted struct {
 
 // ArtifactInfo holds the latest information of the artifacts.
 type ArtifactInfo struct {
-	ArtifactsDir  string `json:"artifacts_dir,omitempty" yaml:"artifacts_dir,omitempty"`
-	PurgeSettings struct {
-		PurgeStartDiskSpace float64 `json:"purge_start_disk_space,omitempty" yaml:"purge_start_disk_space,omitempty"`
-		PurgeUptoDiskSpace  float64 `json:"purge_upto_disk_space,omitempty" yaml:"purge_upto_disk_space,omitempty"`
-	} `json:"purge_settings,omitempty" yaml:"purge_settings,omitempty"`
-	ETAG string `json:"etag,omitempty" yaml:"etag,omitempty"`
+	ArtifactsDir  string        `json:"artifacts_dir,omitempty" yaml:"artifacts_dir,omitempty"`
+	PurgeSettings PurgeSettings `json:"purge_settings,omitempty" yaml:"purge_settings,omitempty"`
+	ETAG          string        `json:"etag,omitempty" yaml:"etag,omitempty"`
+}
+
+// PurgeSettings holds the latest information on the purge setting configuration of GoCD.
+type PurgeSettings struct {
+	PurgeStartDiskSpace float64 `json:"purge_start_disk_space,omitempty" yaml:"purge_start_disk_space,omitempty"`
+	PurgeUptoDiskSpace  float64 `json:"purge_upto_disk_space,omitempty" yaml:"purge_upto_disk_space,omitempty"`
 }
 
 // Schedule holds config of the pipeline that needs to be scheduled.
