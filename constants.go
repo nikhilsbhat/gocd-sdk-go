@@ -32,7 +32,7 @@ const (
 	ClusterProfileEndpoint      = "/api/admin/elastic/cluster_profiles"
 	AgentProfileEndpoint        = "/api/elastic/profiles"
 	ArtifactStoreEndpoint       = "/api/admin/artifact_stores"
-	SiteURLEndpoint             = "/api/admin/security/site_urls"
+	SiteURLEndpoint             = "/api/admin/config/server/site_urls"
 	SecretsConfigEndpoint       = "/api/admin/secret_configs" //nolint:gosec
 	PackageRepositoriesEndpoint = "/api/admin/repositories"
 	PackagesEndpoint            = "/api/admin/packages"
