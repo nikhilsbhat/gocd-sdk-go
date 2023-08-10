@@ -160,7 +160,7 @@ func Test_client_CreateOrUpdateMailServerConfig(t *testing.T) {
 		expected := input
 
 		actual, err := client.CreateOrUpdateMailServerConfig(input)
-		assert.EqualError(t, err, "got 404 from GoCD while making GET call for "+server.URL+
+		assert.EqualError(t, err, "got 404 from GoCD while making POST call for "+server.URL+
 			"/api/config/mailserver\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 		assert.Equal(t, expected, actual)
 	})
@@ -174,7 +174,7 @@ func Test_client_CreateOrUpdateMailServerConfig(t *testing.T) {
 		expected := input
 
 		actual, err := client.CreateOrUpdateMailServerConfig(input)
-		assert.EqualError(t, err, "got 404 from GoCD while making GET call for "+server.URL+
+		assert.EqualError(t, err, "got 404 from GoCD while making POST call for "+server.URL+
 			"/api/config/mailserver\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 		assert.Equal(t, expected, actual)
 	})
@@ -203,7 +203,7 @@ func Test_client_CreateOrUpdateMailServerConfig(t *testing.T) {
 
 		actual, err := client.CreateOrUpdateMailServerConfig(input)
 		assert.EqualError(t, err, "call made to create or update mail server config errored with: "+
-			"Get \"http://localhost:8156/go/api/config/mailserver\": dial tcp [::1]:8156: connect: connection refused")
+			"Post \"http://localhost:8156/go/api/config/mailserver\": dial tcp [::1]:8156: connect: connection refused")
 		assert.Equal(t, expected, actual)
 	})
 }

@@ -49,7 +49,7 @@ func (conf *client) CreateOrUpdateMailServerConfig(mailCfg MailServerConfig) (Ma
 			"Content-Type": ContentJSON,
 		}).
 		SetBody(mailCfg).
-		Get(MailServerConfigEndpoint)
+		Post(MailServerConfigEndpoint)
 	if err != nil {
 		return mailConfig, &errors.APIError{Err: err, Message: "create or update mail server config"}
 	}
