@@ -140,6 +140,7 @@ type GoCd interface {
 	DeletePackage(id string) error
 	GetMaterials() ([]Material, error)
 	GetMaterialUsage(materialID string) ([]string, error)
+	NotifyMaterial(material Material) (string, error)
 	GetRoles() (RolesConfig, error)
 	GetRole(name string) (Role, error)
 	GetRolesByType(roleType string) (RolesConfig, error)

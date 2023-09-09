@@ -45,6 +45,7 @@ const (
 	MaterialUsageEndpoint       = "/api/internal/materials/%s/usages"
 	PreflightCheckEndpoint      = "/api/admin/config_repo_ops/preflight"
 	CurrentUserEndpoint         = "/api/current_user"
+	NotifyEndpoint              = "/api/admin/materials/%s/notify"
 	HeaderVersionZero           = "application/vnd.go.cd+json"
 	HeaderVersionOne            = "application/vnd.go.cd.v1+json"
 	HeaderVersionTwo            = "application/vnd.go.cd.v2+json"

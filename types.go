@@ -505,6 +505,7 @@ type Material struct {
 	Type        string    `json:"type,omitempty" yaml:"type,omitempty"`
 	Fingerprint string    `json:"fingerprint,omitempty" yaml:"fingerprint,omitempty"`
 	Attributes  Attribute `json:"attributes,omitempty" yaml:"attributes,omitempty"`
+	RepoURL     string    `json:"repository_url,omitempty" yaml:"repository_url,omitempty"`
 }
 
 // Attribute holds information of material type present in GoCD.

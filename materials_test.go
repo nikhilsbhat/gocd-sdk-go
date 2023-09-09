@@ -195,3 +195,71 @@ func Test_client_GetMaterialUsage(t *testing.T) {
 		assert.Nil(t, actual)
 	})
 }
+
+func Test_client_NotifyMaterial(t *testing.T) {
+	material := gocd.Material{
+		Type:    "git",
+		RepoURL: "https://github.com/nikhilsbhat/helm-images",
+	}
+
+	correctArtifactHeader := map[string]string{"Accept": gocd.HeaderVersionTwo, "Content-Type": gocd.ContentJSON}
+	t.Run("should be able to notify the material present in GoCD successfully", func(t *testing.T) {
+		server := mockServer([]byte(`{"message": "The material is now scheduled for an update. Please check relevant pipeline(s) for status."}`), http.StatusAccepted,
+			correctArtifactHeader, false, nil)
+
+		client := gocd.NewClient(server.URL, auth, "info", nil)
+
+		actual, err := client.NotifyMaterial(material)
+		assert.NoError(t, err)
+		assert.Equal(t, "The material is now scheduled for an update. Please check relevant pipeline(s) for status.", actual)
+	})
+
+	t.Run("should error out while notifying the material present in GoCD due to wrong headers", func(t *testing.T) {
+		server := mockServer([]byte(materialsJSON), http.StatusOK,
+			map[string]string{"Accept": gocd.HeaderVersionThree}, false, nil)
+
+		client := gocd.NewClient(server.URL, auth, "info", nil)
+
+		actual, err := client.NotifyMaterial(material)
+		assert.EqualError(t, err, "got 404 from GoCD while making POST call for "+server.URL+
+			"/api/admin/materials/git/notify\nwith "+
+			"BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
+		assert.Equal(t, "", actual)
+	})
+
+	t.Run("should error out while notifying the material present in GoCD due to missing headers", func(t *testing.T) {
+		server := mockServer([]byte(materialsJSON), http.StatusOK,
+			nil, false, nil)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
+
+		actual, err := client.NotifyMaterial(material)
+		assert.EqualError(t, err, "got 404 from GoCD while making POST call for "+server.URL+
+			"/api/admin/materials/git/notify\nwith "+
+			"BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
+		assert.Equal(t, "", actual)
+	})
+
+	t.Run("should error out while notifying the material present in GoCD as server returned malformed response", func(t *testing.T) {
+		server := mockServer([]byte(`{"message": "The material is now scheduled for an update. 
+Please check relevant pipeline(s) for status."`), http.StatusAccepted, correctArtifactHeader,
+			false, nil)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
+
+		actual, err := client.NotifyMaterial(material)
+		assert.EqualError(t, err, "reading response body errored with: unexpected end of JSON input")
+		assert.Equal(t, "", actual)
+	})
+
+	t.Run("should error out while fetching notifying the material present in GoCD as server is not reachable", func(t *testing.T) {
+		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
+
+		client.SetRetryCount(1)
+		client.SetRetryWaitTime(1)
+
+		actual, err := client.NotifyMaterial(material)
+		assert.EqualError(t, err, "call made to notify material 'https://github.com/nikhilsbhat/helm-images' of type git errored with: "+
+			"Post \"http://localhost:8156/go/api/admin/materials/git/notify\": "+
+			"dial tcp [::1]:8156: connect: connection refused")
+		assert.Equal(t, "", actual)
+	})
+}
