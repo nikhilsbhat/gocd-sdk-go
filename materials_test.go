@@ -16,7 +16,7 @@ var materialsJSON string
 var materialUsageJSON string
 
 func Test_client_GetMaterials(t *testing.T) {
-	correctArtifactHeader := map[string]string{"Accept": gocd.HeaderVersionTwo}
+	correctArtifactHeader := map[string]string{"Accept": gocd.HeaderVersionZero}
 	t.Run("should be able to fetch all available materials present in GoCD successfully", func(t *testing.T) {
 		server := mockServer([]byte(materialsJSON), http.StatusOK,
 			correctArtifactHeader, false, nil)
@@ -25,43 +25,39 @@ func Test_client_GetMaterials(t *testing.T) {
 
 		expected := []gocd.Material{
 			{
-				Type:        "svn",
-				Fingerprint: "6b0cd6b9181434866c555f3c3bb780e950389a456764c876d804c848efbad554",
-				Attributes: gocd.Attribute{
-					URL:                 "https://github.com/gocd/gocd",
-					Username:            "admin",
-					EncryptedPassword:   "AES:lTFKwi5NvrlqmQ3LOQ5UQA==:Ebggz5N27w54NrhSXKIbng==",
-					Destination:         "test",
-					AutoUpdate:          false,
-					CheckExternals:      false,
-					UseTickets:          false,
-					IgnoreForScheduling: false,
-					InvertFilter:        false,
+				CanTriggerUpdate: true,
+				Config: gocd.MaterialConfig{
+					Type:        "plugin",
+					Fingerprint: "6bb6a100069baa6968671aa9f6c8ce4f50d9f6b14607e1820bb92b824d26e482",
+					Attributes: gocd.Attribute{
+						Ref:        "b054d0aa-4704-4369-b54c-7ebdd3394210",
+						AutoUpdate: true,
+						Origin: map[string]string{
+							"type": "config_repo",
+							"id":   "sample-repo",
+						},
+					},
+				},
+				Messages: []map[string]string{
+					{
+						"description": "Did not find 'scm' plugin with id 'git-path'. Looks like plugin is missing",
+						"level":       "ERROR",
+						"message": "Modification check failed for material: WARNING! Plugin missing. " +
+							"[url=https://github.com/TWChennai/gocd-git-path-sample.git, path=integration, shallow_clone=true]\nAffected pipelines are both.",
+					},
 				},
 			},
 			{
-				Type:        "hg",
-				Fingerprint: "f6b61bc6b33e524c2a94c5be4a4661e5f1d2b74ca089418de20de10b282e39e9",
-				Attributes: gocd.Attribute{
-					URL:                 "ssh://hg@bitbucket.org/example/gocd-hg",
-					Destination:         "test",
-					AutoUpdate:          false,
-					CheckExternals:      false,
-					UseTickets:          false,
-					IgnoreForScheduling: false,
-					InvertFilter:        false,
+				CanTriggerUpdate: true,
+				Config: gocd.MaterialConfig{
+					Type:        "git",
+					Fingerprint: "ae0cc647060aae14b29e252c9a912a8980a1eef592f6cbfb72a66b5467f93d8e",
+					Attributes: gocd.Attribute{
+						URL:    "https://github.com/nikhilsbhat/helm-drift.git",
+						Branch: "main",
+					},
 				},
-			},
-			{
-				Type:        "dependency",
-				Fingerprint: "21f7963a8eca6cced5b4f20b57b4e9cb8edaed29d683c83621a77dfb499c553d",
-				Attributes: gocd.Attribute{
-					Pipeline:            "up42",
-					Stage:               "up42_stage",
-					Name:                "up42_material",
-					AutoUpdate:          true,
-					IgnoreForScheduling: false,
-				},
+				Messages: []map[string]string{},
 			},
 		}
 
@@ -80,7 +76,7 @@ func Test_client_GetMaterials(t *testing.T) {
 
 		actual, err := client.GetMaterials()
 		assert.EqualError(t, err, "got 404 from GoCD while making GET call for "+server.URL+
-			"/api/config/materials\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
+			"/api/internal/materials\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 		assert.Equal(t, expected, actual)
 	})
 
@@ -93,7 +89,7 @@ func Test_client_GetMaterials(t *testing.T) {
 
 		actual, err := client.GetMaterials()
 		assert.EqualError(t, err, "got 404 from GoCD while making GET call for "+server.URL+
-			"/api/config/materials\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
+			"/api/internal/materials\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 		assert.Equal(t, expected, actual)
 	})
 
@@ -119,7 +115,7 @@ func Test_client_GetMaterials(t *testing.T) {
 
 		actual, err := client.GetMaterials()
 		assert.EqualError(t, err, "call made to get all available materials errored with: "+
-			"Get \"http://localhost:8156/go/api/config/materials\": dial tcp [::1]:8156: connect: connection refused")
+			"Get \"http://localhost:8156/go/api/internal/materials\": dial tcp [::1]:8156: connect: connection refused")
 		assert.Equal(t, expected, actual)
 	})
 }
@@ -240,8 +236,8 @@ func Test_client_NotifyMaterial(t *testing.T) {
 	})
 
 	t.Run("should error out while notifying the material present in GoCD as server returned malformed response", func(t *testing.T) {
-		server := mockServer([]byte(`{"message": "The material is now scheduled for an update. 
-Please check relevant pipeline(s) for status."`), http.StatusAccepted, correctArtifactHeader,
+		server := mockServer([]byte(`{"message": "The material is now scheduled for an update.Please check relevant pipeline(s) for status."`),
+			http.StatusAccepted, correctArtifactHeader,
 			false, nil)
 		client := gocd.NewClient(server.URL, auth, "info", nil)
 

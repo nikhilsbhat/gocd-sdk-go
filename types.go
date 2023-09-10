@@ -490,9 +490,7 @@ type Package struct {
 
 // Materials holds information of all material type present in GoCD.
 type Materials struct {
-	Materials struct {
-		Materials []Material `json:"materials,omitempty" yaml:"materials,omitempty"`
-	} `json:"_embedded,omitempty" yaml:"_embedded,omitempty"`
+	Materials []Material `json:"materials,omitempty" yaml:"materials,omitempty"`
 }
 
 // MaterialUsage holds information of pipelines using a specific material.
@@ -502,35 +500,46 @@ type MaterialUsage struct {
 
 // Material holds information of a particular material type present in GoCD.
 type Material struct {
+	Type                     string              `json:"type,omitempty" yaml:"type,omitempty"`
+	Fingerprint              string              `json:"fingerprint,omitempty" yaml:"fingerprint,omitempty"`
+	Attributes               Attribute           `json:"attributes,omitempty" yaml:"attributes,omitempty"`
+	RepoURL                  string              `json:"repository_url,omitempty" yaml:"repository_url,omitempty"`
+	Config                   MaterialConfig      `json:"config,omitempty" yaml:"config,omitempty"`
+	CanTriggerUpdate         bool                `json:"can_trigger_update,omitempty" yaml:"can_trigger_update,omitempty"`
+	MaterialUpdateInProgress bool                `json:"material_update_in_progress,omitempty" yaml:"material_update_in_progress,omitempty"`
+	Messages                 []map[string]string `json:"messages,omitempty" yaml:"messages,omitempty"`
+}
+
+type MaterialConfig struct {
 	Type        string    `json:"type,omitempty" yaml:"type,omitempty"`
 	Fingerprint string    `json:"fingerprint,omitempty" yaml:"fingerprint,omitempty"`
 	Attributes  Attribute `json:"attributes,omitempty" yaml:"attributes,omitempty"`
-	RepoURL     string    `json:"repository_url,omitempty" yaml:"repository_url,omitempty"`
 }
 
 // Attribute holds information of material type present in GoCD.
 type Attribute struct {
-	URL                 string `json:"url,omitempty" yaml:"url,omitempty"`
-	Username            string `json:"username,omitempty" yaml:"username,omitempty"`
-	Password            string `json:"password,omitempty" yaml:"password,omitempty"`
-	EncryptedPassword   string `json:"encrypted_password,omitempty" yaml:"encrypted_password,omitempty"`
-	Branch              string `json:"branch,omitempty" yaml:"branch,omitempty"`
-	AutoUpdate          bool   `json:"auto_update,omitempty" yaml:"auto_update,omitempty"`
-	CheckExternals      bool   `json:"check_externals,omitempty" yaml:"check_externals,omitempty"`
-	UseTickets          bool   `json:"use_tickets,omitempty" yaml:"use_tickets,omitempty"`
-	View                string `json:"view,omitempty" yaml:"view,omitempty"`
-	Port                string `json:"port,omitempty" yaml:"port,omitempty"`
-	ProjectPath         string `json:"project_path,omitempty" yaml:"project_path,omitempty"`
-	Domain              string `json:"domain,omitempty" yaml:"domain,omitempty"`
-	Ref                 string `json:"ref,omitempty" yaml:"ref,omitempty"`
-	Name                string `json:"name,omitempty" yaml:"name,omitempty"`
-	Stage               string `json:"stage,omitempty" yaml:"stage,omitempty"`
-	Pipeline            string `json:"pipeline,omitempty" yaml:"pipeline,omitempty"`
-	IgnoreForScheduling bool   `json:"ignore_for_scheduling,omitempty" yaml:"ignore_for_scheduling,omitempty"`
-	Destination         string `json:"destination,omitempty" yaml:"destination,omitempty"`
-	InvertFilter        bool   `json:"invert_filter,omitempty" yaml:"invert_filter,omitempty"`
-	SubmoduleFolder     string `json:"submodule_folder,omitempty" yaml:"submodule_folder,omitempty"`
-	ShallowClone        bool   `json:"shallow_clone,omitempty" yaml:"shallow_clone,omitempty"`
+	URL                 string            `json:"url,omitempty" yaml:"url,omitempty"`
+	Username            string            `json:"username,omitempty" yaml:"username,omitempty"`
+	Password            string            `json:"password,omitempty" yaml:"password,omitempty"`
+	EncryptedPassword   string            `json:"encrypted_password,omitempty" yaml:"encrypted_password,omitempty"`
+	Branch              string            `json:"branch,omitempty" yaml:"branch,omitempty"`
+	AutoUpdate          bool              `json:"auto_update,omitempty" yaml:"auto_update,omitempty"`
+	CheckExternals      bool              `json:"check_externals,omitempty" yaml:"check_externals,omitempty"`
+	UseTickets          bool              `json:"use_tickets,omitempty" yaml:"use_tickets,omitempty"`
+	View                string            `json:"view,omitempty" yaml:"view,omitempty"`
+	Port                string            `json:"port,omitempty" yaml:"port,omitempty"`
+	ProjectPath         string            `json:"project_path,omitempty" yaml:"project_path,omitempty"`
+	Domain              string            `json:"domain,omitempty" yaml:"domain,omitempty"`
+	Ref                 string            `json:"ref,omitempty" yaml:"ref,omitempty"`
+	Name                string            `json:"name,omitempty" yaml:"name,omitempty"`
+	Stage               string            `json:"stage,omitempty" yaml:"stage,omitempty"`
+	Pipeline            string            `json:"pipeline,omitempty" yaml:"pipeline,omitempty"`
+	IgnoreForScheduling bool              `json:"ignore_for_scheduling,omitempty" yaml:"ignore_for_scheduling,omitempty"`
+	Destination         string            `json:"destination,omitempty" yaml:"destination,omitempty"`
+	InvertFilter        bool              `json:"invert_filter,omitempty" yaml:"invert_filter,omitempty"`
+	SubmoduleFolder     string            `json:"submodule_folder,omitempty" yaml:"submodule_folder,omitempty"`
+	ShallowClone        bool              `json:"shallow_clone,omitempty" yaml:"shallow_clone,omitempty"`
+	Origin              map[string]string `json:"origin,omitempty" yaml:"origin,omitempty"`
 	Filter              struct {
 		Ignore []string `json:"ignore,omitempty" yaml:"ignore,omitempty"`
 	} `json:"filter,omitempty" yaml:"filter,omitempty"`

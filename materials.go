@@ -19,7 +19,7 @@ func (conf *client) GetMaterials() ([]Material, error) {
 	var materials Materials
 	resp, err := newClient.httpClient.R().
 		SetHeaders(map[string]string{
-			"Accept": HeaderVersionTwo,
+			"Accept": HeaderVersionZero,
 		}).
 		Get(MaterialEndpoint)
 	if err != nil {
@@ -34,7 +34,7 @@ func (conf *client) GetMaterials() ([]Material, error) {
 		return nil, &errors.MarshalError{Err: err}
 	}
 
-	return materials.Materials.Materials, nil
+	return materials.Materials, nil
 }
 
 func (conf *client) GetMaterialUsage(materialID string) ([]string, error) {

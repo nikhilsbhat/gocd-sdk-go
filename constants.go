@@ -36,7 +36,7 @@ const (
 	SecretsConfigEndpoint       = "/api/admin/secret_configs" //nolint:gosec
 	PackageRepositoriesEndpoint = "/api/admin/repositories"
 	PackagesEndpoint            = "/api/admin/packages"
-	MaterialEndpoint            = "/api/config/materials"
+	MaterialEndpoint            = "/api/internal/materials"
 	RolesEndpoint               = "/api/admin/security/roles"
 	PluginInfoEndpoint          = "/api/admin/plugin_info"
 	UsersEndpoint               = "/api/users"
