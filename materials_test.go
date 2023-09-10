@@ -259,3 +259,69 @@ func Test_client_NotifyMaterial(t *testing.T) {
 		assert.Equal(t, "", actual)
 	})
 }
+
+func Test_client_MaterialTriggerUpdate(t *testing.T) {
+	materialID := "5fc2198707d4e5b7dfa8cc5c6e398b9ea4bcb17d3aa54f0146ccb361cf03bbd4"
+	correctArtifactHeader := map[string]string{"Accept": gocd.HeaderVersionZero}
+	t.Run("should be able to trigger material update present in GoCD successfully", func(t *testing.T) {
+		server := mockServer([]byte(`{"message" : "OK"}`), http.StatusCreated,
+			correctArtifactHeader, false, nil)
+
+		client := gocd.NewClient(server.URL, auth, "info", nil)
+
+		expected := map[string]string{"message": "OK"}
+
+		actual, err := client.MaterialTriggerUpdate(materialID)
+		assert.NoError(t, err)
+		assert.Equal(t, expected, actual)
+	})
+
+	t.Run("should error out while triggering material update present in GoCD due to wrong headers", func(t *testing.T) {
+		server := mockServer([]byte(materialsJSON), http.StatusOK,
+			map[string]string{"Accept": gocd.HeaderVersionThree}, false, nil)
+
+		client := gocd.NewClient(server.URL, auth, "info", nil)
+
+		actual, err := client.MaterialTriggerUpdate(materialID)
+		assert.EqualError(t, err, "got 404 from GoCD while making POST call for "+server.URL+
+			"/api/internal/materials/5fc2198707d4e5b7dfa8cc5c6e398b9ea4bcb17d3aa54f0146ccb361cf03bbd4/trigger_update\nwith "+
+			"BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
+		assert.Nil(t, actual)
+	})
+
+	t.Run("should error out while triggering material update present in GoCD due to missing headers", func(t *testing.T) {
+		server := mockServer([]byte(materialsJSON), http.StatusOK,
+			nil, false, nil)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
+
+		actual, err := client.MaterialTriggerUpdate(materialID)
+		assert.EqualError(t, err, "got 404 from GoCD while making POST call for "+server.URL+
+			"/api/internal/materials/5fc2198707d4e5b7dfa8cc5c6e398b9ea4bcb17d3aa54f0146ccb361cf03bbd4/trigger_update\nwith "+
+			"BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
+		assert.Nil(t, actual)
+	})
+
+	t.Run("should error out while triggering material update present in GoCD as server returned malformed response", func(t *testing.T) {
+		server := mockServer([]byte(`{"message" : "OK"`),
+			http.StatusCreated, correctArtifactHeader,
+			false, nil)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
+
+		actual, err := client.MaterialTriggerUpdate(materialID)
+		assert.EqualError(t, err, "reading response body errored with: unexpected end of JSON input")
+		assert.Nil(t, actual)
+	})
+
+	t.Run("should error out while triggering material update material present in GoCD as server is not reachable", func(t *testing.T) {
+		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
+
+		client.SetRetryCount(1)
+		client.SetRetryWaitTime(1)
+
+		actual, err := client.MaterialTriggerUpdate(materialID)
+		assert.EqualError(t, err, "call made to trigger update '5fc2198707d4e5b7dfa8cc5c6e398b9ea4bcb17d3aa54f0146ccb361cf03bbd4' errored with: "+
+			"Post \"http://localhost:8156/go/api/internal/materials/5fc2198707d4e5b7dfa8cc5c6e398b9ea4bcb17d3aa54f0146ccb361cf03bbd4/trigger_update\": "+
+			"dial tcp [::1]:8156: connect: connection refused")
+		assert.Nil(t, actual)
+	})
+}

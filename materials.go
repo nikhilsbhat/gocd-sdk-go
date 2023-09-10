@@ -78,7 +78,7 @@ func (conf *client) NotifyMaterial(material Material) (string, error) {
 		SetBody(map[string]string{
 			"repository_url": material.RepoURL,
 		}).
-		Post(fmt.Sprintf(NotifyEndpoint, material.Type))
+		Post(fmt.Sprintf(MaterialNotifyEndpoint, material.Type))
 	if err != nil {
 		return "", &errors.APIError{Err: err, Message: fmt.Sprintf("notify material '%s' of type %s", material.RepoURL, material.Type)}
 	}
@@ -93,4 +93,32 @@ func (conf *client) NotifyMaterial(material Material) (string, error) {
 	}
 
 	return notifyMessage["message"], nil
+}
+
+func (conf *client) MaterialTriggerUpdate(materialID string) (map[string]string, error) {
+	newClient := &client{}
+	if err := copier.CopyWithOption(newClient, conf, copier.Option{IgnoreEmpty: true, DeepCopy: true}); err != nil {
+		return nil, err
+	}
+
+	resp, err := newClient.httpClient.R().
+		SetHeaders(map[string]string{
+			"Accept":      HeaderVersionZero,
+			HeaderConfirm: "true",
+		}).
+		Post(fmt.Sprintf(MaterialTriggerUpdate, materialID))
+	if err != nil {
+		return nil, &errors.APIError{Err: err, Message: fmt.Sprintf("trigger update '%s'", materialID)}
+	}
+
+	if resp.StatusCode() != http.StatusCreated {
+		return nil, &errors.NonOkError{Code: resp.StatusCode(), Response: resp}
+	}
+
+	updateMessage := map[string]string{}
+	if err = json.Unmarshal(resp.Body(), &updateMessage); err != nil {
+		return nil, &errors.MarshalError{Err: err}
+	}
+
+	return updateMessage, nil
 }

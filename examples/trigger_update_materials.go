@@ -5,6 +5,7 @@ import (
 	"log"
 
 	"github.com/nikhilsbhat/gocd-sdk-go"
+	"gopkg.in/yaml.v3"
 )
 
 func main() {
@@ -14,15 +15,15 @@ func main() {
 	}
 	client := gocd.NewClient("http://localhost:8153/go", auth, "info", nil)
 
-	material := gocd.Material{
-		Type:    "git",
-		RepoURL: "https://github.com/nikhilsbhat/helm-drift.git",
-	}
-
-	resp, err := client.NotifyMaterial(material)
+	resp, err := client.MaterialTriggerUpdate("3d00c7a0bbe3e425c2ecfac072f1c3ffc14580908c9da0d84a3ec4e5283fca14")
 	if err != nil {
 		log.Fatalln(err)
 	}
 
-	fmt.Println(resp)
+	out, err := yaml.Marshal(resp)
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	fmt.Println(string(out))
 }

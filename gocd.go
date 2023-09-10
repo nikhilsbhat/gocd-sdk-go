@@ -141,6 +141,7 @@ type GoCd interface {
 	GetMaterials() ([]Material, error)
 	GetMaterialUsage(materialID string) ([]string, error)
 	NotifyMaterial(material Material) (string, error)
+	MaterialTriggerUpdate(id string) (map[string]string, error)
 	GetRoles() (RolesConfig, error)
 	GetRole(name string) (Role, error)
 	GetRolesByType(roleType string) (RolesConfig, error)
