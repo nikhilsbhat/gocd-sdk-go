@@ -99,7 +99,7 @@ func (conf *client) GetPipelineRunHistory(pipeline, pageSize string, delay time.
 			}).
 			Get(filepath.Join(PipelinesEndpoint, pipeline, "history"))
 		if err != nil {
-			return nil, &errors.APIError{Err: err, Message: fmt.Sprintf("get pipeline %s", pipeline)}
+			return nil, &errors.APIError{Err: err, Message: fmt.Sprintf("get pipeline history for '%s'", pipeline)}
 		}
 
 		if resp.StatusCode() != http.StatusOK {
@@ -125,6 +125,44 @@ func (conf *client) GetPipelineRunHistory(pipeline, pageSize string, delay time.
 	}
 
 	return pipelineRunHistories, nil
+}
+
+// GetLimitedPipelineRunHistory fetches a limited run history of selected pipeline from GoCD server.
+// This would be an expensive operation; make sure to run it during non-peak hours.
+func (conf *client) GetLimitedPipelineRunHistory(pipeline, pageSize, after string) ([]PipelineRunHistory, error) {
+	type runHistory struct {
+		Pipelines []PipelineRunHistory `json:"pipelines,omitempty" yaml:"pipelines,omitempty"`
+	}
+
+	newClient := &client{}
+	if err := copier.CopyWithOption(newClient, conf, copier.Option{IgnoreEmpty: true, DeepCopy: true}); err != nil {
+		return nil, err
+	}
+
+	var pipelineRunHistory runHistory
+	resp, err := newClient.httpClient.R().
+		SetHeaders(map[string]string{
+			"Accept":       HeaderVersionOne,
+			"Content-Type": ContentJSON,
+		}).
+		SetQueryParams(map[string]string{
+			"page_size": pageSize,
+			"after":     after,
+		}).
+		Get(filepath.Join(PipelinesEndpoint, pipeline, "history"))
+	if err != nil {
+		return nil, &errors.APIError{Err: err, Message: fmt.Sprintf("get limited pipeline history for '%s'", pipeline)}
+	}
+
+	if resp.StatusCode() != http.StatusOK {
+		return nil, &errors.NonOkError{Code: resp.StatusCode(), Response: resp}
+	}
+
+	if err = json.Unmarshal(resp.Body(), &pipelineRunHistory); err != nil {
+		return nil, &errors.MarshalError{Err: err}
+	}
+
+	return pipelineRunHistory.Pipelines, nil
 }
 
 // GetPipelineSchedules fetches the last X schedules of the selected pipeline from GoCD server.

@@ -47,6 +47,7 @@ const (
 	ElasticProfileUsageEndpoint = "/api/internal/elastic/profiles/%s/usages"
 	PreflightCheckEndpoint      = "/api/admin/config_repo_ops/preflight"
 	CurrentUserEndpoint         = "/api/current_user"
+	VSMEndpoint                 = "/pipelines/value_stream_map"
 	HeaderVersionZero           = "application/vnd.go.cd+json"
 	HeaderVersionOne            = "application/vnd.go.cd.v1+json"
 	HeaderVersionTwo            = "application/vnd.go.cd.v2+json"

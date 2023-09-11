@@ -1,0 +1,331 @@
+{
+  "current_pipeline": "helm-images",
+  "levels": [
+    {
+      "nodes": [
+        {
+          "locator": "",
+          "name": "https://github.com/nikhilsbhat/helm-images",
+          "depth": 1,
+          "instances": [],
+          "node_type": "GIT",
+          "parents": [],
+          "material_names": [
+            "helm-images"
+          ],
+          "id": "1982acfa1edbe518d3d4b866c722cd7a658b6b6cb2c1d667e5ce9829959ca491",
+          "material_revisions": [
+          ],
+          "dependents": [
+            "helm-images"
+          ]
+        }
+      ]
+    },
+    {
+      "nodes": [
+        {
+          "locator": "/go/pipeline/activity/helm-images",
+          "template_name": null,
+          "depth": 1,
+          "instances": [
+            {
+              "locator": "/go/pipelines/value_stream_map/helm-images/3750",
+              "label": "3750",
+              "stages": [
+                {
+                  "locator": "/go/pipelines/helm-images/3750/build/1",
+                  "name": "build",
+                  "duration": 1053,
+                  "status": "Passed"
+                },
+                {
+                  "locator": "/go/pipelines/helm-images/3750/package/1",
+                  "name": "package",
+                  "duration": 424,
+                  "status": "Passed"
+                },
+                {
+                  "locator": "/go/pipelines/helm-images/3750/publish_version/1",
+                  "name": "publish_version",
+                  "duration": 131,
+                  "status": "Passed"
+                },
+                {
+                  "locator": "/go/pipelines/helm-images/3750/provider_test/1",
+                  "name": "provider_test",
+                  "duration": 816,
+                  "status": "Passed"
+                },
+                {
+                  "locator": "/go/pipelines/helm-images/3750/performance-test/5",
+                  "name": "performance-test",
+                  "duration": null,
+                  "status": "Building"
+                }
+              ],
+              "counter": 3750
+            }
+          ],
+          "parents": [
+            "1982acfa1edbe518d3d4b866c722cd7a658b6b6cb2c1d667e5ce9829959ca491"
+          ],
+          "dependents": [
+            "api-performance-test",
+            "deploy-helm-images-dev"
+          ],
+          "can_edit": true,
+          "name": "helm-images",
+          "node_type": "PIPELINE",
+          "id": "helm-images",
+          "edit_path": "/go/admin/pipelines/helm-images/general"
+        }
+      ]
+    },
+    {
+      "nodes": [
+        {
+          "locator": "/go/pipeline/activity/api-performance-test",
+          "template_name": null,
+          "depth": 1,
+          "instances": [
+            {
+              "locator": "/go/pipelines/value_stream_map/api-performance-test/237",
+              "label": "237",
+              "stages": [
+                {
+                  "locator": "/go/pipelines/api-performance-test/237/test/1",
+                  "name": "test",
+                  "duration": 57,
+                  "status": "Failed"
+                }
+              ],
+              "counter": 237
+            }
+          ],
+          "parents": [
+            "helm-images"
+          ],
+          "dependents": [],
+          "can_edit": true,
+          "name": "api-performance-test",
+          "node_type": "PIPELINE",
+          "id": "api-performance-test",
+          "edit_path": "/go/admin/pipelines/api-performance-test/general"
+        },
+        {
+          "locator": "/go/pipeline/activity/deploy-helm-images-dev",
+          "template_name": null,
+          "depth": 2,
+          "instances": [
+            {
+              "locator": "/go/pipelines/value_stream_map/deploy-helm-images-dev/11571",
+              "label": "11571",
+              "stages": [
+                {
+                  "locator": "/go/pipelines/deploy-helm-images-dev/11571/can_i_deploy/1",
+                  "name": "can_i_deploy",
+                  "duration": 179,
+                  "status": "Passed"
+                },
+                {
+                  "locator": "/go/pipelines/deploy-helm-images-dev/11571/dev_deploy/1",
+                  "name": "dev_deploy",
+                  "duration": 283,
+                  "status": "Passed"
+                },
+                {
+                  "locator": "/go/pipelines/deploy-helm-images-dev/11571/tag_dev_in_pact/1",
+                  "name": "tag_dev_in_pact",
+                  "duration": 160,
+                  "status": "Passed"
+                },
+                {
+                  "locator": "/go/pipelines/deploy-helm-images-dev/11571/promote_to_artifactory/1",
+                  "name": "promote_to_artifactory",
+                  "duration": 151,
+                  "status": "Passed"
+                }
+              ],
+              "counter": 11571
+            },
+            {
+              "locator": "/go/pipelines/value_stream_map/deploy-helm-images-dev/11570",
+              "label": "11570",
+              "stages": [
+                {
+                  "locator": "/go/pipelines/deploy-helm-images-dev/11570/can_i_deploy/1",
+                  "name": "can_i_deploy",
+                  "duration": 20,
+                  "status": "Passed"
+                },
+                {
+                  "locator": "/go/pipelines/deploy-helm-images-dev/11570/dev_deploy/1",
+                  "name": "dev_deploy",
+                  "duration": 121,
+                  "status": "Passed"
+                },
+                {
+                  "locator": "/go/pipelines/deploy-helm-images-dev/11570/tag_dev_in_pact/1",
+                  "name": "tag_dev_in_pact",
+                  "duration": 10,
+                  "status": "Passed"
+                },
+                {
+                  "locator": "/go/pipelines/deploy-helm-images-dev/11570/promote_to_artifactory/1",
+                  "name": "promote_to_artifactory",
+                  "duration": 182,
+                  "status": "Passed"
+                }
+              ],
+              "counter": 11570
+            }
+          ],
+          "parents": [
+            "helm-images"
+          ],
+          "dependents": [
+            "helm-images-tests"
+          ],
+          "can_edit": true,
+          "name": "deploy-helm-images-dev",
+          "node_type": "PIPELINE",
+          "id": "deploy-helm-images-dev",
+          "edit_path": "/go/admin/pipelines/deploy-helm-images-dev/general"
+        }
+      ]
+    },
+    {
+      "nodes": [
+        {
+          "locator": "/go/pipeline/activity/Deploy_HELM_IMAGES_Master",
+          "template_name": null,
+          "depth": 1,
+          "instances": [
+            {
+              "locator": "",
+              "label": "",
+              "stages": [
+                {
+                  "locator": "",
+                  "name": "promote_to_next_env",
+                  "duration": null,
+                  "status": "Unknown"
+                }
+              ],
+              "counter": 0
+            }
+          ],
+          "parents": [
+            "Deploy_HELM_IMAGES_Master"
+          ],
+          "dependents": [],
+          "can_edit": true,
+          "name": "Deploy_HELM_IMAGES_Master",
+          "node_type": "PIPELINE",
+          "id": "Deploy_HELM_IMAGES_Master",
+          "edit_path": "/go/admin/pipelines/Deploy_HELM_IMAGES_Master/general"
+        },
+        {
+          "locator": "/go/pipeline/activity/Deploy_HELM_IMAGES_Master",
+          "template_name": null,
+          "depth": 2,
+          "instances": [
+            {
+              "locator": "",
+              "label": "",
+              "stages": [
+                {
+                  "locator": "",
+                  "name": "promote_to_next_env_rancher",
+                  "duration": null,
+                  "status": "Unknown"
+                }
+              ],
+              "counter": 0
+            }
+          ],
+          "parents": [
+            "Deploy_HELM_IMAGES_Master"
+          ],
+          "dependents": [],
+          "can_edit": true,
+          "name": "Deploy_HELM_IMAGES_Master",
+          "node_type": "PIPELINE",
+          "id": "Deploy_HELM_IMAGES_Master",
+          "edit_path": "/go/admin/pipelines/Deploy_HELM_IMAGES_Master/general"
+        },
+        {
+          "locator": "/go/pipeline/activity/Deploy_HELM_IMAGES_PKS_DR_Master",
+          "template_name": null,
+          "depth": 3,
+          "instances": [
+            {
+              "locator": "",
+              "label": "",
+              "stages": [
+                {
+                  "locator": "",
+                  "name": "promote_to_next_env",
+                  "duration": null,
+                  "status": "Unknown"
+                },
+                {
+                  "locator": "",
+                  "name": "Deploy_HELM_IMAGES",
+                  "duration": null,
+                  "status": "Unknown"
+                }
+              ],
+              "counter": 0
+            }
+          ],
+          "parents": [
+            "Deploy_HELM_IMAGES_Master"
+          ],
+          "dependents": [],
+          "can_edit": true,
+          "name": "Deploy_HELM_IMAGES_PKS_DR_Master",
+          "node_type": "PIPELINE",
+          "id": "Deploy_HELM_IMAGES_PKS_DR_Master",
+          "edit_path": "/go/admin/pipelines/Deploy_HELM_IMAGES_PKS_DR_Master/general"
+        },
+        {
+          "locator": "/go/pipeline/activity/Deploy_HELM_IMAGES_DR_Master",
+          "template_name": null,
+          "depth": 4,
+          "instances": [
+            {
+              "locator": "",
+              "label": "",
+              "stages": [
+                {
+                  "locator": "",
+                  "name": "promote_to_next_env-dr",
+                  "duration": null,
+                  "status": "Unknown"
+                },
+                {
+                  "locator": "",
+                  "name": "Deploy_HELM_IMAGES-dr",
+                  "duration": null,
+                  "status": "Unknown"
+                }
+              ],
+              "counter": 0
+            }
+          ],
+          "parents": [
+            "Deploy_HELM_IMAGES_Master"
+          ],
+          "dependents": [],
+          "can_edit": true,
+          "name": "Deploy_HELM_IMAGES_DR_Master",
+          "node_type": "PIPELINE",
+          "id": "Deploy_HELM_IMAGES_DR_Master",
+          "edit_path": "/go/admin/pipelines/Deploy_HELM_IMAGES_DR_Master/general"
+        }
+      ]
+    }
+  ]
+}

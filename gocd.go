@@ -55,6 +55,7 @@ type GoCd interface {
 	DeletePipelineGroup(name string) error
 	UpdatePipelineGroup(group PipelineGroup) (PipelineGroup, error)
 	GetPipelineRunHistory(pipeline, pageSize string, delay time.Duration) ([]PipelineRunHistory, error)
+	GetLimitedPipelineRunHistory(pipeline, pageSize, after string) ([]PipelineRunHistory, error)
 	GetPipelineSchedules(pipeline, start, perPage string) (PipelineSchedules, error)
 	ValidatePipelineSyntax(pluginCfg plugin.Plugin, pipelines []string, fetchVersionFromServer bool) (bool, error)
 	GetEnvironments() ([]Environment, error)
@@ -159,6 +160,7 @@ type GoCd interface {
 	DeleteUser(user string) error
 	BulkDeleteUsers(users map[string]interface{}) error
 	BulkEnableDisableUsers(users map[string]interface{}) error
+	GetPipelineVSM(pipeline, instance string) (VSM, error)
 	SetRetryCount(count int)
 	SetRetryWaitTime(count int)
 }

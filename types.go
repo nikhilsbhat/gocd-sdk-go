@@ -642,6 +642,22 @@ type Stage struct {
 	Jobs             []string `json:"jobs,omitempty" yaml:"jobs,omitempty"`
 }
 
+type VSM struct {
+	Pipeline string           `json:"current_pipeline,omitempty" yaml:"current_pipeline,omitempty"`
+	Level    []PipelineLevels `json:"levels,omitempty" yaml:"levels,omitempty"`
+}
+
+type PipelineLevels struct {
+	Nodes []PipelineNode `json:"nodes,omitempty" yaml:"nodes,omitempty"`
+}
+
+type PipelineNode struct {
+	Parents    []string `json:"parents,omitempty" yaml:"parents,omitempty"`
+	Dependents []string `json:"dependents,omitempty" yaml:"dependents,omitempty"`
+	Name       string   `json:"name,omitempty" yaml:"name,omitempty"`
+	ID         string   `json:"ID,omitempty" yaml:"ID,omitempty"`
+}
+
 // type ApprovalConfig struct {
 //	Type          string              `json:"type,omitempty" yaml:"type,omitempty"`
 //	OnlyOnSuccess bool                `json:"allow_only_on_success,omitempty" yaml:"allow_only_on_success,omitempty"`

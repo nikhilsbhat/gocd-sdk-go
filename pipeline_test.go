@@ -24,6 +24,8 @@ var (
 	pipelineSchedulesJSON string
 	//go:embed internal/fixtures/pipeline_extraction.json
 	pipelineExtractionJSON string
+	//go:embed internal/fixtures/pipeline_history.json
+	pipelineRunHistory string
 )
 
 var pipelineMap = map[string]interface{}{
@@ -194,7 +196,7 @@ func Test_client_GetPipelineHistory(t *testing.T) {
 		client.SetRetryWaitTime(1)
 
 		actual, err := client.GetPipelineRunHistory("helm-images", "0", time.Duration(2)*time.Second)
-		assert.EqualError(t, err, "call made to get pipeline helm-images errored with: "+
+		assert.EqualError(t, err, "call made to get pipeline history for 'helm-images' errored with: "+
 			"Get \"http://localhost:8156/go/api/pipelines/helm-images/history?after=0&page_size=0\": dial tcp [::1]:8156: connect: connection refused")
 		assert.Nil(t, actual)
 	})
@@ -250,6 +252,82 @@ func Test_client_GetPipelineHistory(t *testing.T) {
 	//	assert.NoError(t, err)
 	//	assert.Equal(t, expected, actual)
 	// })
+}
+
+func Test_client_GetLimitedPipelineRunHistory(t *testing.T) {
+	t.Run("should error out while fetching pipeline run history from server", func(t *testing.T) {
+		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
+		client.SetRetryCount(1)
+		client.SetRetryWaitTime(1)
+
+		actual, err := client.GetLimitedPipelineRunHistory("helm-images", "0", "0")
+		assert.EqualError(t, err, "call made to get limited pipeline history for 'helm-images' errored with: "+
+			"Get \"http://localhost:8156/go/api/pipelines/helm-images/history?after=0&page_size=0\": dial tcp [::1]:8156: connect: connection refused")
+		assert.Nil(t, actual)
+	})
+
+	t.Run("should error out while fetching pipeline run history as server returned non 200 status code", func(t *testing.T) {
+		server := mockServer([]byte("pipelineRunHistoryJSON"), http.StatusBadGateway, nil, true, nil)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
+
+		actual, err := client.GetLimitedPipelineRunHistory("helm-images", "0", "0")
+		assert.EqualError(t, err, "got 502 from GoCD while making GET call for "+server.URL+
+			"/api/pipelines/helm-images/history?after=0&page_size=0\nwith BODY:pipelineRunHistoryJSON")
+		assert.Nil(t, actual)
+	})
+
+	t.Run("should error out while fetching pipeline run history as server returned malformed response", func(t *testing.T) {
+		server := mockServer([]byte(`{"pipelineRunHistoryJSON"}`), http.StatusOK, nil, true, nil)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
+
+		actual, err := client.GetLimitedPipelineRunHistory("helm-images", "0", "0")
+		assert.EqualError(t, err, "reading response body errored with: invalid character '}' after object key")
+		assert.Nil(t, actual)
+	})
+
+	t.Run("should be able to fetch the pipeline run history", func(t *testing.T) {
+		server := mockServer([]byte(pipelineRunHistory),
+			http.StatusOK,
+			map[string]string{"Accept": gocd.HeaderVersionOne, "Content-Type": gocd.ContentJSON}, true, nil)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
+
+		expected := []gocd.PipelineRunHistory{
+			{
+				Name:          "helm-images",
+				Counter:       3,
+				ScheduledDate: 1.678470766332e+12,
+				BuildCause: gocd.PipelineBuildCause{
+					Message:       "Forced by admin",
+					Approver:      "admin",
+					TriggerForced: true,
+				},
+			},
+			{
+				Name:          "helm-images",
+				Counter:       2,
+				ScheduledDate: 1.677128882155e+12,
+				BuildCause: gocd.PipelineBuildCause{
+					Message:       "modified by nikhilsbhat <nikhilsbhat93@gmail.com>",
+					Approver:      "changes",
+					TriggerForced: false,
+				},
+			},
+			{
+				Name:          "helm-images",
+				Counter:       1,
+				ScheduledDate: 1.672544013154e+12,
+				BuildCause: gocd.PipelineBuildCause{
+					Message:       "Forced by admin",
+					Approver:      "admin",
+					TriggerForced: true,
+				},
+			},
+		}
+
+		actual, err := client.GetLimitedPipelineRunHistory("helm-images", "0", "0")
+		assert.NoError(t, err)
+		assert.Equal(t, expected, actual)
+	})
 }
 
 func Test_client_getPipelineName(t *testing.T) {
