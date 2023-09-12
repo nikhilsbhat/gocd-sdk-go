@@ -261,7 +261,7 @@ func Test_client_NotifyMaterial(t *testing.T) {
 }
 
 func Test_client_MaterialTriggerUpdate(t *testing.T) {
-	materialID := "5fc2198707d4e5b7dfa8cc5c6e398b9ea4bcb17d3aa54f0146ccb361cf03bbd4"
+	materialID := "5fc2198707d4e5b7dfa8cc5c6e398b9ea4bcb17d3aa54f0146ccb361cf03bbd4" //nolint:gosec
 	correctArtifactHeader := map[string]string{"Accept": gocd.HeaderVersionZero}
 	t.Run("should be able to trigger material update present in GoCD successfully", func(t *testing.T) {
 		server := mockServer([]byte(`{"message" : "OK"}`), http.StatusCreated,

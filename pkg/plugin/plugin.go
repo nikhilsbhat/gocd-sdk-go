@@ -39,8 +39,8 @@ type Plugin interface {
 
 type Config struct {
 	Version      string `json:"version,omitempty" yaml:"version,omitempty" mapstructure:"version"`
-	Path         string `json:"path,omitempty" yaml:"path,omitempty" mapstructure:"path"`
-	URL          string `json:"url,omitempty" yaml:"url,omitempty" mapstructure:"url"`
+	Path         string `json:"path,omitempty"    yaml:"path,omitempty"    mapstructure:"path"`
+	URL          string `json:"url,omitempty"     yaml:"url,omitempty"     mapstructure:"url"`
 	log          *log.Logger
 	PipelineType string
 }

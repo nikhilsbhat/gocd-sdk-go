@@ -14,8 +14,7 @@ import (
 // GetAuthConfigs fetches all authorization configurations present iin GoCD.
 func (conf *client) GetAuthConfigs() ([]CommonConfig, error) {
 	var auth AuthConfigs
-	{
-	}
+
 	newClient := &client{}
 	if err := copier.CopyWithOption(newClient, conf, copier.Option{IgnoreEmpty: true, DeepCopy: true}); err != nil {
 		return nil, err
