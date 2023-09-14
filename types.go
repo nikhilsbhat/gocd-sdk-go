@@ -155,10 +155,17 @@ type BackupStats struct {
 type PipelineConfig struct {
 	Name          string                 `json:"name,omitempty" yaml:"name,omitempty"`
 	Config        map[string]interface{} `json:"config,omitempty" yaml:"config,omitempty"`
+	Origin        PipelineOrigin         `json:"origin,omitempty" yaml:"origin,omitempty"`
 	PausePipeline bool                   `json:"pause_pipeline,omitempty" yaml:"pause_pipeline,omitempty"`
 	PauseReason   string                 `json:"pause_reason,omitempty" yaml:"pause_reason,omitempty"`
 	Group         string                 `json:"group,omitempty" yaml:"group,omitempty"`
 	ETAG          string                 `json:"etag,omitempty" yaml:"etag,omitempty"`
+}
+
+// PipelineOrigin holds the information on the source of pipeline present on GoCD.
+type PipelineOrigin struct {
+	Type string `json:"type,omitempty" yaml:"type,omitempty"`
+	ID   string `json:"id,omitempty" yaml:"id,omitempty"`
 }
 
 // PipelineSize holds information of the pipeline size.

@@ -653,10 +653,11 @@ func Test_client_UpdateCurrentUser(t *testing.T) {
 		client.SetRetryWaitTime(1)
 
 		expected := gocd.User{}
+		user := gocd.User{}
 
-		actual, err := client.GetCurrentUser()
-		assert.EqualError(t, err, "call made to get current user information errored with: "+
-			"Get \"http://localhost:8156/go/api/current_user\": dial tcp [::1]:8156: connect: connection refused")
+		actual, err := client.UpdateCurrentUser(user)
+		assert.EqualError(t, err, "call made to update current user information errored with: "+
+			"Patch \"http://localhost:8156/go/api/current_user\": dial tcp [::1]:8156: connect: connection refused")
 		assert.Equal(t, expected, actual)
 	})
 }

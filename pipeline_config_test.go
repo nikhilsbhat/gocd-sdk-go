@@ -23,6 +23,10 @@ func Test_client_GetPipelineConfig(t *testing.T) {
 
 		expected := gocd.PipelineConfig{
 			ETAG: "cbc5f2d5b9c13a2cc1b1efb3d8a6155d",
+			Origin: gocd.PipelineOrigin{
+				Type: "config_repo",
+				ID:   "sample_config",
+			},
 			Config: map[string]interface{}{
 				"environment_variables": []interface{}{},
 				"group":                 "new_group",

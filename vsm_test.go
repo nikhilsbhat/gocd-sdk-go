@@ -59,6 +59,16 @@ func Test_client_GetPipelineVSM(t *testing.T) {
 		assert.Equal(t, gocd.VSM{}, response)
 	})
 
+	t.Run("Should error out wile fetching the VSM for a selected instance of a pipeline as server returned non ok status code", func(t *testing.T) {
+		server := mockServer([]byte(`pipelineVSM`), http.StatusInternalServerError, nil, true, nil)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
+
+		response, err := client.GetPipelineVSM("helm-images", "20")
+		assert.EqualError(t, err, "got 500 from GoCD while making GET call for "+server.URL+
+			"/pipelines/value_stream_map/helm-images/20.json\nwith BODY:pipelineVSM")
+		assert.Equal(t, gocd.VSM{}, response)
+	})
+
 	t.Run("Should error out wile fetching the VSM for a selected instance of a pipeline as server is not reachable", func(t *testing.T) {
 		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
 

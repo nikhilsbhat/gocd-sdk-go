@@ -24,7 +24,8 @@
         "href": "https://api.gocd.org/current/#get-configuration"
       }
     },
-    "type": "gocd"
+    "type": "config_repo",
+    "id": "sample_config"
   },
   "parameters": [],
   "environment_variables": [],

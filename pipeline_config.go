@@ -35,15 +35,23 @@ func (conf *client) GetPipelineConfig(name string) (PipelineConfig, error) {
 		return pipelineConfig, &errors.MarshalError{Err: err}
 	}
 
+	pipelineOrigin := pipelineCfg["origin"].(map[string]interface{})
+
+	pipelineConfig.Origin = PipelineOrigin{
+		Type: fmt.Sprintf("%v", pipelineOrigin["type"]),
+	}
+
+	if pipelineOrigin["id"] != nil {
+		pipelineConfig.Origin.ID = fmt.Sprintf("%v", pipelineOrigin["id"])
+	}
+
 	delete(pipelineCfg, "_links")
 	delete(pipelineCfg, "origin")
 
-	var config PipelineConfig
+	pipelineConfig.Config = pipelineCfg
+	pipelineConfig.ETAG = resp.Header().Get("ETag")
 
-	config.Config = pipelineCfg
-	config.ETAG = resp.Header().Get("ETag")
-
-	return config, nil
+	return pipelineConfig, nil
 }
 
 func (conf *client) UpdatePipelineConfig(config PipelineConfig) (PipelineConfig, error) {
