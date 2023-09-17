@@ -143,14 +143,14 @@ func Test_client_GetPipelineGroup(t *testing.T) {
 			Name:          "first",
 			PipelineCount: 0,
 			Pipelines:     []gocd.Pipeline{{Name: "up42"}},
-			Authorization: map[string]interface{}{
-				"view": map[string]interface{}{
-					"users": []interface{}{"operate"},
-					"roles": []interface{}{},
+			Authorization: map[string]gocd.AuthorizationConfig{
+				"view": {
+					Users: []string{"operate"},
+					Roles: []string{},
 				},
-				"admins": map[string]interface{}{
-					"users": []interface{}{"operate"},
-					"roles": []interface{}{},
+				"admins": {
+					Users: []string{"operate"},
+					Roles: []string{},
 				},
 			},
 			ETAG: "17f5a9edf150884e5fc4315b4a7814cd",
@@ -221,14 +221,12 @@ func Test_client_CreatePipelineGroup(t *testing.T) {
 			Pipelines: []gocd.Pipeline{{
 				Name: "name",
 			}},
-			Authorization: map[string]interface{}{
-				"view": map[string]interface{}{
-					"users": []interface{}{"operate"},
-					"roles": []interface{}{},
+			Authorization: map[string]gocd.AuthorizationConfig{
+				"view": {
+					Users: []string{"operate"},
 				},
-				"admins": map[string]interface{}{
-					"users": []interface{}{"operate"},
-					"roles": []interface{}{},
+				"admins": {
+					Users: []string{"operate"},
 				},
 			},
 		}
@@ -286,9 +284,10 @@ func Test_client_UpdatePipelineGroup(t *testing.T) {
 
 		group := gocd.PipelineGroup{
 			Name: "first",
-			Authorization: map[string]interface{}{
-				"operate": map[string]interface{}{
-					"users": []interface{}{"alice"},
+			Authorization: map[string]gocd.AuthorizationConfig{
+				"operate": {
+					Users: []string{"alice"},
+					Roles: []string{},
 				},
 			},
 			ETAG: etag,
@@ -297,18 +296,21 @@ func Test_client_UpdatePipelineGroup(t *testing.T) {
 		expected := gocd.PipelineGroup{
 			Name:          "first",
 			PipelineCount: 0,
-			Pipelines:     []gocd.Pipeline{{Name: "up42"}},
-			Authorization: map[string]interface{}{
-				"view": map[string]interface{}{
-					"users": []interface{}{"operate"},
-					"roles": []interface{}{},
+			Pipelines: []gocd.Pipeline{
+				{Name: "up42"},
+			},
+			Authorization: map[string]gocd.AuthorizationConfig{
+				"admins": {
+					Roles: []string{},
+					Users: []string{"operate"},
 				},
-				"admins": map[string]interface{}{
-					"users": []interface{}{"operate"},
-					"roles": []interface{}{},
+				"operate": {
+					Roles: []string(nil),
+					Users: []string{"alice"},
 				},
-				"operate": map[string]interface{}{
-					"users": []interface{}{"alice"},
+				"view": {
+					Roles: []string{},
+					Users: []string{"operate"},
 				},
 			},
 			ETAG: "28f5a8edf130994e6fc4315b4a7814cd",
@@ -360,9 +362,10 @@ func Test_client_UpdatePipelineGroup(t *testing.T) {
 
 		group := gocd.PipelineGroup{
 			Name: "first",
-			Authorization: map[string]interface{}{
-				"operate": map[string]interface{}{
-					"users": []interface{}{"alice"},
+			Authorization: map[string]gocd.AuthorizationConfig{
+				"operate": {
+					Users: []string{"alice"},
+					Roles: []string{},
 				},
 			},
 			ETAG: etag,
