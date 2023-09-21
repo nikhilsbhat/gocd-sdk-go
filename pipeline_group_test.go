@@ -143,12 +143,12 @@ func Test_client_GetPipelineGroup(t *testing.T) {
 			Name:          "first",
 			PipelineCount: 0,
 			Pipelines:     []gocd.Pipeline{{Name: "up42"}},
-			Authorization: map[string]gocd.AuthorizationConfig{
-				"view": {
+			Authorization: gocd.PipelineGroupAuthorizationConfig{
+				View: gocd.AuthorizationConfig{
 					Users: []string{"operate"},
 					Roles: []string{},
 				},
-				"admins": {
+				Admins: gocd.AuthorizationConfig{
 					Users: []string{"operate"},
 					Roles: []string{},
 				},
@@ -221,11 +221,11 @@ func Test_client_CreatePipelineGroup(t *testing.T) {
 			Pipelines: []gocd.Pipeline{{
 				Name: "name",
 			}},
-			Authorization: map[string]gocd.AuthorizationConfig{
-				"view": {
+			Authorization: gocd.PipelineGroupAuthorizationConfig{
+				View: gocd.AuthorizationConfig{
 					Users: []string{"operate"},
 				},
-				"admins": {
+				Admins: gocd.AuthorizationConfig{
 					Users: []string{"operate"},
 				},
 			},
@@ -284,8 +284,8 @@ func Test_client_UpdatePipelineGroup(t *testing.T) {
 
 		group := gocd.PipelineGroup{
 			Name: "first",
-			Authorization: map[string]gocd.AuthorizationConfig{
-				"operate": {
+			Authorization: gocd.PipelineGroupAuthorizationConfig{
+				Operate: gocd.AuthorizationConfig{
 					Users: []string{"alice"},
 					Roles: []string{},
 				},
@@ -299,16 +299,16 @@ func Test_client_UpdatePipelineGroup(t *testing.T) {
 			Pipelines: []gocd.Pipeline{
 				{Name: "up42"},
 			},
-			Authorization: map[string]gocd.AuthorizationConfig{
-				"admins": {
+			Authorization: gocd.PipelineGroupAuthorizationConfig{
+				Admins: gocd.AuthorizationConfig{
 					Roles: []string{},
 					Users: []string{"operate"},
 				},
-				"operate": {
+				Operate: gocd.AuthorizationConfig{
 					Roles: []string(nil),
 					Users: []string{"alice"},
 				},
-				"view": {
+				View: gocd.AuthorizationConfig{
 					Roles: []string{},
 					Users: []string{"operate"},
 				},
@@ -362,8 +362,8 @@ func Test_client_UpdatePipelineGroup(t *testing.T) {
 
 		group := gocd.PipelineGroup{
 			Name: "first",
-			Authorization: map[string]gocd.AuthorizationConfig{
-				"operate": {
+			Authorization: gocd.PipelineGroupAuthorizationConfig{
+				Operate: gocd.AuthorizationConfig{
 					Users: []string{"alice"},
 					Roles: []string{},
 				},

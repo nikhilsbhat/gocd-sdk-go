@@ -112,11 +112,17 @@ type PipelineGroups struct {
 
 // PipelineGroup holds information of a specific pipeline group instance.
 type PipelineGroup struct {
-	Name          string                         `json:"name,omitempty" yaml:"name,omitempty"`
-	PipelineCount int                            `json:"pipeline_count,omitempty" yaml:"pipeline_count,omitempty"`
-	Pipelines     []Pipeline                     `json:"pipelines,omitempty" yaml:"pipelines,omitempty"`
-	Authorization map[string]AuthorizationConfig `json:"authorization,omitempty" yaml:"authorization,omitempty"`
-	ETAG          string                         `json:"etag,omitempty" yaml:"etag,omitempty"`
+	Name          string                           `json:"name,omitempty" yaml:"name,omitempty"`
+	PipelineCount int                              `json:"pipeline_count,omitempty" yaml:"pipeline_count,omitempty"`
+	Pipelines     []Pipeline                       `json:"pipelines,omitempty" yaml:"pipelines,omitempty"`
+	Authorization PipelineGroupAuthorizationConfig `json:"authorization,omitempty" yaml:"authorization,omitempty"`
+	ETAG          string                           `json:"etag,omitempty" yaml:"etag,omitempty"`
+}
+
+type PipelineGroupAuthorizationConfig struct {
+	View    AuthorizationConfig `json:"view,omitempty" yaml:"view,omitempty"`
+	Admins  AuthorizationConfig `json:"admins,omitempty" yaml:"admins,omitempty"`
+	Operate AuthorizationConfig `json:"operate,omitempty" yaml:"operate,omitempty"`
 }
 
 // AuthorizationConfig of a pipeline group.
