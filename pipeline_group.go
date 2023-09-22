@@ -23,9 +23,11 @@ func (conf *client) CreatePipelineGroup(group PipelineGroup) error {
 
 	resp, err := newClient.httpClient.R().
 		SetHeaders(map[string]string{
+			HeaderConfirm:  "true",
 			"Accept":       HeaderVersionOne,
 			"Content-Type": ContentJSON,
 		}).
+		SetBody(group).
 		Post(PipelineGroupEndpoint)
 	if err != nil {
 		return &errors.APIError{Err: err, Message: fmt.Sprintf("create pipeline group '%s'", group.Name)}
