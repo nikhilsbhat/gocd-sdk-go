@@ -23,6 +23,7 @@ var (
 
 func Test_client_GetEnvironmentInfo(t *testing.T) {
 	correctEnvHeader := map[string]string{"Accept": gocd.HeaderVersionThree}
+
 	t.Run("should error out while fetching all config repos present from server", func(t *testing.T) {
 		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
 		client.SetRetryCount(1)
@@ -108,6 +109,7 @@ func Test_client_GetEnvironmentInfo(t *testing.T) {
 
 func Test_client_CreateEnvironments(t *testing.T) {
 	correctEnvHeader := map[string]string{"Accept": gocd.HeaderVersionThree, "Content-Type": gocd.ContentJSON}
+
 	t.Run("should be able to create the environment successfully", func(t *testing.T) {
 		server := mockServer([]byte(encryptionJSON), http.StatusOK, correctEnvHeader, false, nil)
 		client := gocd.NewClient(server.URL, auth, "info", nil)
@@ -213,6 +215,7 @@ func Test_client_DeleteEnvironment(t *testing.T) {
 
 func Test_client_UpdateEnvironment(t *testing.T) {
 	correctUpdateHeader := map[string]string{"Accept": gocd.HeaderVersionThree, "Content-Type": gocd.ContentJSON, "If-Match": "26b227605daf6f2d7768c8edaf61b861"}
+
 	t.Run("should be able to update the environment successfully", func(t *testing.T) {
 		server := mockServer([]byte(environmentUpdateJSON), http.StatusOK, correctUpdateHeader, false, nil)
 		client := gocd.NewClient(server.URL, auth, "info", nil)
@@ -289,6 +292,7 @@ func Test_client_UpdateEnvironment(t *testing.T) {
 
 func Test_client_PatchEnvironment(t *testing.T) {
 	correctPatchHeader := map[string]string{"Accept": gocd.HeaderVersionThree, "Content-Type": gocd.ContentJSON}
+
 	t.Run("should be able to patch the environment successfully", func(t *testing.T) {
 		server := mockServer([]byte(environmentPatchJSON), http.StatusOK, correctPatchHeader, false, nil)
 		client := gocd.NewClient(server.URL, auth, "info", nil)

@@ -10,6 +10,7 @@ import (
 
 func Test_client_RunStage(t *testing.T) {
 	correctJobsHeader := map[string]string{"Accept": gocd.HeaderVersionTwo, gocd.HeaderConfirm: "true"}
+
 	t.Run("should error out while running stage from server", func(t *testing.T) {
 		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
 		client.SetRetryCount(1)
@@ -61,6 +62,7 @@ func Test_client_RunStage(t *testing.T) {
 
 func Test_client_CancelStage(t *testing.T) {
 	correctJobsHeader := map[string]string{"Accept": gocd.HeaderVersionThree, gocd.HeaderConfirm: "true"}
+
 	t.Run("should error out while cancelling stage from server", func(t *testing.T) {
 		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
 		client.SetRetryCount(1)

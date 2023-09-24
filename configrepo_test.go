@@ -12,7 +12,6 @@ import (
 	"testing"
 
 	"github.com/nikhilsbhat/gocd-sdk-go"
-
 	"github.com/stretchr/testify/assert"
 )
 
@@ -261,6 +260,7 @@ func Test_client_CreateConfigRepoInfo(t *testing.T) {
 
 func Test_client_DeleteConfigRepo(t *testing.T) {
 	repoName := "repo1"
+
 	t.Run("should error out while deleting config repo due to server connectivity issues", func(t *testing.T) {
 		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
 
@@ -292,6 +292,7 @@ func Test_client_DeleteConfigRepo(t *testing.T) {
 
 func Test_client_GetConfigRepo(t *testing.T) {
 	repoName := "repo1"
+
 	t.Run("should error out while fetching config repo information as server returned non 200 status code", func(t *testing.T) {
 		server := mockConfigRepoServer(configRepoJSON, http.MethodPost, correctHeader, false)
 		client := gocd.NewClient(server.URL, auth, "info", nil)
@@ -577,6 +578,7 @@ func Test_client_ConfigRepoStatus(t *testing.T) {
 func Test_client_ConfigRepoPreflightCheck(t *testing.T) {
 	correctPreflightHeader := map[string]string{"Accept": gocd.HeaderVersionOne}
 	preflightCheckJSON := `{"errors" : [],"valid" : true}`
+
 	t.Run("should be able to run config-repo preflight checks successfully", func(t *testing.T) {
 		server := mockServer([]byte(preflightCheckJSON), http.StatusOK,
 			correctPreflightHeader, false, nil)
@@ -894,6 +896,7 @@ func mockConfigRepoServer(request interface{}, method string, header map[string]
 func Test_client_GetConfigRepoDefinitions(t *testing.T) {
 	correctArtifactHeader := map[string]string{"Accept": gocd.HeaderVersionFour}
 	configRepoName := "config-repo-group"
+
 	t.Run("should be able to fetch the definitions defined in config repo successfully", func(t *testing.T) {
 		server := mockServer([]byte(configRepoDefinition), http.StatusOK,
 			correctArtifactHeader, false, nil)

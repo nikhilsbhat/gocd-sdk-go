@@ -6,9 +6,8 @@ import (
 	"net/http"
 	"path/filepath"
 
-	"github.com/nikhilsbhat/gocd-sdk-go/pkg/errors"
-
 	"github.com/jinzhu/copier"
+	"github.com/nikhilsbhat/gocd-sdk-go/pkg/errors"
 )
 
 // GetAuthConfigs fetches all authorization configurations present iin GoCD.
@@ -43,6 +42,7 @@ func (conf *client) GetAuthConfigs() ([]CommonConfig, error) {
 // GetAuthConfig fetches authorization configuration for specified id.
 func (conf *client) GetAuthConfig(name string) (CommonConfig, error) {
 	var auth CommonConfig
+
 	newClient := &client{}
 	if err := copier.CopyWithOption(newClient, conf, copier.Option{IgnoreEmpty: true, DeepCopy: true}); err != nil {
 		return auth, err
@@ -73,6 +73,7 @@ func (conf *client) GetAuthConfig(name string) (CommonConfig, error) {
 // CreateAuthConfig creates an authorization configuration with the provided configurations.
 func (conf *client) CreateAuthConfig(config CommonConfig) (CommonConfig, error) {
 	var auth CommonConfig
+
 	newClient := &client{}
 	if err := copier.CopyWithOption(newClient, conf, copier.Option{IgnoreEmpty: true, DeepCopy: true}); err != nil {
 		return auth, err
@@ -105,6 +106,7 @@ func (conf *client) CreateAuthConfig(config CommonConfig) (CommonConfig, error) 
 // UpdateAuthConfig updates some attributes of an authorization configuration.
 func (conf *client) UpdateAuthConfig(config CommonConfig) (CommonConfig, error) {
 	var auth CommonConfig
+
 	newClient := &client{}
 	if err := copier.CopyWithOption(newClient, conf, copier.Option{IgnoreEmpty: true, DeepCopy: true}); err != nil {
 		return auth, err

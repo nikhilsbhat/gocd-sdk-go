@@ -11,10 +11,9 @@ import (
 	"path/filepath"
 	"strings"
 
+	"github.com/go-resty/resty/v2"
 	"github.com/nikhilsbhat/gocd-sdk-go/pkg/errors"
 	goCdLogger "github.com/nikhilsbhat/gocd-sdk-go/pkg/logger"
-
-	"github.com/go-resty/resty/v2"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -104,6 +103,7 @@ func (cfg *Config) SetType(pipelines []string) error {
 				}
 			}
 		}
+
 		fileType = strings.TrimPrefix(filepath.Ext(pipeline), ".")
 	}
 
@@ -130,6 +130,7 @@ func (cfg *Config) GetLatestRelease(pluginURL string) (string, error) {
 	cfg.log.Debugf("fetching latest version information using '%s'", pluginURL)
 
 	httpClient := resty.New()
+
 	resp, err := httpClient.R().Get(pluginURL)
 	if err != nil {
 		return "", err
@@ -160,8 +161,10 @@ func (cfg *Config) setURL() error {
 			if err != nil {
 				return err
 			}
+
 			cfg.Version = version
 		}
+
 		cfg.URL = fmt.Sprintf(yamlPluginURLTemplate, cfg.Version, cfg.Version)
 	case "json":
 		if len(cfg.Version) == 0 {
@@ -169,8 +172,10 @@ func (cfg *Config) setURL() error {
 			if err != nil {
 				return err
 			}
+
 			cfg.Version = version
 		}
+
 		cfg.URL = fmt.Sprintf(jsonPluginURLTemplate, cfg.Version, cfg.Version)
 	case "groovy":
 		if len(cfg.Version) == 0 {
@@ -178,8 +183,10 @@ func (cfg *Config) setURL() error {
 			if err != nil {
 				return err
 			}
+
 			cfg.Version = version[1:]
 		}
+
 		cfg.URL = fmt.Sprintf(groovyPluginURLTemplate, cfg.Version, cfg.Version)
 	default:
 		return &errors.PipelineValidationError{
@@ -214,10 +221,12 @@ func (cfg *Config) Download() (string, error) {
 	}
 
 	pluginName := path.Base(parsedURL.Path)
+
 	pluginLocalPath := filepath.Join(filepath.Join(home, ".gocd", "plugins"), pluginName)
 
 	if _, err = os.Stat(pluginLocalPath); err == nil {
 		cfg.log.Debugf("plugin jar already present under '%s', skipping plugin download", pluginLocalPath)
+
 		cfg.Path = pluginLocalPath
 
 		return pluginLocalPath, nil

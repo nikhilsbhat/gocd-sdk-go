@@ -9,19 +9,20 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/nikhilsbhat/gocd-sdk-go/pkg/errors"
-
 	"github.com/jinzhu/copier"
+	"github.com/nikhilsbhat/gocd-sdk-go/pkg/errors"
 )
 
 func (conf *client) EncryptText(value string) (Encrypted, error) {
 	var encryptedValue Encrypted
+
 	newClient := &client{}
 	if err := copier.CopyWithOption(newClient, conf, copier.Option{IgnoreEmpty: true, DeepCopy: true}); err != nil {
 		return encryptedValue, err
 	}
 
 	valueObj := map[string]string{"value": value}
+
 	resp, err := newClient.httpClient.R().
 		SetHeaders(map[string]string{
 			"Accept":       HeaderVersionOne,
@@ -46,6 +47,7 @@ func (conf *client) EncryptText(value string) (Encrypted, error) {
 
 func (conf *client) DecryptText(value, cipherKey string) (string, error) {
 	var decryptedValue string
+
 	newClient := &client{}
 	if err := copier.CopyWithOption(newClient, conf, copier.Option{IgnoreEmpty: true, DeepCopy: true}); err != nil {
 		return decryptedValue, err
@@ -65,6 +67,7 @@ func (conf *client) DecryptText(value, cipherKey string) (string, error) {
 	if err != nil {
 		return "", err
 	}
+
 	decodedData, err := base64.StdEncoding.DecodeString(dataSplit[2])
 	if err != nil {
 		return "", err

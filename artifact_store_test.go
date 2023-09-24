@@ -18,6 +18,7 @@ var (
 
 func Test_client_GetArtifactStores(t *testing.T) {
 	correctArtifactHeader := map[string]string{"Accept": gocd.HeaderVersionOne}
+
 	t.Run("should be able to fetch the artifact stores successfully", func(t *testing.T) {
 		server := mockServer([]byte(artifactStoresJSON), http.StatusOK,
 			correctArtifactHeader, false, map[string]string{"ETag": "cbc5f2d5b9c13a2cc1b1efb3d8a6155d"})
@@ -121,6 +122,7 @@ func Test_client_GetArtifactStores(t *testing.T) {
 
 func Test_client_GetArtifactStore(t *testing.T) {
 	correctArtifactHeader := map[string]string{"Accept": gocd.HeaderVersionOne}
+
 	t.Run("should be able to fetch an appropriate artifact store successfully", func(t *testing.T) {
 		server := mockServer([]byte(artifactStoreJSON), http.StatusOK,
 			correctArtifactHeader, false, map[string]string{"ETag": "cbc5f2d5b9c13a2cc1b1efb3d8a6155d"})
@@ -218,6 +220,7 @@ func Test_client_GetArtifactStore(t *testing.T) {
 
 func Test_client_CreateArtifactStore(t *testing.T) {
 	correctArtifactHeader := map[string]string{"Accept": gocd.HeaderVersionOne, "Content-Type": gocd.ContentJSON}
+
 	t.Run("should be able to create an appropriate artifact store successfully", func(t *testing.T) {
 		server := mockServer([]byte(artifactStoreJSON), http.StatusOK,
 			correctArtifactHeader, false, map[string]string{"ETag": "cbc5f2d5b9c13a2cc1b1efb3d8a6155d"})
@@ -310,6 +313,7 @@ func Test_client_CreateArtifactStore(t *testing.T) {
 
 func Test_client_UpdateArtifactStore(t *testing.T) {
 	correctArtifactHeader := map[string]string{"Accept": gocd.HeaderVersionOne, "Content-Type": gocd.ContentJSON}
+
 	t.Run("should be able to update an appropriate artifact store successfully", func(t *testing.T) {
 		server := mockServer([]byte(artifactStoreJSON), http.StatusOK,
 			correctArtifactHeader, false, map[string]string{"ETag": "61406622382e51c2079c11dcbdb978fb"})
@@ -402,6 +406,7 @@ func Test_client_UpdateArtifactStore(t *testing.T) {
 
 func Test_client_DeleteArtifactStore(t *testing.T) {
 	correctArtifactHeader := map[string]string{"Accept": gocd.HeaderVersionOne}
+
 	t.Run("should be able to delete an appropriate artifact store successfully", func(t *testing.T) {
 		server := mockServer([]byte(artifactStoreJSON), http.StatusOK,
 			correctArtifactHeader, false, nil)

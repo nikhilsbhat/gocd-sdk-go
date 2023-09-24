@@ -4,9 +4,8 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"github.com/nikhilsbhat/gocd-sdk-go/pkg/errors"
-
 	"github.com/jinzhu/copier"
+	"github.com/nikhilsbhat/gocd-sdk-go/pkg/errors"
 )
 
 // GetServerHealthMessages implements method that fetches the details of all warning and errors.
@@ -17,6 +16,7 @@ func (conf *client) GetServerHealthMessages() ([]ServerHealth, error) {
 	}
 
 	var health []ServerHealth
+
 	resp, err := newClient.httpClient.R().
 		SetHeaders(map[string]string{
 			"Accept": HeaderVersionOne,
@@ -25,6 +25,7 @@ func (conf *client) GetServerHealthMessages() ([]ServerHealth, error) {
 	if err != nil {
 		return nil, &errors.APIError{Err: err, Message: "get health info"}
 	}
+
 	if resp.StatusCode() != http.StatusOK {
 		return nil, &errors.NonOkError{Code: resp.StatusCode(), Response: resp}
 	}
@@ -43,6 +44,7 @@ func (conf *client) GetServerHealth() (map[string]string, error) {
 	}
 
 	var health map[string]string
+
 	resp, err := newClient.httpClient.R().
 		SetResult(&health).Get(HealthEndpoint)
 	if err != nil {

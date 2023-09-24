@@ -10,7 +10,6 @@ import (
 	"testing"
 
 	"github.com/nikhilsbhat/gocd-sdk-go"
-
 	"github.com/stretchr/testify/assert"
 )
 
@@ -33,6 +32,7 @@ var (
 
 func Test_client_GetAgentsInfo(t *testing.T) {
 	correctAgentsHeader := map[string]string{"Accept": gocd.HeaderVersionSeven}
+
 	t.Run("should error out as call made to server while fetching agents", func(t *testing.T) {
 		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
 		client.SetRetryCount(1)
@@ -91,6 +91,7 @@ func Test_client_GetAgentsInfo(t *testing.T) {
 func Test_client_GetAgent(t *testing.T) {
 	correctAgentHeader := map[string]string{"Accept": gocd.HeaderVersionSeven}
 	agentID := "adb9540a-b954-4571-9d9b-2f330739d4da"
+
 	t.Run("should be able to fetch a specific agent successfully", func(t *testing.T) {
 		server := mockServer([]byte(agentJSON), http.StatusOK,
 			correctAgentHeader, false, nil)
@@ -182,6 +183,7 @@ func Test_client_GetAgent(t *testing.T) {
 func Test_client_GetAgentJobRunHistory1(t *testing.T) {
 	agentID := "adb9540a-b954-4571-9d9b-2f330739d4da" //nolint:goconst
 	correctAgentsHeader := map[string]string{"Accept": gocd.HeaderVersionOne}
+
 	t.Run("should error out as call made to server while fetching job run", func(t *testing.T) {
 		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
 		client.SetRetryCount(1)

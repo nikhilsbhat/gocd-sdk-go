@@ -7,7 +7,6 @@ import (
 	"time"
 
 	"github.com/nikhilsbhat/gocd-sdk-go"
-
 	"github.com/stretchr/testify/assert"
 )
 
@@ -219,39 +218,6 @@ func Test_client_GetPipelineHistory(t *testing.T) {
 		assert.EqualError(t, err, "reading response body errored with: invalid character '}' after object key")
 		assert.Nil(t, actual)
 	})
-
-	// t.Run("should be able to fetch the pipeline run history present in GoCD", func(t *testing.T) {
-	//	server := mockServer([]byte(pipelineRunHistoryJSON), http.StatusOK, map[string]string{
-	//		"Accept":       gocd.HeaderVersionOne,
-	//		"Content-Type": gocd.ContentJSON,
-	//	}, true, nil)
-	//	client := gocd.NewClient(server.URL, auth, "info", nil)
-	//
-	//	expected := []gocd.PipelineRunHistory{
-	//		{
-	//			Name:          "helm-images",
-	//			Counter:       3,
-	//			ScheduledDate: 1678470766332,
-	//			BuildCause:    gocd.PipelineBuildCause{Message: "Forced by admin", Approver: "admin", TriggerForced: true},
-	//		},
-	//		{
-	//			Name:          "helm-images",
-	//			Counter:       2,
-	//			ScheduledDate: 1677128882155,
-	//			BuildCause:    gocd.PipelineBuildCause{Message: "modified by nikhilsbhat <nikhilsbhat93@gmail.com>", Approver: "changes", TriggerForced: false},
-	//		},
-	//		{
-	//			Name:          "helm-images",
-	//			Counter:       1,
-	//			ScheduledDate: 1672544013154,
-	//			BuildCause:    gocd.PipelineBuildCause{Message: "Forced by admin", Approver: "admin", TriggerForced: true},
-	//		},
-	//	}
-	//
-	//	actual, err := client.GetPipelineRunHistory("helm-images", "0")
-	//	assert.NoError(t, err)
-	//	assert.Equal(t, expected, actual)
-	// })
 }
 
 func Test_client_GetLimitedPipelineRunHistory(t *testing.T) {
@@ -364,6 +330,7 @@ func Test_client_getPipelineName(t *testing.T) {
 func Test_client_GetPipelineStatus(t *testing.T) {
 	pipeline := "action-movies-manual"
 	correctPipelineHeader := map[string]string{"Accept": gocd.HeaderVersionOne}
+
 	t.Run("should error out while fetching pipeline statuses information from server", func(t *testing.T) {
 		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
 		client.SetRetryCount(1)
@@ -418,6 +385,7 @@ func Test_client_PipelinePause(t *testing.T) {
 		"Accept":       gocd.HeaderVersionOne,
 		"Content-Type": gocd.ContentJSON,
 	}
+
 	t.Run("Should be able to pause pipeline successfully", func(t *testing.T) {
 		server := mockServer(nil, http.StatusOK, correctPipelinePauseHeader, false, nil)
 		client := gocd.NewClient(server.URL, auth, "info", nil)
@@ -461,6 +429,7 @@ func Test_client_PipelineUnPause(t *testing.T) {
 		"Accept":           gocd.HeaderVersionOne,
 		gocd.HeaderConfirm: "true",
 	}
+
 	t.Run("Should be able to unpause pipeline successfully", func(t *testing.T) {
 		server := mockServer(nil, http.StatusOK, correctPipelinePauseHeader, false, nil)
 		client := gocd.NewClient(server.URL, auth, "info", nil)
@@ -501,6 +470,7 @@ func Test_client_PipelineUnPause(t *testing.T) {
 
 func Test_client_PipelineUnlock(t *testing.T) {
 	correctPipelinePauseHeader := map[string]string{"Accept": gocd.HeaderVersionOne, gocd.HeaderConfirm: "true"}
+
 	t.Run("Should be able to unlock pipeline successfully", func(t *testing.T) {
 		server := mockServer(nil, http.StatusOK, correctPipelinePauseHeader, false, nil)
 		client := gocd.NewClient(server.URL, auth, "info", nil)
@@ -541,6 +511,7 @@ func Test_client_PipelineUnlock(t *testing.T) {
 
 func Test_client_SchedulePipeline(t *testing.T) {
 	correctPipelinePauseHeader := map[string]string{"Accept": gocd.HeaderVersionOne, "Content-Type": "application/json"}
+
 	t.Run("should be able to schedule pipeline successfully", func(t *testing.T) {
 		server := mockServer([]byte(pipelineSchedule), http.StatusAccepted, correctPipelinePauseHeader, false, nil)
 		client := gocd.NewClient(server.URL, auth, "info", nil)
@@ -667,6 +638,7 @@ func Test_client_GetPipelineInstance(t *testing.T) {
 		Name:    "pipeline1",
 		Counter: 1,
 	}
+
 	t.Run("should be able to fetch the pipeline instance from GoCD successfully", func(t *testing.T) {
 		server := mockServer([]byte(pipelineInstance), http.StatusOK, correctPipelineHeader, false, nil)
 		client := gocd.NewClient(server.URL, auth, "debug", nil)
@@ -773,18 +745,4 @@ func Test_client_ExportPipelineToConfigRepoFormat(t *testing.T) {
 			"/api/admin/export/pipelines/action-movies?plugin_id=json.config.plugin\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 		assert.Equal(t, gocd.PipelineExport{}, resp)
 	})
-
-	// t.Run("should error out while exporting pipeline to yaml format as GoCD server returned malformed response", func(t *testing.T) {
-	//	server := mockServer([]byte("pipelineExtractionJSON"), http.StatusOK, correctPipelineExportHeader, false,
-	//		map[string]string{
-	//			"ETag":                "\"0a32dea47847b89db0cdd3e113e97e9e93b395996511ba25a361abe1b44c7809--gzip\"",
-	//			"Content-Disposition": "attachment; filename=\"action-movies.gopipeline.json\"",
-	//		})
-	//	client := gocd.NewClient(server.URL, auth, "info", nil)
-	//
-	//	resp, err := client.ExportPipelineToConfigRepoFormat("action-movies", "json.config.plugin")
-	//	assert.EqualError(t, err, "got 404 from GoCD while making GET call for "+server.URL+
-	//		"/api/admin/export/pipelines/action-movies?plugin_id=json.config.plugin\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
-	//	assert.Equal(t, gocd.PipelineExport{}, resp)
-	// })
 }

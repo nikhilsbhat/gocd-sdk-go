@@ -20,6 +20,7 @@ var (
 
 func Test_client_GetPipelineGroupInfo(t *testing.T) {
 	correctPipelineHeader := map[string]string{"Accept": gocd.HeaderVersionOne}
+
 	t.Run("should error out while fetching all pipeline groups information from server", func(t *testing.T) {
 		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
 		client.SetRetryCount(1)

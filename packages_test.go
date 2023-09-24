@@ -18,6 +18,7 @@ var (
 
 func Test_client_GetPackages(t *testing.T) {
 	correctArtifactHeader := map[string]string{"Accept": gocd.HeaderVersionTwo}
+
 	t.Run("should be able to fetch all packages successfully", func(t *testing.T) {
 		server := mockServer([]byte(packagesJSON), http.StatusOK,
 			correctArtifactHeader, false, nil)
@@ -131,6 +132,7 @@ func Test_client_GetPackages(t *testing.T) {
 func Test_client_GetPackage(t *testing.T) {
 	correctArtifactHeader := map[string]string{"Accept": gocd.HeaderVersionTwo}
 	repositoryID := "dd8926c0-3b4a-4c9e-8012-957b179cec5b"
+
 	t.Run("should be able to fetch a specific package successfully", func(t *testing.T) {
 		server := mockServer([]byte(packageJSON), http.StatusOK,
 			correctArtifactHeader, false, map[string]string{"ETag": "cbc5f2d5b9c13a2cc1b1efb3d8a6155d"})
@@ -217,6 +219,7 @@ func Test_client_GetPackage(t *testing.T) {
 
 func Test_client_CreatePackage(t *testing.T) {
 	correctArtifactHeader := map[string]string{"Accept": gocd.HeaderVersionTwo}
+
 	t.Run("should be able to create a specific package successfully", func(t *testing.T) {
 		server := mockServer([]byte(packageJSON), http.StatusOK,
 			correctArtifactHeader, false, map[string]string{"ETag": "61406622382e51c2079c11dcbdb978fb"})
@@ -314,6 +317,7 @@ func Test_client_CreatePackage(t *testing.T) {
 func Test_client_UpdatePackage(t *testing.T) {
 	correctArtifactHeader := map[string]string{"Accept": gocd.HeaderVersionTwo}
 	repositoryID := "dd8926c0-3b4a-4c9e-8012-957b179cec5b"
+
 	t.Run("should be able to update a specific package successfully", func(t *testing.T) {
 		server := mockServer([]byte(packageJSON), http.StatusOK,
 			correctArtifactHeader, false, map[string]string{"ETag": "61406622382e51c2079c11dcbdb978fb"})
@@ -412,6 +416,7 @@ func Test_client_UpdatePackage(t *testing.T) {
 func Test_client_DeletePackage(t *testing.T) {
 	correctArtifactHeader := map[string]string{"Accept": gocd.HeaderVersionTwo}
 	repositoryID := "dd8926c0-3b4a-4c9e-8012-957b179cec5b"
+
 	t.Run("should be able to delete an appropriate package successfully", func(t *testing.T) {
 		server := mockServer(nil, http.StatusOK,
 			correctArtifactHeader, false, nil)

@@ -6,9 +6,8 @@ import (
 	"net/http"
 	"path/filepath"
 
-	"github.com/nikhilsbhat/gocd-sdk-go/pkg/errors"
-
 	"github.com/jinzhu/copier"
+	"github.com/nikhilsbhat/gocd-sdk-go/pkg/errors"
 )
 
 func (conf *client) GetSecretConfigs() (SecretsConfig, error) {
@@ -18,6 +17,7 @@ func (conf *client) GetSecretConfigs() (SecretsConfig, error) {
 	}
 
 	var secretsCfg SecretsConfigs
+
 	resp, err := newClient.httpClient.R().
 		SetHeaders(map[string]string{
 			"Accept": HeaderVersionThree,
@@ -47,6 +47,7 @@ func (conf *client) GetSecretConfig(name string) (CommonConfig, error) {
 	}
 
 	var secretCfg CommonConfig
+
 	resp, err := newClient.httpClient.R().
 		SetHeaders(map[string]string{
 			"Accept": HeaderVersionThree,
@@ -76,6 +77,7 @@ func (conf *client) CreateSecretConfig(config CommonConfig) (CommonConfig, error
 	}
 
 	var secretsCfg CommonConfig
+
 	resp, err := newClient.httpClient.R().
 		SetHeaders(map[string]string{
 			"Accept":       HeaderVersionThree,
@@ -107,6 +109,7 @@ func (conf *client) UpdateSecretConfig(config CommonConfig) (CommonConfig, error
 	}
 
 	var secretsCfg CommonConfig
+
 	resp, err := newClient.httpClient.R().
 		SetHeaders(map[string]string{
 			"Accept":       HeaderVersionThree,

@@ -6,9 +6,8 @@ import (
 	"net/http"
 	"path/filepath"
 
-	"github.com/nikhilsbhat/gocd-sdk-go/pkg/errors"
-
 	"github.com/jinzhu/copier"
+	"github.com/nikhilsbhat/gocd-sdk-go/pkg/errors"
 )
 
 func (conf *client) GetPluginsInfo() (PluginsInfo, error) {
@@ -18,6 +17,7 @@ func (conf *client) GetPluginsInfo() (PluginsInfo, error) {
 	}
 
 	var pluginInfosCfg PluginsInfos
+
 	resp, err := newClient.httpClient.R().
 		SetHeaders(map[string]string{
 			"Accept": HeaderVersionSeven,
@@ -48,6 +48,7 @@ func (conf *client) GetPluginInfo(name string) (Plugin, error) {
 	}
 
 	var pluginInfoCfg Plugin
+
 	resp, err := newClient.httpClient.R().
 		SetHeaders(map[string]string{
 			"Accept": HeaderVersionSeven,

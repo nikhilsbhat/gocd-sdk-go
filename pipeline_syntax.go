@@ -13,10 +13,12 @@ func (conf *client) ValidatePipelineSyntax(pluginCfg plugin.Plugin, pipelines []
 
 	if fetchVersionFromServer {
 		conf.logger.Info("since fetch version from server is enabled, fetching the plugin version from GoCD server")
+
 		pluginsInfo, err := conf.GetPluginsInfo()
 		if err != nil {
 			return false, err
 		}
+
 		for _, pluginInfo := range pluginsInfo.Plugins {
 			if strings.Contains(pluginInfo.ID, pluginCfg.GetType()) {
 				pluginVersion := pluginInfo.About["version"].(string)

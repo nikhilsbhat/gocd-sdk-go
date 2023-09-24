@@ -6,9 +6,8 @@ import (
 	"net/http"
 	"path/filepath"
 
-	"github.com/nikhilsbhat/gocd-sdk-go/pkg/errors"
-
 	"github.com/jinzhu/copier"
+	"github.com/nikhilsbhat/gocd-sdk-go/pkg/errors"
 )
 
 // Groups implements methods that help in fetching several other information from PipelineGroup.
@@ -32,6 +31,7 @@ func (conf *client) CreatePipelineGroup(group PipelineGroup) error {
 	if err != nil {
 		return &errors.APIError{Err: err, Message: fmt.Sprintf("create pipeline group '%s'", group.Name)}
 	}
+
 	if resp.StatusCode() != http.StatusOK {
 		return &errors.NonOkError{Code: resp.StatusCode(), Response: resp}
 	}
@@ -47,6 +47,7 @@ func (conf *client) GetPipelineGroups() ([]PipelineGroup, error) {
 	}
 
 	var groupConf PipelineGroupsConfig
+
 	resp, err := newClient.httpClient.R().
 		SetHeaders(map[string]string{
 			"Accept": HeaderVersionOne,
@@ -55,6 +56,7 @@ func (conf *client) GetPipelineGroups() ([]PipelineGroup, error) {
 	if err != nil {
 		return nil, &errors.APIError{Err: err, Message: "get pipeline groups information"}
 	}
+
 	if resp.StatusCode() != http.StatusOK {
 		return nil, &errors.NonOkError{Code: resp.StatusCode(), Response: resp}
 	}
@@ -111,6 +113,7 @@ func (conf Groups) Count() int {
 // GetPipelineGroup fetches information of a specific pipeline group.
 func (conf *client) GetPipelineGroup(name string) (PipelineGroup, error) {
 	var pipelineGroup PipelineGroup
+
 	newClient := &client{}
 	if err := copier.CopyWithOption(newClient, conf, copier.Option{IgnoreEmpty: true, DeepCopy: true}); err != nil {
 		return pipelineGroup, err
@@ -141,6 +144,7 @@ func (conf *client) GetPipelineGroup(name string) (PipelineGroup, error) {
 // UpdatePipelineGroup updates the specified pipeline group with the latest config provided.
 func (conf *client) UpdatePipelineGroup(group PipelineGroup) (PipelineGroup, error) {
 	var pipelineGroup PipelineGroup
+
 	newClient := &client{}
 	if err := copier.CopyWithOption(newClient, conf, copier.Option{IgnoreEmpty: true, DeepCopy: true}); err != nil {
 		return pipelineGroup, err

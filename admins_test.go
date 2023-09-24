@@ -20,6 +20,7 @@ var (
 
 func Test_client_GetAdminsInfo(t *testing.T) {
 	correctAdminHeader := map[string]string{"Accept": gocd.HeaderVersionTwo}
+
 	t.Run("should error out while fetching system admins present from server", func(t *testing.T) {
 		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
 		client.SetRetryCount(1)
@@ -82,6 +83,7 @@ func Test_client_UpdateSystemAdmins(t *testing.T) {
 		"If-Match":     "cbc5f2d5b9c13a2cc1b1efb3d8a6155d",
 	}
 	updatedEtag := "61406622382e51c2079c11dcbdb978fb"
+
 	t.Run("should be able to update the system admins successfully", func(t *testing.T) {
 		server := mockServer([]byte(systemAdmins), http.StatusOK, correctAdminHeader,
 			false, map[string]string{"ETag": updatedEtag})

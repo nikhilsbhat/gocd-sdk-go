@@ -14,6 +14,7 @@ var encryptionJSON string
 
 func Test_client_EncryptText(t *testing.T) {
 	correctEncryptionHeader := map[string]string{"Accept": gocd.HeaderVersionOne, "Content-Type": gocd.ContentJSON}
+
 	t.Run("should be able to encrypt the value passed successfully", func(t *testing.T) {
 		server := mockServer([]byte(encryptionJSON), http.StatusOK, correctEncryptionHeader, false, nil)
 		client := gocd.NewClient(server.URL, auth, "info", nil)
@@ -57,6 +58,7 @@ func Test_client_EncryptText(t *testing.T) {
 
 func Test_client_DecryptText(t *testing.T) {
 	cipher := "ab533bc2b64169f487412301afa6f5f6"
+
 	t.Run("should be able to decrypt the secret successfully", func(t *testing.T) {
 		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
 

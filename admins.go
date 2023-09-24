@@ -4,9 +4,8 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"github.com/nikhilsbhat/gocd-sdk-go/pkg/errors"
-
 	"github.com/jinzhu/copier"
+	"github.com/nikhilsbhat/gocd-sdk-go/pkg/errors"
 )
 
 // GetSystemAdmins fetches information of all system admins present in GoCD server.
@@ -17,6 +16,7 @@ func (conf *client) GetSystemAdmins() (SystemAdmins, error) {
 	}
 
 	var adminsConf SystemAdmins
+
 	resp, err := newClient.httpClient.R().
 		SetHeaders(map[string]string{
 			"Accept": HeaderVersionTwo,
@@ -25,6 +25,7 @@ func (conf *client) GetSystemAdmins() (SystemAdmins, error) {
 	if err != nil {
 		return SystemAdmins{}, &errors.APIError{Err: err, Message: "get system admin"}
 	}
+
 	if resp.StatusCode() != http.StatusOK {
 		return SystemAdmins{}, &errors.NonOkError{Code: resp.StatusCode(), Response: resp}
 	}
@@ -39,6 +40,7 @@ func (conf *client) GetSystemAdmins() (SystemAdmins, error) {
 // UpdateSystemAdmins should update system admins and replace the system admins with roles and users in the request.
 func (conf *client) UpdateSystemAdmins(data SystemAdmins) (SystemAdmins, error) {
 	var admins SystemAdmins
+
 	newClient := &client{}
 	if err := copier.CopyWithOption(newClient, conf, copier.Option{IgnoreEmpty: true, DeepCopy: true}); err != nil {
 		return admins, err
@@ -54,6 +56,7 @@ func (conf *client) UpdateSystemAdmins(data SystemAdmins) (SystemAdmins, error) 
 	if err != nil {
 		return admins, &errors.APIError{Err: err, Message: "update system admin"}
 	}
+
 	if resp.StatusCode() != http.StatusOK {
 		return admins, &errors.NonOkError{Code: resp.StatusCode(), Response: resp}
 	}

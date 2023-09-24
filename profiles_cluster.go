@@ -6,9 +6,8 @@ import (
 	"net/http"
 	"path/filepath"
 
-	"github.com/nikhilsbhat/gocd-sdk-go/pkg/errors"
-
 	"github.com/jinzhu/copier"
+	"github.com/nikhilsbhat/gocd-sdk-go/pkg/errors"
 )
 
 func (conf *client) GetClusterProfiles() (ProfilesConfig, error) {
@@ -18,6 +17,7 @@ func (conf *client) GetClusterProfiles() (ProfilesConfig, error) {
 	}
 
 	var profilesCfg ProfilesConfigs
+
 	resp, err := newClient.httpClient.R().
 		SetHeaders(map[string]string{
 			"Accept": HeaderVersionOne,
@@ -47,6 +47,7 @@ func (conf *client) GetClusterProfile(name string) (CommonConfig, error) {
 	}
 
 	var profilesCfg CommonConfig
+
 	resp, err := newClient.httpClient.R().
 		SetHeaders(map[string]string{
 			"Accept": HeaderVersionOne,
@@ -76,6 +77,7 @@ func (conf *client) CreateClusterProfile(config CommonConfig) (CommonConfig, err
 	}
 
 	var profileCfg CommonConfig
+
 	resp, err := newClient.httpClient.R().
 		SetHeaders(map[string]string{
 			"Accept":       HeaderVersionOne,
@@ -107,6 +109,7 @@ func (conf *client) UpdateClusterProfile(config CommonConfig) (CommonConfig, err
 	}
 
 	var storeCfg CommonConfig
+
 	resp, err := newClient.httpClient.R().
 		SetHeaders(map[string]string{
 			"Accept":       HeaderVersionOne,

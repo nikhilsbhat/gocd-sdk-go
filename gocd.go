@@ -7,10 +7,9 @@ import (
 	"sort"
 	"time"
 
+	"github.com/go-resty/resty/v2"
 	goCdLogger "github.com/nikhilsbhat/gocd-sdk-go/pkg/logger"
 	"github.com/nikhilsbhat/gocd-sdk-go/pkg/plugin"
-
-	"github.com/go-resty/resty/v2"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -183,6 +182,7 @@ func NewClient(baseURL string, auth Auth, logLevel string, caContent []byte) GoC
 	newClient.SetLogger(logger)
 	newClient.SetRetryCount(defaultRetryCount)
 	newClient.SetRetryWaitTime(defaultRetryWaitTime * time.Second)
+
 	if logLevel == "debug" {
 		newClient.SetDebug(true)
 	}
@@ -226,10 +226,13 @@ func (conf *client) SetRetryWaitTime(count int) {
 
 func GetGoCDMethodNames() []string {
 	t := reflect.TypeOf((*GoCd)(nil)).Elem()
+
 	var methodNames []string
+
 	for i := 0; i < t.NumMethod(); i++ {
 		methodNames = append(methodNames, t.Method(i).Name)
 	}
+
 	sort.Strings(methodNames)
 
 	return methodNames

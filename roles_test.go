@@ -20,6 +20,7 @@ var (
 
 func Test_client_GetRoles(t *testing.T) {
 	correctArtifactHeader := map[string]string{"Accept": gocd.HeaderVersionThree}
+
 	t.Run("should be able to fetch all the roles successfully", func(t *testing.T) {
 		server := mockServer([]byte(rolesConfigsJSON), http.StatusOK,
 			correctArtifactHeader, false, map[string]string{"ETag": "cbc5f2d5b9c13a2cc1b1efb3d8a6155d"})
@@ -134,6 +135,7 @@ func Test_client_GetRoles(t *testing.T) {
 func Test_client_GetRole(t *testing.T) {
 	correctArtifactHeader := map[string]string{"Accept": gocd.HeaderVersionThree}
 	roleName := "blackbird"
+
 	t.Run("should be able to fetch a specific role successfully", func(t *testing.T) {
 		server := mockServer([]byte(roleConfigJSON), http.StatusOK,
 			correctArtifactHeader, false, map[string]string{"ETag": "cbc5f2d5b9c13a2cc1b1efb3d8a6155d"})
@@ -223,6 +225,7 @@ func Test_client_GetRole(t *testing.T) {
 func Test_client_DeleteRole(t *testing.T) {
 	correctArtifactHeader := map[string]string{"Accept": gocd.HeaderVersionThree}
 	roleName := "blackbird"
+
 	t.Run("should be able to delete a role profile successfully", func(t *testing.T) {
 		server := mockServer(nil, http.StatusOK,
 			correctArtifactHeader, false, nil)
@@ -270,6 +273,7 @@ func Test_client_DeleteRole(t *testing.T) {
 func Test_client_GetRolesByType(t *testing.T) {
 	correctArtifactHeader := map[string]string{"Accept": gocd.HeaderVersionThree}
 	roleType := "gocd"
+
 	t.Run("should be able to fetch all roles by type successfully", func(t *testing.T) {
 		server := mockServer([]byte(rolesConfigsByTypeJSON), http.StatusOK,
 			correctArtifactHeader, false, map[string]string{"ETag": "cbc5f2d5b9c13a2cc1b1efb3d8a6155d"})
@@ -358,6 +362,7 @@ func Test_client_GetRolesByType(t *testing.T) {
 
 func Test_client_CreateRole(t *testing.T) {
 	correctArtifactHeader := map[string]string{"Accept": gocd.HeaderVersionThree}
+
 	t.Run("should be able to create role successfully", func(t *testing.T) {
 		server := mockServer([]byte(roleConfigJSON), http.StatusOK,
 			correctArtifactHeader, false, map[string]string{"ETag": "cbc5f2d5b9c13a2cc1b1efb3d8a6155d"})
@@ -453,6 +458,7 @@ func Test_client_CreateRole(t *testing.T) {
 
 func Test_client_UpdateRole(t *testing.T) {
 	correctArtifactHeader := map[string]string{"Accept": gocd.HeaderVersionThree}
+
 	t.Run("should be able to create role successfully", func(t *testing.T) {
 		server := mockServer([]byte(roleConfigJSON), http.StatusOK,
 			correctArtifactHeader, false, map[string]string{"ETag": "61406622382e51c2079c11dcbdb978fb"})

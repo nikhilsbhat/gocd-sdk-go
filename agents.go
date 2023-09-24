@@ -6,9 +6,8 @@ import (
 	"net/http"
 	"path/filepath"
 
-	"github.com/nikhilsbhat/gocd-sdk-go/pkg/errors"
-
 	"github.com/jinzhu/copier"
+	"github.com/nikhilsbhat/gocd-sdk-go/pkg/errors"
 )
 
 // GetAgents implements method that fetches the details of all the agents present in GoCD server.
@@ -19,6 +18,7 @@ func (conf *client) GetAgents() ([]Agent, error) {
 	}
 
 	var agentsConf AgentsConfig
+
 	resp, err := newClient.httpClient.R().
 		SetHeaders(map[string]string{
 			"Accept": HeaderVersionSeven,
@@ -47,6 +47,7 @@ func (conf *client) GetAgent(agentID string) (Agent, error) {
 	}
 
 	var agentConf Agent
+
 	resp, err := newClient.httpClient.R().
 		SetHeaders(map[string]string{
 			"Accept": HeaderVersionSeven,
@@ -75,6 +76,7 @@ func (conf *client) GetAgentJobRunHistory(agentID string) (AgentJobHistory, erro
 	}
 
 	var jobHistoryConf AgentJobHistory
+
 	resp, err := newClient.httpClient.R().
 		SetHeaders(map[string]string{
 			"Accept": HeaderVersionOne,
@@ -84,6 +86,7 @@ func (conf *client) GetAgentJobRunHistory(agentID string) (AgentJobHistory, erro
 	if err != nil {
 		return AgentJobHistory{}, &errors.APIError{Err: err, Message: "get agent job run history"}
 	}
+
 	if resp.StatusCode() != http.StatusOK {
 		return AgentJobHistory{}, &errors.NonOkError{Code: resp.StatusCode(), Response: resp}
 	}

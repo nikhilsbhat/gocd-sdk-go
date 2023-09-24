@@ -12,6 +12,7 @@ import (
 
 func (conf *client) GetPipelineConfig(name string) (PipelineConfig, error) {
 	var pipelineConfig PipelineConfig
+
 	newClient := &client{}
 	if err := copier.CopyWithOption(newClient, conf, copier.Option{IgnoreEmpty: true, DeepCopy: true}); err != nil {
 		return pipelineConfig, err
@@ -31,6 +32,7 @@ func (conf *client) GetPipelineConfig(name string) (PipelineConfig, error) {
 	}
 
 	var pipelineCfg map[string]interface{}
+
 	if err = json.Unmarshal(resp.Body(), &pipelineCfg); err != nil {
 		return pipelineConfig, &errors.MarshalError{Err: err}
 	}
@@ -56,6 +58,7 @@ func (conf *client) GetPipelineConfig(name string) (PipelineConfig, error) {
 
 func (conf *client) UpdatePipelineConfig(config PipelineConfig) (PipelineConfig, error) {
 	var pipelineConfig PipelineConfig
+
 	newClient := &client{}
 	if err := copier.CopyWithOption(newClient, conf, copier.Option{IgnoreEmpty: true, DeepCopy: true}); err != nil {
 		return pipelineConfig, err
@@ -80,6 +83,7 @@ func (conf *client) UpdatePipelineConfig(config PipelineConfig) (PipelineConfig,
 	}
 
 	var pipelineCfg map[string]interface{}
+
 	if err = json.Unmarshal(resp.Body(), &pipelineCfg); err != nil {
 		return pipelineConfig, &errors.MarshalError{Err: err}
 	}
@@ -132,6 +136,7 @@ func (conf *client) CreatePipeline(config PipelineConfig) (PipelineConfig, error
 	}
 
 	var pipelineCfg map[string]interface{}
+
 	if err = json.Unmarshal(resp.Body(), &pipelineCfg); err != nil {
 		return PipelineConfig{}, &errors.MarshalError{Err: err}
 	}
@@ -176,6 +181,7 @@ func (conf *client) ExtractTemplatePipeline(pipeline, template string) (Pipeline
 	}
 
 	var pipelineConfig map[string]interface{}
+
 	resp, err := newClient.httpClient.R().
 		SetHeaders(map[string]string{
 			"Accept":       HeaderVersionEleven,

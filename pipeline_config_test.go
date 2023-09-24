@@ -15,6 +15,7 @@ var pipelineConfigJSON string
 //nolint:funlen
 func Test_client_GetPipelineConfig(t *testing.T) {
 	correctPipelineConfigHeader := map[string]string{"Accept": gocd.HeaderVersionEleven}
+
 	t.Run("should be able to fetch pipeline configuration successfully", func(t *testing.T) {
 		server := mockServer([]byte(pipelineConfigJSON), http.StatusOK,
 			correctPipelineConfigHeader, false, map[string]string{"ETag": "cbc5f2d5b9c13a2cc1b1efb3d8a6155d"})
@@ -196,6 +197,7 @@ func Test_client_GetPipelineConfig(t *testing.T) {
 
 func Test_client_DeletePipeline(t *testing.T) {
 	correctPipelineConfigHeader := map[string]string{"Accept": gocd.HeaderVersionEleven}
+
 	t.Run("should be able to delete pipeline successfully", func(t *testing.T) {
 		server := mockServer(nil, http.StatusOK, correctPipelineConfigHeader, false, nil)
 		client := gocd.NewClient(server.URL, auth, "info", nil)
@@ -236,6 +238,7 @@ func Test_client_DeletePipeline(t *testing.T) {
 
 func Test_client_ExtractTemplatePipeline(t *testing.T) {
 	correctPipelineConfigHeader := map[string]string{"Accept": gocd.HeaderVersionEleven}
+
 	t.Run("should be able to extract template from pipeline successfully", func(t *testing.T) {
 		server := mockServer([]byte(pipelineConfigJSON), http.StatusOK, correctPipelineConfigHeader, false, nil)
 		client := gocd.NewClient(server.URL, auth, "info", nil)
@@ -291,6 +294,7 @@ func Test_client_ExtractTemplatePipeline(t *testing.T) {
 //nolint:funlen
 func Test_client_UpdatePipelineConfig(t *testing.T) {
 	correctPipelineConfigHeader := map[string]string{"Accept": gocd.HeaderVersionEleven}
+
 	t.Run("should be able to update pipeline configuration successfully", func(t *testing.T) {
 		server := mockServer([]byte(pipelineConfigJSON), http.StatusOK,
 			correctPipelineConfigHeader, false, map[string]string{"ETag": "cbc5f2d5b9c13a2cc1b1efb3d8a6155d"})
@@ -489,6 +493,7 @@ func Test_client_UpdatePipelineConfig(t *testing.T) {
 
 func Test_client_CreatePipeline(t *testing.T) {
 	correctPipelineConfigHeader := map[string]string{"Accept": gocd.HeaderVersionEleven}
+
 	t.Run("should be able to create pipeline configuration successfully", func(t *testing.T) {
 		server := mockServer([]byte(pipelineConfigJSON), http.StatusOK,
 			correctPipelineConfigHeader, false, map[string]string{"ETag": "65dbc5f2d5b9c13a2cwxlfkjdlw23654eofixnwe3b3d8a6155d"})

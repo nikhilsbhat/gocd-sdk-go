@@ -5,9 +5,8 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/nikhilsbhat/gocd-sdk-go/pkg/errors"
-
 	"github.com/jinzhu/copier"
+	"github.com/nikhilsbhat/gocd-sdk-go/pkg/errors"
 )
 
 func (conf *client) GetMaterials() ([]Material, error) {
@@ -17,6 +16,7 @@ func (conf *client) GetMaterials() ([]Material, error) {
 	}
 
 	var materials Materials
+
 	resp, err := newClient.httpClient.R().
 		SetHeaders(map[string]string{
 			"Accept": HeaderVersionZero,
@@ -44,6 +44,7 @@ func (conf *client) GetMaterialUsage(materialID string) ([]string, error) {
 	}
 
 	var materialUsage MaterialUsage
+
 	resp, err := newClient.httpClient.R().
 		SetHeaders(map[string]string{
 			"Accept": HeaderVersionZero,
@@ -88,6 +89,7 @@ func (conf *client) NotifyMaterial(material Material) (string, error) {
 	}
 
 	notifyMessage := map[string]string{}
+
 	if err = json.Unmarshal(resp.Body(), &notifyMessage); err != nil {
 		return "", &errors.MarshalError{Err: err}
 	}

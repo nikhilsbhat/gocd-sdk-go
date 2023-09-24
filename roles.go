@@ -7,9 +7,8 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/nikhilsbhat/gocd-sdk-go/pkg/errors"
-
 	"github.com/jinzhu/copier"
+	"github.com/nikhilsbhat/gocd-sdk-go/pkg/errors"
 )
 
 func (conf *client) GetRoles() (RolesConfig, error) {
@@ -19,6 +18,7 @@ func (conf *client) GetRoles() (RolesConfig, error) {
 	}
 
 	var rolesCfg RolesConfigs
+
 	resp, err := newClient.httpClient.R().
 		SetHeaders(map[string]string{
 			"Accept": HeaderVersionThree,
@@ -48,6 +48,7 @@ func (conf *client) GetRole(name string) (Role, error) {
 	}
 
 	var roleCfg Role
+
 	resp, err := newClient.httpClient.R().
 		SetHeaders(map[string]string{
 			"Accept": HeaderVersionThree,
@@ -77,6 +78,7 @@ func (conf *client) GetRolesByType(roleType string) (RolesConfig, error) {
 	}
 
 	var roleCfg RolesConfigs
+
 	resp, err := newClient.httpClient.R().
 		SetHeaders(map[string]string{
 			"Accept": HeaderVersionThree,
@@ -107,6 +109,7 @@ func (conf *client) CreateRole(config Role) (Role, error) {
 	}
 
 	var roleCfg Role
+
 	resp, err := newClient.httpClient.R().
 		SetHeaders(map[string]string{
 			"Accept":       HeaderVersionThree,
@@ -138,6 +141,7 @@ func (conf *client) UpdateRole(config Role) (Role, error) {
 	}
 
 	var roleCfg Role
+
 	resp, err := newClient.httpClient.R().
 		SetHeaders(map[string]string{
 			"Accept":       HeaderVersionThree,

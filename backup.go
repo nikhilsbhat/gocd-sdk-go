@@ -5,9 +5,8 @@ import (
 	"net/http"
 	"path/filepath"
 
-	"github.com/nikhilsbhat/gocd-sdk-go/pkg/errors"
-
 	"github.com/jinzhu/copier"
+	"github.com/nikhilsbhat/gocd-sdk-go/pkg/errors"
 )
 
 // GetBackupConfig fetches information of backup configured in GoCD server.
@@ -18,6 +17,7 @@ func (conf *client) GetBackupConfig() (BackupConfig, error) {
 	}
 
 	var backUpConf BackupConfig
+
 	resp, err := newClient.httpClient.R().
 		SetHeaders(map[string]string{
 			"Accept": HeaderVersionOne,
@@ -94,6 +94,7 @@ func (conf *client) GetBackup(backupID string) (BackupStats, error) {
 	}
 
 	var backUpStats BackupStats
+
 	resp, err := newClient.httpClient.R().
 		SetHeaders(map[string]string{
 			"Accept": HeaderVersionTwo,
@@ -116,6 +117,7 @@ func (conf *client) GetBackup(backupID string) (BackupStats, error) {
 
 func (conf *client) ScheduleBackup() (map[string]string, error) {
 	var backupStats map[string]string
+
 	newClient := &client{}
 	if err := copier.CopyWithOption(newClient, conf, copier.Option{IgnoreEmpty: true, DeepCopy: true}); err != nil {
 		return backupStats, err

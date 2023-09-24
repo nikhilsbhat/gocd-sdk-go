@@ -11,9 +11,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/nikhilsbhat/gocd-sdk-go/pkg/errors"
-
 	"github.com/jinzhu/copier"
+	"github.com/nikhilsbhat/gocd-sdk-go/pkg/errors"
 )
 
 // GetPipelines fetches all pipelines configured in GoCD server.
@@ -24,11 +23,13 @@ func (conf *client) GetPipelines() (PipelinesInfo, error) {
 	}
 
 	var pipelinesInfo PipelinesInfo
+
 	resp, err := newClient.httpClient.R().
 		Get(APIFeedPipelineEndpoint)
 	if err != nil {
 		return PipelinesInfo{}, &errors.APIError{Err: err, Message: "get pipelines"}
 	}
+
 	if resp.StatusCode() != http.StatusOK {
 		return PipelinesInfo{}, &errors.NonOkError{Code: resp.StatusCode(), Response: resp}
 	}
@@ -48,6 +49,7 @@ func (conf *client) GetPipelineState(pipeline string) (PipelineState, error) {
 	}
 
 	var pipelinesStatus PipelineState
+
 	resp, err := newClient.httpClient.R().
 		SetHeaders(map[string]string{
 			"Accept": HeaderVersionOne,
@@ -56,6 +58,7 @@ func (conf *client) GetPipelineState(pipeline string) (PipelineState, error) {
 	if err != nil {
 		return PipelineState{}, &errors.APIError{Err: err, Message: "get pipeline state"}
 	}
+
 	if resp.StatusCode() != http.StatusOK {
 		return PipelineState{}, &errors.NonOkError{Code: resp.StatusCode(), Response: resp}
 	}
@@ -63,6 +66,7 @@ func (conf *client) GetPipelineState(pipeline string) (PipelineState, error) {
 	if err = json.Unmarshal(resp.Body(), &pipelinesStatus); err != nil {
 		return PipelineState{}, &errors.MarshalError{Err: err}
 	}
+
 	pipelinesStatus.Name = pipeline
 
 	return pipelinesStatus, nil
@@ -140,6 +144,7 @@ func (conf *client) GetLimitedPipelineRunHistory(pipeline, pageSize, after strin
 	}
 
 	var pipelineRunHistory runHistory
+
 	resp, err := newClient.httpClient.R().
 		SetHeaders(map[string]string{
 			"Accept":       HeaderVersionOne,
@@ -173,6 +178,7 @@ func (conf *client) GetPipelineSchedules(pipeline, start, perPage string) (Pipel
 	}
 
 	var pipelineSchedules PipelineSchedules
+
 	resp, err := newClient.httpClient.R().
 		SetHeaders(map[string]string{
 			"Accept":       HeaderVersionZero,
@@ -345,6 +351,7 @@ func (conf *client) CommentOnPipeline(comment PipelineObject) error {
 // GetPipelineInstance fetches the instance of a selected pipeline with counter.
 func (conf *client) GetPipelineInstance(pipeline PipelineObject) (map[string]interface{}, error) {
 	var pipelineInstance map[string]interface{}
+
 	newClient := &client{}
 	if err := copier.CopyWithOption(newClient, conf, copier.Option{IgnoreEmpty: true, DeepCopy: true}); err != nil {
 		return pipelineInstance, err

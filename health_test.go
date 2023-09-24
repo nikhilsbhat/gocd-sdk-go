@@ -6,7 +6,6 @@ import (
 	"testing"
 
 	"github.com/nikhilsbhat/gocd-sdk-go"
-
 	"github.com/stretchr/testify/assert"
 )
 
@@ -15,6 +14,7 @@ var healthMessages string
 
 func TestConfig_GetHealthInfo(t *testing.T) {
 	correctConfigHeader := map[string]string{"Accept": gocd.HeaderVersionOne}
+
 	t.Run("should error out while fetching health status information from server", func(t *testing.T) {
 		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
 		client.SetRetryCount(1)
@@ -57,6 +57,7 @@ func TestConfig_GetHealthInfo(t *testing.T) {
 
 func Test_client_GetServerHealth(t *testing.T) {
 	serverHealthJSON := `{"health": "OK"}`
+
 	t.Run("should be able to fetch server health successfully", func(t *testing.T) {
 		server := mockServer([]byte(serverHealthJSON), http.StatusOK, nil, true, nil)
 

@@ -18,6 +18,7 @@ var (
 
 func Test_client_GetPluginsInfo(t *testing.T) {
 	correctArtifactHeader := map[string]string{"Accept": gocd.HeaderVersionSeven}
+
 	t.Run("should be able to fetch all plugin info successfully", func(t *testing.T) {
 		server := mockServer([]byte(pluginsInfoJSON), http.StatusOK,
 			correctArtifactHeader, false, map[string]string{"ETag": "cbc5f2d5b9c13a2cc1b1efb3d8a6155d"})
@@ -110,6 +111,7 @@ func Test_client_GetPluginsInfo(t *testing.T) {
 
 func Test_client_GetPluginInfo(t *testing.T) {
 	correctArtifactHeader := map[string]string{"Accept": gocd.HeaderVersionSeven}
+
 	t.Run("should be able to fetch all plugin info successfully", func(t *testing.T) {
 		server := mockServer([]byte(pluginInfoJSON), http.StatusOK,
 			correctArtifactHeader, false, map[string]string{"ETag": "cbc5f2d5b9c13a2cc1b1efb3d8a6155d"})

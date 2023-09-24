@@ -6,9 +6,8 @@ import (
 	"net/http"
 	"path/filepath"
 
-	"github.com/nikhilsbhat/gocd-sdk-go/pkg/errors"
-
 	"github.com/jinzhu/copier"
+	"github.com/nikhilsbhat/gocd-sdk-go/pkg/errors"
 )
 
 // GetEnvironments fetches information of backup configured in GoCD server.
@@ -19,6 +18,7 @@ func (conf *client) GetEnvironments() ([]Environment, error) {
 	}
 
 	var envConf EnvironmentInfo
+
 	resp, err := newClient.httpClient.R().
 		SetHeaders(map[string]string{
 			"Accept": HeaderVersionThree,
@@ -27,6 +27,7 @@ func (conf *client) GetEnvironments() ([]Environment, error) {
 	if err != nil {
 		return nil, &errors.APIError{Err: err, Message: "get environments"}
 	}
+
 	if resp.StatusCode() != http.StatusOK {
 		return nil, &errors.NonOkError{Code: resp.StatusCode(), Response: resp}
 	}
@@ -41,6 +42,7 @@ func (conf *client) GetEnvironments() ([]Environment, error) {
 // GetEnvironment fetches information of a specific environment from GoCD.
 func (conf *client) GetEnvironment(name string) (Environment, error) {
 	var env Environment
+
 	newClient := &client{}
 	if err := copier.CopyWithOption(newClient, conf, copier.Option{IgnoreEmpty: true, DeepCopy: true}); err != nil {
 		return env, err
@@ -54,6 +56,7 @@ func (conf *client) GetEnvironment(name string) (Environment, error) {
 	if err != nil {
 		return env, &errors.APIError{Err: err, Message: fmt.Sprintf("get environment '%s'", name)}
 	}
+
 	if resp.StatusCode() != http.StatusOK {
 		return env, &errors.NonOkError{Code: resp.StatusCode(), Response: resp}
 	}
@@ -95,7 +98,9 @@ func (conf *client) CreateEnvironment(environment Environment) error {
 // PatchEnvironment Update some attributes of an environment.
 func (conf *client) PatchEnvironment(environment any) (Environment, error) {
 	envPatch := environment.(PatchEnvironment)
+
 	var env Environment
+
 	newClient := &client{}
 	if err := copier.CopyWithOption(newClient, conf, copier.Option{IgnoreEmpty: true, DeepCopy: true}); err != nil {
 		return env, err
@@ -126,6 +131,7 @@ func (conf *client) PatchEnvironment(environment any) (Environment, error) {
 // UpdateEnvironment will update the environment configurations of a already created GoCD environment.
 func (conf *client) UpdateEnvironment(environment Environment) (Environment, error) {
 	var env Environment
+
 	newClient := &client{}
 	if err := copier.CopyWithOption(newClient, conf, copier.Option{IgnoreEmpty: true, DeepCopy: true}); err != nil {
 		return env, err

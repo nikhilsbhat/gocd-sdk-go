@@ -17,6 +17,7 @@ func (conf *client) GetUsers() ([]User, error) {
 	}
 
 	var usersObj Users
+
 	resp, err := newClient.httpClient.R().
 		SetHeaders(map[string]string{
 			"Accept": HeaderVersionThree,
@@ -44,6 +45,7 @@ func (conf *client) GetUser(user string) (User, error) {
 	}
 
 	var userObj User
+
 	resp, err := newClient.httpClient.R().
 		SetHeaders(map[string]string{
 			"Accept": HeaderVersionThree,
@@ -71,6 +73,7 @@ func (conf *client) GetCurrentUser() (User, error) {
 	}
 
 	var userObj User
+
 	resp, err := newClient.httpClient.R().
 		SetHeaders(map[string]string{
 			"Accept": HeaderVersionOne,
@@ -98,6 +101,7 @@ func (conf *client) CreateUser(user User) (User, error) {
 	}
 
 	var userConfig User
+
 	resp, err := newClient.httpClient.R().
 		SetHeaders(map[string]string{
 			"Accept":       HeaderVersionThree,
@@ -127,6 +131,7 @@ func (conf *client) UpdateUser(user User) (User, error) {
 	}
 
 	var userConfig User
+
 	resp, err := newClient.httpClient.R().
 		SetHeaders(map[string]string{
 			"Accept":       HeaderVersionThree,
@@ -156,6 +161,7 @@ func (conf *client) UpdateCurrentUser(user User) (User, error) {
 	}
 
 	var userObj User
+
 	resp, err := newClient.httpClient.R().
 		SetHeaders(map[string]string{
 			"Accept":       HeaderVersionOne,

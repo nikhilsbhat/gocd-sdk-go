@@ -4,9 +4,8 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"github.com/nikhilsbhat/gocd-sdk-go/pkg/errors"
-
 	"github.com/jinzhu/copier"
+	"github.com/nikhilsbhat/gocd-sdk-go/pkg/errors"
 )
 
 // UpdateArtifactConfig updates the artifact config with the latest config provided.
@@ -17,6 +16,7 @@ func (conf *client) UpdateArtifactConfig(info ArtifactInfo) (ArtifactInfo, error
 	}
 
 	var artifactInfo ArtifactInfo
+
 	resp, err := newClient.httpClient.R().
 		SetHeaders(map[string]string{
 			"Accept":       HeaderVersionOne,
@@ -48,6 +48,7 @@ func (conf *client) GetArtifactConfig() (ArtifactInfo, error) {
 	}
 
 	var artifactInfo ArtifactInfo
+
 	resp, err := newClient.httpClient.R().
 		SetHeaders(map[string]string{
 			"Accept": HeaderVersionOne,

@@ -13,6 +13,7 @@ import (
 // GetScheduledJobs returns all scheduled jobs from GoCD.
 func (conf *client) GetScheduledJobs() (ScheduledJobs, error) {
 	var scheduledJobs ScheduledJobs
+
 	newClient := &client{}
 	if err := copier.CopyWithOption(newClient, conf, copier.Option{IgnoreEmpty: true, DeepCopy: true}); err != nil {
 		return scheduledJobs, err
@@ -23,6 +24,7 @@ func (conf *client) GetScheduledJobs() (ScheduledJobs, error) {
 	if err != nil {
 		return scheduledJobs, &errors.APIError{Err: err, Message: "get scheduled jobs"}
 	}
+
 	if resp.StatusCode() != http.StatusOK {
 		return scheduledJobs, &errors.NonOkError{Code: resp.StatusCode(), Response: resp}
 	}

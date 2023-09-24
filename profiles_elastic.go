@@ -6,9 +6,8 @@ import (
 	"net/http"
 	"path/filepath"
 
-	"github.com/nikhilsbhat/gocd-sdk-go/pkg/errors"
-
 	"github.com/jinzhu/copier"
+	"github.com/nikhilsbhat/gocd-sdk-go/pkg/errors"
 )
 
 func (conf *client) GetElasticAgentProfiles() (ProfilesConfig, error) {
@@ -18,6 +17,7 @@ func (conf *client) GetElasticAgentProfiles() (ProfilesConfig, error) {
 	}
 
 	var elasticAgentCfg ProfilesConfigs
+
 	resp, err := newClient.httpClient.R().
 		SetHeaders(map[string]string{
 			"Accept": HeaderVersionTwo,
@@ -47,6 +47,7 @@ func (conf *client) GetElasticAgentProfile(name string) (CommonConfig, error) {
 	}
 
 	var elasticAgentCfg CommonConfig
+
 	resp, err := newClient.httpClient.R().
 		SetHeaders(map[string]string{
 			"Accept": HeaderVersionTwo,
@@ -76,6 +77,7 @@ func (conf *client) CreateElasticAgentProfile(config CommonConfig) (CommonConfig
 	}
 
 	var elasticAgentCfg CommonConfig
+
 	resp, err := newClient.httpClient.R().
 		SetHeaders(map[string]string{
 			"Accept":       HeaderVersionTwo,
@@ -107,6 +109,7 @@ func (conf *client) UpdateElasticAgentProfile(config CommonConfig) (CommonConfig
 	}
 
 	var elasticAgentCfg CommonConfig
+
 	resp, err := newClient.httpClient.R().
 		SetHeaders(map[string]string{
 			"Accept":       HeaderVersionTwo,
@@ -161,6 +164,7 @@ func (conf *client) GetElasticAgentProfileUsage(profileID string) ([]ElasticProf
 	}
 
 	var elasticProfileUsage []ElasticProfileUsage
+
 	resp, err := newClient.httpClient.R().
 		SetHeaders(map[string]string{
 			"Accept": HeaderVersionOne,

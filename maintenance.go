@@ -5,9 +5,8 @@ import (
 	"net/http"
 	"path/filepath"
 
-	"github.com/nikhilsbhat/gocd-sdk-go/pkg/errors"
-
 	"github.com/jinzhu/copier"
+	"github.com/nikhilsbhat/gocd-sdk-go/pkg/errors"
 )
 
 // EnableMaintenanceMode enables maintenance mode.
@@ -42,6 +41,7 @@ func (conf *client) GetMaintenanceModeInfo() (Maintenance, error) {
 	}
 
 	var maintenanceInfo Maintenance
+
 	resp, err := newClient.httpClient.R().
 		SetHeaders(map[string]string{
 			"Accept": HeaderVersionOne,

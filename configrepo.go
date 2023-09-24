@@ -9,9 +9,8 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/nikhilsbhat/gocd-sdk-go/pkg/errors"
-
 	"github.com/jinzhu/copier"
+	"github.com/nikhilsbhat/gocd-sdk-go/pkg/errors"
 )
 
 type PipelineFiles struct {
@@ -27,6 +26,7 @@ func (conf *client) GetConfigRepo(repo string) (ConfigRepo, error) {
 	}
 
 	var repoConf ConfigRepo
+
 	resp, err := newClient.httpClient.R().
 		SetHeaders(map[string]string{
 			"Accept": HeaderVersionFour,
@@ -35,6 +35,7 @@ func (conf *client) GetConfigRepo(repo string) (ConfigRepo, error) {
 	if err != nil {
 		return ConfigRepo{}, &errors.APIError{Err: err, Message: "get config-repo"}
 	}
+
 	if resp.StatusCode() != http.StatusOK {
 		return ConfigRepo{}, &errors.NonOkError{Code: resp.StatusCode(), Response: resp}
 	}
@@ -60,6 +61,7 @@ func (conf *client) GetConfigRepos() ([]ConfigRepo, error) {
 	}
 
 	var reposConf ConfigRepoConfig
+
 	resp, err := newClient.httpClient.R().
 		SetHeaders(map[string]string{
 			"Accept": HeaderVersionFour,
@@ -68,6 +70,7 @@ func (conf *client) GetConfigRepos() ([]ConfigRepo, error) {
 	if err != nil {
 		return nil, &errors.APIError{Err: err, Message: "get config-repos"}
 	}
+
 	if resp.StatusCode() != http.StatusOK {
 		return nil, &errors.NonOkError{Code: resp.StatusCode(), Response: resp}
 	}
@@ -88,6 +91,7 @@ func (conf *client) GetConfigReposInternal() ([]ConfigRepo, error) {
 	}
 
 	var reposConf ConfigRepoConfig
+
 	resp, err := newClient.httpClient.R().
 		SetHeaders(map[string]string{
 			"Accept": HeaderVersionFour,
@@ -96,6 +100,7 @@ func (conf *client) GetConfigReposInternal() ([]ConfigRepo, error) {
 	if err != nil {
 		return nil, &errors.APIError{Err: err, Message: "get config-repos using internal API"}
 	}
+
 	if resp.StatusCode() != http.StatusOK {
 		return nil, &errors.NonOkError{Code: resp.StatusCode(), Response: resp}
 	}
@@ -115,6 +120,7 @@ func (conf *client) GetConfigRepoDefinitions(repo string) (ConfigRepo, error) {
 	}
 
 	var repoConf ConfigRepo
+
 	resp, err := newClient.httpClient.R().
 		SetHeaders(map[string]string{
 			"Accept": HeaderVersionFour,
@@ -123,6 +129,7 @@ func (conf *client) GetConfigRepoDefinitions(repo string) (ConfigRepo, error) {
 	if err != nil {
 		return ConfigRepo{}, &errors.APIError{Err: err, Message: fmt.Sprintf("get config-repo definitions for '%s'", repo)}
 	}
+
 	if resp.StatusCode() != http.StatusOK {
 		return ConfigRepo{}, &errors.NonOkError{Code: resp.StatusCode(), Response: resp}
 	}
@@ -259,6 +266,7 @@ func (conf *client) ConfigRepoStatus(repo string) (map[string]bool, error) {
 	}
 
 	var response map[string]bool
+
 	if err = json.Unmarshal(resp.Body(), &response); err != nil {
 		return response, &errors.MarshalError{Err: err}
 	}
@@ -300,6 +308,7 @@ func (conf *client) ConfigRepoPreflightCheck(pipelines map[string]string, plugin
 	}
 
 	var response map[string]interface{}
+
 	if err = json.Unmarshal(resp.Body(), &response); err != nil {
 		return false, &errors.MarshalError{Err: err}
 	}
@@ -342,6 +351,7 @@ func (conf *client) GetPipelineFiles(pathAndPattern ...string) ([]PipelineFiles,
 		}
 
 		pattern := pathAndPattern[1]
+
 		conf.logger.Debugf("pipeline files path '%s' is a directory, finding all the files matching the pattern '%s'", path, pattern)
 
 		files, err := filepath.Glob(filepath.Join(path, pattern))

@@ -18,6 +18,7 @@ var (
 
 func Test_client_GetClusterProfiles(t *testing.T) {
 	correctArtifactHeader := map[string]string{"Accept": gocd.HeaderVersionOne}
+
 	t.Run("should be able to fetch the cluster profiles successfully", func(t *testing.T) {
 		server := mockServer([]byte(clusterProfilesJSON), http.StatusOK,
 			correctArtifactHeader, false, map[string]string{"ETag": "cbc5f2d5b9c13a2cc1b1efb3d8a6155d"})
@@ -110,6 +111,7 @@ func Test_client_GetClusterProfiles(t *testing.T) {
 func Test_client_GetClusterProfile(t *testing.T) {
 	correctArtifactHeader := map[string]string{"Accept": gocd.HeaderVersionOne}
 	profileName := "prod-cluster"
+
 	t.Run("should be able to fetch a specific cluster profile successfully", func(t *testing.T) {
 		server := mockServer([]byte(clusterProfileJSON), http.StatusOK,
 			correctArtifactHeader, false, map[string]string{"ETag": "cbc5f2d5b9c13a2cc1b1efb3d8a6155d"})
@@ -189,6 +191,7 @@ func Test_client_GetClusterProfile(t *testing.T) {
 
 func Test_client_CreateClusterProfile(t *testing.T) {
 	correctArtifactHeader := map[string]string{"Accept": gocd.HeaderVersionOne}
+
 	t.Run("should be able to create a specific cluster profile successfully", func(t *testing.T) {
 		server := mockServer([]byte(clusterProfileJSON), http.StatusOK,
 			correctArtifactHeader, false, map[string]string{"ETag": "61406622382e51c2079c11dcbdb978fb"})
@@ -275,6 +278,7 @@ func Test_client_CreateClusterProfile(t *testing.T) {
 
 func Test_client_UpdateClusterProfile(t *testing.T) {
 	correctArtifactHeader := map[string]string{"Accept": gocd.HeaderVersionOne}
+
 	t.Run("should be able to update a specific cluster profile successfully", func(t *testing.T) {
 		server := mockServer([]byte(clusterProfileJSON), http.StatusOK,
 			correctArtifactHeader, false, map[string]string{"ETag": "61406622382e51c2079c11dcbdb978fb"})
@@ -361,6 +365,7 @@ func Test_client_UpdateClusterProfile(t *testing.T) {
 
 func Test_client_DeleteClusterProfile(t *testing.T) {
 	correctArtifactHeader := map[string]string{"Accept": gocd.HeaderVersionOne}
+
 	t.Run("should be able to delete an appropriate cluster profile successfully", func(t *testing.T) {
 		server := mockServer(nil, http.StatusOK,
 			correctArtifactHeader, false, nil)

@@ -10,7 +10,6 @@ import (
 	"testing"
 
 	"github.com/nikhilsbhat/gocd-sdk-go"
-
 	"github.com/stretchr/testify/assert"
 )
 
@@ -23,6 +22,7 @@ var (
 
 func TestConfig_GetBackupInfo(t *testing.T) {
 	correctBackupHeader := map[string]string{"Accept": gocd.HeaderVersionOne}
+
 	t.Run("should error out while fetching latest backup configuration information from server", func(t *testing.T) {
 		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
 		client.SetRetryCount(1)
@@ -72,6 +72,7 @@ func TestConfig_GetBackupInfo(t *testing.T) {
 
 func Test_client_CreateOrUpdateBackup(t *testing.T) {
 	correctBackupHeader := map[string]string{"Accept": gocd.HeaderVersionOne, "Content-Type": gocd.ContentJSON}
+
 	t.Run("should be able to create/update the backup configurations successfully", func(t *testing.T) {
 		var backupInfo gocd.BackupConfig
 		err := json.Unmarshal([]byte(backupJSON), &backupInfo)
@@ -160,6 +161,7 @@ func Test_client_CreateOrUpdateBackup(t *testing.T) {
 
 func Test_client_DeleteBackupConfig(t *testing.T) {
 	correctBackupHeader := map[string]string{"Accept": gocd.HeaderVersionOne}
+
 	t.Run("should be able to delete the backup configurations successfully ", func(t *testing.T) {
 		server := mockServer(nil, http.StatusOK, correctBackupHeader, false, nil)
 		client := gocd.NewClient(server.URL, auth, "info", nil)
@@ -192,6 +194,7 @@ func Test_client_DeleteBackupConfig(t *testing.T) {
 
 func Test_client_GetBackup(t *testing.T) {
 	correctArtifactHeader := map[string]string{"Accept": gocd.HeaderVersionTwo}
+
 	t.Run("should be able to fetch the backup stats successfully", func(t *testing.T) {
 		server := mockServer([]byte(backupStats), http.StatusOK,
 			correctArtifactHeader, false, nil)
@@ -267,6 +270,7 @@ func Test_client_GetBackup(t *testing.T) {
 
 func Test_client_ScheduleBackup(t *testing.T) {
 	scheduleBackupHeader := map[string]string{"Accept": gocd.HeaderVersionTwo}
+
 	t.Run("should be able to schedule the backup successfully", func(t *testing.T) {
 		server := mockServer([]byte(backupStats), http.StatusAccepted,
 			scheduleBackupHeader, false,

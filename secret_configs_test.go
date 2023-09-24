@@ -18,6 +18,7 @@ var (
 
 func Test_client_GetSecretConfigs(t *testing.T) {
 	correctArtifactHeader := map[string]string{"Accept": gocd.HeaderVersionThree}
+
 	t.Run("should be able to fetch the secret configs successfully", func(t *testing.T) {
 		server := mockServer([]byte(secretConfigsJSON), http.StatusOK,
 			correctArtifactHeader, false, map[string]string{"ETag": "cbc5f2d5b9c13a2cc1b1efb3d8a6155d"})
@@ -117,6 +118,7 @@ func Test_client_GetSecretConfigs(t *testing.T) {
 
 func Test_client_GetSecretConfig(t *testing.T) {
 	correctArtifactHeader := map[string]string{"Accept": gocd.HeaderVersionThree}
+
 	t.Run("should be able to fetch a specific secret config successfully", func(t *testing.T) {
 		server := mockServer([]byte(secretConfigJSON), http.StatusOK,
 			correctArtifactHeader, false, map[string]string{"ETag": "cbc5f2d5b9c13a2cc1b1efb3d8a6155d"})
@@ -205,6 +207,7 @@ func Test_client_GetSecretConfig(t *testing.T) {
 func Test_client_DeleteSecretConfig(t *testing.T) {
 	correctArtifactHeader := map[string]string{"Accept": gocd.HeaderVersionThree}
 	secretCfgID := "demo"
+
 	t.Run("should be able to delete an appropriate secret config successfully", func(t *testing.T) {
 		server := mockServer(nil, http.StatusOK,
 			correctArtifactHeader, false, nil)
@@ -252,6 +255,7 @@ func Test_client_DeleteSecretConfig(t *testing.T) {
 func Test_client_UpdateSecretConfig(t *testing.T) {
 	correctArtifactHeader := map[string]string{"Accept": gocd.HeaderVersionThree}
 	secretCfgID := "demo"
+
 	t.Run("should be able to update an specific secret config successfully", func(t *testing.T) {
 		server := mockServer([]byte(secretConfigJSON), http.StatusOK,
 			correctArtifactHeader, false, map[string]string{"ETag": "61406622382e51c2079c11dcbdb978fb"})
@@ -347,6 +351,7 @@ func Test_client_UpdateSecretConfig(t *testing.T) {
 func Test_client_CreateSecretConfig(t *testing.T) {
 	correctArtifactHeader := map[string]string{"Accept": gocd.HeaderVersionThree}
 	secretCfgID := "demo"
+
 	t.Run("should be able to create an specific secret config successfully", func(t *testing.T) {
 		server := mockServer([]byte(secretConfigJSON), http.StatusOK,
 			correctArtifactHeader, false, map[string]string{"ETag": "61406622382e51c2079c11dcbdb978fb"})

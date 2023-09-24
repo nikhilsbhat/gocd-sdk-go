@@ -6,9 +6,8 @@ import (
 	"net/http"
 	"path/filepath"
 
-	"github.com/nikhilsbhat/gocd-sdk-go/pkg/errors"
-
 	"github.com/jinzhu/copier"
+	"github.com/nikhilsbhat/gocd-sdk-go/pkg/errors"
 )
 
 func (conf *client) GetPackages() ([]Package, error) {
@@ -18,6 +17,7 @@ func (conf *client) GetPackages() ([]Package, error) {
 	}
 
 	var packagesCfg Packages
+
 	resp, err := newClient.httpClient.R().
 		SetHeaders(map[string]string{
 			"Accept": HeaderVersionTwo,
@@ -45,6 +45,7 @@ func (conf *client) GetPackage(repoID string) (Package, error) {
 	}
 
 	var packageCfg Package
+
 	resp, err := newClient.httpClient.R().
 		SetHeaders(map[string]string{
 			"Accept": HeaderVersionTwo,
@@ -74,6 +75,7 @@ func (conf *client) CreatePackage(config Package) (Package, error) {
 	}
 
 	var packageCfg Package
+
 	resp, err := newClient.httpClient.R().
 		SetHeaders(map[string]string{
 			"Accept":       HeaderVersionTwo,
@@ -105,6 +107,7 @@ func (conf *client) UpdatePackage(config Package) (Package, error) {
 	}
 
 	var packageCfg Package
+
 	resp, err := newClient.httpClient.R().
 		SetHeaders(map[string]string{
 			"Accept":       HeaderVersionTwo,

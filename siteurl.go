@@ -4,14 +4,14 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"github.com/nikhilsbhat/gocd-sdk-go/pkg/errors"
-
 	"github.com/jinzhu/copier"
+	"github.com/nikhilsbhat/gocd-sdk-go/pkg/errors"
 )
 
 // GetSiteURL fetches the site url config configured from GoCD.
 func (conf *client) GetSiteURL() (SiteURLConfig, error) {
 	var site SiteURLConfig
+
 	newClient := &client{}
 	if err := copier.CopyWithOption(newClient, conf, copier.Option{IgnoreEmpty: true, DeepCopy: true}); err != nil {
 		return site, err
@@ -40,6 +40,7 @@ func (conf *client) GetSiteURL() (SiteURLConfig, error) {
 // CreateOrUpdateSiteURL creates/updates the site url configured in GoCD.
 func (conf *client) CreateOrUpdateSiteURL(config SiteURLConfig) (SiteURLConfig, error) {
 	var site SiteURLConfig
+
 	newClient := &client{}
 	if err := copier.CopyWithOption(newClient, conf, copier.Option{IgnoreEmpty: true, DeepCopy: true}); err != nil {
 		return site, err

@@ -6,9 +6,8 @@ import (
 	"net/http"
 	"path/filepath"
 
-	"github.com/nikhilsbhat/gocd-sdk-go/pkg/errors"
-
 	"github.com/jinzhu/copier"
+	"github.com/nikhilsbhat/gocd-sdk-go/pkg/errors"
 )
 
 func (conf *client) GetArtifactStores() (ArtifactStoresConfig, error) {
@@ -18,6 +17,7 @@ func (conf *client) GetArtifactStores() (ArtifactStoresConfig, error) {
 	}
 
 	var storeCfg ArtifactStoresConfigs
+
 	resp, err := newClient.httpClient.R().
 		SetHeaders(map[string]string{
 			"Accept": HeaderVersionOne,
@@ -47,6 +47,7 @@ func (conf *client) GetArtifactStore(name string) (CommonConfig, error) {
 	}
 
 	var storeCfg CommonConfig
+
 	resp, err := newClient.httpClient.R().
 		SetHeaders(map[string]string{
 			"Accept": HeaderVersionOne,
@@ -76,6 +77,7 @@ func (conf *client) CreateArtifactStore(config CommonConfig) (CommonConfig, erro
 	}
 
 	var storeCfg CommonConfig
+
 	resp, err := newClient.httpClient.R().
 		SetHeaders(map[string]string{
 			"Accept":       HeaderVersionOne,
@@ -107,6 +109,7 @@ func (conf *client) UpdateArtifactStore(config CommonConfig) (CommonConfig, erro
 	}
 
 	var storeCfg CommonConfig
+
 	resp, err := newClient.httpClient.R().
 		SetHeaders(map[string]string{
 			"Accept":       HeaderVersionOne,

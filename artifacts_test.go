@@ -18,6 +18,7 @@ var artifactInfoJSON string
 
 func Test_client_GetArtifactConfig(t *testing.T) {
 	correctArtifactsHeader := map[string]string{"Accept": gocd.HeaderVersionOne}
+
 	t.Run("should be able to get the artifact information from GoCD successfully", func(t *testing.T) {
 		server := mockArtifactInfoServer([]byte(artifactInfoJSON), http.StatusOK, correctArtifactsHeader)
 		client := gocd.NewClient(server.URL, auth, "info", nil)
@@ -86,6 +87,7 @@ func Test_client_UpdateArtifactConfig(t *testing.T) {
 		"Content-Type": gocd.ContentJSON,
 		"If-Match":     etag,
 	}
+
 	t.Run("should be able to update the artifact config successfully", func(t *testing.T) {
 		server := mockArtifactInfoServer([]byte(artifactInfoJSON), http.StatusOK, correctArtifactsHeader)
 		client := gocd.NewClient(server.URL, auth, "info", nil)

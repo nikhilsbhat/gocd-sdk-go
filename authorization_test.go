@@ -171,6 +171,7 @@ func Test_client_GetAuthConfig(t *testing.T) {
 
 func Test_client_CreateAuthConfig(t *testing.T) {
 	correctAuthHeader := map[string]string{"Accept": gocd.HeaderVersionTwo, "Content-Type": gocd.ContentJSON}
+
 	t.Run("should be able to create auth config successfully", func(t *testing.T) {
 		server := mockServer([]byte(authConfigGetJSON), http.StatusOK, correctAuthHeader,
 			false, map[string]string{"ETag": "cbc5f2d5b9c13a2cc1b1efb3d8a6155d"})
@@ -254,6 +255,7 @@ func Test_client_CreateAuthConfig(t *testing.T) {
 
 func Test_client_UpdateAuthConfig(t *testing.T) {
 	correctAuthHeader := map[string]string{"Accept": gocd.HeaderVersionTwo, "Content-Type": gocd.ContentJSON, "If-Match": "cbc5f2d5b9c13a2cc1b1efb3d8a6155d"}
+
 	t.Run("should be able to update auth config successfully", func(t *testing.T) {
 		server := mockServer([]byte(authConfigGetJSON), http.StatusOK, correctAuthHeader,
 			false, map[string]string{"ETag": "61406622382e51c2079c11dcbdb978fb"})

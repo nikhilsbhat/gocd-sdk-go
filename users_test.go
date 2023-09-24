@@ -22,6 +22,7 @@ var (
 
 func Test_client_DeleteUser(t *testing.T) {
 	correctUserHeader := map[string]string{"Accept": gocd.HeaderVersionThree}
+
 	t.Run("should be able to delete an appropriate user successfully", func(t *testing.T) {
 		server := mockServer(nil, http.StatusOK,
 			correctUserHeader, false, nil)
@@ -68,6 +69,7 @@ func Test_client_DeleteUser(t *testing.T) {
 
 func Test_client_BulkDeleteUsers(t *testing.T) {
 	correctUserHeader := map[string]string{"Accept": gocd.HeaderVersionThree, "Content-Type": gocd.ContentJSON}
+
 	t.Run("should be able to bulk delete users successfully", func(t *testing.T) {
 		server := mockServer(nil, http.StatusOK,
 			correctUserHeader, false, nil)
@@ -130,6 +132,7 @@ func Test_client_BulkDeleteUsers(t *testing.T) {
 
 func Test_client_BulkEnableDisableUsers(t *testing.T) {
 	correctBulkUpdateHeader := map[string]string{"Accept": gocd.HeaderVersionThree, "Content-Type": gocd.ContentJSON}
+
 	t.Run("should be able to bulk enable/disable the users successfully", func(t *testing.T) {
 		server := mockServer(nil, http.StatusOK,
 			correctBulkUpdateHeader, false, nil)
@@ -183,6 +186,7 @@ func Test_client_BulkEnableDisableUsers(t *testing.T) {
 func Test_client_GetUser(t *testing.T) {
 	correctUserHeader := map[string]string{"Accept": gocd.HeaderVersionThree}
 	userName := "jdoe"
+
 	t.Run("should be able to fetch user details successfully", func(t *testing.T) {
 		server := mockServer([]byte(userJSON), http.StatusOK,
 			correctUserHeader, false, map[string]string{"ETag": "cbc5f2d5b9c13a2cc1b1efb3d8a6155d"})
@@ -262,6 +266,7 @@ func Test_client_GetUser(t *testing.T) {
 
 func Test_client_GetCurrentUser(t *testing.T) {
 	correctUserHeader := map[string]string{"Accept": gocd.HeaderVersionOne}
+
 	t.Run("should be able to fetch current user details successfully", func(t *testing.T) {
 		server := mockServer([]byte(currentUserJSON), http.StatusOK,
 			correctUserHeader, false, map[string]string{"ETag": "cbc5f2d5b9c13a2cc1b1efb3d8a6155d"})
@@ -334,6 +339,7 @@ func Test_client_GetCurrentUser(t *testing.T) {
 
 func Test_client_GetUsers(t *testing.T) {
 	correctUserHeader := map[string]string{"Accept": gocd.HeaderVersionThree}
+
 	t.Run("should be able to fetch users details successfully", func(t *testing.T) {
 		server := mockServer([]byte(usersJSON), http.StatusOK, correctUserHeader, false, nil)
 
@@ -404,6 +410,7 @@ func Test_client_GetUsers(t *testing.T) {
 
 func Test_client_CreateUser(t *testing.T) {
 	correctUserHeader := map[string]string{"Accept": gocd.HeaderVersionThree}
+
 	t.Run("should be able to create a specific user successfully", func(t *testing.T) {
 		server := mockServer([]byte(userJSON), http.StatusOK, correctUserHeader, false, nil)
 
@@ -489,6 +496,7 @@ func Test_client_CreateUser(t *testing.T) {
 
 func Test_client_UpdateUser(t *testing.T) {
 	correctUserHeader := map[string]string{"Accept": gocd.HeaderVersionThree}
+
 	t.Run("should be able to create a specific user successfully", func(t *testing.T) {
 		server := mockServer([]byte(userJSON), http.StatusOK, correctUserHeader, false, nil)
 
@@ -574,6 +582,7 @@ func Test_client_UpdateUser(t *testing.T) {
 
 func Test_client_UpdateCurrentUser(t *testing.T) {
 	correctUserHeader := map[string]string{"Accept": gocd.HeaderVersionOne, "Content-Type": gocd.ContentJSON}
+
 	t.Run("should be able to update current user details successfully", func(t *testing.T) {
 		server := mockServer([]byte(currentUserUpdateJSON), http.StatusOK,
 			correctUserHeader, false, nil)
