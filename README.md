@@ -5,7 +5,7 @@
 [![shields](https://godoc.org/github.com/nikhilsbhat/gocd-sdk-go?status.svg)](https://godoc.org/github.com/nikhilsbhat/gocd-sdk-go)
 [![shields](https://img.shields.io/github/v/tag/nikhilsbhat/gocd-sdk-go.svg)](https://github.com/nikhilsbhat/gocd-sdk-go/tags)
 
-Golang client library for [GoCD API](https://api.gocd.org/current/) (Not all the API is supported).
+Golang client library for [GoCD API](https://api.gocd.org/current/) (Supports Most of the APIs).
 
 ## Introduction
 
@@ -16,7 +16,7 @@ This could include checking the health of all agents connected to GoCD or status
 
 ## Installation
 
-Get latest version of GoCD sdk using `go get` command. Example:
+Get the latest version of GoCD sdk using `go get` command. Example:
 
 ```shell
 go get github.com/nikhilsbhat/gocd-sdk-go@latest
@@ -249,3 +249,7 @@ Below are the list of supported APIs:
 - [x] [Encryption](https://api.gocd.org/current/#encryption)
     - [x] Encrypt plain text value
     - [x] Decrypt encrypted text value
+
+## Enhancements
+
+If any of the API's are missed, feel free to raise the PR or create issues for the same.

@@ -160,6 +160,7 @@ type GoCd interface {
 	BulkDeleteUsers(users map[string]interface{}) error
 	BulkEnableDisableUsers(users map[string]interface{}) error
 	GetPipelineVSM(pipeline, instance string) (VSM, error)
+	GetPermissions(query map[string]string) (Permission, error)
 	SetRetryCount(count int)
 	SetRetryWaitTime(count int)
 }

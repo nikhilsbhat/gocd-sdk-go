@@ -1,0 +1,42 @@
+{
+  "permissions": {
+    "environment": {
+      "view": [
+        "DEV",
+        "UAT",
+        "QA",
+        "PROD"
+      ],
+      "administer": [
+        "DEV"
+      ]
+    },
+    "config_repo": {
+      "view": [
+        "dev-pipelines-repo",
+        "prod-pipelines-repo"
+      ],
+      "administer": [
+        "dev-pipelines-repo"
+      ]
+    },
+    "cluster_profile": {
+      "view": [
+        "dev-cluster",
+        "prod-cluster"
+      ],
+      "administer": [
+        "dev-cluster"
+      ]
+    },
+    "elastic_agent_profile": {
+      "view": [
+        "build-agent",
+        "deploy-agent"
+      ],
+      "administer": [
+        "build-agent"
+      ]
+    }
+  }
+}

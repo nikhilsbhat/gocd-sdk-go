@@ -677,6 +677,20 @@ type PipelineNode struct {
 	ID         string   `json:"ID,omitempty" yaml:"ID,omitempty"`
 }
 
+// Permission holds information of permissions that the invoked user has in GoCD.
+type Permission struct {
+	Environment         EntityPermissions `json:"environment,omitempty" yaml:"environment,omitempty"`
+	ConfigRepo          EntityPermissions `json:"config_repo,omitempty" yaml:"config_repo,omitempty"`
+	ClusterProfile      EntityPermissions `json:"cluster_profile,omitempty" yaml:"cluster_profile,omitempty"`
+	ElasticAgentProfile EntityPermissions `json:"elastic_agent_profile,omitempty" yaml:"elastic_agent_profile,omitempty"`
+}
+
+// EntityPermissions is the list of the permission level one has over various entities in GoCD.
+type EntityPermissions struct {
+	View       []string `json:"view,omitempty" yaml:"view,omitempty"`
+	Administer []string `json:"administer,omitempty" yaml:"administer,omitempty"`
+}
+
 // type ApprovalConfig struct {
 //	Type          string              `json:"type,omitempty" yaml:"type,omitempty"`
 //	OnlyOnSuccess bool                `json:"allow_only_on_success,omitempty" yaml:"allow_only_on_success,omitempty"`
