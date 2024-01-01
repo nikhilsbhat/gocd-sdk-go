@@ -249,6 +249,8 @@ Below are the list of supported APIs:
 - [x] [Encryption](https://api.gocd.org/current/#encryption)
     - [x] Encrypt plain text value
     - [x] Decrypt encrypted text value
+- [x] [Permission](https://api.gocd.org/current/#permissions)
+    - [x] Show permissions one has
 
 ## Enhancements
 
