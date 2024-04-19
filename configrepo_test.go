@@ -583,7 +583,7 @@ func Test_client_ConfigRepoPreflightCheck(t *testing.T) {
 		server := mockServer([]byte(preflightCheckJSON), http.StatusOK,
 			correctPreflightHeader, false, nil)
 
-		client := gocd.NewClient(server.URL, auth, "info", nil)
+		client := gocd.NewClient(server.URL, auth, "debug", nil)
 
 		pipelineFiles, err := client.GetPipelineFiles("internal/fixtures", "*_config.json")
 		assert.NoError(t, err)

@@ -337,6 +337,7 @@ func (conf *client) SetPipelineFiles(pipelines []PipelineFiles) map[string]strin
 // So that SetPipelineFiles can convert them to format that ConfigRepoPreflightCheck understands.
 func (conf *client) GetPipelineFiles(pathAndPattern ...string) ([]PipelineFiles, error) {
 	path := pathAndPattern[0]
+	patterns := pathAndPattern[1:]
 
 	var pipelineFiles []PipelineFiles
 
@@ -345,51 +346,61 @@ func (conf *client) GetPipelineFiles(pathAndPattern ...string) ([]PipelineFiles,
 		return nil, err
 	}
 
-	if fileInfo.IsDir() {
-		if len(pathAndPattern) <= 1 {
-			return nil, &errors.GoCDSDKError{Message: "pipeline files pattern not passed (ex: *.gocd.yaml)"}
-		}
+	if !fileInfo.IsDir() {
+		conf.logger.Debugf("pipeline files path '%s' is a file finding absolute path of the same", path)
 
-		pattern := pathAndPattern[1]
-
-		conf.logger.Debugf("pipeline files path '%s' is a directory, finding all the files matching the pattern '%s'", path, pattern)
-
-		files, err := filepath.Glob(filepath.Join(path, pattern))
+		absFilePath, err := filepath.Abs(path)
 		if err != nil {
-			return nil, err
+			return pipelineFiles, err
 		}
 
-		conf.logger.Debugf("found files '%v' which are matching the pattern '%s'. decoding it to type PipelineFiles", files, pattern)
-
-		for _, file := range files {
-			absFilePath, err := filepath.Abs(file)
-			if err != nil {
-				return pipelineFiles, err
-			}
-
-			_, fileName := filepath.Split(absFilePath)
-
-			pipelineFiles = append(pipelineFiles, PipelineFiles{
-				Name: fileName,
-				Path: absFilePath,
-			})
-		}
+		_, fileName := filepath.Split(absFilePath)
+		pipelineFiles = append(pipelineFiles, PipelineFiles{
+			Name: fileName,
+			Path: absFilePath,
+		})
 
 		return pipelineFiles, nil
 	}
 
-	conf.logger.Debugf("pipeline files path '%s' is a file finding absolute path of the same", path)
-
-	absFilePath, err := filepath.Abs(path)
-	if err != nil {
-		return pipelineFiles, err
+	if len(pathAndPattern) <= 1 {
+		return nil, &errors.GoCDSDKError{Message: "pipeline files pattern not passed (ex: *.gocd.yaml)"}
 	}
 
-	_, fileName := filepath.Split(absFilePath)
-	pipelineFiles = append(pipelineFiles, PipelineFiles{
-		Name: fileName,
-		Path: absFilePath,
-	})
+	conf.logger.Debugf("pipeline files path '%s' is a directory, finding all the files matching the pattern '%s'", path, strings.Join(patterns, ","))
+
+	if err = filepath.Walk(path, func(path string, info os.FileInfo, err error) error {
+		if err != nil {
+			return err
+		}
+
+		for _, pattern := range patterns {
+			match, err := filepath.Match(pattern, info.Name())
+			if err != nil {
+				conf.logger.Errorf("matching GoCD pipeline file errored with '%s'", err)
+			}
+
+			if match {
+				conf.logger.Debugf("identified pipeline '%s' under path '%s'", info.Name(), filepath.Dir(path))
+
+				absPath, err := filepath.Abs(path)
+				if err != nil {
+					conf.logger.Errorf("finding absolute path of pipeline '%s' errored with '%s'", info.Name(), err)
+				} else {
+					path = absPath
+				}
+
+				pipelineFiles = append(pipelineFiles, PipelineFiles{
+					Name: info.Name(),
+					Path: path,
+				})
+			}
+		}
+
+		return nil
+	}); err != nil {
+		return nil, err
+	}
 
 	return pipelineFiles, nil
 }
