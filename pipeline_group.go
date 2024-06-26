@@ -68,6 +68,7 @@ func (conf *client) GetPipelineGroups() ([]PipelineGroup, error) {
 	updatedGroupConf := make([]PipelineGroup, 0)
 	for _, group := range groupConf.PipelineGroups.PipelineGroups {
 		updatedGroupConf = append(updatedGroupConf, PipelineGroup{
+			Authorization: group.Authorization,
 			Name:          group.Name,
 			PipelineCount: len(group.Pipelines),
 			Pipelines:     group.Pipelines,
