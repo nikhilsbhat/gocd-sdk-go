@@ -57,11 +57,31 @@ func Test_client_GetPipelineGroupInfo(t *testing.T) {
 
 		expected := []gocd.PipelineGroup{
 			{
+				Authorization: gocd.PipelineGroupAuthorizationConfig{
+					View: gocd.AuthorizationConfig{
+						Users: []string{"operate"},
+						Roles: []string{},
+					},
+					Admins: gocd.AuthorizationConfig{
+						Users: []string{"operate"},
+						Roles: []string{},
+					},
+				},
 				Name:          "action-movies",
 				PipelineCount: 2,
 				Pipelines:     []gocd.Pipeline{{Name: "action-movies-auto"}, {Name: "action-movies-manual"}},
 			},
 			{
+				Authorization: gocd.PipelineGroupAuthorizationConfig{
+					View: gocd.AuthorizationConfig{
+						Users: []string{"operate"},
+						Roles: []string{},
+					},
+					Admins: gocd.AuthorizationConfig{
+						Users: []string{"operate"},
+						Roles: []string{},
+					},
+				},
 				Name:          "infrastructure",
 				PipelineCount: 2,
 				Pipelines:     []gocd.Pipeline{{Name: "gocd-prometheus-exporter"}, {Name: "helm-images"}},
