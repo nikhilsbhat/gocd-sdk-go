@@ -46,6 +46,29 @@ func Test_client_GetPluginsInfo(t *testing.T) {
 					Status: struct {
 						State string `json:"state,omitempty" yaml:"state,omitempty"`
 					}(struct{ State string }{State: "active"}),
+					Extensions: []gocd.PluginAttributes{
+						{
+							Type: "configrepo",
+							PluginSettings: &gocd.PluginSettingAttribute{
+								Configurations: []gocd.PluginConfiguration{
+									{
+										Key: "pipeline_pattern",
+										Metadata: map[string]interface{}{
+											"secure":   false,
+											"required": false,
+										},
+									},
+									{
+										Key: "environment_pattern",
+										Metadata: map[string]interface{}{
+											"secure":   false,
+											"required": false,
+										},
+									},
+								},
+							},
+						},
+					},
 				},
 			},
 		}
@@ -137,6 +160,29 @@ func Test_client_GetPluginInfo(t *testing.T) {
 			Status: struct {
 				State string `json:"state,omitempty" yaml:"state,omitempty"`
 			}(struct{ State string }{State: "active"}),
+			Extensions: []gocd.PluginAttributes{
+				{
+					Type: "configrepo",
+					PluginSettings: &gocd.PluginSettingAttribute{
+						Configurations: []gocd.PluginConfiguration{
+							{
+								Key: "pipeline_pattern",
+								Metadata: map[string]interface{}{
+									"secure":   false,
+									"required": false,
+								},
+							},
+							{
+								Key: "environment_pattern",
+								Metadata: map[string]interface{}{
+									"secure":   false,
+									"required": false,
+								},
+							},
+						},
+					},
+				},
+			},
 		}
 
 		actual, err := client.GetPluginInfo("")
