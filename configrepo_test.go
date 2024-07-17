@@ -989,9 +989,11 @@ func testGetConfigRepoObj() *gocd.ConfigRepo {
 		ID:            "repo1",
 		Configuration: nil,
 		Rules:         nil,
+		Material:      gocd.Material{},
 	}
 
 	configRepo.Material.Type = "git"
+	configRepo.Material.Attributes = gocd.Attribute{}
 	configRepo.Material.Attributes.URL = "https://github.com/config-repo/gocd-json-config-example.git"
 	configRepo.Material.Attributes.AutoUpdate = false
 	configRepo.Material.Attributes.Branch = "master"

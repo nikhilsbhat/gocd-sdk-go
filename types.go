@@ -165,13 +165,20 @@ type BackupStats struct {
 
 // PipelineConfig holds configuration information of a specific pipeline.
 type PipelineConfig struct {
-	Name          string                 `json:"name,omitempty" yaml:"name,omitempty"`
-	Config        map[string]interface{} `json:"config,omitempty" yaml:"config,omitempty"`
-	Origin        PipelineOrigin         `json:"origin,omitempty" yaml:"origin,omitempty"`
-	PausePipeline bool                   `json:"pause_pipeline,omitempty" yaml:"pause_pipeline,omitempty"`
-	PauseReason   string                 `json:"pause_reason,omitempty" yaml:"pause_reason,omitempty"`
-	Group         string                 `json:"group,omitempty" yaml:"group,omitempty"`
-	ETAG          string                 `json:"etag,omitempty" yaml:"etag,omitempty"`
+	Group                string                         `json:"group,omitempty" yaml:"group,omitempty"`
+	LabelTemplate        string                         `json:"label_template,omitempty" yaml:"label_template,omitempty"`
+	LockBehavior         string                         `json:"lock_behavior,omitempty" yaml:"lock_behavior,omitempty"`
+	Name                 string                         `json:"name,omitempty" yaml:"name,omitempty"`
+	Template             string                         `json:"template,omitempty" yaml:"template,omitempty"`
+	Origin               PipelineOrigin                 `json:"origin" yaml:"origin"`
+	Parameters           []PipelineEnvironmentVariables `json:"parameters,omitempty" yaml:"parameters,omitempty"`
+	EnvironmentVariables []PipelineEnvironmentVariables `json:"environment_variables,omitempty" yaml:"environment_variables,omitempty"`
+	Materials            []Material                     `json:"materials,omitempty" yaml:"materials,omitempty"`
+	Stages               []PipelineStageConfig          `json:"stages,omitempty" yaml:"stages,omitempty"`
+	TrackingTool         PipelineTracingToolConfig      `json:"tracking_tool" yaml:"tracking_tool"`
+	Timer                PipelineTimerConfig            `json:"timer" yaml:"timer"`
+	CreateOptions        PipelineCreateOptions          `json:"create_options" yaml:"create_options"`
+	ETAG                 string                         `json:"etag,omitempty" yaml:"etag,omitempty"`
 }
 
 // PipelineOrigin holds the information on the source of pipeline present on GoCD.
@@ -530,6 +537,7 @@ type Material struct {
 	Messages                 []map[string]string `json:"messages,omitempty" yaml:"messages,omitempty"`
 }
 
+// MaterialConfig holds information materials defined under Material.
 type MaterialConfig struct {
 	Type        string    `json:"type,omitempty" yaml:"type,omitempty"`
 	Fingerprint string    `json:"fingerprint,omitempty" yaml:"fingerprint,omitempty"`
@@ -618,6 +626,7 @@ type Plugin struct {
 	ETAG               string                 `json:"etag,omitempty" yaml:"etag,omitempty"`
 }
 
+// PluginAttributes holds information all available attributes of a given plugin.
 type PluginAttributes struct {
 	Type                        string                  `json:"type,omitempty" yaml:"type,omitempty"`
 	DisplayName                 string                  `json:"display_name,omitempty" yaml:"display_name,omitempty"`
@@ -636,6 +645,7 @@ type PluginAttributes struct {
 	TaskSettings                *PluginSettingAttribute `json:"task_settings,omitempty" yaml:"task_settings,omitempty"`
 }
 
+// PluginSettingAttribute holds plugin configuration information.
 type PluginSettingAttribute struct {
 	Configurations []PluginConfiguration `json:"configurations,omitempty" yaml:"configurations,omitempty"`
 }
@@ -713,4 +723,116 @@ type Permission struct {
 type EntityPermissions struct {
 	View       []string `json:"view,omitempty" yaml:"view,omitempty"`
 	Administer []string `json:"administer,omitempty" yaml:"administer,omitempty"`
+}
+
+// PipelineTemplateConfig holds pipeline template config.
+type PipelineTemplateConfig struct {
+	Name   string                `json:"name,omitempty" yaml:"name,omitempty"`
+	Stages []PipelineStageConfig `json:"stages,omitempty" yaml:"stages,omitempty"`
+}
+
+// PipelineStageConfig holds information of pipeline stage.
+type PipelineStageConfig struct {
+	Name                  string                         `json:"name,omitempty" yaml:"name,omitempty"`
+	FetchMaterials        bool                           `json:"fetch_materials,omitempty" yaml:"fetch_materials,omitempty"`
+	CleanWorkingDirectory bool                           `json:"clean_working_directory,omitempty" yaml:"clean_working_directory,omitempty"`
+	NeverCleanupArtifacts bool                           `json:"never_cleanup_artifacts,omitempty" yaml:"never_cleanup_artifacts,omitempty"`
+	Approval              PipelineApprovalConfig         `json:"approval,omitempty" yaml:"approval,omitempty"`
+	EnvironmentVariables  []PipelineEnvironmentVariables `json:"environment_variables,omitempty" yaml:"environment_variables,omitempty"`
+	Job                   []PipelineJobConfig            `json:"job,omitempty" yaml:"job,omitempty"`
+}
+
+// PipelineJobConfig holds information of pipeline job.
+type PipelineJobConfig struct {
+	Name                 string                         `json:"name,omitempty" yaml:"name,omitempty"`
+	RunInstanceCount     interface{}                    `json:"run_instance_count,omitempty" yaml:"run_instance_count,omitempty"`
+	ElasticProfileID     string                         `json:"elastic_profile_id,omitempty" yaml:"elastic_profile_id,omitempty"`
+	Timeout              int                            `json:"timeout,omitempty" yaml:"timeout,omitempty"`
+	EnvironmentVariables []PipelineEnvironmentVariables `json:"environment_variables,omitempty" yaml:"environment_variables,omitempty"`
+	Resources            []string                       `json:"resources,omitempty" yaml:"resources,omitempty"`
+	Tasks                []PipelineTaskConfig           `json:"tasks,omitempty" yaml:"tasks,omitempty"`
+	Tabs                 []PipelineTab                  `json:"tabs,omitempty" yaml:"tabs,omitempty"`
+	Artifacts            []PipelineArtifact             `json:"artifacts,omitempty" yaml:"artifacts,omitempty"`
+}
+
+// PipelineEnvironmentVariables holds information of all Environment variable defined in pipeline.
+type PipelineEnvironmentVariables struct {
+	Name           string `json:"name,omitempty" yaml:"name,omitempty"`
+	Value          string `json:"value,omitempty" yaml:"value,omitempty"`
+	Secure         bool   `json:"secure,omitempty" yaml:"secure,omitempty"`
+	EncryptedValue string `json:"encrypted_value,omitempty" yaml:"encrypted_value,omitempty"`
+}
+
+// PipelineApprovalConfig holds information on pipeline approval config.
+type PipelineApprovalConfig struct {
+	Type               string              `json:"type,omitempty" yaml:"type,omitempty"`
+	AllowOnlyOnSuccess bool                `json:"allow_only_on_success,omitempty" yaml:"allow_only_on_success,omitempty"`
+	Authorization      AuthorizationConfig `json:"authorization,omitempty" yaml:"authorization,omitempty"`
+}
+
+type PipelineTab struct {
+	Name string `json:"name,omitempty" yaml:"name,omitempty"`
+	Path string `json:"path,omitempty" yaml:"path,omitempty"`
+}
+
+// PipelineArtifact holds information on artifacts defined in pipeline.
+type PipelineArtifact struct {
+	Type          string                `json:"type,omitempty" yaml:"type,omitempty"`
+	ArtifactID    string                `json:"artifact_id,omitempty" yaml:"artifact_id,omitempty"`
+	StoreID       string                `json:"store_id,omitempty" yaml:"store_id,omitempty"`
+	Configuration []PluginConfiguration `json:"configuration,omitempty" yaml:"configuration,omitempty"`
+}
+
+// PipelineTaskConfig holds information of the tasks defined in jobs of GoCD pipeline.
+type PipelineTaskConfig struct {
+	Type       string              `json:"type,omitempty" yaml:"type,omitempty"`
+	Attributes TaskAttributeConfig `json:"attributes,omitempty" yaml:"attributes,omitempty"`
+}
+
+// TaskAttributeConfig holds information of tasks.
+type TaskAttributeConfig struct {
+	IsSourceAFile       bool                  `json:"is_source_a_file,omitempty" yaml:"is_source_a_file,omitempty"`
+	ArtifactID          string                `json:"artifact_id,omitempty" yaml:"artifact_id,omitempty"`
+	ArtifactOrigin      string                `json:"artifact_origin,omitempty" yaml:"artifact_origin,omitempty"`
+	Command             string                `json:"command,omitempty" yaml:"command,omitempty"`
+	WorkingDirectory    string                `json:"working_directory,omitempty" yaml:"working_directory,omitempty"`
+	Pipeline            string                `json:"pipeline,omitempty" yaml:"pipeline,omitempty"`
+	Stage               string                `json:"stage,omitempty" yaml:"stage,omitempty"`
+	Job                 string                `json:"job,omitempty" yaml:"job,omitempty"`
+	Source              string                `json:"source,omitempty" yaml:"source,omitempty"`
+	Destination         string                `json:"destination,omitempty" yaml:"destination,omitempty"`
+	Configuration       []PluginConfiguration `json:"configuration,omitempty" yaml:"configuration,omitempty"`
+	RunIf               []string              `json:"run_if,omitempty" yaml:"run_if,omitempty"`
+	Arguments           []string              `json:"arguments,omitempty" yaml:"arguments,omitempty"`
+	PluginConfiguration struct {
+		ID      string `json:"id,omitempty" yaml:"id,omitempty"`
+		Version string `json:"version,omitempty" yaml:"version,omitempty"`
+	} `json:"plugin_configuration,omitempty" yaml:"plugin_configuration,omitempty"`
+	OnCancel struct {
+		RunIf            []string `json:"run_if,omitempty" yaml:"run_if,omitempty"`
+		Command          string   `json:"command,omitempty" yaml:"command,omitempty"`
+		Arguments        []string `json:"arguments,omitempty" yaml:"arguments,omitempty"`
+		WorkingDirectory string   `json:"working_directory,omitempty" yaml:"working_directory,omitempty"`
+	} `json:"on_cancel,omitempty" yaml:"on_cancel,omitempty"`
+}
+
+// PipelineCreateOptions holds information of Pipeline Create Options.
+type PipelineCreateOptions struct {
+	PausePipeline bool   `json:"pause_pipeline,omitempty" yaml:"pause_pipeline,omitempty"`
+	PauseReason   string `json:"pause_reason,omitempty" yaml:"pause_reason,omitempty"`
+}
+
+// PipelineTimerConfig holds information of GoCD pipeline timers, when to trigger pipeline.
+type PipelineTimerConfig struct {
+	Spec          string `json:"spec,omitempty" yaml:"spec,omitempty"`
+	OnlyOnChanges bool   `json:"only_on_changes,omitempty" yaml:"only_on_changes,omitempty"`
+}
+
+// PipelineTracingToolConfig holds information of tracing tool for issue tracking.
+type PipelineTracingToolConfig struct {
+	Type       string `json:"type,omitempty" yaml:"type,omitempty"`
+	Attributes struct {
+		URLPattern string `json:"url_pattern,omitempty" yaml:"url_pattern,omitempty"`
+		Regex      string `json:"regex,omitempty" yaml:"regex,omitempty"`
+	} `json:"attributes,omitempty" yaml:"attributes,omitempty"`
 }

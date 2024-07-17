@@ -23,122 +23,94 @@ func Test_client_GetPipelineConfig(t *testing.T) {
 		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		expected := gocd.PipelineConfig{
-			ETAG: "cbc5f2d5b9c13a2cc1b1efb3d8a6155d",
+			Group:         "new_group",
+			LabelTemplate: "${COUNT}",
+			LockBehavior:  "lockOnFailure",
+			Name:          "new_pipeline",
 			Origin: gocd.PipelineOrigin{
 				Type: "config_repo",
 				ID:   "sample_config",
 			},
-			Config: map[string]interface{}{
-				"environment_variables": []interface{}{},
-				"group":                 "new_group",
-				"label_template":        "${COUNT}",
-				"lock_behavior":         "lockOnFailure",
-				"materials": []interface{}{map[string]interface{}{
-					"attributes": map[string]interface{}{
-						"auto_update":      true,
-						"branch":           "master",
-						"destination":      "dest",
-						"filter":           interface{}(nil),
-						"invert_filter":    false,
-						"name":             interface{}(nil),
-						"shallow_clone":    false,
-						"submodule_folder": interface{}(nil),
-						"url":              "git@github.com:sample_repo/example.git",
+			Parameters:           []gocd.PipelineEnvironmentVariables{},
+			EnvironmentVariables: []gocd.PipelineEnvironmentVariables{},
+			Materials: []gocd.Material{
+				{
+					Type:        "git",
+					Fingerprint: "",
+					Attributes: gocd.Attribute{
+						URL:                 "git@github.com:sample_repo/example.git",
+						Branch:              "master",
+						AutoUpdate:          true,
+						CheckExternals:      false,
+						UseTickets:          false,
+						IgnoreForScheduling: false,
+						Destination:         "dest",
+						InvertFilter:        false,
+						ShallowClone:        false,
+						Filter: struct {
+							Ignore []string "json:\"ignore,omitempty\" yaml:\"ignore,omitempty\""
+						}{Ignore: []string(nil)},
 					},
-					"type": "git",
-				}},
-				"name":       "new_pipeline",
-				"parameters": []interface{}{},
-				"stages": []interface{}{
-					map[string]interface{}{
-						"approval": map[string]interface{}{
-							"authorization": map[string]interface{}{
-								"roles": []interface{}{},
-								"users": []interface{}{},
-							},
-							"type": "success",
+					Config: gocd.MaterialConfig{
+						Attributes: gocd.Attribute{
+							AutoUpdate:          false,
+							CheckExternals:      false,
+							UseTickets:          false,
+							IgnoreForScheduling: false,
+							InvertFilter:        false,
+							ShallowClone:        false,
+							Filter: struct {
+								Ignore []string "json:\"ignore,omitempty\" yaml:\"ignore,omitempty\""
+							}{Ignore: []string(nil)},
 						},
-						"clean_working_directory": false,
-						"environment_variables":   []interface{}{},
-						"fetch_materials":         true,
-						"jobs": []interface{}{map[string]interface{}{
-							"artifacts": []interface{}{map[string]interface{}{
-								"artifact_id": "docker-image",
-								"configuration": []interface{}{
-									map[string]interface{}{
-										"key":   "Image",
-										"value": "gocd/gocd-server",
-									},
-									map[string]interface{}{
-										"key":   "Tag",
-										"value": "v${GO_PIPELINE_LABEL}",
-									},
-								},
-								"store_id": "dockerhub",
-								"type":     "external",
-							}},
-							"environment_variables": []interface{}{},
-							"name":                  "defaultJob",
-							"resources":             []interface{}{},
-							"run_instance_count":    interface{}(nil),
-							"tabs":                  []interface{}{},
-							"tasks": []interface{}{map[string]interface{}{
-								"attributes": map[string]interface{}{
-									"args":    "",
-									"command": "ls",
-									"run_if":  []interface{}{"passed"},
-								},
-								"type": "exec",
-							}},
-							"timeout": interface{}(nil),
-						}},
-						"name":                    "defaultStage",
-						"never_cleanup_artifacts": false,
 					},
-					map[string]interface{}{
-						"approval": map[string]interface{}{
-							"authorization": map[string]interface{}{
-								"roles": []interface{}{},
-								"users": []interface{}{},
-							},
-							"type": "success",
-						},
-						"clean_working_directory": false,
-						"environment_variables":   []interface{}{},
-						"fetch_materials":         true,
-						"jobs": []interface{}{map[string]interface{}{
-							"artifacts":             []interface{}{},
-							"environment_variables": []interface{}{},
-							"name":                  "j2",
-							"resources":             []interface{}{},
-							"run_instance_count":    interface{}(nil),
-							"tabs":                  []interface{}{},
-							"tasks": []interface{}{map[string]interface{}{
-								"attributes": map[string]interface{}{
-									"artifact_id":     "docker-image",
-									"artifact_origin": "external",
-									"job":             "defaultJob",
-									"pipeline":        "",
-									"run_if":          []interface{}{},
-									"stage":           "defaultStage",
-								},
-								"type": "fetch",
-							}},
-							"timeout": interface{}(nil),
-						}},
-						"name":                    "s2",
-						"never_cleanup_artifacts": false,
-					},
+					CanTriggerUpdate:         false,
+					MaterialUpdateInProgress: false,
+					Messages:                 []map[string]string(nil),
 				},
-				"template":      interface{}(nil),
-				"timer":         interface{}(nil),
-				"tracking_tool": interface{}(nil),
 			},
+			Stages: []gocd.PipelineStageConfig{
+				{
+					Name:                  "defaultStage",
+					FetchMaterials:        true,
+					CleanWorkingDirectory: false,
+					NeverCleanupArtifacts: false,
+					Approval: gocd.PipelineApprovalConfig{
+						Type:               "success",
+						AllowOnlyOnSuccess: false,
+						Authorization: gocd.AuthorizationConfig{
+							Roles: []string{}, Users: []string{},
+						},
+					},
+					EnvironmentVariables: []gocd.PipelineEnvironmentVariables{},
+					Job:                  []gocd.PipelineJobConfig(nil),
+				},
+				{
+					Name:                  "s2",
+					FetchMaterials:        true,
+					CleanWorkingDirectory: false,
+					NeverCleanupArtifacts: false,
+					Approval: gocd.PipelineApprovalConfig{
+						Type:               "success",
+						AllowOnlyOnSuccess: false,
+						Authorization: gocd.AuthorizationConfig{
+							Roles: []string{},
+							Users: []string{},
+						},
+					},
+					EnvironmentVariables: []gocd.PipelineEnvironmentVariables{},
+					Job:                  []gocd.PipelineJobConfig(nil),
+				},
+			},
+			TrackingTool:  gocd.PipelineTracingToolConfig{},
+			Timer:         gocd.PipelineTimerConfig{},
+			CreateOptions: gocd.PipelineCreateOptions{},
+			ETAG:          "cbc5f2d5b9c13a2cc1b1efb3d8a6155d",
 		}
 
 		actual, err := client.GetPipelineConfig("new_pipeline")
 		assert.NoError(t, err)
-		assert.Equal(t, expected, actual)
+		assert.EqualValues(t, expected, actual)
 	})
 
 	t.Run("should error out while fetching pipeline configuration present in GoCD due to wrong headers", func(t *testing.T) {
@@ -302,118 +274,94 @@ func Test_client_UpdatePipelineConfig(t *testing.T) {
 		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		expected := gocd.PipelineConfig{
-			ETAG: "cbc5f2d5b9c13a2cc1b1efb3d8a6155d",
-			Config: map[string]interface{}{
-				"environment_variables": []interface{}{},
-				"group":                 "new_group",
-				"label_template":        "${COUNT}",
-				"lock_behavior":         "lockOnFailure",
-				"materials": []interface{}{map[string]interface{}{
-					"attributes": map[string]interface{}{
-						"auto_update":      true,
-						"branch":           "master",
-						"destination":      "dest",
-						"filter":           interface{}(nil),
-						"invert_filter":    false,
-						"name":             interface{}(nil),
-						"shallow_clone":    false,
-						"submodule_folder": interface{}(nil),
-						"url":              "git@github.com:sample_repo/example.git",
-					},
-					"type": "git",
-				}},
-				"name":       "new_pipeline",
-				"parameters": []interface{}{},
-				"stages": []interface{}{
-					map[string]interface{}{
-						"approval": map[string]interface{}{
-							"authorization": map[string]interface{}{
-								"roles": []interface{}{},
-								"users": []interface{}{},
-							},
-							"type": "success",
-						},
-						"clean_working_directory": false,
-						"environment_variables":   []interface{}{},
-						"fetch_materials":         true,
-						"jobs": []interface{}{map[string]interface{}{
-							"artifacts": []interface{}{map[string]interface{}{
-								"artifact_id": "docker-image",
-								"configuration": []interface{}{
-									map[string]interface{}{
-										"key":   "Image",
-										"value": "gocd/gocd-server",
-									},
-									map[string]interface{}{
-										"key":   "Tag",
-										"value": "v${GO_PIPELINE_LABEL}",
-									},
-								},
-								"store_id": "dockerhub",
-								"type":     "external",
-							}},
-							"environment_variables": []interface{}{},
-							"name":                  "defaultJob",
-							"resources":             []interface{}{},
-							"run_instance_count":    interface{}(nil),
-							"tabs":                  []interface{}{},
-							"tasks": []interface{}{map[string]interface{}{
-								"attributes": map[string]interface{}{
-									"args":    "",
-									"command": "ls",
-									"run_if":  []interface{}{"passed"},
-								},
-								"type": "exec",
-							}},
-							"timeout": interface{}(nil),
-						}},
-						"name":                    "defaultStage",
-						"never_cleanup_artifacts": false,
-					},
-					map[string]interface{}{
-						"approval": map[string]interface{}{
-							"authorization": map[string]interface{}{
-								"roles": []interface{}{},
-								"users": []interface{}{},
-							},
-							"type": "success",
-						},
-						"clean_working_directory": false,
-						"environment_variables":   []interface{}{},
-						"fetch_materials":         true,
-						"jobs": []interface{}{map[string]interface{}{
-							"artifacts":             []interface{}{},
-							"environment_variables": []interface{}{},
-							"name":                  "j2",
-							"resources":             []interface{}{},
-							"run_instance_count":    interface{}(nil),
-							"tabs":                  []interface{}{},
-							"tasks": []interface{}{map[string]interface{}{
-								"attributes": map[string]interface{}{
-									"artifact_id":     "docker-image",
-									"artifact_origin": "external",
-									"job":             "defaultJob",
-									"pipeline":        "",
-									"run_if":          []interface{}{},
-									"stage":           "defaultStage",
-								},
-								"type": "fetch",
-							}},
-							"timeout": interface{}(nil),
-						}},
-						"name":                    "s2",
-						"never_cleanup_artifacts": false,
-					},
-				},
-				"template":      interface{}(nil),
-				"timer":         interface{}(nil),
-				"tracking_tool": interface{}(nil),
+			Group:         "new_group",
+			LabelTemplate: "${COUNT}",
+			LockBehavior:  "lockOnFailure",
+			Name:          "new_pipeline",
+			Origin: gocd.PipelineOrigin{
+				Type: "config_repo",
+				ID:   "sample_config",
 			},
+			Parameters:           []gocd.PipelineEnvironmentVariables{},
+			EnvironmentVariables: []gocd.PipelineEnvironmentVariables{},
+			Materials: []gocd.Material{
+				{
+					Type:        "git",
+					Fingerprint: "",
+					Attributes: gocd.Attribute{
+						URL:                 "git@github.com:sample_repo/example.git",
+						Branch:              "master",
+						AutoUpdate:          true,
+						CheckExternals:      false,
+						UseTickets:          false,
+						IgnoreForScheduling: false,
+						Destination:         "dest",
+						InvertFilter:        false,
+						ShallowClone:        false,
+						Filter: struct {
+							Ignore []string "json:\"ignore,omitempty\" yaml:\"ignore,omitempty\""
+						}{Ignore: []string(nil)},
+					},
+					Config: gocd.MaterialConfig{
+						Attributes: gocd.Attribute{
+							AutoUpdate:          false,
+							CheckExternals:      false,
+							UseTickets:          false,
+							IgnoreForScheduling: false,
+							InvertFilter:        false,
+							ShallowClone:        false,
+							Filter: struct {
+								Ignore []string "json:\"ignore,omitempty\" yaml:\"ignore,omitempty\""
+							}{Ignore: []string(nil)},
+						},
+					},
+					CanTriggerUpdate:         false,
+					MaterialUpdateInProgress: false,
+					Messages:                 []map[string]string(nil),
+				},
+			},
+			Stages: []gocd.PipelineStageConfig{
+				{
+					Name:                  "defaultStage",
+					FetchMaterials:        true,
+					CleanWorkingDirectory: false,
+					NeverCleanupArtifacts: false,
+					Approval: gocd.PipelineApprovalConfig{
+						Type:               "success",
+						AllowOnlyOnSuccess: false,
+						Authorization: gocd.AuthorizationConfig{
+							Roles: []string{}, Users: []string{},
+						},
+					},
+					EnvironmentVariables: []gocd.PipelineEnvironmentVariables{},
+					Job:                  []gocd.PipelineJobConfig(nil),
+				},
+				{
+					Name:                  "s2",
+					FetchMaterials:        true,
+					CleanWorkingDirectory: false,
+					NeverCleanupArtifacts: false,
+					Approval: gocd.PipelineApprovalConfig{
+						Type:               "success",
+						AllowOnlyOnSuccess: false,
+						Authorization: gocd.AuthorizationConfig{
+							Roles: []string{},
+							Users: []string{},
+						},
+					},
+					EnvironmentVariables: []gocd.PipelineEnvironmentVariables{},
+					Job:                  []gocd.PipelineJobConfig(nil),
+				},
+			},
+			TrackingTool:  gocd.PipelineTracingToolConfig{},
+			Timer:         gocd.PipelineTimerConfig{},
+			CreateOptions: gocd.PipelineCreateOptions{},
+			ETAG:          "cbc5f2d5b9c13a2cc1b1efb3d8a6155d",
 		}
 
 		input := gocd.PipelineConfig{
-			Config: map[string]interface{}{"name": "new_pipeline"},
-			ETAG:   "65dbc5f2d5b9c13a2ccdlw23654b3b3d8a6155d",
+			Name: "new_group",
+			ETAG: "65dbc5f2d5b9c13a2ccdlw23654b3b3d8a6155d",
 		}
 
 		actual, err := client.UpdatePipelineConfig(input)
@@ -429,8 +377,8 @@ func Test_client_UpdatePipelineConfig(t *testing.T) {
 
 		expected := gocd.PipelineConfig{}
 		input := gocd.PipelineConfig{
-			Config: map[string]interface{}{"name": "new_pipeline"},
-			ETAG:   "65dbc5f2d5b9c13a2ccdlw23654b3b3d8a6155d",
+			Name: "new_pipeline",
+			ETAG: "65dbc5f2d5b9c13a2ccdlw23654b3b3d8a6155d",
 		}
 
 		actual, err := client.UpdatePipelineConfig(input)
@@ -446,8 +394,8 @@ func Test_client_UpdatePipelineConfig(t *testing.T) {
 
 		expected := gocd.PipelineConfig{}
 		input := gocd.PipelineConfig{
-			Config: map[string]interface{}{"name": "new_pipeline"},
-			ETAG:   "65dbc5f2d5b9c13a2ccdlw23654b3b3d8a6155d",
+			Name: "new_pipeline",
+			ETAG: "65dbc5f2d5b9c13a2ccdlw23654b3b3d8a6155d",
 		}
 
 		actual, err := client.UpdatePipelineConfig(input)
@@ -463,8 +411,8 @@ func Test_client_UpdatePipelineConfig(t *testing.T) {
 
 		expected := gocd.PipelineConfig{}
 		input := gocd.PipelineConfig{
-			Config: map[string]interface{}{"name": "new_pipeline"},
-			ETAG:   "65dbc5f2d5b9c13a2ccdlw23654b3b3d8a6155d",
+			Name: "new_pipeline",
+			ETAG: "65dbc5f2d5b9c13a2ccdlw23654b3b3d8a6155d",
 		}
 
 		actual, err := client.UpdatePipelineConfig(input)
@@ -480,8 +428,8 @@ func Test_client_UpdatePipelineConfig(t *testing.T) {
 
 		expected := gocd.PipelineConfig{}
 		input := gocd.PipelineConfig{
-			Config: map[string]interface{}{"name": "new_pipeline"},
-			ETAG:   "65dbc5f2d5b9c13a2ccdlw23654b3b3d8a6155d",
+			Name: "new_pipeline",
+			ETAG: "65dbc5f2d5b9c13a2ccdlw23654b3b3d8a6155d",
 		}
 
 		actual, err := client.UpdatePipelineConfig(input)
@@ -502,16 +450,16 @@ func Test_client_CreatePipeline(t *testing.T) {
 
 		input := gocd.PipelineConfig{
 			Group: "new_group",
-			Config: map[string]interface{}{
-				"name": "new_pipeline",
+			Name:  "new_pipeline",
+			ETAG:  "65dbc5f2d5b9c13a2ccdlw23654b3b3d8a6155d",
+			CreateOptions: gocd.PipelineCreateOptions{
+				PausePipeline: true,
 			},
-			ETAG:          "65dbc5f2d5b9c13a2ccdlw23654b3b3d8a6155d",
-			PausePipeline: true,
 		}
 
 		out, err := client.CreatePipeline(input)
 		assert.NoError(t, err)
-		assert.Equal(t, "new_group", out.Config["group"].(string))
+		assert.Equal(t, "new_group", out.Group)
 	})
 
 	t.Run("should error out while creating pipeline configuration present in GoCD due to wrong headers", func(t *testing.T) {
@@ -521,8 +469,8 @@ func Test_client_CreatePipeline(t *testing.T) {
 		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		input := gocd.PipelineConfig{
-			Config: map[string]interface{}{"name": "new_pipeline"},
-			ETAG:   "65dbc5f2d5b9c13a2ccdlw23654b3b3d8a6155d",
+			Name: "new_pipeline",
+			ETAG: "65dbc5f2d5b9c13a2ccdlw23654b3b3d8a6155d",
 		}
 
 		_, err := client.CreatePipeline(input)
@@ -536,8 +484,8 @@ func Test_client_CreatePipeline(t *testing.T) {
 		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		input := gocd.PipelineConfig{
-			Config: map[string]interface{}{"name": "new_pipeline"},
-			ETAG:   "65dbc5f2d5b9c13a2ccdlw23654b3b3d8a6155d",
+			Name: "new_pipeline",
+			ETAG: "65dbc5f2d5b9c13a2ccdlw23654b3b3d8a6155d",
 		}
 
 		_, err := client.CreatePipeline(input)
@@ -552,8 +500,8 @@ func Test_client_CreatePipeline(t *testing.T) {
 		client.SetRetryWaitTime(1)
 
 		input := gocd.PipelineConfig{
-			Config: map[string]interface{}{"name": "new_pipeline"},
-			ETAG:   "65dbc5f2d5b9c13a2ccdlw23654b3b3d8a6155d",
+			Name: "new_pipeline",
+			ETAG: "65dbc5f2d5b9c13a2ccdlw23654b3b3d8a6155d",
 		}
 
 		_, err := client.CreatePipeline(input)
