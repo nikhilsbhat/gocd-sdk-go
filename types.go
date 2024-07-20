@@ -178,6 +178,7 @@ type PipelineConfig struct {
 	TrackingTool         PipelineTracingToolConfig      `json:"tracking_tool" yaml:"tracking_tool"`
 	Timer                PipelineTimerConfig            `json:"timer" yaml:"timer"`
 	CreateOptions        PipelineCreateOptions          `json:"create_options" yaml:"create_options"`
+	Config               map[string]interface{}         `json:"config,omitempty" yaml:"config,omitempty"`
 	ETAG                 string                         `json:"etag,omitempty" yaml:"etag,omitempty"`
 }
 
@@ -615,15 +616,18 @@ type PluginsInfo struct {
 
 // Plugin holds information of a specific plugins present in GoCd.
 type Plugin struct {
-	ID     string `json:"id,omitempty" yaml:"id,omitempty"`
-	Status struct {
-		State string `json:"state,omitempty" yaml:"state,omitempty"`
-	} `json:"status,omitempty" yaml:"status,omitempty"`
+	ID                 string                 `json:"id,omitempty" yaml:"id,omitempty"`
+	Status             PluginStatus           `json:"status,omitempty" yaml:"status,omitempty"`
 	PluginFileLocation string                 `json:"plugin_file_location,omitempty" yaml:"plugin_file_location,omitempty"`
 	BundledPlugin      bool                   `json:"bundled_plugin,omitempty" yaml:"bundled_plugin,omitempty"`
 	About              map[string]interface{} `json:"about,omitempty" yaml:"about,omitempty"`
 	Extensions         []PluginAttributes     `json:"extensions,omitempty" yaml:"extensions,omitempty"`
 	ETAG               string                 `json:"etag,omitempty" yaml:"etag,omitempty"`
+}
+
+// PluginStatus holds the status information of the plugin.
+type PluginStatus struct {
+	State string `json:"state,omitempty" yaml:"state,omitempty"`
 }
 
 // PluginAttributes holds information all available attributes of a given plugin.
