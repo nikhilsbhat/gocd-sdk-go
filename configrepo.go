@@ -335,41 +335,39 @@ func (conf *client) SetPipelineFiles(pipelines []PipelineFiles) map[string]strin
 
 // GetPipelineFiles reads the pipeline file or recursively read the directory to get all the pipelines matching the pattern and transforms to []PipelineFiles
 // So that SetPipelineFiles can convert them to format that ConfigRepoPreflightCheck understands.
-func (conf *client) GetPipelineFiles(pathAndPattern ...string) ([]PipelineFiles, error) {
-	path := pathAndPattern[0]
-	patterns := pathAndPattern[1:]
-
+func (conf *client) GetPipelineFiles(path string, pipelines []string, patterns ...string) ([]PipelineFiles, error) {
 	var pipelineFiles []PipelineFiles
 
-	fileInfo, err := os.Stat(pathAndPattern[0])
-	if err != nil {
-		return nil, err
-	}
+	if len(pipelines) != 0 {
+		for _, goCDPipeline := range pipelines {
+			conf.logger.Debugf("finding absolute path of the pipeline '%s'", goCDPipeline)
+			_, err := os.Stat(goCDPipeline)
+			if err != nil {
+				return nil, err
+			}
 
-	if !fileInfo.IsDir() {
-		conf.logger.Debugf("pipeline files path '%s' is a file finding absolute path of the same", path)
+			absFilePath, err := filepath.Abs(goCDPipeline)
+			if err != nil {
+				return pipelineFiles, err
+			}
 
-		absFilePath, err := filepath.Abs(path)
-		if err != nil {
-			return pipelineFiles, err
+			_, fileName := filepath.Split(absFilePath)
+			pipelineFiles = append(pipelineFiles, PipelineFiles{
+				Name: fileName,
+				Path: absFilePath,
+			})
 		}
-
-		_, fileName := filepath.Split(absFilePath)
-		pipelineFiles = append(pipelineFiles, PipelineFiles{
-			Name: fileName,
-			Path: absFilePath,
-		})
 
 		return pipelineFiles, nil
 	}
 
-	if len(pathAndPattern) <= 1 {
+	if len(patterns) == 0 {
 		return nil, &errors.GoCDSDKError{Message: "pipeline files pattern not passed (ex: *.gocd.yaml)"}
 	}
 
 	conf.logger.Debugf("pipeline files path '%s' is a directory, finding all the files matching the pattern '%s'", path, strings.Join(patterns, ","))
 
-	if err = filepath.Walk(path, func(path string, info os.FileInfo, err error) error {
+	if err := filepath.Walk(path, func(path string, info os.FileInfo, err error) error {
 		if err != nil {
 			return err
 		}

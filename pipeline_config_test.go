@@ -27,38 +27,69 @@ func Test_client_GetPipelineConfig(t *testing.T) {
 			LabelTemplate: "${COUNT}",
 			LockBehavior:  "lockOnFailure",
 			Name:          "new_pipeline",
+			Template:      "",
 			Origin: gocd.PipelineOrigin{
-				Type: "config_repo",
-				ID:   "sample_config",
+				Type: "config_repo", ID: "sample_config",
 			},
 			Parameters:           []gocd.PipelineEnvironmentVariables{},
 			EnvironmentVariables: []gocd.PipelineEnvironmentVariables{},
 			Materials: []gocd.Material{
 				{
-					Type:        "git",
-					Fingerprint: "",
+					Type: "git", Fingerprint: "",
 					Attributes: gocd.Attribute{
 						URL:                 "git@github.com:sample_repo/example.git",
+						Username:            "",
+						Password:            "",
+						EncryptedPassword:   "",
 						Branch:              "master",
 						AutoUpdate:          true,
 						CheckExternals:      false,
 						UseTickets:          false,
+						View:                "",
+						Port:                "",
+						ProjectPath:         "",
+						Domain:              "",
+						Ref:                 "",
+						Name:                "",
+						Stage:               "",
+						Pipeline:            "",
 						IgnoreForScheduling: false,
 						Destination:         "dest",
 						InvertFilter:        false,
+						SubmoduleFolder:     "",
 						ShallowClone:        false,
+						Origin:              map[string]string(nil),
 						Filter: struct {
 							Ignore []string "json:\"ignore,omitempty\" yaml:\"ignore,omitempty\""
 						}{Ignore: []string(nil)},
 					},
+					RepoURL: "",
 					Config: gocd.MaterialConfig{
+						Type:        "",
+						Fingerprint: "",
 						Attributes: gocd.Attribute{
+							URL:                 "",
+							Username:            "",
+							Password:            "",
+							EncryptedPassword:   "",
+							Branch:              "",
 							AutoUpdate:          false,
 							CheckExternals:      false,
 							UseTickets:          false,
+							View:                "",
+							Port:                "",
+							ProjectPath:         "",
+							Domain:              "",
+							Ref:                 "",
+							Name:                "",
+							Stage:               "",
+							Pipeline:            "",
 							IgnoreForScheduling: false,
+							Destination:         "",
 							InvertFilter:        false,
+							SubmoduleFolder:     "",
 							ShallowClone:        false,
+							Origin:              map[string]string(nil),
 							Filter: struct {
 								Ignore []string "json:\"ignore,omitempty\" yaml:\"ignore,omitempty\""
 							}{Ignore: []string(nil)},
@@ -76,14 +107,64 @@ func Test_client_GetPipelineConfig(t *testing.T) {
 					CleanWorkingDirectory: false,
 					NeverCleanupArtifacts: false,
 					Approval: gocd.PipelineApprovalConfig{
-						Type:               "success",
-						AllowOnlyOnSuccess: false,
+						Type: "success", AllowOnlyOnSuccess: false,
 						Authorization: gocd.AuthorizationConfig{
-							Roles: []string{}, Users: []string{},
+							Roles: []string{},
+							Users: []string{},
 						},
 					},
 					EnvironmentVariables: []gocd.PipelineEnvironmentVariables{},
-					Job:                  []gocd.PipelineJobConfig(nil),
+					Jobs: []gocd.PipelineJobConfig{
+						{
+							Name:                 "defaultJob",
+							RunInstanceCount:     interface{}(nil),
+							ElasticProfileID:     "",
+							Timeout:              0,
+							EnvironmentVariables: []gocd.PipelineEnvironmentVariables{},
+							Resources:            []string{},
+							Tasks: []gocd.PipelineTaskConfig{
+								{
+									Type: "exec",
+									Attributes: gocd.TaskAttributeConfig{
+										IsSourceAFile:    false,
+										ArtifactID:       "",
+										ArtifactOrigin:   "",
+										Command:          "ls",
+										WorkingDirectory: "",
+										Pipeline:         "",
+										Stage:            "",
+										Job:              "",
+										Source:           "",
+										Destination:      "",
+										Configuration:    []gocd.PluginConfiguration(nil),
+										RunIf:            []string{"passed"},
+										Arguments:        []string(nil),
+										PluginConfiguration: struct {
+											ID      string "json:\"id,omitempty\" yaml:\"id,omitempty\""
+											Version string "json:\"version,omitempty\" yaml:\"version,omitempty\""
+										}{ID: "", Version: ""},
+										OnCancel: struct {
+											RunIf            []string "json:\"run_if,omitempty\" yaml:\"run_if,omitempty\""
+											Command          string   "json:\"command,omitempty\" yaml:\"command,omitempty\""
+											Arguments        []string "json:\"arguments,omitempty\" yaml:\"arguments,omitempty\""
+											WorkingDirectory string   "json:\"working_directory,omitempty\" yaml:\"working_directory,omitempty\""
+										}{RunIf: []string(nil), Command: "", Arguments: []string(nil), WorkingDirectory: ""},
+									},
+								},
+							},
+							Tabs: []gocd.PipelineTab{},
+							Artifacts: []gocd.PipelineArtifact{
+								{
+									Type:          "external",
+									Source:        "",
+									Destination:   "",
+									ArtifactID:    "",
+									StoreID:       "dockerhub",
+									Configuration: []map[string]string{{"key": "Image", "value": "gocd/gocd-server"}, {"key": "Tag", "value": "v${GO_PIPELINE_LABEL}"}},
+								},
+							},
+						},
+					},
 				},
 				{
 					Name:                  "s2",
@@ -99,13 +180,64 @@ func Test_client_GetPipelineConfig(t *testing.T) {
 						},
 					},
 					EnvironmentVariables: []gocd.PipelineEnvironmentVariables{},
-					Job:                  []gocd.PipelineJobConfig(nil),
+					Jobs: []gocd.PipelineJobConfig{
+						{
+							Name: "j2", RunInstanceCount: interface{}(nil),
+							ElasticProfileID:     "",
+							Timeout:              0,
+							EnvironmentVariables: []gocd.PipelineEnvironmentVariables{},
+							Resources:            []string{},
+							Tasks: []gocd.PipelineTaskConfig{
+								{
+									Type: "fetch",
+									Attributes: gocd.TaskAttributeConfig{
+										IsSourceAFile:    false,
+										ArtifactID:       "docker-image",
+										ArtifactOrigin:   "external",
+										Command:          "",
+										WorkingDirectory: "",
+										Pipeline:         "",
+										Stage:            "defaultStage",
+										Job:              "defaultJob",
+										Source:           "",
+										Destination:      "",
+										Configuration:    []gocd.PluginConfiguration(nil),
+										RunIf:            []string{}, Arguments: []string(nil), PluginConfiguration: struct {
+											ID      string "json:\"id,omitempty\" yaml:\"id,omitempty\""
+											Version string "json:\"version,omitempty\" yaml:\"version,omitempty\""
+										}{ID: "", Version: ""},
+										OnCancel: struct {
+											RunIf            []string "json:\"run_if,omitempty\" yaml:\"run_if,omitempty\""
+											Command          string   "json:\"command,omitempty\" yaml:\"command,omitempty\""
+											Arguments        []string "json:\"arguments,omitempty\" yaml:\"arguments,omitempty\""
+											WorkingDirectory string   "json:\"working_directory,omitempty\" yaml:\"working_directory,omitempty\""
+										}{RunIf: []string(nil), Command: "", Arguments: []string(nil), WorkingDirectory: ""},
+									},
+								},
+							},
+							Tabs:      []gocd.PipelineTab{},
+							Artifacts: []gocd.PipelineArtifact{},
+						},
+					},
 				},
 			},
-			TrackingTool:  gocd.PipelineTracingToolConfig{},
-			Timer:         gocd.PipelineTimerConfig{},
-			CreateOptions: gocd.PipelineCreateOptions{},
-			ETAG:          "cbc5f2d5b9c13a2cc1b1efb3d8a6155d",
+			TrackingTool: gocd.PipelineTracingToolConfig{
+				Type: "",
+				Attributes: struct {
+					URLPattern string "json:\"url_pattern,omitempty\" yaml:\"url_pattern,omitempty\""
+					Regex      string "json:\"regex,omitempty\" yaml:\"regex,omitempty\""
+				}{URLPattern: "", Regex: ""},
+			},
+			Timer: gocd.PipelineTimerConfig{
+				Spec:          "",
+				OnlyOnChanges: false,
+			},
+			CreateOptions: gocd.PipelineCreateOptions{
+				PausePipeline: false,
+				PauseReason:   "",
+			},
+			Config: map[string]interface{}(nil),
+			ETAG:   "cbc5f2d5b9c13a2cc1b1efb3d8a6155d",
 		}
 
 		actual, err := client.GetPipelineConfig("new_pipeline")
@@ -278,6 +410,7 @@ func Test_client_UpdatePipelineConfig(t *testing.T) {
 			LabelTemplate: "${COUNT}",
 			LockBehavior:  "lockOnFailure",
 			Name:          "new_pipeline",
+			Template:      "",
 			Origin: gocd.PipelineOrigin{
 				Type: "config_repo",
 				ID:   "sample_config",
@@ -290,31 +423,33 @@ func Test_client_UpdatePipelineConfig(t *testing.T) {
 					Fingerprint: "",
 					Attributes: gocd.Attribute{
 						URL:                 "git@github.com:sample_repo/example.git",
+						Username:            "",
+						Password:            "",
+						EncryptedPassword:   "",
 						Branch:              "master",
 						AutoUpdate:          true,
 						CheckExternals:      false,
 						UseTickets:          false,
+						View:                "",
+						Port:                "",
+						ProjectPath:         "",
+						Domain:              "",
+						Ref:                 "",
+						Name:                "",
+						Stage:               "",
+						Pipeline:            "",
 						IgnoreForScheduling: false,
 						Destination:         "dest",
 						InvertFilter:        false,
+						SubmoduleFolder:     "",
 						ShallowClone:        false,
+						Origin:              map[string]string(nil),
 						Filter: struct {
 							Ignore []string "json:\"ignore,omitempty\" yaml:\"ignore,omitempty\""
 						}{Ignore: []string(nil)},
-					},
-					Config: gocd.MaterialConfig{
-						Attributes: gocd.Attribute{
-							AutoUpdate:          false,
-							CheckExternals:      false,
-							UseTickets:          false,
-							IgnoreForScheduling: false,
-							InvertFilter:        false,
-							ShallowClone:        false,
-							Filter: struct {
-								Ignore []string "json:\"ignore,omitempty\" yaml:\"ignore,omitempty\""
-							}{Ignore: []string(nil)},
-						},
-					},
+					}, RepoURL: "", Config: gocd.MaterialConfig{Type: "", Fingerprint: "", Attributes: gocd.Attribute{URL: "", Username: "", Password: "", EncryptedPassword: "", Branch: "", AutoUpdate: false, CheckExternals: false, UseTickets: false, View: "", Port: "", ProjectPath: "", Domain: "", Ref: "", Name: "", Stage: "", Pipeline: "", IgnoreForScheduling: false, Destination: "", InvertFilter: false, SubmoduleFolder: "", ShallowClone: false, Origin: map[string]string(nil), Filter: struct {
+						Ignore []string "json:\"ignore,omitempty\" yaml:\"ignore,omitempty\""
+					}{Ignore: []string(nil)}}},
 					CanTriggerUpdate:         false,
 					MaterialUpdateInProgress: false,
 					Messages:                 []map[string]string(nil),
@@ -330,11 +465,58 @@ func Test_client_UpdatePipelineConfig(t *testing.T) {
 						Type:               "success",
 						AllowOnlyOnSuccess: false,
 						Authorization: gocd.AuthorizationConfig{
-							Roles: []string{}, Users: []string{},
+							Roles: []string{},
+							Users: []string{},
 						},
 					},
 					EnvironmentVariables: []gocd.PipelineEnvironmentVariables{},
-					Job:                  []gocd.PipelineJobConfig(nil),
+					Jobs: []gocd.PipelineJobConfig{
+						{
+							Name:                 "defaultJob",
+							RunInstanceCount:     interface{}(nil),
+							ElasticProfileID:     "",
+							Timeout:              0,
+							EnvironmentVariables: []gocd.PipelineEnvironmentVariables{},
+							Resources:            []string{},
+							Tasks: []gocd.PipelineTaskConfig{{
+								Type: "exec",
+								Attributes: gocd.TaskAttributeConfig{
+									IsSourceAFile:    false,
+									ArtifactID:       "",
+									ArtifactOrigin:   "",
+									Command:          "ls",
+									WorkingDirectory: "",
+									Pipeline:         "",
+									Stage:            "",
+									Job:              "",
+									Source:           "",
+									Destination:      "",
+									Configuration:    []gocd.PluginConfiguration(nil),
+									RunIf:            []string{"passed"},
+									Arguments:        []string(nil),
+									PluginConfiguration: struct {
+										ID      string "json:\"id,omitempty\" yaml:\"id,omitempty\""
+										Version string "json:\"version,omitempty\" yaml:\"version,omitempty\""
+									}{ID: "", Version: ""},
+									OnCancel: struct {
+										RunIf            []string "json:\"run_if,omitempty\" yaml:\"run_if,omitempty\""
+										Command          string   "json:\"command,omitempty\" yaml:\"command,omitempty\""
+										Arguments        []string "json:\"arguments,omitempty\" yaml:\"arguments,omitempty\""
+										WorkingDirectory string   "json:\"working_directory,omitempty\" yaml:\"working_directory,omitempty\""
+									}{RunIf: []string(nil), Command: "", Arguments: []string(nil), WorkingDirectory: ""},
+								},
+							}},
+							Tabs: []gocd.PipelineTab{},
+							Artifacts: []gocd.PipelineArtifact{{
+								Type:          "external",
+								Source:        "",
+								Destination:   "",
+								ArtifactID:    "",
+								StoreID:       "dockerhub",
+								Configuration: []map[string]string{{"key": "Image", "value": "gocd/gocd-server"}, {"key": "Tag", "value": "v${GO_PIPELINE_LABEL}"}},
+							}},
+						},
+					},
 				},
 				{
 					Name:                  "s2",
@@ -350,13 +532,68 @@ func Test_client_UpdatePipelineConfig(t *testing.T) {
 						},
 					},
 					EnvironmentVariables: []gocd.PipelineEnvironmentVariables{},
-					Job:                  []gocd.PipelineJobConfig(nil),
+					Jobs: []gocd.PipelineJobConfig{
+						{
+							Name:                 "j2",
+							RunInstanceCount:     interface{}(nil),
+							ElasticProfileID:     "",
+							Timeout:              0,
+							EnvironmentVariables: []gocd.PipelineEnvironmentVariables{},
+							Resources:            []string{},
+							Tasks: []gocd.PipelineTaskConfig{
+								{
+									Type: "fetch",
+									Attributes: gocd.TaskAttributeConfig{
+										IsSourceAFile:    false,
+										ArtifactID:       "docker-image",
+										ArtifactOrigin:   "external",
+										Command:          "",
+										WorkingDirectory: "",
+										Pipeline:         "",
+										Stage:            "defaultStage",
+										Job:              "defaultJob",
+										Source:           "",
+										Destination:      "",
+										Configuration:    []gocd.PluginConfiguration(nil),
+										RunIf:            []string{},
+										Arguments:        []string(nil),
+										PluginConfiguration: struct {
+											ID      string "json:\"id,omitempty\" yaml:\"id,omitempty\""
+											Version string "json:\"version,omitempty\" yaml:\"version,omitempty\""
+										}{
+											ID:      "",
+											Version: "",
+										},
+										OnCancel: struct {
+											RunIf            []string "json:\"run_if,omitempty\" yaml:\"run_if,omitempty\""
+											Command          string   "json:\"command,omitempty\" yaml:\"command,omitempty\""
+											Arguments        []string "json:\"arguments,omitempty\" yaml:\"arguments,omitempty\""
+											WorkingDirectory string   "json:\"working_directory,omitempty\" yaml:\"working_directory,omitempty\""
+										}{
+											RunIf:            []string(nil),
+											Command:          "",
+											Arguments:        []string(nil),
+											WorkingDirectory: "",
+										},
+									},
+								},
+							},
+							Tabs:      []gocd.PipelineTab{},
+							Artifacts: []gocd.PipelineArtifact{},
+						},
+					},
 				},
 			},
-			TrackingTool:  gocd.PipelineTracingToolConfig{},
-			Timer:         gocd.PipelineTimerConfig{},
-			CreateOptions: gocd.PipelineCreateOptions{},
-			ETAG:          "cbc5f2d5b9c13a2cc1b1efb3d8a6155d",
+			TrackingTool: gocd.PipelineTracingToolConfig{
+				Type: "",
+				Attributes: struct {
+					URLPattern string "json:\"url_pattern,omitempty\" yaml:\"url_pattern,omitempty\""
+					Regex      string "json:\"regex,omitempty\" yaml:\"regex,omitempty\""
+				}{URLPattern: "", Regex: ""},
+			},
+			Timer:         gocd.PipelineTimerConfig{Spec: "", OnlyOnChanges: false},
+			CreateOptions: gocd.PipelineCreateOptions{PausePipeline: false, PauseReason: ""},
+			Config:        map[string]interface{}(nil), ETAG: "cbc5f2d5b9c13a2cc1b1efb3d8a6155d",
 		}
 
 		input := gocd.PipelineConfig{

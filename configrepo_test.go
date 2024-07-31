@@ -585,7 +585,7 @@ func Test_client_ConfigRepoPreflightCheck(t *testing.T) {
 
 		client := gocd.NewClient(server.URL, auth, "debug", nil)
 
-		pipelineFiles, err := client.GetPipelineFiles("internal/fixtures", "*_config.json")
+		pipelineFiles, err := client.GetPipelineFiles("internal/fixtures", nil, "*_config.json")
 		assert.NoError(t, err)
 
 		pipelineMap := client.SetPipelineFiles(pipelineFiles)
@@ -601,7 +601,7 @@ func Test_client_ConfigRepoPreflightCheck(t *testing.T) {
 
 		client := gocd.NewClient(server.URL, auth, "info", nil)
 
-		pipelineFiles, err := client.GetPipelineFiles("internal/fixtures", "*_config.json")
+		pipelineFiles, err := client.GetPipelineFiles("internal/fixtures", nil, "*_config.json")
 		assert.NoError(t, err)
 
 		pipelineMap := client.SetPipelineFiles(pipelineFiles)
@@ -617,7 +617,7 @@ func Test_client_ConfigRepoPreflightCheck(t *testing.T) {
 			nil, false, nil)
 		client := gocd.NewClient(server.URL, auth, "info", nil)
 
-		pipelineFiles, err := client.GetPipelineFiles("internal/fixtures", "*_config.json")
+		pipelineFiles, err := client.GetPipelineFiles("internal/fixtures", nil, "*_config.json")
 		assert.NoError(t, err)
 
 		pipelineMap := client.SetPipelineFiles(pipelineFiles)
@@ -634,7 +634,7 @@ func Test_client_ConfigRepoPreflightCheck(t *testing.T) {
 			false, nil)
 		client := gocd.NewClient(server.URL, auth, "info", nil)
 
-		pipelineFiles, err := client.GetPipelineFiles("internal/fixtures", "*_config.json")
+		pipelineFiles, err := client.GetPipelineFiles("internal/fixtures", nil, "*_config.json")
 		assert.NoError(t, err)
 
 		pipelineMap := client.SetPipelineFiles(pipelineFiles)
@@ -649,7 +649,7 @@ func Test_client_ConfigRepoPreflightCheck(t *testing.T) {
 			false, nil)
 		client := gocd.NewClient(server.URL, auth, "info", nil)
 
-		pipelineFiles, err := client.GetPipelineFiles("internal/fixtures", "*_config.json")
+		pipelineFiles, err := client.GetPipelineFiles("internal/fixtures", nil, "*_config.json")
 		assert.NoError(t, err)
 
 		pipelineMap := client.SetPipelineFiles(pipelineFiles)
@@ -665,7 +665,7 @@ func Test_client_ConfigRepoPreflightCheck(t *testing.T) {
 		client.SetRetryCount(1)
 		client.SetRetryWaitTime(1)
 
-		pipelineFiles, err := client.GetPipelineFiles("internal/fixtures", "*_config.json")
+		pipelineFiles, err := client.GetPipelineFiles("internal/fixtures", nil, "*_config.json")
 		assert.NoError(t, err)
 
 		pipelineMap := client.SetPipelineFiles(pipelineFiles)
@@ -687,7 +687,7 @@ func Test_client_ConfigRepoPreflightCheck(t *testing.T) {
 		homeDir, err := os.UserHomeDir()
 		assert.NoError(t, err)
 
-		pipelineFiles, err := client.GetPipelineFiles(filepath.Join(homeDir, "opensource/gocd-git-path-sample"), "*.gocd.yaml")
+		pipelineFiles, err := client.GetPipelineFiles(filepath.Join(homeDir, "opensource/gocd-git-path-sample"), nil, "*.gocd.yaml")
 		assert.NoError(t, err)
 
 		pipeliness := client.SetPipelineFiles(pipelineFiles)
@@ -762,7 +762,7 @@ func Test_client_GetPipelineFiles(t *testing.T) {
 			},
 		}
 
-		actual, err := client.GetPipelineFiles("internal/fixtures", "*_config.json")
+		actual, err := client.GetPipelineFiles("internal/fixtures", nil, "*_config.json")
 		assert.NoError(t, err)
 		assert.Equal(t, len(expected), len(actual))
 		assert.Equal(t, expected, actual)
@@ -771,15 +771,15 @@ func Test_client_GetPipelineFiles(t *testing.T) {
 	t.Run("should error out while parsing directory to fetch the pipelines since pattern is missing", func(t *testing.T) {
 		client := gocd.NewClient("http://localhost:8156/go", auth, "debug", nil)
 
-		actual, err := client.GetPipelineFiles("internal/fixture", "*_config.json")
-		assert.EqualError(t, err, "stat internal/fixture: no such file or directory")
+		actual, err := client.GetPipelineFiles("internal/fixture", nil, "*_config.json")
+		assert.EqualError(t, err, "lstat internal/fixture: no such file or directory")
 		assert.Nil(t, actual)
 	})
 
 	t.Run("should error out while parsing directory due to wrong path", func(t *testing.T) {
 		client := gocd.NewClient("http://localhost:8156/go", auth, "debug", nil)
 
-		actual, err := client.GetPipelineFiles("internal/fixtures")
+		actual, err := client.GetPipelineFiles("internal/fixtures", nil)
 		assert.EqualError(t, err, "pipeline files pattern not passed (ex: *.gocd.yaml)")
 		assert.Nil(t, actual)
 	})
@@ -794,7 +794,7 @@ func Test_client_GetPipelineFiles(t *testing.T) {
 			},
 		}
 
-		actual, err := client.GetPipelineFiles("internal/fixtures/mail_server_config.json")
+		actual, err := client.GetPipelineFiles("", []string{"internal/fixtures/mail_server_config.json"})
 		assert.NoError(t, err)
 		assert.Equal(t, expected, actual)
 	})
@@ -802,7 +802,7 @@ func Test_client_GetPipelineFiles(t *testing.T) {
 	t.Run("should error out while identifying the pipeline files due to wrong path", func(t *testing.T) {
 		client := gocd.NewClient("http://localhost:8156/go", auth, "debug", nil)
 
-		actual, err := client.GetPipelineFiles("internal/fixture/mail_server_config.json")
+		actual, err := client.GetPipelineFiles("", []string{"internal/fixture/mail_server_config.json"})
 		assert.EqualError(t, err, "stat internal/fixture/mail_server_config.json: no such file or directory")
 		assert.Nil(t, actual)
 	})

@@ -42,7 +42,7 @@ type GoCd interface {
 	ConfigRepoTriggerUpdate(name string) (map[string]string, error)
 	ConfigRepoPreflightCheck(pipelines map[string]string, pluginID string, repoID string) (bool, error)
 	SetPipelineFiles(pipelines []PipelineFiles) map[string]string
-	GetPipelineFiles(pathAndPattern ...string) ([]PipelineFiles, error)
+	GetPipelineFiles(path string, pipelines []string, patterns ...string) ([]PipelineFiles, error)
 	EnableMaintenanceMode() error
 	DisableMaintenanceMode() error
 	GetMaintenanceModeInfo() (Maintenance, error)

@@ -743,7 +743,7 @@ type PipelineStageConfig struct {
 	NeverCleanupArtifacts bool                           `json:"never_cleanup_artifacts,omitempty" yaml:"never_cleanup_artifacts,omitempty"`
 	Approval              PipelineApprovalConfig         `json:"approval,omitempty" yaml:"approval,omitempty"`
 	EnvironmentVariables  []PipelineEnvironmentVariables `json:"environment_variables,omitempty" yaml:"environment_variables,omitempty"`
-	Job                   []PipelineJobConfig            `json:"job,omitempty" yaml:"job,omitempty"`
+	Jobs                  []PipelineJobConfig            `json:"jobs,omitempty" yaml:"jobs,omitempty"`
 }
 
 // PipelineJobConfig holds information of pipeline job.
@@ -781,10 +781,12 @@ type PipelineTab struct {
 
 // PipelineArtifact holds information on artifacts defined in pipeline.
 type PipelineArtifact struct {
-	Type          string                `json:"type,omitempty" yaml:"type,omitempty"`
-	ArtifactID    string                `json:"artifact_id,omitempty" yaml:"artifact_id,omitempty"`
-	StoreID       string                `json:"store_id,omitempty" yaml:"store_id,omitempty"`
-	Configuration []PluginConfiguration `json:"configuration,omitempty" yaml:"configuration,omitempty"`
+	Type          string              `json:"type,omitempty" yaml:"type,omitempty"`
+	Source        string              `json:"source,omitempty" yaml:"source,omitempty"`
+	Destination   string              `json:"destination,omitempty" yaml:"destination,omitempty"`
+	ArtifactID    string              `json:"id,omitempty" yaml:"id,omitempty"`
+	StoreID       string              `json:"store_id,omitempty" yaml:"store_id,omitempty"`
+	Configuration []map[string]string `json:"configuration,omitempty" yaml:"configuration,omitempty"`
 }
 
 // PipelineTaskConfig holds information of the tasks defined in jobs of GoCD pipeline.
