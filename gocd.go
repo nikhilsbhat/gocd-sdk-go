@@ -59,6 +59,7 @@ type GoCd interface {
 	ValidatePipelineSyntax(pluginCfg plugin.Plugin, pipelines []string, fetchVersionFromServer bool) (bool, error)
 	GetEnvironments() ([]Environment, error)
 	GetEnvironment(name string) (Environment, error)
+	GetEnvironmentsMerged(names []string) ([]Environment, error)
 	CreateEnvironment(environment Environment) error
 	UpdateEnvironment(environment Environment) (Environment, error)
 	PatchEnvironment(environment any) (Environment, error)

@@ -13,6 +13,8 @@ import (
 var (
 	//go:embed internal/fixtures/environments.json
 	environmentsJSON string
+	//go:embed internal/fixtures/environment_merged.json
+	environmentsMergedJSON string
 	//go:embed internal/fixtures/environment.json
 	environmentJSON string
 	//go:embed internal/fixtures/environment_update.json
@@ -448,5 +450,93 @@ func Test_client_GetEnvironment(t *testing.T) {
 		assert.EqualError(t, err, "call made to get environment 'my_environment' errored with: "+
 			"Get \"http://localhost:8156/go/api/admin/environments/my_environment\": dial tcp [::1]:8156: connect: connection refused")
 		assert.Equal(t, gocd.Environment{}, actual)
+	})
+}
+
+func Test_client_GetEnvironmentMappings(t *testing.T) {
+	correctEnvHeader := map[string]string{"Accept": gocd.HeaderVersionOne}
+
+	t.Run("should error out while fetching all selected environment mappings from server", func(t *testing.T) {
+		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
+		client.SetRetryCount(1)
+		client.SetRetryWaitTime(1)
+
+		actual, err := client.GetEnvironmentsMerged([]string{"example_environment"})
+		assert.EqualError(t, err, "call made to get environment mapping of 'example_environment' errored with: "+
+			"Get \"http://localhost:8156/go/api/admin/internal/environments/merged\": dial tcp [::1]:8156: connect: connection refused")
+		assert.Nil(t, actual)
+	})
+
+	t.Run("should error out while fetching all selected environment mappings returned non 200 status code", func(t *testing.T) {
+		server := mockServer([]byte("backupJSON"), http.StatusBadGateway, correctEnvHeader, false, nil)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
+
+		actual, err := client.GetEnvironmentsMerged([]string{"example_environment"})
+		assert.EqualError(t, err, "got 502 from GoCD while making GET call for "+server.URL+
+			"/api/admin/internal/environments/merged\nwith BODY:backupJSON")
+		assert.Nil(t, actual)
+	})
+
+	t.Run("should error out while fetching all selected environment mappings present as server returned malformed response", func(t *testing.T) {
+		server := mockServer([]byte(`{"email_on_failure"}`), http.StatusOK, correctEnvHeader, false, nil)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
+
+		actual, err := client.GetEnvironmentsMerged([]string{"example_environment"})
+		assert.EqualError(t, err, "reading response body errored with: invalid character '}' after object key")
+		assert.Nil(t, actual)
+	})
+
+	t.Run("should error out while fetching all selected environment mappings present in GoCD server since environment was missing", func(t *testing.T) {
+		server := mockServer([]byte(environmentsMergedJSON), http.StatusOK, correctEnvHeader, false, nil)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
+
+		actual, err := client.GetEnvironmentsMerged([]string{"sample"})
+		assert.EqualError(t, err, "no environments found with names 'sample' to get mappings")
+		assert.Nil(t, actual)
+	})
+
+	t.Run("should be able to fetch all selected environment mappings present in GoCD server", func(t *testing.T) {
+		server := mockServer([]byte(environmentsMergedJSON), http.StatusOK, correctEnvHeader, false, nil)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
+
+		expected := []gocd.Environment{
+			{
+				Name: "sample_environment",
+				Pipelines: []gocd.Pipeline{
+					{Name: "gocd-prometheus-exporter"},
+					{Name: "helm-images"},
+					{Name: "helm-drift"},
+					{Name: "gocd-cli"},
+					{Name: "gocd-golang-sdk"},
+				},
+				EnvVars: []gocd.EnvVars{
+					{Name: "TEST_ENV13", Value: "value_env13", EncryptedValue: "", Secure: false},
+					{Name: "TEST_ENV12", Value: "value_env18", EncryptedValue: "", Secure: false},
+					{Name: "TEST_ENV11", Value: "value_env11", EncryptedValue: "", Secure: false},
+				},
+				Origins: []gocd.EnvironmentOrigin{
+					{Type: "gocd", ID: ""},
+					{Type: "config_repo", ID: "sample"},
+				},
+				ETAG: "",
+			},
+			{
+				Name: "example_environment",
+				Pipelines: []gocd.Pipeline{
+					{Name: "gocd-prometheus-exporter"},
+				},
+				EnvVars: []gocd.EnvVars{
+					{Name: "TEST_ENV13", Value: "value_env13", EncryptedValue: "", Secure: false},
+				},
+				Origins: []gocd.EnvironmentOrigin{
+					{Type: "gocd", ID: ""},
+				},
+				ETAG: "",
+			},
+		}
+
+		actual, err := client.GetEnvironmentsMerged([]string{"sample_environment", "example_environment"})
+		assert.NoError(t, err)
+		assert.Equal(t, expected, actual)
 	})
 }

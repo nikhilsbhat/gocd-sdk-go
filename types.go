@@ -285,10 +285,16 @@ type Environments struct {
 
 // Environment holds information of a specific environment present in GoCD.
 type Environment struct {
-	Name      string     `json:"name,omitempty" yaml:"name,omitempty"`
-	Pipelines []Pipeline `json:"pipelines,omitempty" yaml:"pipelines,omitempty"`
-	EnvVars   []EnvVars  `json:"environment_variables,omitempty" yaml:"environment_variables,omitempty"`
-	ETAG      string     `json:"etag,omitempty" yaml:"etag,omitempty"`
+	Name      string              `json:"name,omitempty" yaml:"name,omitempty"`
+	Pipelines []Pipeline          `json:"pipelines,omitempty" yaml:"pipelines,omitempty"`
+	EnvVars   []EnvVars           `json:"environment_variables,omitempty" yaml:"environment_variables,omitempty"`
+	Origins   []EnvironmentOrigin `json:"origins,omitempty" yaml:"origins,omitempty"`
+	ETAG      string              `json:"etag,omitempty" yaml:"etag,omitempty"`
+}
+
+type EnvironmentOrigin struct {
+	Type string `json:"type,omitempty" yaml:"type,omitempty"`
+	ID   string `json:"id,omitempty" yaml:"id,omitempty"`
 }
 
 // EnvVars holds information of environment variables present in GoCD.

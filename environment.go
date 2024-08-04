@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/http"
 	"path/filepath"
+	"strings"
 
 	"github.com/jinzhu/copier"
 	"github.com/nikhilsbhat/gocd-sdk-go/pkg/errors"
@@ -182,4 +183,45 @@ func (conf *client) DeleteEnvironment(name string) error {
 	}
 
 	return nil
+}
+
+func (conf *client) GetEnvironmentsMerged(names []string) ([]Environment, error) {
+	var env EnvironmentInfo
+
+	newClient := &client{}
+	if err := copier.CopyWithOption(newClient, conf, copier.Option{IgnoreEmpty: true, DeepCopy: true}); err != nil {
+		return nil, err
+	}
+
+	resp, err := newClient.httpClient.R().
+		SetHeaders(map[string]string{
+			"Accept": HeaderVersionOne,
+		}).Get(EnvironmentInternalEndpoint)
+	if err != nil {
+		return nil, &errors.APIError{Err: err, Message: fmt.Sprintf("get environment mapping of '%s'", strings.Join(names, ", "))}
+	}
+
+	if resp.StatusCode() != http.StatusOK {
+		return nil, &errors.NonOkError{Code: resp.StatusCode(), Response: resp}
+	}
+
+	if err = json.Unmarshal(resp.Body(), &env); err != nil {
+		return nil, &errors.MarshalError{Err: err}
+	}
+
+	environments := make([]Environment, 0)
+
+	for _, environment := range env.Environments.Environments {
+		for _, name := range names {
+			if environment.Name == name {
+				environments = append(environments, environment)
+			}
+		}
+	}
+
+	if len(environments) != 0 {
+		return environments, nil
+	}
+
+	return nil, &errors.GoCDSDKError{Message: fmt.Sprintf("no environments found with names '%s' to get mappings", strings.Join(names, ", "))}
 }
