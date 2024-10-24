@@ -171,7 +171,7 @@ type Auth struct {
 	UserName    string `json:"user_name,omitempty" yaml:"user_name,omitempty"`
 	Password    string `json:"password,omitempty" yaml:"password,omitempty"`
 	BearerToken string `json:"bearer_token,omitempty" yaml:"bearer_token,omitempty"`
-	NoAuth      bool   `json:"no_auth" yaml:"no_auth,omitempty"`
+	NoAuth      bool   `json:"no_auth,omitempty" yaml:"no_auth,omitempty"`
 }
 
 // NewClient returns new instance of httpClient when invoked.
