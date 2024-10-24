@@ -31,12 +31,6 @@ func (conf *client) GetPipelineConfig(name string) (PipelineConfig, error) {
 		return pipelineConfig, &errors.NonOkError{Code: resp.StatusCode(), Response: resp}
 	}
 
-	var pipelineCfg map[string]interface{}
-
-	if err = json.Unmarshal(resp.Body(), &pipelineCfg); err != nil {
-		return pipelineConfig, &errors.MarshalError{Err: err}
-	}
-
 	if err = json.Unmarshal(resp.Body(), &pipelineConfig); err != nil {
 		return pipelineConfig, &errors.MarshalError{Err: err}
 	}

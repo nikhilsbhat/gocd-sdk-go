@@ -699,7 +699,7 @@ func Test_client_CreatePipeline(t *testing.T) {
 		assert.Equal(t, "new_group", out.Group)
 	})
 
-	t.Run("should error out while creating pipeline configuration present in GoCD due to wrong headers", func(t *testing.T) {
+	t.Run("should error out while creating pipeline configuration in GoCD due to wrong headers", func(t *testing.T) {
 		server := mockServer([]byte(pipelineConfigJSON), http.StatusOK,
 			map[string]string{"Accept": gocd.HeaderVersionTwo}, false, nil)
 
@@ -715,7 +715,7 @@ func Test_client_CreatePipeline(t *testing.T) {
 			"/api/admin/pipelines\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 	})
 
-	t.Run("should error out while creating pipeline configuration present in GoCD due to missing headers", func(t *testing.T) {
+	t.Run("should error out while creating pipeline configuration in GoCD due to missing headers", func(t *testing.T) {
 		server := mockServer([]byte(pipelineConfigJSON), http.StatusOK,
 			nil, false, nil)
 		client := gocd.NewClient(server.URL, auth, "info", nil)
@@ -728,6 +728,21 @@ func Test_client_CreatePipeline(t *testing.T) {
 		_, err := client.CreatePipeline(input)
 		assert.EqualError(t, err, "got 404 from GoCD while making POST call for "+server.URL+
 			"/api/admin/pipelines\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
+	})
+
+	t.Run("should error out while creating pipeline configuration as server returned malformed response", func(t *testing.T) {
+		server := mockServer([]byte("pipelineConfigJSON"), http.StatusOK, correctPipelineConfigHeader,
+			false, map[string]string{"ETag": "cbc5f2d5b9c13a2cc1b1efb3d8a6155d"})
+		client := gocd.NewClient(server.URL, auth, "info", nil)
+
+		input := gocd.PipelineConfig{
+			Name: "new_pipeline",
+			ETAG: "65dbc5f2d5b9c13a2ccdlw23654b3b3d8a6155d",
+		}
+
+		response, err := client.CreatePipeline(input)
+		assert.NotNil(t, response)
+		assert.EqualError(t, err, "reading response body errored with: invalid character 'p' looking for beginning of value")
 	})
 
 	t.Run("should error out while creating pipeline configuration present in GoCD as server is not reachable", func(t *testing.T) {

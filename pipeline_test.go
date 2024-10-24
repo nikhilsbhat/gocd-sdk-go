@@ -745,4 +745,15 @@ func Test_client_ExportPipelineToConfigRepoFormat(t *testing.T) {
 			"/api/admin/export/pipelines/action-movies?plugin_id=json.config.plugin\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 		assert.Equal(t, gocd.PipelineExport{}, resp)
 	})
+
+	t.Run("should error out while exporting pipeline to yaml format as server is not reachable", func(t *testing.T) {
+		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
+		client.SetRetryCount(1)
+		client.SetRetryWaitTime(1)
+
+		resp, err := client.ExportPipelineToConfigRepoFormat("action-movies", "json.config.plugin")
+		assert.EqualError(t, err, "call made to export pipeline 'action-movies' to format 'json.config.plugin' errored with: Get "+
+			"\"http://localhost:8156/go/api/admin/export/pipelines/action-movies?plugin_id=json.config.plugin\": dial tcp [::1]:8156: connect: connection refused")
+		assert.Equal(t, gocd.PipelineExport{}, resp)
+	})
 }
