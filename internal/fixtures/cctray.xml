@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Projects>
+  <Project name="action-movies :: build" activity="Sleeping" lastBuildStatus="Failure" lastBuildLabel="1" lastBuildTime="2023-09-11T03:09:59Z" webUrl="http://localhost:8153/go/pipelines/action-movies/1/build/1" />
+  <Project name="action-movies :: build :: build" activity="Sleeping" lastBuildStatus="Failure" lastBuildLabel="1" lastBuildTime="2023-09-11T03:09:59Z" webUrl="http://localhost:8153/go/tab/build/detail/action-movies/1/build/1/build" />
+  <Project name="animation-movies :: build" activity="Sleeping" lastBuildStatus="Failure" lastBuildLabel="1" lastBuildTime="2023-09-11T03:09:59Z" webUrl="http://localhost:8153/go/pipelines/animation-movies/1/build/1" />
+</Projects>

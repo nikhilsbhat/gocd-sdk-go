@@ -848,3 +848,30 @@ type PipelineTracingToolConfig struct {
 		Regex      string `json:"regex,omitempty" yaml:"regex,omitempty"`
 	} `json:"attributes,omitempty" yaml:"attributes,omitempty"`
 }
+
+// Projects holds list of Project details extracted from 'cctray.xml'.
+type Projects struct {
+	Project []Project `xml:"Project"`
+}
+
+// Project holds detail of a specific pipeline extracted from 'cctray.xml'.
+type Project struct {
+	Activity        string    `xml:"activity,attr"`
+	LastBuildLabel  string    `xml:"lastBuildLabel,attr"`
+	LastBuildStatus string    `xml:"lastBuildStatus,attr"`
+	LastBuildTime   string    `xml:"lastBuildTime,attr"`
+	Name            string    `xml:"name,attr"`
+	WebUrl          string    `xml:"webUrl,attr"`
+	Messages        *Messages `xml:"messages,omitempty"`
+}
+
+// Messages holds the messages available about the pipeline.
+type Messages struct {
+	Message Message `xml:"message"`
+}
+
+// Message holds the message available about the pipeline.
+type Message struct {
+	Kind string `xml:"kind,attr"`
+	Text string `xml:"text,attr"`
+}

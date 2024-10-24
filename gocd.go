@@ -162,6 +162,7 @@ type GoCd interface {
 	BulkEnableDisableUsers(users map[string]interface{}) error
 	GetPipelineVSM(pipeline, instance string) (VSM, error)
 	GetPermissions(query map[string]string) (Permission, error)
+	GetCCTray() ([]Project, error)
 	SetRetryCount(count int)
 	SetRetryWaitTime(count int)
 }
