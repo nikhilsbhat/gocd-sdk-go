@@ -2,10 +2,11 @@ package gocd_test
 
 import (
 	_ "embed"
-	"github.com/nikhilsbhat/gocd-sdk-go"
-	"github.com/stretchr/testify/assert"
 	"net/http"
 	"testing"
+
+	"github.com/nikhilsbhat/gocd-sdk-go"
+	"github.com/stretchr/testify/assert"
 )
 
 //go:embed internal/fixtures/cctray.xml

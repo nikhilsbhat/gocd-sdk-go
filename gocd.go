@@ -172,6 +172,7 @@ type Auth struct {
 	UserName    string `json:"user_name,omitempty" yaml:"user_name,omitempty"`
 	Password    string `json:"password,omitempty" yaml:"password,omitempty"`
 	BearerToken string `json:"bearer_token,omitempty" yaml:"bearer_token,omitempty"`
+	NoAuth      bool   `json:"no_auth,omitempty" yaml:"no_auth,omitempty"`
 }
 
 // NewClient returns new instance of httpClient when invoked.
@@ -210,7 +211,9 @@ func NewClient(baseURL string, auth Auth, logLevel string, caContent []byte) GoC
 }
 
 func (auth *Auth) setAuth(newClient *resty.Client) {
-	if len(auth.BearerToken) != 0 {
+	if auth.NoAuth {
+		// skip do nothing
+	} else if len(auth.BearerToken) != 0 {
 		newClient.SetAuthToken(auth.BearerToken)
 	} else {
 		newClient.SetBasicAuth(auth.UserName, auth.Password)

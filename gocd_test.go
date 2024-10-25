@@ -1,13 +1,13 @@
 package gocd_test
 
 import (
-	"github.com/stretchr/testify/require"
 	"net/http"
 	"os"
 	"testing"
 
 	"github.com/nikhilsbhat/gocd-sdk-go"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 func TestGetGoCDMethodNames(t *testing.T) {
@@ -45,6 +45,19 @@ func TestNewClient(t *testing.T) {
 		}
 
 		client := gocd.NewClient(server.URL, auth, "info", caContent)
+
+		assert.NotNil(t, client)
+	})
+
+	t.Run("should be able no auth", func(t *testing.T) {
+		server := mockServer([]byte(mailServerJSON), http.StatusOK,
+			map[string]string{"Accept": gocd.HeaderVersionOne}, false, nil)
+
+		auth = gocd.Auth{
+			NoAuth: true,
+		}
+
+		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		assert.NotNil(t, client)
 	})
