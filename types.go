@@ -856,13 +856,14 @@ type Projects struct {
 
 // Project holds detail of a specific pipeline extracted from 'cctray.xml'.
 type Project struct {
-	Activity        string    `xml:"activity,attr"`
-	LastBuildLabel  string    `xml:"lastBuildLabel,attr"`
-	LastBuildStatus string    `xml:"lastBuildStatus,attr"`
-	LastBuildTime   string    `xml:"lastBuildTime,attr"`
-	Name            string    `xml:"name,attr"`
-	WebUrl          string    `xml:"webUrl,attr"`
-	Messages        *Messages `xml:"messages,omitempty"`
+	Activity            string    `xml:"activity,attr"`
+	LastBuildLabel      string    `xml:"lastBuildLabel,attr"`
+	LastBuildStatus     string    `xml:"lastBuildStatus,attr"`
+	LastBuildTime       string    `xml:"lastBuildTime,attr"`
+	Name                string    `xml:"name,attr"`
+	WebUrl              string    `xml:"webUrl,attr"`
+	Messages            *Messages `xml:"messages,omitempty"`
+	LastTriggeredInDays string    `json:"lastTriggeredInDays,omitempty" yaml:"lastTriggeredInDays,omitempty"`
 }
 
 // Messages holds the messages available about the pipeline.
