@@ -863,7 +863,7 @@ type Project struct {
 	Name                string    `xml:"name,attr"`
 	WebUrl              string    `xml:"webUrl,attr"`
 	Messages            *Messages `xml:"messages,omitempty"`
-	LastTriggeredInDays string    `json:"lastTriggeredInDays,omitempty" yaml:"lastTriggeredInDays,omitempty"`
+	LastTriggeredInDays float64   `json:"lastTriggeredInDays,omitempty" yaml:"lastTriggeredInDays,omitempty"`
 }
 
 // Messages holds the messages available about the pipeline.
