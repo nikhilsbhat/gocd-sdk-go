@@ -13,6 +13,11 @@ with BODY:%s`,
 		err.Response.Body())
 }
 
+func (err NonFoundError) Error() string {
+	return fmt.Sprintf(`looks like the object your are looking in GoCD is not found, the response from GoCD we got: '%s'`,
+		err.Response.String())
+}
+
 func (err CipherError) Error() string {
 	return "value or cipher key cannot be empty"
 }

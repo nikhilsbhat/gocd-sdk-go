@@ -37,3 +37,8 @@ type GoCDSDKError struct {
 type PipelineValidationError struct {
 	Message string
 }
+
+type NonFoundError struct {
+	Code     int
+	Response *resty.Response
+}

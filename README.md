@@ -254,4 +254,4 @@ Below are the list of supported APIs:
 
 ## Enhancements
 
-If any of the API's are missed, feel free to raise the PR or create issues for the same.
+If any of the APIs are missed, feel free to raise the PR or create issues for the same.
