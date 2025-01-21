@@ -7,6 +7,7 @@ import (
 
 	"github.com/nikhilsbhat/gocd-sdk-go"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 //go:embed internal/fixtures/server_healsth_messages.json
@@ -21,7 +22,7 @@ func TestConfig_GetHealthInfo(t *testing.T) {
 		client.SetRetryWaitTime(1)
 
 		actual, err := client.GetServerHealthMessages()
-		assert.EqualError(t, err, "call made to get health info errored with: "+
+		require.EqualError(t, err, "call made to get health info errored with: "+
 			"Get \"http://localhost:8156/go/api/server_health_messages\": dial tcp [::1]:8156: connect: connection refused")
 		assert.Nil(t, actual)
 	})
@@ -31,7 +32,7 @@ func TestConfig_GetHealthInfo(t *testing.T) {
 		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		actual, err := client.GetServerHealthMessages()
-		assert.EqualError(t, err, "got 502 from GoCD while making GET call for "+server.URL+"/api/server_health_messages\nwith BODY:backupJSON")
+		require.EqualError(t, err, "got 502 from GoCD while making GET call for "+server.URL+"/api/server_health_messages\nwith BODY:backupJSON")
 		assert.Nil(t, actual)
 	})
 
@@ -40,7 +41,7 @@ func TestConfig_GetHealthInfo(t *testing.T) {
 		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		actual, err := client.GetServerHealthMessages()
-		assert.EqualError(t, err, "reading response body errored with: invalid character '}' after object key")
+		require.EqualError(t, err, "reading response body errored with: invalid character '}' after object key")
 		assert.Nil(t, actual)
 	})
 
@@ -49,8 +50,8 @@ func TestConfig_GetHealthInfo(t *testing.T) {
 		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		healthStatus, err := client.GetServerHealthMessages()
-		assert.NoError(t, err)
-		assert.Equal(t, 1, len(healthStatus))
+		require.NoError(t, err)
+		assert.Len(t, healthStatus, 1)
 		assert.Equal(t, "WARNING", healthStatus[0].Level)
 	})
 }
@@ -68,7 +69,7 @@ func Test_client_GetServerHealth(t *testing.T) {
 		}
 
 		actual, err := client.GetServerHealth()
-		assert.NoError(t, err)
+		require.NoError(t, err)
 		assert.Equal(t, expected, actual)
 	})
 
@@ -77,7 +78,7 @@ func Test_client_GetServerHealth(t *testing.T) {
 		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		response, err := client.GetServerHealth()
-		assert.EqualError(t, err, "got 500 from GoCD while making GET call for "+server.URL+"/api/v1/health\nwith BODY:serverHealthJSON")
+		require.EqualError(t, err, "got 500 from GoCD while making GET call for "+server.URL+"/api/v1/health\nwith BODY:serverHealthJSON")
 		assert.Nil(t, response)
 	})
 
@@ -86,7 +87,7 @@ func Test_client_GetServerHealth(t *testing.T) {
 		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		response, err := client.GetServerHealth()
-		assert.EqualError(t, err, "reading response body errored with: invalid character 's' looking for beginning of value")
+		require.EqualError(t, err, "reading response body errored with: invalid character 's' looking for beginning of value")
 		assert.Nil(t, response)
 	})
 
@@ -97,7 +98,7 @@ func Test_client_GetServerHealth(t *testing.T) {
 		client.SetRetryWaitTime(1)
 
 		response, err := client.GetServerHealth()
-		assert.EqualError(t, err, "call made to get server health errored with: "+
+		require.EqualError(t, err, "call made to get server health errored with: "+
 			"Get \"http://localhost:8156/go/api/v1/health\": dial tcp [::1]:8156: connect: connection refused")
 		assert.Nil(t, response)
 	})

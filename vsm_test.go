@@ -7,6 +7,7 @@ import (
 
 	"github.com/nikhilsbhat/gocd-sdk-go"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 //go:embed internal/fixtures/vsm.json
@@ -46,7 +47,7 @@ func Test_client_GetPipelineVSM(t *testing.T) {
 		}
 
 		response, err := client.GetPipelineVSM("helm-images", "20")
-		assert.NoError(t, err)
+		require.NoError(t, err)
 		assert.Equal(t, expected, response)
 	})
 
@@ -55,7 +56,7 @@ func Test_client_GetPipelineVSM(t *testing.T) {
 		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		response, err := client.GetPipelineVSM("helm-images", "20")
-		assert.EqualError(t, err, "reading response body errored with: invalid character 'p' looking for beginning of value")
+		require.EqualError(t, err, "reading response body errored with: invalid character 'p' looking for beginning of value")
 		assert.Equal(t, gocd.VSM{}, response)
 	})
 
@@ -64,7 +65,7 @@ func Test_client_GetPipelineVSM(t *testing.T) {
 		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		response, err := client.GetPipelineVSM("helm-images", "20")
-		assert.EqualError(t, err, "got 500 from GoCD while making GET call for "+server.URL+
+		require.EqualError(t, err, "got 500 from GoCD while making GET call for "+server.URL+
 			"/pipelines/value_stream_map/helm-images/20.json\nwith BODY:pipelineVSM")
 		assert.Equal(t, gocd.VSM{}, response)
 	})
@@ -76,7 +77,7 @@ func Test_client_GetPipelineVSM(t *testing.T) {
 		client.SetRetryWaitTime(1)
 
 		actual, err := client.GetPipelineVSM("helm-images", "20")
-		assert.EqualError(t, err, "call made to get vsm information for pipeline 'helm-images' of instance '20' errored with: "+
+		require.EqualError(t, err, "call made to get vsm information for pipeline 'helm-images' of instance '20' errored with: "+
 			"Get \"http://localhost:8156/go/pipelines/value_stream_map/helm-images/20.json\": dial tcp [::1]:8156: connect: connection refused")
 		assert.Equal(t, gocd.VSM{}, actual)
 	})

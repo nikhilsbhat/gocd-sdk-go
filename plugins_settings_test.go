@@ -7,6 +7,7 @@ import (
 
 	"github.com/nikhilsbhat/gocd-sdk-go"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 var (
@@ -45,7 +46,7 @@ func Test_client_GetPluginSettings(t *testing.T) {
 		}
 
 		actual, err := client.GetPluginSettings(pluginName)
-		assert.NoError(t, err)
+		require.NoError(t, err)
 		assert.Equal(t, expected.ID, actual.ID)
 		assert.Equal(t, expected.ETAG, actual.ETAG)
 		assert.ElementsMatch(t, expected.Configuration, actual.Configuration)
@@ -59,7 +60,7 @@ func Test_client_GetPluginSettings(t *testing.T) {
 		expected := gocd.PluginSettings{}
 
 		actual, err := client.GetPluginSettings(pluginName)
-		assert.EqualError(t, err, "got 404 from GoCD while making GET call for "+server.URL+
+		require.EqualError(t, err, "got 404 from GoCD while making GET call for "+server.URL+
 			"/api/admin/plugin_settings/github.oauth.login\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 		assert.Equal(t, expected, actual)
 	})
@@ -72,7 +73,7 @@ func Test_client_GetPluginSettings(t *testing.T) {
 		expected := gocd.PluginSettings{}
 
 		actual, err := client.GetPluginSettings(pluginName)
-		assert.EqualError(t, err, "got 404 from GoCD while making GET call for "+server.URL+
+		require.EqualError(t, err, "got 404 from GoCD while making GET call for "+server.URL+
 			"/api/admin/plugin_settings/github.oauth.login\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 		assert.Equal(t, expected, actual)
 	})
@@ -85,7 +86,7 @@ func Test_client_GetPluginSettings(t *testing.T) {
 		expected := gocd.PluginSettings{}
 
 		actual, err := client.GetPluginSettings(pluginName)
-		assert.EqualError(t, err, "reading response body errored with: invalid character 'p' looking for beginning of value")
+		require.EqualError(t, err, "reading response body errored with: invalid character 'p' looking for beginning of value")
 		assert.Equal(t, expected, actual)
 	})
 
@@ -98,7 +99,7 @@ func Test_client_GetPluginSettings(t *testing.T) {
 		expected := gocd.PluginSettings{}
 
 		actual, err := client.GetPluginSettings(pluginName)
-		assert.EqualError(t, err, "call made to get 'github.oauth.login' plugin setting errored with: "+
+		require.EqualError(t, err, "call made to get 'github.oauth.login' plugin setting errored with: "+
 			"Get \"http://localhost:8156/go/api/admin/plugin_settings/github.oauth.login\": dial tcp [::1]:8156: connect: connection refused")
 		assert.Equal(t, expected, actual)
 	})
@@ -136,7 +137,7 @@ func Test_client_CreatePluginSettings(t *testing.T) {
 		expected := pluginSettings
 
 		actual, err := client.CreatePluginSettings(pluginSettings)
-		assert.NoError(t, err)
+		require.NoError(t, err)
 		assert.Equal(t, expected.ID, actual.ID)
 		assert.ElementsMatch(t, expected.Configuration, actual.Configuration)
 	})
@@ -150,7 +151,7 @@ func Test_client_CreatePluginSettings(t *testing.T) {
 		expected := gocd.PluginSettings{}
 
 		actual, err := client.CreatePluginSettings(pluginSettings)
-		assert.EqualError(t, err, "got 404 from GoCD while making POST call for "+server.URL+
+		require.EqualError(t, err, "got 404 from GoCD while making POST call for "+server.URL+
 			"/api/admin/plugin_settings\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 		assert.Equal(t, expected, actual)
 	})
@@ -164,7 +165,7 @@ func Test_client_CreatePluginSettings(t *testing.T) {
 		expected := gocd.PluginSettings{}
 
 		actual, err := client.CreatePluginSettings(pluginSettings)
-		assert.EqualError(t, err, "got 404 from GoCD while making POST call for "+server.URL+
+		require.EqualError(t, err, "got 404 from GoCD while making POST call for "+server.URL+
 			"/api/admin/plugin_settings\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 		assert.Equal(t, expected, actual)
 	})
@@ -178,7 +179,7 @@ func Test_client_CreatePluginSettings(t *testing.T) {
 		expected := gocd.PluginSettings{}
 
 		actual, err := client.CreatePluginSettings(pluginSettings)
-		assert.EqualError(t, err, "reading response body errored with: invalid character 'p' looking for beginning of value")
+		require.EqualError(t, err, "reading response body errored with: invalid character 'p' looking for beginning of value")
 		assert.Equal(t, expected, actual)
 	})
 
@@ -192,7 +193,7 @@ func Test_client_CreatePluginSettings(t *testing.T) {
 		expected := gocd.PluginSettings{}
 
 		actual, err := client.CreatePluginSettings(pluginSettings)
-		assert.EqualError(t, err, "call made to create plugin setting of 'github.oauth.login' errored with: "+
+		require.EqualError(t, err, "call made to create plugin setting of 'github.oauth.login' errored with: "+
 			"Post \"http://localhost:8156/go/api/admin/plugin_settings\": dial tcp [::1]:8156: connect: connection refused")
 		assert.Equal(t, expected, actual)
 	})
@@ -231,7 +232,7 @@ func Test_client_UpdatePluginSettings(t *testing.T) {
 		pluginSettings.ETAG = "05548388f7ef5042cd39f7fe42e85735"
 
 		actual, err := client.UpdatePluginSettings(pluginSettings)
-		assert.NoError(t, err)
+		require.NoError(t, err)
 		assert.Equal(t, expected.ID, actual.ID)
 		assert.ElementsMatch(t, expected.Configuration, actual.Configuration)
 	})
@@ -245,7 +246,7 @@ func Test_client_UpdatePluginSettings(t *testing.T) {
 		expected := gocd.PluginSettings{}
 
 		actual, err := client.UpdatePluginSettings(pluginSettings)
-		assert.EqualError(t, err, "got 404 from GoCD while making PUT call for "+server.URL+
+		require.EqualError(t, err, "got 404 from GoCD while making PUT call for "+server.URL+
 			"/api/admin/plugin_settings/github.oauth.login\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 		assert.Equal(t, expected, actual)
 	})
@@ -259,7 +260,7 @@ func Test_client_UpdatePluginSettings(t *testing.T) {
 		expected := gocd.PluginSettings{}
 
 		actual, err := client.UpdatePluginSettings(pluginSettings)
-		assert.EqualError(t, err, "got 404 from GoCD while making PUT call for "+server.URL+
+		require.EqualError(t, err, "got 404 from GoCD while making PUT call for "+server.URL+
 			"/api/admin/plugin_settings/github.oauth.login\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 		assert.Equal(t, expected, actual)
 	})
@@ -273,7 +274,7 @@ func Test_client_UpdatePluginSettings(t *testing.T) {
 		expected := gocd.PluginSettings{}
 
 		actual, err := client.UpdatePluginSettings(pluginSettings)
-		assert.EqualError(t, err, "reading response body errored with: invalid character 'p' looking for beginning of value")
+		require.EqualError(t, err, "reading response body errored with: invalid character 'p' looking for beginning of value")
 		assert.Equal(t, expected, actual)
 	})
 
@@ -287,7 +288,7 @@ func Test_client_UpdatePluginSettings(t *testing.T) {
 		expected := gocd.PluginSettings{}
 
 		actual, err := client.UpdatePluginSettings(pluginSettings)
-		assert.EqualError(t, err, "call made to update plugin setting of 'github.oauth.login' errored with: "+
+		require.EqualError(t, err, "call made to update plugin setting of 'github.oauth.login' errored with: "+
 			"Put \"http://localhost:8156/go/api/admin/plugin_settings/github.oauth.login\": dial tcp [::1]:8156: connect: connection refused")
 		assert.Equal(t, expected, actual)
 	})

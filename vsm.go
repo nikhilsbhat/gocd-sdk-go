@@ -19,7 +19,7 @@ func (conf *client) GetPipelineVSM(pipeline, instance string) (VSM, error) {
 	var vsmObj VSM
 
 	resp, err := newClient.httpClient.R().
-		Get(filepath.Join(VSMEndpoint, pipeline, fmt.Sprintf("%s.json", instance)))
+		Get(filepath.Join(VSMEndpoint, pipeline, fmt.Sprintf("%s.json", instance))) //nolint:perfsprint
 	if err != nil {
 		return vsmObj, &errors.APIError{
 			Err:     err,

@@ -7,6 +7,7 @@ import (
 
 	"github.com/nikhilsbhat/gocd-sdk-go"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 var (
@@ -30,7 +31,7 @@ func Test_client_DeleteUser(t *testing.T) {
 		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		err := client.DeleteUser("sample")
-		assert.NoError(t, err)
+		require.NoError(t, err)
 	})
 
 	t.Run("should error out while deleting a user due to wrong headers", func(t *testing.T) {
@@ -40,7 +41,7 @@ func Test_client_DeleteUser(t *testing.T) {
 		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		err := client.DeleteUser("sample-user")
-		assert.EqualError(t, err, "got 404 from GoCD while making DELETE call for "+server.URL+
+		require.EqualError(t, err, "got 404 from GoCD while making DELETE call for "+server.URL+
 			"/api/users/sample-user\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 	})
 
@@ -51,7 +52,7 @@ func Test_client_DeleteUser(t *testing.T) {
 		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		err := client.DeleteUser("sample-user")
-		assert.EqualError(t, err, "got 404 from GoCD while making DELETE call for "+server.URL+
+		require.EqualError(t, err, "got 404 from GoCD while making DELETE call for "+server.URL+
 			"/api/users/sample-user\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 	})
 
@@ -62,7 +63,7 @@ func Test_client_DeleteUser(t *testing.T) {
 		client.SetRetryWaitTime(1)
 
 		err := client.DeleteUser("sample-user")
-		assert.EqualError(t, err, "call made to delete user 'sample-user' errored with: "+
+		require.EqualError(t, err, "call made to delete user 'sample-user' errored with: "+
 			"Delete \"http://localhost:8156/go/api/users/sample-user\": dial tcp [::1]:8156: connect: connection refused")
 	})
 }
@@ -81,7 +82,7 @@ func Test_client_BulkDeleteUsers(t *testing.T) {
 		}
 
 		err := client.BulkDeleteUsers(usersToDelete)
-		assert.NoError(t, err)
+		require.NoError(t, err)
 	})
 
 	t.Run("should error out while bulk deleting users due to wrong headers", func(t *testing.T) {
@@ -95,7 +96,7 @@ func Test_client_BulkDeleteUsers(t *testing.T) {
 		}
 
 		err := client.BulkDeleteUsers(usersToDelete)
-		assert.EqualError(t, err, "got 404 from GoCD while making DELETE call for "+server.URL+
+		require.EqualError(t, err, "got 404 from GoCD while making DELETE call for "+server.URL+
 			"/api/users\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 	})
 
@@ -110,7 +111,7 @@ func Test_client_BulkDeleteUsers(t *testing.T) {
 		}
 
 		err := client.BulkDeleteUsers(usersToDelete)
-		assert.EqualError(t, err, "got 404 from GoCD while making DELETE call for "+server.URL+
+		require.EqualError(t, err, "got 404 from GoCD while making DELETE call for "+server.URL+
 			"/api/users\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 	})
 
@@ -125,7 +126,7 @@ func Test_client_BulkDeleteUsers(t *testing.T) {
 		}
 
 		err := client.BulkDeleteUsers(usersToDelete)
-		assert.EqualError(t, err, "call made to bulk delete users errored with: "+
+		require.EqualError(t, err, "call made to bulk delete users errored with: "+
 			"Delete \"http://localhost:8156/go/api/users\": dial tcp [::1]:8156: connect: connection refused")
 	})
 }
@@ -147,7 +148,7 @@ func Test_client_BulkEnableDisableUsers(t *testing.T) {
 		}
 
 		err := client.BulkEnableDisableUsers(users)
-		assert.NoError(t, err)
+		require.NoError(t, err)
 	})
 
 	t.Run("should error out while bulk enabling/disabling users present in GoCD due to wrong headers", func(t *testing.T) {
@@ -157,7 +158,7 @@ func Test_client_BulkEnableDisableUsers(t *testing.T) {
 		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		err := client.BulkEnableDisableUsers(nil)
-		assert.EqualError(t, err, "got 404 from GoCD while making PATCH call for "+server.URL+
+		require.EqualError(t, err, "got 404 from GoCD while making PATCH call for "+server.URL+
 			"/api/admin/operations/state\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 	})
 
@@ -167,7 +168,7 @@ func Test_client_BulkEnableDisableUsers(t *testing.T) {
 		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		err := client.BulkEnableDisableUsers(nil)
-		assert.EqualError(t, err, "got 404 from GoCD while making PATCH call for "+server.URL+
+		require.EqualError(t, err, "got 404 from GoCD while making PATCH call for "+server.URL+
 			"/api/admin/operations/state\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 	})
 
@@ -178,7 +179,7 @@ func Test_client_BulkEnableDisableUsers(t *testing.T) {
 		client.SetRetryWaitTime(1)
 
 		err := client.BulkEnableDisableUsers(nil)
-		assert.EqualError(t, err, "call made to bulk enable/disable users errored with: Patch "+
+		require.EqualError(t, err, "call made to bulk enable/disable users errored with: Patch "+
 			"\"http://localhost:8156/go/api/admin/operations/state\": dial tcp [::1]:8156: connect: connection refused")
 	})
 }
@@ -208,7 +209,7 @@ func Test_client_GetUser(t *testing.T) {
 		}
 
 		actual, err := client.GetUser(userName)
-		assert.NoError(t, err)
+		require.NoError(t, err)
 		assert.Equal(t, expected, actual)
 	})
 
@@ -221,7 +222,7 @@ func Test_client_GetUser(t *testing.T) {
 		expected := gocd.User{}
 
 		actual, err := client.GetUser(userName)
-		assert.EqualError(t, err, "got 404 from GoCD while making GET call for "+server.URL+
+		require.EqualError(t, err, "got 404 from GoCD while making GET call for "+server.URL+
 			"/api/users/jdoe\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 		assert.Equal(t, expected, actual)
 	})
@@ -233,7 +234,7 @@ func Test_client_GetUser(t *testing.T) {
 		expected := gocd.User{}
 
 		actual, err := client.GetUser(userName)
-		assert.EqualError(t, err, "got 404 from GoCD while making GET call for "+server.URL+
+		require.EqualError(t, err, "got 404 from GoCD while making GET call for "+server.URL+
 			"/api/users/jdoe\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 		assert.Equal(t, expected, actual)
 	})
@@ -245,7 +246,7 @@ func Test_client_GetUser(t *testing.T) {
 		expected := gocd.User{}
 
 		actual, err := client.GetUser(userName)
-		assert.EqualError(t, err, "reading response body errored with: invalid character 'u' looking for beginning of value")
+		require.EqualError(t, err, "reading response body errored with: invalid character 'u' looking for beginning of value")
 		assert.Equal(t, expected, actual)
 	})
 
@@ -258,7 +259,7 @@ func Test_client_GetUser(t *testing.T) {
 		expected := gocd.User{}
 
 		actual, err := client.GetUser(userName)
-		assert.EqualError(t, err, "call made to get user information errored with: "+
+		require.EqualError(t, err, "call made to get user information errored with: "+
 			"Get \"http://localhost:8156/go/api/users/jdoe\": dial tcp [::1]:8156: connect: connection refused")
 		assert.Equal(t, expected, actual)
 	})
@@ -281,7 +282,7 @@ func Test_client_GetCurrentUser(t *testing.T) {
 		}
 
 		actual, err := client.GetCurrentUser()
-		assert.NoError(t, err)
+		require.NoError(t, err)
 		assert.Equal(t, expected, actual)
 	})
 
@@ -294,7 +295,7 @@ func Test_client_GetCurrentUser(t *testing.T) {
 		expected := gocd.User{}
 
 		actual, err := client.GetCurrentUser()
-		assert.EqualError(t, err, "got 404 from GoCD while making GET call for "+server.URL+
+		require.EqualError(t, err, "got 404 from GoCD while making GET call for "+server.URL+
 			"/api/current_user\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 		assert.Equal(t, expected, actual)
 	})
@@ -306,7 +307,7 @@ func Test_client_GetCurrentUser(t *testing.T) {
 		expected := gocd.User{}
 
 		actual, err := client.GetCurrentUser()
-		assert.EqualError(t, err, "got 404 from GoCD while making GET call for "+server.URL+
+		require.EqualError(t, err, "got 404 from GoCD while making GET call for "+server.URL+
 			"/api/current_user\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 		assert.Equal(t, expected, actual)
 	})
@@ -318,7 +319,7 @@ func Test_client_GetCurrentUser(t *testing.T) {
 		expected := gocd.User{}
 
 		actual, err := client.GetCurrentUser()
-		assert.EqualError(t, err, "reading response body errored with: invalid character 'c' looking for beginning of value")
+		require.EqualError(t, err, "reading response body errored with: invalid character 'c' looking for beginning of value")
 		assert.Equal(t, expected, actual)
 	})
 
@@ -331,7 +332,7 @@ func Test_client_GetCurrentUser(t *testing.T) {
 		expected := gocd.User{}
 
 		actual, err := client.GetCurrentUser()
-		assert.EqualError(t, err, "call made to get current user information errored with: "+
+		require.EqualError(t, err, "call made to get current user information errored with: "+
 			"Get \"http://localhost:8156/go/api/current_user\": dial tcp [::1]:8156: connect: connection refused")
 		assert.Equal(t, expected, actual)
 	})
@@ -360,7 +361,7 @@ func Test_client_GetUsers(t *testing.T) {
 		}}
 
 		actual, err := client.GetUsers()
-		assert.NoError(t, err)
+		require.NoError(t, err)
 		assert.Equal(t, expected, actual)
 	})
 
@@ -371,7 +372,7 @@ func Test_client_GetUsers(t *testing.T) {
 		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		actual, err := client.GetUsers()
-		assert.EqualError(t, err, "got 404 from GoCD while making GET call for "+server.URL+
+		require.EqualError(t, err, "got 404 from GoCD while making GET call for "+server.URL+
 			"/api/users\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 		assert.Nil(t, actual)
 	})
@@ -381,7 +382,7 @@ func Test_client_GetUsers(t *testing.T) {
 		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		actual, err := client.GetUsers()
-		assert.EqualError(t, err, "got 404 from GoCD while making GET call for "+server.URL+
+		require.EqualError(t, err, "got 404 from GoCD while making GET call for "+server.URL+
 			"/api/users\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 		assert.Nil(t, actual)
 	})
@@ -391,7 +392,7 @@ func Test_client_GetUsers(t *testing.T) {
 		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		actual, err := client.GetUsers()
-		assert.EqualError(t, err, "reading response body errored with: invalid character 'u' looking for beginning of value")
+		require.EqualError(t, err, "reading response body errored with: invalid character 'u' looking for beginning of value")
 		assert.Nil(t, actual)
 	})
 
@@ -402,7 +403,7 @@ func Test_client_GetUsers(t *testing.T) {
 		client.SetRetryWaitTime(1)
 
 		actual, err := client.GetUsers()
-		assert.EqualError(t, err, "call made to get all users errored with: "+
+		require.EqualError(t, err, "call made to get all users errored with: "+
 			"Get \"http://localhost:8156/go/api/users\": dial tcp [::1]:8156: connect: connection refused")
 		assert.Nil(t, actual)
 	})
@@ -432,7 +433,7 @@ func Test_client_CreateUser(t *testing.T) {
 		expected := user
 
 		actual, err := client.CreateUser(user)
-		assert.NoError(t, err)
+		require.NoError(t, err)
 		assert.Equal(t, expected, actual)
 	})
 
@@ -446,7 +447,7 @@ func Test_client_CreateUser(t *testing.T) {
 		expected := gocd.User{}
 
 		actual, err := client.CreateUser(user)
-		assert.EqualError(t, err, "got 404 from GoCD while making POST call for "+server.URL+
+		require.EqualError(t, err, "got 404 from GoCD while making POST call for "+server.URL+
 			"/api/users\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 		assert.Equal(t, expected, actual)
 	})
@@ -460,7 +461,7 @@ func Test_client_CreateUser(t *testing.T) {
 		expected := gocd.User{}
 
 		actual, err := client.CreateUser(user)
-		assert.EqualError(t, err, "got 404 from GoCD while making POST call for "+server.URL+
+		require.EqualError(t, err, "got 404 from GoCD while making POST call for "+server.URL+
 			"/api/users\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 		assert.Equal(t, expected, actual)
 	})
@@ -474,7 +475,7 @@ func Test_client_CreateUser(t *testing.T) {
 		expected := gocd.User{}
 
 		actual, err := client.CreateUser(user)
-		assert.EqualError(t, err, "reading response body errored with: invalid character 'c' looking for beginning of value")
+		require.EqualError(t, err, "reading response body errored with: invalid character 'c' looking for beginning of value")
 		assert.Equal(t, expected, actual)
 	})
 
@@ -488,7 +489,7 @@ func Test_client_CreateUser(t *testing.T) {
 		expected := gocd.User{}
 
 		actual, err := client.CreateUser(user)
-		assert.EqualError(t, err, "call made to create user 'jdoe' errored with: Post "+
+		require.EqualError(t, err, "call made to create user 'jdoe' errored with: Post "+
 			"\"http://localhost:8156/go/api/users\": dial tcp [::1]:8156: connect: connection refused")
 		assert.Equal(t, expected, actual)
 	})
@@ -518,7 +519,7 @@ func Test_client_UpdateUser(t *testing.T) {
 		expected := user
 
 		actual, err := client.UpdateUser(user)
-		assert.NoError(t, err)
+		require.NoError(t, err)
 		assert.Equal(t, expected, actual)
 	})
 
@@ -532,7 +533,7 @@ func Test_client_UpdateUser(t *testing.T) {
 		expected := gocd.User{}
 
 		actual, err := client.UpdateUser(user)
-		assert.EqualError(t, err, "got 404 from GoCD while making PATCH call for "+server.URL+
+		require.EqualError(t, err, "got 404 from GoCD while making PATCH call for "+server.URL+
 			"/api/users/jdoe\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 		assert.Equal(t, expected, actual)
 	})
@@ -546,7 +547,7 @@ func Test_client_UpdateUser(t *testing.T) {
 		expected := gocd.User{}
 
 		actual, err := client.UpdateUser(user)
-		assert.EqualError(t, err, "got 404 from GoCD while making PATCH call for "+server.URL+
+		require.EqualError(t, err, "got 404 from GoCD while making PATCH call for "+server.URL+
 			"/api/users/jdoe\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 		assert.Equal(t, expected, actual)
 	})
@@ -560,7 +561,7 @@ func Test_client_UpdateUser(t *testing.T) {
 		expected := gocd.User{}
 
 		actual, err := client.UpdateUser(user)
-		assert.EqualError(t, err, "reading response body errored with: invalid character 'c' looking for beginning of value")
+		require.EqualError(t, err, "reading response body errored with: invalid character 'c' looking for beginning of value")
 		assert.Equal(t, expected, actual)
 	})
 
@@ -574,7 +575,7 @@ func Test_client_UpdateUser(t *testing.T) {
 		expected := gocd.User{}
 
 		actual, err := client.UpdateUser(user)
-		assert.EqualError(t, err, "call made to update user 'jdoe' errored with: Patch "+
+		require.EqualError(t, err, "call made to update user 'jdoe' errored with: Patch "+
 			"\"http://localhost:8156/go/api/users/jdoe\": dial tcp [::1]:8156: connect: connection refused")
 		assert.Equal(t, expected, actual)
 	})
@@ -611,7 +612,7 @@ func Test_client_UpdateCurrentUser(t *testing.T) {
 		}
 
 		actual, err := client.UpdateCurrentUser(user)
-		assert.NoError(t, err)
+		require.NoError(t, err)
 		assert.Equal(t, expected, actual)
 	})
 
@@ -625,7 +626,7 @@ func Test_client_UpdateCurrentUser(t *testing.T) {
 		expected := gocd.User{}
 
 		actual, err := client.UpdateCurrentUser(user)
-		assert.EqualError(t, err, "got 404 from GoCD while making PATCH call for "+server.URL+
+		require.EqualError(t, err, "got 404 from GoCD while making PATCH call for "+server.URL+
 			"/api/current_user\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 		assert.Equal(t, expected, actual)
 	})
@@ -638,7 +639,7 @@ func Test_client_UpdateCurrentUser(t *testing.T) {
 		expected := gocd.User{}
 
 		actual, err := client.UpdateCurrentUser(user)
-		assert.EqualError(t, err, "got 404 from GoCD while making PATCH call for "+server.URL+
+		require.EqualError(t, err, "got 404 from GoCD while making PATCH call for "+server.URL+
 			"/api/current_user\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 		assert.Equal(t, expected, actual)
 	})
@@ -651,7 +652,7 @@ func Test_client_UpdateCurrentUser(t *testing.T) {
 		user := gocd.User{}
 
 		actual, err := client.UpdateCurrentUser(user)
-		assert.EqualError(t, err, "reading response body errored with: invalid character 'c' looking for beginning of value")
+		require.EqualError(t, err, "reading response body errored with: invalid character 'c' looking for beginning of value")
 		assert.Equal(t, expected, actual)
 	})
 
@@ -665,7 +666,7 @@ func Test_client_UpdateCurrentUser(t *testing.T) {
 		user := gocd.User{}
 
 		actual, err := client.UpdateCurrentUser(user)
-		assert.EqualError(t, err, "call made to update current user information errored with: "+
+		require.EqualError(t, err, "call made to update current user information errored with: "+
 			"Patch \"http://localhost:8156/go/api/current_user\": dial tcp [::1]:8156: connect: connection refused")
 		assert.Equal(t, expected, actual)
 	})

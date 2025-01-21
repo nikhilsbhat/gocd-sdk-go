@@ -11,6 +11,7 @@ func mockServer(body []byte, statusCode int, header map[string]string, nilHeader
 		if !nilHeader {
 			if header == nil {
 				writer.WriteHeader(http.StatusNotFound)
+
 				if _, err := writer.Write([]byte(`<html>
 <body>
 	<h2>404 Not found</h2>
@@ -27,6 +28,7 @@ func mockServer(body []byte, statusCode int, header map[string]string, nilHeader
 		for key, value := range header {
 			if req.Header.Get(key) != value {
 				writer.WriteHeader(http.StatusNotFound)
+
 				if _, err := writer.Write([]byte(`<html>
 <body>
 	<h2>404 Not found</h2>
@@ -45,8 +47,8 @@ func mockServer(body []byte, statusCode int, header map[string]string, nilHeader
 		}
 
 		writer.WriteHeader(statusCode)
-		_, err := writer.Write(body)
-		if err != nil {
+
+		if _, err := writer.Write(body); err != nil {
 			log.Fatalln(err)
 		}
 	}))

@@ -7,6 +7,7 @@ import (
 
 	"github.com/nikhilsbhat/gocd-sdk-go"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 //go:embed internal/fixtures/cctray.xml
@@ -20,13 +21,34 @@ func Test_client_GetCCTray(t *testing.T) {
 		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		expected := []gocd.Project{
-			{Activity: "Sleeping", LastBuildLabel: "1", LastBuildStatus: "Failure", LastBuildTime: "2023-09-11T03:09:59Z", Name: "action-movies :: build", WebUrl: "http://localhost:8153/go/pipelines/action-movies/1/build/1"},
-			{Activity: "Sleeping", LastBuildLabel: "1", LastBuildStatus: "Failure", LastBuildTime: "2023-09-11T03:09:59Z", Name: "action-movies :: build :: build", WebUrl: "http://localhost:8153/go/tab/build/detail/action-movies/1/build/1/build"},
-			{Activity: "Sleeping", LastBuildLabel: "1", LastBuildStatus: "Failure", LastBuildTime: "2023-09-11T03:09:59Z", Name: "animation-movies :: build", WebUrl: "http://localhost:8153/go/pipelines/animation-movies/1/build/1"},
+			{
+				Activity:        "Sleeping",
+				LastBuildLabel:  "1",
+				LastBuildStatus: "Failure",
+				LastBuildTime:   "2023-09-11T03:09:59Z",
+				Name:            "action-movies :: build",
+				WebURL:          "http://localhost:8153/go/pipelines/action-movies/1/build/1",
+			},
+			{
+				Activity:        "Sleeping",
+				LastBuildLabel:  "1",
+				LastBuildStatus: "Failure",
+				LastBuildTime:   "2023-09-11T03:09:59Z",
+				Name:            "action-movies :: build :: build",
+				WebURL:          "http://localhost:8153/go/tab/build/detail/action-movies/1/build/1/build",
+			},
+			{
+				Activity:        "Sleeping",
+				LastBuildLabel:  "1",
+				LastBuildStatus: "Failure",
+				LastBuildTime:   "2023-09-11T03:09:59Z",
+				Name:            "animation-movies :: build",
+				WebURL:          "http://localhost:8153/go/pipelines/animation-movies/1/build/1",
+			},
 		}
 
 		actual, err := client.GetCCTray()
-		assert.NoError(t, err)
+		require.NoError(t, err)
 		assert.Equal(t, expected, actual)
 	})
 
@@ -37,7 +59,7 @@ func Test_client_GetCCTray(t *testing.T) {
 		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		actual, err := client.GetCCTray()
-		assert.EqualError(t, err, "got 502 from GoCD while making GET call for "+server.URL+
+		require.EqualError(t, err, "got 502 from GoCD while making GET call for "+server.URL+
 			"/cctray.xml\nwith BODY:")
 		assert.Nil(t, actual)
 	})
@@ -48,7 +70,7 @@ func Test_client_GetCCTray(t *testing.T) {
 		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		actual, err := client.GetCCTray()
-		assert.EqualError(t, err, "reading response body errored with: EOF")
+		require.EqualError(t, err, "reading response body errored with: EOF")
 		assert.Nil(t, actual)
 	})
 
@@ -59,7 +81,7 @@ func Test_client_GetCCTray(t *testing.T) {
 		client.SetRetryWaitTime(1)
 
 		actual, err := client.GetCCTray()
-		assert.EqualError(t, err, "call made to get cctray errored with: "+
+		require.EqualError(t, err, "call made to get cctray errored with: "+
 			"Get \"http://localhost:8156/go/cctray.xml\": dial tcp [::1]:8156: connect: connection refused")
 		assert.Nil(t, actual)
 	})

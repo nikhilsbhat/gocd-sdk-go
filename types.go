@@ -861,7 +861,7 @@ type Project struct {
 	LastBuildStatus     string    `xml:"lastBuildStatus,attr"`
 	LastBuildTime       string    `xml:"lastBuildTime,attr"`
 	Name                string    `xml:"name,attr"`
-	WebUrl              string    `xml:"webUrl,attr"`
+	WebURL              string    `xml:"webUrl,attr"`
 	Messages            *Messages `xml:"messages,omitempty"`
 	LastTriggeredInDays float64   `json:"lastTriggeredInDays,omitempty" yaml:"lastTriggeredInDays,omitempty"`
 }

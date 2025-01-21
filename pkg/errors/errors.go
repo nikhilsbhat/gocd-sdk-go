@@ -39,7 +39,7 @@ func (err NilHeaderError) Error() string {
 }
 
 func (err GoCDSDKError) Error() string {
-	return fmt.Sprintf("%s", err.Message) //nolint:gosimple
+	return err.Message
 }
 
 func (err PipelineValidationError) Error() string {

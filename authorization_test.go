@@ -7,6 +7,7 @@ import (
 
 	"github.com/nikhilsbhat/gocd-sdk-go"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 var (
@@ -32,7 +33,7 @@ func Test_client_GetAuthConfigs(t *testing.T) {
 		}}
 
 		actual, err := client.GetAuthConfigs()
-		assert.NoError(t, err)
+		require.NoError(t, err)
 		assert.Equal(t, expected, actual)
 	})
 
@@ -44,7 +45,7 @@ func Test_client_GetAuthConfigs(t *testing.T) {
 		expected := []gocd.CommonConfig(nil)
 
 		actual, err := client.GetAuthConfigs()
-		assert.EqualError(t, err, "got 404 from GoCD while making GET call for "+server.URL+
+		require.EqualError(t, err, "got 404 from GoCD while making GET call for "+server.URL+
 			"/api/admin/security/auth_configs\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 		assert.Equal(t, expected, actual)
 	})
@@ -57,7 +58,7 @@ func Test_client_GetAuthConfigs(t *testing.T) {
 		expected := []gocd.CommonConfig(nil)
 
 		actual, err := client.GetAuthConfigs()
-		assert.EqualError(t, err, "got 404 from GoCD while making GET call for "+server.URL+
+		require.EqualError(t, err, "got 404 from GoCD while making GET call for "+server.URL+
 			"/api/admin/security/auth_configs\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 		assert.Equal(t, expected, actual)
 	})
@@ -70,7 +71,7 @@ func Test_client_GetAuthConfigs(t *testing.T) {
 		expected := []gocd.CommonConfig(nil)
 
 		actual, err := client.GetAuthConfigs()
-		assert.EqualError(t, err, "invalid character 'a' looking for beginning of value")
+		require.EqualError(t, err, "invalid character 'a' looking for beginning of value")
 		assert.Equal(t, expected, actual)
 	})
 
@@ -83,7 +84,7 @@ func Test_client_GetAuthConfigs(t *testing.T) {
 		expected := []gocd.CommonConfig(nil)
 
 		actual, err := client.GetAuthConfigs()
-		assert.EqualError(t, err, "call made to get auth configs errored with: "+
+		require.EqualError(t, err, "call made to get auth configs errored with: "+
 			"Get \"http://localhost:8156/go/api/admin/security/auth_configs\": dial tcp [::1]:8156: connect: connection refused")
 		assert.Equal(t, expected, actual)
 	})
@@ -112,7 +113,7 @@ func Test_client_GetAuthConfig(t *testing.T) {
 		}
 
 		actual, err := client.GetAuthConfig("ldap")
-		assert.NoError(t, err)
+		require.NoError(t, err)
 		assert.Equal(t, expected, actual)
 	})
 
@@ -124,7 +125,7 @@ func Test_client_GetAuthConfig(t *testing.T) {
 		expected := gocd.CommonConfig{}
 
 		actual, err := client.GetAuthConfig("ldap")
-		assert.EqualError(t, err, "got 404 from GoCD while making GET call for "+server.URL+
+		require.EqualError(t, err, "got 404 from GoCD while making GET call for "+server.URL+
 			"/api/admin/security/auth_configs/ldap\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 		assert.Equal(t, expected, actual)
 	})
@@ -137,7 +138,7 @@ func Test_client_GetAuthConfig(t *testing.T) {
 		expected := gocd.CommonConfig{}
 
 		actual, err := client.GetAuthConfig("ldap")
-		assert.EqualError(t, err, "got 404 from GoCD while making GET call for "+server.URL+
+		require.EqualError(t, err, "got 404 from GoCD while making GET call for "+server.URL+
 			"/api/admin/security/auth_configs/ldap\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 		assert.Equal(t, expected, actual)
 	})
@@ -150,7 +151,7 @@ func Test_client_GetAuthConfig(t *testing.T) {
 		expected := gocd.CommonConfig{}
 
 		actual, err := client.GetAuthConfig("ldap")
-		assert.EqualError(t, err, "invalid character 'a' looking for beginning of value")
+		require.EqualError(t, err, "invalid character 'a' looking for beginning of value")
 		assert.Equal(t, expected, actual)
 	})
 
@@ -163,7 +164,7 @@ func Test_client_GetAuthConfig(t *testing.T) {
 		expected := gocd.CommonConfig{}
 
 		actual, err := client.GetAuthConfig("ldap")
-		assert.EqualError(t, err, "call made to get auth config 'ldap' errored with: "+
+		require.EqualError(t, err, "call made to get auth config 'ldap' errored with: "+
 			"Get \"http://localhost:8156/go/api/admin/security/auth_configs/ldap\": dial tcp [::1]:8156: connect: connection refused")
 		assert.Equal(t, expected, actual)
 	})
@@ -196,7 +197,7 @@ func Test_client_CreateAuthConfig(t *testing.T) {
 		expected.ETAG = "cbc5f2d5b9c13a2cc1b1efb3d8a6155d"
 
 		actual, err := client.CreateAuthConfig(authCfg)
-		assert.NoError(t, err)
+		require.NoError(t, err)
 		assert.Equal(t, expected, actual)
 	})
 
@@ -208,7 +209,7 @@ func Test_client_CreateAuthConfig(t *testing.T) {
 		expected := gocd.CommonConfig{}
 
 		actual, err := client.CreateAuthConfig(gocd.CommonConfig{})
-		assert.EqualError(t, err, "got 404 from GoCD while making POST call for "+server.URL+
+		require.EqualError(t, err, "got 404 from GoCD while making POST call for "+server.URL+
 			"/api/admin/security/auth_configs\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 		assert.Equal(t, expected, actual)
 	})
@@ -221,7 +222,7 @@ func Test_client_CreateAuthConfig(t *testing.T) {
 		expected := gocd.CommonConfig{}
 
 		actual, err := client.CreateAuthConfig(gocd.CommonConfig{})
-		assert.EqualError(t, err, "got 404 from GoCD while making POST call for "+server.URL+
+		require.EqualError(t, err, "got 404 from GoCD while making POST call for "+server.URL+
 			"/api/admin/security/auth_configs\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 		assert.Equal(t, expected, actual)
 	})
@@ -234,7 +235,7 @@ func Test_client_CreateAuthConfig(t *testing.T) {
 		expected := gocd.CommonConfig{}
 
 		actual, err := client.CreateAuthConfig(gocd.CommonConfig{})
-		assert.EqualError(t, err, "invalid character 'a' looking for beginning of value")
+		require.EqualError(t, err, "invalid character 'a' looking for beginning of value")
 		assert.Equal(t, expected, actual)
 	})
 
@@ -247,7 +248,7 @@ func Test_client_CreateAuthConfig(t *testing.T) {
 		expected := gocd.CommonConfig{}
 
 		actual, err := client.CreateAuthConfig(gocd.CommonConfig{ID: "ldap"})
-		assert.EqualError(t, err, "call made to create auth config 'ldap' errored with:"+
+		require.EqualError(t, err, "call made to create auth config 'ldap' errored with:"+
 			" Post \"http://localhost:8156/go/api/admin/security/auth_configs\": dial tcp [::1]:8156: connect: connection refused")
 		assert.Equal(t, expected, actual)
 	})
@@ -281,7 +282,7 @@ func Test_client_UpdateAuthConfig(t *testing.T) {
 		expected.ETAG = "61406622382e51c2079c11dcbdb978fb"
 
 		actual, err := client.UpdateAuthConfig(authCfg)
-		assert.NoError(t, err)
+		require.NoError(t, err)
 		assert.Equal(t, expected, actual)
 	})
 
@@ -293,7 +294,7 @@ func Test_client_UpdateAuthConfig(t *testing.T) {
 		expected := gocd.CommonConfig{}
 
 		actual, err := client.UpdateAuthConfig(gocd.CommonConfig{})
-		assert.EqualError(t, err, "got 404 from GoCD while making PUT call for "+server.URL+
+		require.EqualError(t, err, "got 404 from GoCD while making PUT call for "+server.URL+
 			"/api/admin/security/auth_configs\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 		assert.Equal(t, expected, actual)
 	})
@@ -306,7 +307,7 @@ func Test_client_UpdateAuthConfig(t *testing.T) {
 		expected := gocd.CommonConfig{}
 
 		actual, err := client.UpdateAuthConfig(gocd.CommonConfig{})
-		assert.EqualError(t, err, "got 404 from GoCD while making PUT call for "+server.URL+
+		require.EqualError(t, err, "got 404 from GoCD while making PUT call for "+server.URL+
 			"/api/admin/security/auth_configs\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 		assert.Equal(t, expected, actual)
 	})
@@ -319,7 +320,7 @@ func Test_client_UpdateAuthConfig(t *testing.T) {
 		expected := gocd.CommonConfig{}
 
 		actual, err := client.UpdateAuthConfig(gocd.CommonConfig{ETAG: "cbc5f2d5b9c13a2cc1b1efb3d8a6155d"})
-		assert.EqualError(t, err, "invalid character 'a' looking for beginning of value")
+		require.EqualError(t, err, "invalid character 'a' looking for beginning of value")
 		assert.Equal(t, expected, actual)
 	})
 
@@ -332,7 +333,7 @@ func Test_client_UpdateAuthConfig(t *testing.T) {
 		expected := gocd.CommonConfig{}
 
 		actual, err := client.UpdateAuthConfig(gocd.CommonConfig{ID: "ldap"})
-		assert.EqualError(t, err, "call made to update auth config 'ldap' errored with:"+
+		require.EqualError(t, err, "call made to update auth config 'ldap' errored with:"+
 			" Put \"http://localhost:8156/go/api/admin/security/auth_configs\": dial tcp [::1]:8156: connect: connection refused")
 		assert.Equal(t, expected, actual)
 	})
@@ -345,7 +346,7 @@ func Test_client_DeleteAuthConfig(t *testing.T) {
 		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		err := client.DeleteAuthConfig("ldap")
-		assert.NoError(t, err)
+		require.NoError(t, err)
 	})
 
 	t.Run("should error out while deleting auth config due to wrong headers", func(t *testing.T) {
@@ -354,7 +355,7 @@ func Test_client_DeleteAuthConfig(t *testing.T) {
 		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		err := client.DeleteAuthConfig("ldap")
-		assert.EqualError(t, err, "got 404 from GoCD while making DELETE call for "+server.URL+
+		require.EqualError(t, err, "got 404 from GoCD while making DELETE call for "+server.URL+
 			"/api/admin/security/auth_configs/ldap\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 	})
 
@@ -363,7 +364,7 @@ func Test_client_DeleteAuthConfig(t *testing.T) {
 		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		err := client.DeleteAuthConfig("ldap")
-		assert.EqualError(t, err, "got 404 from GoCD while making DELETE call for "+server.URL+
+		require.EqualError(t, err, "got 404 from GoCD while making DELETE call for "+server.URL+
 			"/api/admin/security/auth_configs/ldap\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 	})
 
@@ -374,7 +375,7 @@ func Test_client_DeleteAuthConfig(t *testing.T) {
 		client.SetRetryWaitTime(1)
 
 		err := client.DeleteAuthConfig("ldap")
-		assert.EqualError(t, err, "call made to delete auth config 'ldap' errored with: "+
+		require.EqualError(t, err, "call made to delete auth config 'ldap' errored with: "+
 			"Delete \"http://localhost:8156/go/api/admin/security/auth_configs/ldap\": dial tcp [::1]:8156: connect: connection refused")
 	})
 }

@@ -7,6 +7,7 @@ import (
 
 	"github.com/nikhilsbhat/gocd-sdk-go"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 var (
@@ -42,7 +43,7 @@ func Test_client_GetClusterProfiles(t *testing.T) {
 		}
 
 		actual, err := client.GetClusterProfiles()
-		assert.NoError(t, err)
+		require.NoError(t, err)
 		assert.Equal(t, expected, actual)
 	})
 
@@ -57,7 +58,7 @@ func Test_client_GetClusterProfiles(t *testing.T) {
 		}
 
 		actual, err := client.GetClusterProfiles()
-		assert.EqualError(t, err, "got 404 from GoCD while making GET call for "+server.URL+
+		require.EqualError(t, err, "got 404 from GoCD while making GET call for "+server.URL+
 			"/api/admin/elastic/cluster_profiles\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 		assert.Equal(t, expected, actual)
 	})
@@ -72,7 +73,7 @@ func Test_client_GetClusterProfiles(t *testing.T) {
 		}
 
 		actual, err := client.GetClusterProfiles()
-		assert.EqualError(t, err, "got 404 from GoCD while making GET call for "+server.URL+
+		require.EqualError(t, err, "got 404 from GoCD while making GET call for "+server.URL+
 			"/api/admin/elastic/cluster_profiles\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 		assert.Equal(t, expected, actual)
 	})
@@ -87,7 +88,7 @@ func Test_client_GetClusterProfiles(t *testing.T) {
 		}
 
 		actual, err := client.GetClusterProfiles()
-		assert.EqualError(t, err, "reading response body errored with: invalid character 'c' looking for beginning of value")
+		require.EqualError(t, err, "reading response body errored with: invalid character 'c' looking for beginning of value")
 		assert.Equal(t, expected, actual)
 	})
 
@@ -102,7 +103,7 @@ func Test_client_GetClusterProfiles(t *testing.T) {
 		}
 
 		actual, err := client.GetClusterProfiles()
-		assert.EqualError(t, err, "call made to get cluster profiles errored with: "+
+		require.EqualError(t, err, "call made to get cluster profiles errored with: "+
 			"Get \"http://localhost:8156/go/api/admin/elastic/cluster_profiles\": dial tcp [::1]:8156: connect: connection refused")
 		assert.Equal(t, expected, actual)
 	})
@@ -131,7 +132,7 @@ func Test_client_GetClusterProfile(t *testing.T) {
 		}
 
 		actual, err := client.GetClusterProfile(profileName)
-		assert.NoError(t, err)
+		require.NoError(t, err)
 		assert.Equal(t, expected, actual)
 	})
 
@@ -144,7 +145,7 @@ func Test_client_GetClusterProfile(t *testing.T) {
 		expected := gocd.CommonConfig{}
 
 		actual, err := client.GetClusterProfile(profileName)
-		assert.EqualError(t, err, "got 404 from GoCD while making GET call for "+server.URL+
+		require.EqualError(t, err, "got 404 from GoCD while making GET call for "+server.URL+
 			"/api/admin/elastic/cluster_profiles/prod-cluster\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 		assert.Equal(t, expected, actual)
 	})
@@ -157,7 +158,7 @@ func Test_client_GetClusterProfile(t *testing.T) {
 		expected := gocd.CommonConfig{}
 
 		actual, err := client.GetClusterProfile(profileName)
-		assert.EqualError(t, err, "got 404 from GoCD while making GET call for "+server.URL+
+		require.EqualError(t, err, "got 404 from GoCD while making GET call for "+server.URL+
 			"/api/admin/elastic/cluster_profiles/prod-cluster\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 		assert.Equal(t, expected, actual)
 	})
@@ -170,7 +171,7 @@ func Test_client_GetClusterProfile(t *testing.T) {
 		expected := gocd.CommonConfig{}
 
 		actual, err := client.GetClusterProfile(profileName)
-		assert.EqualError(t, err, "reading response body errored with: invalid character 'c' looking for beginning of value")
+		require.EqualError(t, err, "reading response body errored with: invalid character 'c' looking for beginning of value")
 		assert.Equal(t, expected, actual)
 	})
 
@@ -183,7 +184,7 @@ func Test_client_GetClusterProfile(t *testing.T) {
 		expected := gocd.CommonConfig{}
 
 		actual, err := client.GetClusterProfile(profileName)
-		assert.EqualError(t, err, "call made to get cluster profile 'prod-cluster' errored with: "+
+		require.EqualError(t, err, "call made to get cluster profile 'prod-cluster' errored with: "+
 			"Get \"http://localhost:8156/go/api/admin/elastic/cluster_profiles/prod-cluster\": dial tcp [::1]:8156: connect: connection refused")
 		assert.Equal(t, expected, actual)
 	})
@@ -214,7 +215,7 @@ func Test_client_CreateClusterProfile(t *testing.T) {
 		expected.ETAG = "61406622382e51c2079c11dcbdb978fb"
 
 		actual, err := client.CreateClusterProfile(profileCfg)
-		assert.NoError(t, err)
+		require.NoError(t, err)
 		assert.Equal(t, expected, actual)
 	})
 
@@ -228,7 +229,7 @@ func Test_client_CreateClusterProfile(t *testing.T) {
 		expected := profileCfg
 
 		actual, err := client.UpdateClusterProfile(profileCfg)
-		assert.EqualError(t, err, "got 404 from GoCD while making PUT call for "+server.URL+
+		require.EqualError(t, err, "got 404 from GoCD while making PUT call for "+server.URL+
 			"/api/admin/elastic/cluster_profiles\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 		assert.Equal(t, expected, actual)
 	})
@@ -242,7 +243,7 @@ func Test_client_CreateClusterProfile(t *testing.T) {
 		expected := profileCfg
 
 		actual, err := client.CreateClusterProfile(profileCfg)
-		assert.EqualError(t, err, "got 404 from GoCD while making POST call for "+server.URL+
+		require.EqualError(t, err, "got 404 from GoCD while making POST call for "+server.URL+
 			"/api/admin/elastic/cluster_profiles\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 		assert.Equal(t, expected, actual)
 	})
@@ -256,7 +257,7 @@ func Test_client_CreateClusterProfile(t *testing.T) {
 		expected := profileCfg
 
 		actual, err := client.CreateClusterProfile(profileCfg)
-		assert.EqualError(t, err, "reading response body errored with: invalid character 'c' looking for beginning of value")
+		require.EqualError(t, err, "reading response body errored with: invalid character 'c' looking for beginning of value")
 		assert.Equal(t, expected, actual)
 	})
 
@@ -270,7 +271,7 @@ func Test_client_CreateClusterProfile(t *testing.T) {
 		expected := gocd.CommonConfig{}
 
 		actual, err := client.CreateClusterProfile(profileCfg)
-		assert.EqualError(t, err, "call made to create cluster profile 'prod-cluster' errored with: "+
+		require.EqualError(t, err, "call made to create cluster profile 'prod-cluster' errored with: "+
 			"Post \"http://localhost:8156/go/api/admin/elastic/cluster_profiles\": dial tcp [::1]:8156: connect: connection refused")
 		assert.Equal(t, expected, actual)
 	})
@@ -301,7 +302,7 @@ func Test_client_UpdateClusterProfile(t *testing.T) {
 		expected.ETAG = "61406622382e51c2079c11dcbdb978fb"
 
 		actual, err := client.UpdateClusterProfile(profileCfg)
-		assert.NoError(t, err)
+		require.NoError(t, err)
 		assert.Equal(t, expected, actual)
 	})
 
@@ -315,7 +316,7 @@ func Test_client_UpdateClusterProfile(t *testing.T) {
 		expected := profileCfg
 
 		actual, err := client.UpdateClusterProfile(profileCfg)
-		assert.EqualError(t, err, "got 404 from GoCD while making PUT call for "+server.URL+
+		require.EqualError(t, err, "got 404 from GoCD while making PUT call for "+server.URL+
 			"/api/admin/elastic/cluster_profiles\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 		assert.Equal(t, expected, actual)
 	})
@@ -329,7 +330,7 @@ func Test_client_UpdateClusterProfile(t *testing.T) {
 		expected := profileCfg
 
 		actual, err := client.UpdateClusterProfile(profileCfg)
-		assert.EqualError(t, err, "got 404 from GoCD while making PUT call for "+server.URL+
+		require.EqualError(t, err, "got 404 from GoCD while making PUT call for "+server.URL+
 			"/api/admin/elastic/cluster_profiles\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 		assert.Equal(t, expected, actual)
 	})
@@ -343,7 +344,7 @@ func Test_client_UpdateClusterProfile(t *testing.T) {
 		expected := profileCfg
 
 		actual, err := client.UpdateClusterProfile(profileCfg)
-		assert.EqualError(t, err, "reading response body errored with: invalid character 'c' looking for beginning of value")
+		require.EqualError(t, err, "reading response body errored with: invalid character 'c' looking for beginning of value")
 		assert.Equal(t, expected, actual)
 	})
 
@@ -357,7 +358,7 @@ func Test_client_UpdateClusterProfile(t *testing.T) {
 		expected := gocd.CommonConfig{}
 
 		actual, err := client.UpdateClusterProfile(profileCfg)
-		assert.EqualError(t, err, "call made to update cluster profile 'prod-cluster' errored with: "+
+		require.EqualError(t, err, "call made to update cluster profile 'prod-cluster' errored with: "+
 			"Put \"http://localhost:8156/go/api/admin/elastic/cluster_profiles/prod-cluster\": dial tcp [::1]:8156: connect: connection refused")
 		assert.Equal(t, expected, actual)
 	})
@@ -373,7 +374,7 @@ func Test_client_DeleteClusterProfile(t *testing.T) {
 		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		err := client.DeleteClusterProfile("prod-cluster")
-		assert.NoError(t, err)
+		require.NoError(t, err)
 	})
 
 	t.Run("should error out while deleting a cluster profile due to wrong headers", func(t *testing.T) {
@@ -383,7 +384,7 @@ func Test_client_DeleteClusterProfile(t *testing.T) {
 		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		err := client.DeleteClusterProfile("prod-cluster")
-		assert.EqualError(t, err, "got 404 from GoCD while making DELETE call for "+server.URL+
+		require.EqualError(t, err, "got 404 from GoCD while making DELETE call for "+server.URL+
 			"/api/admin/elastic/cluster_profiles/prod-cluster\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 	})
 
@@ -394,7 +395,7 @@ func Test_client_DeleteClusterProfile(t *testing.T) {
 		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		err := client.DeleteClusterProfile("prod-cluster")
-		assert.EqualError(t, err, "got 404 from GoCD while making DELETE call for "+server.URL+
+		require.EqualError(t, err, "got 404 from GoCD while making DELETE call for "+server.URL+
 			"/api/admin/elastic/cluster_profiles/prod-cluster\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 	})
 
@@ -405,7 +406,7 @@ func Test_client_DeleteClusterProfile(t *testing.T) {
 		client.SetRetryWaitTime(1)
 
 		err := client.DeleteClusterProfile("prod-cluster")
-		assert.EqualError(t, err, "call made to delete cluster profile 'prod-cluster' errored with: "+
+		require.EqualError(t, err, "call made to delete cluster profile 'prod-cluster' errored with: "+
 			"Delete \"http://localhost:8156/go/api/admin/elastic/cluster_profiles/prod-cluster\": dial tcp [::1]:8156: connect: connection refused")
 	})
 }

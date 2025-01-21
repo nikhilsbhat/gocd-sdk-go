@@ -7,6 +7,7 @@ import (
 
 	"github.com/nikhilsbhat/gocd-sdk-go"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 var (
@@ -74,7 +75,7 @@ func Test_client_GetRoles(t *testing.T) {
 		}
 
 		actual, err := client.GetRoles()
-		assert.NoError(t, err)
+		require.NoError(t, err)
 		assert.Equal(t, expected, actual)
 	})
 
@@ -87,7 +88,7 @@ func Test_client_GetRoles(t *testing.T) {
 		expected := gocd.RolesConfig{}
 
 		actual, err := client.GetRoles()
-		assert.EqualError(t, err, "got 404 from GoCD while making GET call for "+server.URL+
+		require.EqualError(t, err, "got 404 from GoCD while making GET call for "+server.URL+
 			"/api/admin/security/roles\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 		assert.Equal(t, expected, actual)
 	})
@@ -100,7 +101,7 @@ func Test_client_GetRoles(t *testing.T) {
 		expected := gocd.RolesConfig{}
 
 		actual, err := client.GetRoles()
-		assert.EqualError(t, err, "got 404 from GoCD while making GET call for "+server.URL+
+		require.EqualError(t, err, "got 404 from GoCD while making GET call for "+server.URL+
 			"/api/admin/security/roles\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 		assert.Equal(t, expected, actual)
 	})
@@ -113,7 +114,7 @@ func Test_client_GetRoles(t *testing.T) {
 		expected := gocd.RolesConfig{}
 
 		actual, err := client.GetRoles()
-		assert.EqualError(t, err, "reading response body errored with: invalid character 'r' looking for beginning of value")
+		require.EqualError(t, err, "reading response body errored with: invalid character 'r' looking for beginning of value")
 		assert.Equal(t, expected, actual)
 	})
 
@@ -126,7 +127,7 @@ func Test_client_GetRoles(t *testing.T) {
 		expected := gocd.RolesConfig{}
 
 		actual, err := client.GetRoles()
-		assert.EqualError(t, err, "call made to get all roles errored with: "+
+		require.EqualError(t, err, "call made to get all roles errored with: "+
 			"Get \"http://localhost:8156/go/api/admin/security/roles\": dial tcp [::1]:8156: connect: connection refused")
 		assert.Equal(t, expected, actual)
 	})
@@ -164,7 +165,7 @@ func Test_client_GetRole(t *testing.T) {
 		}
 
 		actual, err := client.GetRole(roleName)
-		assert.NoError(t, err)
+		require.NoError(t, err)
 		assert.Equal(t, expected, actual)
 	})
 
@@ -177,7 +178,7 @@ func Test_client_GetRole(t *testing.T) {
 		expected := gocd.Role{}
 
 		actual, err := client.GetRole(roleName)
-		assert.EqualError(t, err, "got 404 from GoCD while making GET call for "+server.URL+
+		require.EqualError(t, err, "got 404 from GoCD while making GET call for "+server.URL+
 			"/api/admin/security/roles/blackbird\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 		assert.Equal(t, expected, actual)
 	})
@@ -190,7 +191,7 @@ func Test_client_GetRole(t *testing.T) {
 		expected := gocd.Role{}
 
 		actual, err := client.GetRole(roleName)
-		assert.EqualError(t, err, "got 404 from GoCD while making GET call for "+server.URL+
+		require.EqualError(t, err, "got 404 from GoCD while making GET call for "+server.URL+
 			"/api/admin/security/roles/blackbird\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 		assert.Equal(t, expected, actual)
 	})
@@ -203,7 +204,7 @@ func Test_client_GetRole(t *testing.T) {
 		expected := gocd.Role{}
 
 		actual, err := client.GetRole(roleName)
-		assert.EqualError(t, err, "reading response body errored with: invalid character 'r' looking for beginning of value")
+		require.EqualError(t, err, "reading response body errored with: invalid character 'r' looking for beginning of value")
 		assert.Equal(t, expected, actual)
 	})
 
@@ -216,7 +217,7 @@ func Test_client_GetRole(t *testing.T) {
 		expected := gocd.Role{}
 
 		actual, err := client.GetRole(roleName)
-		assert.EqualError(t, err, "call made to get role 'blackbird' errored with: "+
+		require.EqualError(t, err, "call made to get role 'blackbird' errored with: "+
 			"Get \"http://localhost:8156/go/api/admin/security/roles/blackbird\": dial tcp [::1]:8156: connect: connection refused")
 		assert.Equal(t, expected, actual)
 	})
@@ -233,7 +234,7 @@ func Test_client_DeleteRole(t *testing.T) {
 		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		err := client.DeleteRole(roleName)
-		assert.NoError(t, err)
+		require.NoError(t, err)
 	})
 
 	t.Run("should error out while deleting role due to wrong headers", func(t *testing.T) {
@@ -243,7 +244,7 @@ func Test_client_DeleteRole(t *testing.T) {
 		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		err := client.DeleteRole(roleName)
-		assert.EqualError(t, err, "got 404 from GoCD while making DELETE call for "+server.URL+
+		require.EqualError(t, err, "got 404 from GoCD while making DELETE call for "+server.URL+
 			"/api/admin/security/roles/blackbird\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 	})
 
@@ -254,7 +255,7 @@ func Test_client_DeleteRole(t *testing.T) {
 		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		err := client.DeleteRole(roleName)
-		assert.EqualError(t, err, "got 404 from GoCD while making DELETE call for "+server.URL+
+		require.EqualError(t, err, "got 404 from GoCD while making DELETE call for "+server.URL+
 			"/api/admin/security/roles/blackbird\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 	})
 
@@ -265,7 +266,7 @@ func Test_client_DeleteRole(t *testing.T) {
 		client.SetRetryWaitTime(1)
 
 		err := client.DeleteRole(roleName)
-		assert.EqualError(t, err, "call made to delete role 'blackbird' errored with: "+
+		require.EqualError(t, err, "call made to delete role 'blackbird' errored with: "+
 			"Delete \"http://localhost:8156/go/api/admin/security/roles/blackbird\": dial tcp [::1]:8156: connect: connection refused")
 	})
 }
@@ -302,7 +303,7 @@ func Test_client_GetRolesByType(t *testing.T) {
 		}
 
 		actual, err := client.GetRolesByType(roleType)
-		assert.NoError(t, err)
+		require.NoError(t, err)
 		assert.Equal(t, expected, actual)
 	})
 
@@ -315,7 +316,7 @@ func Test_client_GetRolesByType(t *testing.T) {
 		expected := gocd.RolesConfig{}
 
 		actual, err := client.GetRolesByType(roleType)
-		assert.EqualError(t, err, "got 404 from GoCD while making GET call for "+server.URL+
+		require.EqualError(t, err, "got 404 from GoCD while making GET call for "+server.URL+
 			"/api/admin/security/roles?type=gocd\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 		assert.Equal(t, expected, actual)
 	})
@@ -328,7 +329,7 @@ func Test_client_GetRolesByType(t *testing.T) {
 		expected := gocd.RolesConfig{}
 
 		actual, err := client.GetRolesByType(roleType)
-		assert.EqualError(t, err, "got 404 from GoCD while making GET call for "+server.URL+
+		require.EqualError(t, err, "got 404 from GoCD while making GET call for "+server.URL+
 			"/api/admin/security/roles?type=gocd\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 		assert.Equal(t, expected, actual)
 	})
@@ -341,7 +342,7 @@ func Test_client_GetRolesByType(t *testing.T) {
 		expected := gocd.RolesConfig{}
 
 		actual, err := client.GetRolesByType(roleType)
-		assert.EqualError(t, err, "reading response body errored with: invalid character 'r' looking for beginning of value")
+		require.EqualError(t, err, "reading response body errored with: invalid character 'r' looking for beginning of value")
 		assert.Equal(t, expected, actual)
 	})
 
@@ -354,7 +355,7 @@ func Test_client_GetRolesByType(t *testing.T) {
 		expected := gocd.RolesConfig{}
 
 		actual, err := client.GetRolesByType(roleType)
-		assert.EqualError(t, err, "call made to get role by type 'gocd' errored with: "+
+		require.EqualError(t, err, "call made to get role by type 'gocd' errored with: "+
 			"Get \"http://localhost:8156/go/api/admin/security/roles?type=gocd\": dial tcp [::1]:8156: connect: connection refused")
 		assert.Equal(t, expected, actual)
 	})
@@ -392,7 +393,7 @@ func Test_client_CreateRole(t *testing.T) {
 		expected.ETAG = "cbc5f2d5b9c13a2cc1b1efb3d8a6155d"
 
 		actual, err := client.CreateRole(role)
-		assert.NoError(t, err)
+		require.NoError(t, err)
 		assert.Equal(t, expected, actual)
 	})
 
@@ -406,7 +407,7 @@ func Test_client_CreateRole(t *testing.T) {
 		expected := role
 
 		actual, err := client.CreateRole(role)
-		assert.EqualError(t, err, "got 404 from GoCD while making POST call for "+server.URL+
+		require.EqualError(t, err, "got 404 from GoCD while making POST call for "+server.URL+
 			"/api/admin/security/roles\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 		assert.Equal(t, expected, actual)
 	})
@@ -420,7 +421,7 @@ func Test_client_CreateRole(t *testing.T) {
 		expected := role
 
 		actual, err := client.CreateRole(role)
-		assert.EqualError(t, err, "got 404 from GoCD while making POST call for "+server.URL+
+		require.EqualError(t, err, "got 404 from GoCD while making POST call for "+server.URL+
 			"/api/admin/security/roles\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 		assert.Equal(t, expected, actual)
 	})
@@ -434,7 +435,7 @@ func Test_client_CreateRole(t *testing.T) {
 		expected := role
 
 		actual, err := client.CreateRole(role)
-		assert.EqualError(t, err, "reading response body errored with: invalid character 'r' looking for beginning of value")
+		require.EqualError(t, err, "reading response body errored with: invalid character 'r' looking for beginning of value")
 		assert.Equal(t, expected, actual)
 	})
 
@@ -450,7 +451,7 @@ func Test_client_CreateRole(t *testing.T) {
 		expected := gocd.Role{}
 
 		actual, err := client.CreateRole(role)
-		assert.EqualError(t, err, "call made to create role 'blackbird' errored with: "+
+		require.EqualError(t, err, "call made to create role 'blackbird' errored with: "+
 			"Post \"http://localhost:8156/go/api/admin/security/roles\": dial tcp [::1]:8156: connect: connection refused")
 		assert.Equal(t, expected, actual)
 	})
@@ -489,7 +490,7 @@ func Test_client_UpdateRole(t *testing.T) {
 		expected.ETAG = "61406622382e51c2079c11dcbdb978fb"
 
 		actual, err := client.UpdateRole(role)
-		assert.NoError(t, err)
+		require.NoError(t, err)
 		assert.Equal(t, expected, actual)
 	})
 
@@ -503,7 +504,7 @@ func Test_client_UpdateRole(t *testing.T) {
 		expected := role
 
 		actual, err := client.UpdateRole(role)
-		assert.EqualError(t, err, "got 404 from GoCD while making PUT call for "+server.URL+
+		require.EqualError(t, err, "got 404 from GoCD while making PUT call for "+server.URL+
 			"/api/admin/security/roles\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 		assert.Equal(t, expected, actual)
 	})
@@ -517,7 +518,7 @@ func Test_client_UpdateRole(t *testing.T) {
 		expected := role
 
 		actual, err := client.UpdateRole(role)
-		assert.EqualError(t, err, "got 404 from GoCD while making PUT call for "+server.URL+
+		require.EqualError(t, err, "got 404 from GoCD while making PUT call for "+server.URL+
 			"/api/admin/security/roles\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 		assert.Equal(t, expected, actual)
 	})
@@ -531,7 +532,7 @@ func Test_client_UpdateRole(t *testing.T) {
 		expected := role
 
 		actual, err := client.UpdateRole(role)
-		assert.EqualError(t, err, "reading response body errored with: invalid character 'r' looking for beginning of value")
+		require.EqualError(t, err, "reading response body errored with: invalid character 'r' looking for beginning of value")
 		assert.Equal(t, expected, actual)
 	})
 
@@ -547,7 +548,7 @@ func Test_client_UpdateRole(t *testing.T) {
 		expected := gocd.Role{}
 
 		actual, err := client.UpdateRole(role)
-		assert.EqualError(t, err, "call made to update role 'blackbird' errored with: "+
+		require.EqualError(t, err, "call made to update role 'blackbird' errored with: "+
 			"Put \"http://localhost:8156/go/api/admin/security/roles/blackbird\": dial tcp [::1]:8156: connect: connection refused")
 		assert.Equal(t, expected, actual)
 	})

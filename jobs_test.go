@@ -7,6 +7,7 @@ import (
 
 	"github.com/nikhilsbhat/gocd-sdk-go"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 //go:embed internal/fixtures/scheduled_jobs.xml
@@ -19,7 +20,7 @@ func Test_client_ScheduledJobs(t *testing.T) {
 		client.SetRetryWaitTime(1)
 
 		actual, err := client.GetScheduledJobs()
-		assert.EqualError(t, err, "call made to get scheduled jobs errored with: "+
+		require.EqualError(t, err, "call made to get scheduled jobs errored with: "+
 			"Get \"http://localhost:8156/go/api/feed/jobs/scheduled.xml\": dial tcp [::1]:8156: connect: connection refused")
 		assert.Equal(t, gocd.ScheduledJobs{}, actual)
 	})
@@ -29,7 +30,7 @@ func Test_client_ScheduledJobs(t *testing.T) {
 		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		actual, err := client.GetScheduledJobs()
-		assert.EqualError(t, err, "got 502 from GoCD while making GET call for "+server.URL+
+		require.EqualError(t, err, "got 502 from GoCD while making GET call for "+server.URL+
 			"/api/feed/jobs/scheduled.xml\nwith BODY:scheduledJobJSON")
 		assert.Equal(t, gocd.ScheduledJobs{}, actual)
 	})
@@ -39,7 +40,7 @@ func Test_client_ScheduledJobs(t *testing.T) {
 		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		actual, err := client.GetScheduledJobs()
-		assert.EqualError(t, err, "reading response body errored with: EOF")
+		require.EqualError(t, err, "reading response body errored with: EOF")
 		assert.Equal(t, gocd.ScheduledJobs{}, actual)
 	})
 
@@ -59,7 +60,7 @@ func Test_client_ScheduledJobs(t *testing.T) {
 		}
 
 		actual, err := client.GetScheduledJobs()
-		assert.NoError(t, err)
+		require.NoError(t, err)
 		assert.Equal(t, expected, actual)
 	})
 }
@@ -73,7 +74,7 @@ func Test_client_RunJobs(t *testing.T) {
 		client.SetRetryWaitTime(1)
 
 		actual, err := client.RunJobs(gocd.Stage{})
-		assert.EqualError(t, err, "call made to run selected jobs errored with: "+
+		require.EqualError(t, err, "call made to run selected jobs errored with: "+
 			"Post \"http://localhost:8156/go/api/stages/run-selected-jobs\": dial tcp [::1]:8156: connect: connection refused")
 		assert.Equal(t, "", actual)
 	})
@@ -83,7 +84,7 @@ func Test_client_RunJobs(t *testing.T) {
 		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		actual, err := client.RunJobs(gocd.Stage{})
-		assert.EqualError(t, err, "got 502 from GoCD while making POST call for "+server.URL+
+		require.EqualError(t, err, "got 502 from GoCD while making POST call for "+server.URL+
 			"/api/stages/run-selected-jobs\nwith BODY:scheduledJobJSON")
 		assert.Equal(t, "", actual)
 	})
@@ -93,7 +94,7 @@ func Test_client_RunJobs(t *testing.T) {
 		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		actual, err := client.RunJobs(gocd.Stage{})
-		assert.EqualError(t, err, "reading response body errored with: unexpected end of JSON input")
+		require.EqualError(t, err, "reading response body errored with: unexpected end of JSON input")
 		assert.Equal(t, "", actual)
 	})
 
@@ -112,7 +113,7 @@ func Test_client_RunJobs(t *testing.T) {
 		expected := "Request to rerun jobs accepted"
 
 		actual, err := client.RunJobs(stage)
-		assert.NoError(t, err)
+		require.NoError(t, err)
 		assert.Equal(t, expected, actual)
 	})
 }
@@ -126,7 +127,7 @@ func Test_client_RunFailedJobs(t *testing.T) {
 		client.SetRetryWaitTime(1)
 
 		actual, err := client.RunFailedJobs(gocd.Stage{})
-		assert.EqualError(t, err, "call made to run failed jobs errored with: "+
+		require.EqualError(t, err, "call made to run failed jobs errored with: "+
 			"Post \"http://localhost:8156/go/api/stages/run-failed-jobs\": dial tcp [::1]:8156: connect: connection refused")
 		assert.Equal(t, "", actual)
 	})
@@ -136,7 +137,7 @@ func Test_client_RunFailedJobs(t *testing.T) {
 		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		actual, err := client.RunFailedJobs(gocd.Stage{})
-		assert.EqualError(t, err, "got 502 from GoCD while making POST call for "+server.URL+
+		require.EqualError(t, err, "got 502 from GoCD while making POST call for "+server.URL+
 			"/api/stages/run-failed-jobs\nwith BODY:scheduledJobJSON")
 		assert.Equal(t, "", actual)
 	})
@@ -146,7 +147,7 @@ func Test_client_RunFailedJobs(t *testing.T) {
 		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		actual, err := client.RunFailedJobs(gocd.Stage{})
-		assert.EqualError(t, err, "reading response body errored with: unexpected end of JSON input")
+		require.EqualError(t, err, "reading response body errored with: unexpected end of JSON input")
 		assert.Equal(t, "", actual)
 	})
 
@@ -165,7 +166,7 @@ func Test_client_RunFailedJobs(t *testing.T) {
 
 		expected := "Request to rerun jobs accepted"
 		actual, err := client.RunFailedJobs(stage)
-		assert.NoError(t, err)
+		require.NoError(t, err)
 		assert.Equal(t, expected, actual)
 	})
 }

@@ -1,3 +1,4 @@
+//nolint:testifylint
 package plugin_test
 
 import (
@@ -8,6 +9,7 @@ import (
 
 	"github.com/nikhilsbhat/gocd-sdk-go/pkg/plugin"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 	"github.com/stretchr/testify/suite"
 )
 
@@ -61,7 +63,7 @@ func (suite *YAMLPluginTestSuite) TestValidatePluginTests_ShouldFailValidatingYA
 
 	actual, err := suite.config.ValidatePlugin([]string{pipelinePath})
 	suite.EqualError(err, expectedError)
-	suite.False(false, actual)
+	suite.False(actual)
 }
 
 func (suite *YAMLPluginTestSuite) TestValidatePluginTests_ShouldSuccessfullyValidateTheYAMLPipelineFile() {
@@ -75,7 +77,7 @@ func (suite *YAMLPluginTestSuite) TestValidatePluginTests_ShouldSuccessfullyVali
 
 	actual, err := suite.config.ValidatePlugin([]string{pipelinePath})
 	suite.NoError(err)
-	suite.True(true, actual)
+	suite.True(actual)
 }
 
 func (suite *YAMLPluginTestSuite) TestValidatePluginTests_ValidationShouldFailDueToErrorsInYAMLPipelineFile() {
@@ -89,7 +91,7 @@ func (suite *YAMLPluginTestSuite) TestValidatePluginTests_ValidationShouldFailDu
 
 	actual, err := suite.config.ValidatePlugin([]string{pipelinePath})
 	suite.Error(err)
-	suite.False(false, actual)
+	suite.False(actual)
 }
 
 func TestPipelineValidateTestSuite(t *testing.T) {
@@ -137,7 +139,7 @@ func (suite *JOSNPluginTestSuite) TestValidatePluginTests_ShouldFailValidatingJS
 
 	actual, err := suite.config.ValidatePlugin([]string{pipelinePath})
 	suite.EqualError(err, expectedError)
-	suite.False(false, actual)
+	suite.False(actual)
 }
 
 func (suite *JOSNPluginTestSuite) TestValidatePluginTests_ShouldSuccessfullyValidateTheJSONPipelineFile() {
@@ -151,7 +153,7 @@ func (suite *JOSNPluginTestSuite) TestValidatePluginTests_ShouldSuccessfullyVali
 
 	actual, err := suite.config.ValidatePlugin([]string{pipelinePath})
 	suite.NoError(err)
-	suite.True(true, actual)
+	suite.True(actual)
 }
 
 func (suite *JOSNPluginTestSuite) TestValidatePluginTests_ValidationShouldFailDueToErrorsInJSONPipelineFile() {
@@ -165,7 +167,7 @@ func (suite *JOSNPluginTestSuite) TestValidatePluginTests_ValidationShouldFailDu
 
 	actual, err := suite.config.ValidatePlugin([]string{pipelinePath})
 	suite.Error(err)
-	suite.False(false, actual)
+	suite.False(actual)
 }
 
 func TestJSONPipelineValidateTestSuite(t *testing.T) {
@@ -213,7 +215,7 @@ func (suite *GroovyPluginTestSuite) TestValidatePluginTests_ShouldFailValidating
 
 	actual, err := suite.config.ValidatePlugin([]string{pipelinePath})
 	suite.EqualError(err, expectedError)
-	suite.False(false, actual)
+	suite.False(actual)
 }
 
 func (suite *GroovyPluginTestSuite) TestValidatePluginTests_ShouldSuccessfullyValidateTheGroovyPipelineFile() {
@@ -227,7 +229,7 @@ func (suite *GroovyPluginTestSuite) TestValidatePluginTests_ShouldSuccessfullyVa
 
 	actual, err := suite.config.ValidatePlugin([]string{pipelinePath})
 	suite.NoError(err)
-	suite.True(true, actual)
+	suite.True(actual)
 }
 
 func (suite *GroovyPluginTestSuite) TestValidatePluginTests_ValidationShouldFailDueToErrorsInGroovyPipelineFile() {
@@ -241,7 +243,7 @@ func (suite *GroovyPluginTestSuite) TestValidatePluginTests_ValidationShouldFail
 
 	actual, err := suite.config.ValidatePlugin([]string{pipelinePath})
 	suite.Error(err)
-	suite.False(false, actual)
+	suite.False(actual)
 }
 
 func TestGroovyPipelineValidateTestSuite(t *testing.T) {
@@ -253,17 +255,17 @@ func TestConfig_Download(t *testing.T) {
 		cfg := plugin.NewPluginConfig("0.13.0", "", "", "debug")
 
 		homePath, err := os.UserHomeDir()
-		assert.NoError(t, err)
+		require.NoError(t, err)
 
 		pipelinePath := filepath.Join(homePath, "gocd-sdk-go/internal/fixtures/sample-pipeline.gocd.yaml")
 
 		err = cfg.SetType([]string{pipelinePath})
-		assert.NoError(t, err)
+		require.NoError(t, err)
 
 		expectedPluginPath := filepath.Join(homePath, ".gocd/plugins/yaml-config-plugin-0.13.0.jar")
 
 		pluginPath, err := cfg.Download()
-		assert.NoError(t, err)
+		require.NoError(t, err)
 		assert.Equal(t, expectedPluginPath, pluginPath)
 	})
 
@@ -271,15 +273,15 @@ func TestConfig_Download(t *testing.T) {
 		cfg := plugin.NewPluginConfig("0.13.0", "", "", "debug")
 
 		homePath, err := os.UserHomeDir()
-		assert.NoError(t, err)
+		require.NoError(t, err)
 
 		pipelinePath := filepath.Join(homePath, "gocd-sdk-go/internal/fixtures/sample-pipeline.gocd.toml")
 
 		err = cfg.SetType([]string{pipelinePath})
-		assert.NoError(t, err)
+		require.NoError(t, err)
 
 		pluginPath, err := cfg.Download()
-		assert.EqualError(t, err, "unknown filetype 'toml', supported are yaml|json|groovy")
+		require.EqualError(t, err, "unknown filetype 'toml', supported are yaml|json|groovy")
 		assert.Equal(t, "", pluginPath)
 	})
 
@@ -287,15 +289,15 @@ func TestConfig_Download(t *testing.T) {
 		cfg := plugin.NewPluginConfig("0.13.0", "", "://github.com/gocd-contrib/gocd-groovy-dsl-config-plugin", "debug")
 
 		homePath, err := os.UserHomeDir()
-		assert.NoError(t, err)
+		require.NoError(t, err)
 
 		pipelinePath := filepath.Join(homePath, "gocd-sdk-go/internal/fixtures/sample-pipeline.gocd.yaml")
 
 		err = cfg.SetType([]string{pipelinePath})
-		assert.NoError(t, err)
+		require.NoError(t, err)
 
 		pluginPath, err := cfg.Download()
-		assert.EqualError(t, err, "parse \"://github.com/gocd-contrib/gocd-groovy-dsl-config-plugin\": missing protocol scheme")
+		require.EqualError(t, err, "parse \"://github.com/gocd-contrib/gocd-groovy-dsl-config-plugin\": missing protocol scheme")
 		assert.Equal(t, "", pluginPath)
 	})
 }

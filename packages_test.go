@@ -7,6 +7,7 @@ import (
 
 	"github.com/nikhilsbhat/gocd-sdk-go"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 var (
@@ -71,7 +72,7 @@ func Test_client_GetPackages(t *testing.T) {
 		}
 
 		actual, err := client.GetPackages()
-		assert.NoError(t, err)
+		require.NoError(t, err)
 		assert.Equal(t, expected, actual)
 	})
 
@@ -84,7 +85,7 @@ func Test_client_GetPackages(t *testing.T) {
 		var expected []gocd.Package
 
 		actual, err := client.GetPackages()
-		assert.EqualError(t, err, "got 404 from GoCD while making GET call for "+server.URL+
+		require.EqualError(t, err, "got 404 from GoCD while making GET call for "+server.URL+
 			"/api/admin/packages\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 		assert.Equal(t, expected, actual)
 	})
@@ -97,7 +98,7 @@ func Test_client_GetPackages(t *testing.T) {
 		var expected []gocd.Package
 
 		actual, err := client.GetPackages()
-		assert.EqualError(t, err, "got 404 from GoCD while making GET call for "+server.URL+
+		require.EqualError(t, err, "got 404 from GoCD while making GET call for "+server.URL+
 			"/api/admin/packages\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 		assert.Equal(t, expected, actual)
 	})
@@ -110,7 +111,7 @@ func Test_client_GetPackages(t *testing.T) {
 		var expected []gocd.Package
 
 		actual, err := client.GetPackages()
-		assert.EqualError(t, err, "reading response body errored with: invalid character 'p' looking for beginning of value")
+		require.EqualError(t, err, "reading response body errored with: invalid character 'p' looking for beginning of value")
 		assert.Equal(t, expected, actual)
 	})
 
@@ -123,7 +124,7 @@ func Test_client_GetPackages(t *testing.T) {
 		var expected []gocd.Package
 
 		actual, err := client.GetPackages()
-		assert.EqualError(t, err, "call made to get all packages errored with: "+
+		require.EqualError(t, err, "call made to get all packages errored with: "+
 			"Get \"http://localhost:8156/go/api/admin/packages\": dial tcp [::1]:8156: connect: connection refused")
 		assert.Equal(t, expected, actual)
 	})
@@ -159,7 +160,7 @@ func Test_client_GetPackage(t *testing.T) {
 		}
 
 		actual, err := client.GetPackage(repositoryID)
-		assert.NoError(t, err)
+		require.NoError(t, err)
 		assert.Equal(t, expected, actual)
 	})
 
@@ -172,7 +173,7 @@ func Test_client_GetPackage(t *testing.T) {
 		expected := gocd.Package{}
 
 		actual, err := client.GetPackage(repositoryID)
-		assert.EqualError(t, err, "got 404 from GoCD while making GET call for "+server.URL+
+		require.EqualError(t, err, "got 404 from GoCD while making GET call for "+server.URL+
 			"/api/admin/packages/dd8926c0-3b4a-4c9e-8012-957b179cec5b\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 		assert.Equal(t, expected, actual)
 	})
@@ -185,7 +186,7 @@ func Test_client_GetPackage(t *testing.T) {
 		expected := gocd.Package{}
 
 		actual, err := client.GetPackage(repositoryID)
-		assert.EqualError(t, err, "got 404 from GoCD while making GET call for "+server.URL+
+		require.EqualError(t, err, "got 404 from GoCD while making GET call for "+server.URL+
 			"/api/admin/packages/dd8926c0-3b4a-4c9e-8012-957b179cec5b\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 		assert.Equal(t, expected, actual)
 	})
@@ -198,7 +199,7 @@ func Test_client_GetPackage(t *testing.T) {
 		expected := gocd.Package{}
 
 		actual, err := client.GetPackage(repositoryID)
-		assert.EqualError(t, err, "reading response body errored with: invalid character 'p' looking for beginning of value")
+		require.EqualError(t, err, "reading response body errored with: invalid character 'p' looking for beginning of value")
 		assert.Equal(t, expected, actual)
 	})
 
@@ -211,7 +212,7 @@ func Test_client_GetPackage(t *testing.T) {
 		expected := gocd.Package{}
 
 		actual, err := client.GetPackage(repositoryID)
-		assert.EqualError(t, err, "call made to get package 'dd8926c0-3b4a-4c9e-8012-957b179cec5b' errored with: "+
+		require.EqualError(t, err, "call made to get package 'dd8926c0-3b4a-4c9e-8012-957b179cec5b' errored with: "+
 			"Get \"http://localhost:8156/go/api/admin/packages/dd8926c0-3b4a-4c9e-8012-957b179cec5b\": dial tcp [::1]:8156: connect: connection refused")
 		assert.Equal(t, expected, actual)
 	})
@@ -248,7 +249,7 @@ func Test_client_CreatePackage(t *testing.T) {
 		expected.ETAG = "61406622382e51c2079c11dcbdb978fb"
 
 		actual, err := client.CreatePackage(packageCfg)
-		assert.NoError(t, err)
+		require.NoError(t, err)
 		assert.Equal(t, expected, actual)
 	})
 
@@ -262,7 +263,7 @@ func Test_client_CreatePackage(t *testing.T) {
 		expected := packageCfg
 
 		actual, err := client.CreatePackage(packageCfg)
-		assert.EqualError(t, err, "got 404 from GoCD while making POST call for "+server.URL+
+		require.EqualError(t, err, "got 404 from GoCD while making POST call for "+server.URL+
 			"/api/admin/packages\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 		assert.Equal(t, expected, actual)
 	})
@@ -276,7 +277,7 @@ func Test_client_CreatePackage(t *testing.T) {
 		expected := packageCfg
 
 		actual, err := client.CreatePackage(packageCfg)
-		assert.EqualError(t, err, "got 404 from GoCD while making POST call for "+server.URL+
+		require.EqualError(t, err, "got 404 from GoCD while making POST call for "+server.URL+
 			"/api/admin/packages\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 		assert.Equal(t, expected, actual)
 	})
@@ -290,7 +291,7 @@ func Test_client_CreatePackage(t *testing.T) {
 		expected := packageCfg
 
 		actual, err := client.CreatePackage(packageCfg)
-		assert.EqualError(t, err, "reading response body errored with: invalid character 'p' looking for beginning of value")
+		require.EqualError(t, err, "reading response body errored with: invalid character 'p' looking for beginning of value")
 		assert.Equal(t, expected, actual)
 	})
 
@@ -308,7 +309,7 @@ func Test_client_CreatePackage(t *testing.T) {
 		expected := gocd.Package{}
 
 		actual, err := client.CreatePackage(packageCfg)
-		assert.EqualError(t, err, "call made to create package 'dd8926c0-3b4a-4c9e-8012-957b179cec5b' errored with: "+
+		require.EqualError(t, err, "call made to create package 'dd8926c0-3b4a-4c9e-8012-957b179cec5b' errored with: "+
 			"Post \"http://localhost:8156/go/api/admin/packages\": dial tcp [::1]:8156: connect: connection refused")
 		assert.Equal(t, expected, actual)
 	})
@@ -347,7 +348,7 @@ func Test_client_UpdatePackage(t *testing.T) {
 		expected.ETAG = "61406622382e51c2079c11dcbdb978fb"
 
 		actual, err := client.UpdatePackage(packageCfg)
-		assert.NoError(t, err)
+		require.NoError(t, err)
 		assert.Equal(t, expected, actual)
 	})
 
@@ -361,7 +362,7 @@ func Test_client_UpdatePackage(t *testing.T) {
 		expected := packageCfg
 
 		actual, err := client.UpdatePackage(packageCfg)
-		assert.EqualError(t, err, "got 404 from GoCD while making PUT call for "+server.URL+
+		require.EqualError(t, err, "got 404 from GoCD while making PUT call for "+server.URL+
 			"/api/admin/packages\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 		assert.Equal(t, expected, actual)
 	})
@@ -375,7 +376,7 @@ func Test_client_UpdatePackage(t *testing.T) {
 		expected := packageCfg
 
 		actual, err := client.UpdatePackage(packageCfg)
-		assert.EqualError(t, err, "got 404 from GoCD while making PUT call for "+server.URL+
+		require.EqualError(t, err, "got 404 from GoCD while making PUT call for "+server.URL+
 			"/api/admin/packages\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 		assert.Equal(t, expected, actual)
 	})
@@ -389,7 +390,7 @@ func Test_client_UpdatePackage(t *testing.T) {
 		expected := packageCfg
 
 		actual, err := client.UpdatePackage(packageCfg)
-		assert.EqualError(t, err, "reading response body errored with: invalid character 'p' looking for beginning of value")
+		require.EqualError(t, err, "reading response body errored with: invalid character 'p' looking for beginning of value")
 		assert.Equal(t, expected, actual)
 	})
 
@@ -407,7 +408,7 @@ func Test_client_UpdatePackage(t *testing.T) {
 		expected := gocd.Package{}
 
 		actual, err := client.UpdatePackage(packageCfg)
-		assert.EqualError(t, err, "call made to update package 'dd8926c0-3b4a-4c9e-8012-957b179cec5b' errored with: "+
+		require.EqualError(t, err, "call made to update package 'dd8926c0-3b4a-4c9e-8012-957b179cec5b' errored with: "+
 			"Put \"http://localhost:8156/go/api/admin/packages/dd8926c0-3b4a-4c9e-8012-957b179cec5b\": dial tcp [::1]:8156: connect: connection refused")
 		assert.Equal(t, expected, actual)
 	})
@@ -424,7 +425,7 @@ func Test_client_DeletePackage(t *testing.T) {
 		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		err := client.DeletePackage(repositoryID)
-		assert.NoError(t, err)
+		require.NoError(t, err)
 	})
 
 	t.Run("should error out while deleting a package due to wrong headers", func(t *testing.T) {
@@ -434,7 +435,7 @@ func Test_client_DeletePackage(t *testing.T) {
 		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		err := client.DeletePackage(repositoryID)
-		assert.EqualError(t, err, "got 404 from GoCD while making DELETE call for "+server.URL+
+		require.EqualError(t, err, "got 404 from GoCD while making DELETE call for "+server.URL+
 			"/api/admin/packages/dd8926c0-3b4a-4c9e-8012-957b179cec5b\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 	})
 
@@ -445,7 +446,7 @@ func Test_client_DeletePackage(t *testing.T) {
 		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		err := client.DeletePackage(repositoryID)
-		assert.EqualError(t, err, "got 404 from GoCD while making DELETE call for "+server.URL+
+		require.EqualError(t, err, "got 404 from GoCD while making DELETE call for "+server.URL+
 			"/api/admin/packages/dd8926c0-3b4a-4c9e-8012-957b179cec5b\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 	})
 
@@ -456,7 +457,7 @@ func Test_client_DeletePackage(t *testing.T) {
 		client.SetRetryWaitTime(1)
 
 		err := client.DeletePackage(repositoryID)
-		assert.EqualError(t, err, "call made to delete package 'dd8926c0-3b4a-4c9e-8012-957b179cec5b' errored with: "+
+		require.EqualError(t, err, "call made to delete package 'dd8926c0-3b4a-4c9e-8012-957b179cec5b' errored with: "+
 			"Delete \"http://localhost:8156/go/api/admin/packages/dd8926c0-3b4a-4c9e-8012-957b179cec5b\": dial tcp [::1]:8156: connect: connection refused")
 	})
 }

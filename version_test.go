@@ -7,6 +7,7 @@ import (
 
 	"github.com/nikhilsbhat/gocd-sdk-go"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 //go:embed internal/fixtures/version.json
@@ -21,7 +22,7 @@ func Test_config_GetVersionInfo(t *testing.T) {
 		client.SetRetryWaitTime(1)
 
 		actual, err := client.GetVersionInfo()
-		assert.EqualError(t, err, "call made to get version information errored with: "+
+		require.EqualError(t, err, "call made to get version information errored with: "+
 			"Get \"http://localhost:8156/go/api/version\": dial tcp [::1]:8156: connect: connection refused")
 		assert.Equal(t, gocd.VersionInfo{}, actual)
 	})
@@ -31,7 +32,7 @@ func Test_config_GetVersionInfo(t *testing.T) {
 		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		actual, err := client.GetVersionInfo()
-		assert.EqualError(t, err, "got 502 from GoCD while making GET call for "+server.URL+"/api/version\nwith BODY:backupJSON")
+		require.EqualError(t, err, "got 502 from GoCD while making GET call for "+server.URL+"/api/version\nwith BODY:backupJSON")
 		assert.Equal(t, gocd.VersionInfo{}, actual)
 	})
 
@@ -40,7 +41,7 @@ func Test_config_GetVersionInfo(t *testing.T) {
 		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		actual, err := client.GetVersionInfo()
-		assert.EqualError(t, err, "reading response body errored with: invalid character '}' after object key")
+		require.EqualError(t, err, "reading response body errored with: invalid character '}' after object key")
 		assert.Equal(t, gocd.VersionInfo{}, actual)
 	})
 
@@ -55,7 +56,7 @@ func Test_config_GetVersionInfo(t *testing.T) {
 		}
 
 		actual, err := client.GetVersionInfo()
-		assert.NoError(t, err)
+		require.NoError(t, err)
 		assert.Equal(t, expected, actual)
 	})
 }

@@ -2,7 +2,6 @@ package gocd
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 	"path/filepath"
 
@@ -54,7 +53,7 @@ func (conf *client) GetArtifactStore(name string) (CommonConfig, error) {
 		}).
 		Get(filepath.Join(ArtifactStoreEndpoint, name))
 	if err != nil {
-		return CommonConfig{}, &errors.APIError{Err: err, Message: fmt.Sprintf("get artifact store %s", name)}
+		return CommonConfig{}, &errors.APIError{Err: err, Message: "get artifact store " + name}
 	}
 
 	if resp.StatusCode() != http.StatusOK {
@@ -86,7 +85,7 @@ func (conf *client) CreateArtifactStore(config CommonConfig) (CommonConfig, erro
 		SetBody(config).
 		Post(ArtifactStoreEndpoint)
 	if err != nil {
-		return CommonConfig{}, &errors.APIError{Err: err, Message: fmt.Sprintf("create artifact store %s", config.ID)}
+		return CommonConfig{}, &errors.APIError{Err: err, Message: "create artifact store " + config.ID}
 	}
 
 	if resp.StatusCode() != http.StatusOK {
@@ -119,7 +118,7 @@ func (conf *client) UpdateArtifactStore(config CommonConfig) (CommonConfig, erro
 		SetBody(config).
 		Put(filepath.Join(ArtifactStoreEndpoint, config.ID))
 	if err != nil {
-		return CommonConfig{}, &errors.APIError{Err: err, Message: fmt.Sprintf("update artifact store %s", config.ID)}
+		return CommonConfig{}, &errors.APIError{Err: err, Message: "update artifact store " + config.ID}
 	}
 
 	if resp.StatusCode() != http.StatusOK {
@@ -147,7 +146,7 @@ func (conf *client) DeleteArtifactStore(name string) error {
 		}).
 		Delete(filepath.Join(ArtifactStoreEndpoint, name))
 	if err != nil {
-		return &errors.APIError{Err: err, Message: fmt.Sprintf("delete artifact store %s", name)}
+		return &errors.APIError{Err: err, Message: "delete artifact store " + name}
 	}
 
 	if resp.StatusCode() != http.StatusOK {

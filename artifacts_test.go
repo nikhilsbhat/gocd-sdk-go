@@ -11,6 +11,7 @@ import (
 	"github.com/imdario/mergo"
 	"github.com/nikhilsbhat/gocd-sdk-go"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 //go:embed internal/fixtures/artifacts_info.json
@@ -33,7 +34,7 @@ func Test_client_GetArtifactConfig(t *testing.T) {
 		}
 
 		actual, err := client.GetArtifactConfig()
-		assert.NoError(t, err)
+		require.NoError(t, err)
 		assert.Equal(t, expected, actual)
 		assert.Equal(t, expected.ETAG, actual.ETAG)
 	})
@@ -43,7 +44,7 @@ func Test_client_GetArtifactConfig(t *testing.T) {
 		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		actual, err := client.GetArtifactConfig()
-		assert.EqualError(t, err, "got 404 from GoCD while making GET call for "+server.URL+
+		require.EqualError(t, err, "got 404 from GoCD while making GET call for "+server.URL+
 			"/api/admin/config/server/artifact_config\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 		assert.Equal(t, gocd.ArtifactInfo{}, actual)
 	})
@@ -53,7 +54,7 @@ func Test_client_GetArtifactConfig(t *testing.T) {
 		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		actual, err := client.GetArtifactConfig()
-		assert.EqualError(t, err, "got 404 from GoCD while making GET call for "+server.URL+
+		require.EqualError(t, err, "got 404 from GoCD while making GET call for "+server.URL+
 			"/api/admin/config/server/artifact_config\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 		assert.Equal(t, gocd.ArtifactInfo{}, actual)
 	})
@@ -63,7 +64,7 @@ func Test_client_GetArtifactConfig(t *testing.T) {
 		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		actual, err := client.GetArtifactConfig()
-		assert.EqualError(t, err, "reading response body errored with: invalid character 'a' looking for beginning of value")
+		require.EqualError(t, err, "reading response body errored with: invalid character 'a' looking for beginning of value")
 		assert.Equal(t, gocd.ArtifactInfo{}, actual)
 	})
 
@@ -74,7 +75,7 @@ func Test_client_GetArtifactConfig(t *testing.T) {
 		client.SetRetryWaitTime(1)
 
 		actual, err := client.GetArtifactConfig()
-		assert.EqualError(t, err, "call made to get artifacts info errored with: "+
+		require.EqualError(t, err, "call made to get artifacts info errored with: "+
 			"Get \"http://localhost:8156/go/api/admin/config/server/artifact_config\": dial tcp [::1]:8156: connect: connection refused")
 		assert.Equal(t, gocd.ArtifactInfo{}, actual)
 	})
@@ -103,8 +104,8 @@ func Test_client_UpdateArtifactConfig(t *testing.T) {
 		}
 
 		actual, err := client.UpdateArtifactConfig(artifactConfig)
-		assert.NoError(t, err)
-		assert.Equal(t, float64(10), actual.PurgeSettings.PurgeStartDiskSpace)
+		require.NoError(t, err)
+		assert.InEpsilon(t, 10, actual.PurgeSettings.PurgeStartDiskSpace, 0)
 	})
 
 	t.Run("should error out while updating the artifact information in GoCD due to wrong headers", func(t *testing.T) {
@@ -112,7 +113,7 @@ func Test_client_UpdateArtifactConfig(t *testing.T) {
 		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		actual, err := client.UpdateArtifactConfig(gocd.ArtifactInfo{})
-		assert.EqualError(t, err, "got 404 from GoCD while making PUT call for "+server.URL+
+		require.EqualError(t, err, "got 404 from GoCD while making PUT call for "+server.URL+
 			"/api/admin/config/server/artifact_config\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 		assert.Equal(t, gocd.ArtifactInfo{}, actual)
 	})
@@ -122,7 +123,7 @@ func Test_client_UpdateArtifactConfig(t *testing.T) {
 		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		actual, err := client.UpdateArtifactConfig(gocd.ArtifactInfo{})
-		assert.EqualError(t, err, "got 404 from GoCD while making PUT call for "+server.URL+
+		require.EqualError(t, err, "got 404 from GoCD while making PUT call for "+server.URL+
 			"/api/admin/config/server/artifact_config\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 		assert.Equal(t, gocd.ArtifactInfo{}, actual)
 	})
@@ -143,7 +144,7 @@ func Test_client_UpdateArtifactConfig(t *testing.T) {
 		}
 
 		actual, err := client.UpdateArtifactConfig(artifactConfig)
-		assert.EqualError(t, err, "reading response body errored with: invalid character 'a' looking for beginning of value")
+		require.EqualError(t, err, "reading response body errored with: invalid character 'a' looking for beginning of value")
 		assert.Equal(t, gocd.ArtifactInfo{}, actual)
 	})
 
@@ -154,7 +155,7 @@ func Test_client_UpdateArtifactConfig(t *testing.T) {
 		client.SetRetryWaitTime(1)
 
 		actual, err := client.UpdateArtifactConfig(gocd.ArtifactInfo{})
-		assert.EqualError(t, err, "call made to update artifacts info errored with: "+
+		require.EqualError(t, err, "call made to update artifacts info errored with: "+
 			"Put \"http://localhost:8156/go/api/admin/config/server/artifact_config\": dial tcp [::1]:8156: connect: connection refused")
 		assert.Equal(t, gocd.ArtifactInfo{}, actual)
 	})
@@ -165,6 +166,7 @@ func mockArtifactInfoServer(body []byte, statusCode int, header map[string]strin
 	return httptest.NewServer(http.HandlerFunc(func(writer http.ResponseWriter, req *http.Request) {
 		if header == nil {
 			writer.WriteHeader(http.StatusNotFound)
+
 			if _, err := writer.Write([]byte(`<html>
 <body>
 	<h2>404 Not found</h2>
@@ -180,6 +182,7 @@ func mockArtifactInfoServer(body []byte, statusCode int, header map[string]strin
 		for key, value := range header {
 			if req.Header.Get(key) != value {
 				writer.WriteHeader(http.StatusNotFound)
+
 				if _, err := writer.Write([]byte(`<html>
 <body>
 	<h2>404 Not found</h2>
@@ -196,8 +199,8 @@ func mockArtifactInfoServer(body []byte, statusCode int, header map[string]strin
 		if req.Method == http.MethodPost { //nolint:nestif
 			if statusCode == http.StatusInternalServerError {
 				writer.WriteHeader(http.StatusOK)
-				_, err := writer.Write(body)
-				if err != nil {
+
+				if _, err := writer.Write(body); err != nil {
 					log.Fatalln(err)
 				}
 
@@ -205,15 +208,17 @@ func mockArtifactInfoServer(body []byte, statusCode int, header map[string]strin
 			}
 
 			var artifactCFG gocd.ArtifactInfo
+
 			if err := json.Unmarshal(body, &artifactCFG); err != nil {
 				writer.WriteHeader(http.StatusInternalServerError)
-				_, err = writer.Write([]byte(err.Error()))
-				if err != nil {
+
+				if _, err = writer.Write([]byte(err.Error())); err != nil {
 					log.Fatalln(err)
 				}
 			}
 
 			var newCFG gocd.ArtifactInfo
+
 			if err := json.NewDecoder(req.Body).Decode(&newCFG); err != nil {
 				log.Fatalln(err)
 			}
@@ -228,8 +233,8 @@ func mockArtifactInfoServer(body []byte, statusCode int, header map[string]strin
 			}
 
 			writer.WriteHeader(statusCode)
-			_, err = writer.Write(out)
-			if err != nil {
+
+			if _, err = writer.Write(out); err != nil {
 				log.Fatalln(err)
 			}
 
@@ -238,8 +243,8 @@ func mockArtifactInfoServer(body []byte, statusCode int, header map[string]strin
 
 		writer.Header().Set("Etag", "17f5a9edf150884e5fc4315b4a7814cd")
 		writer.WriteHeader(statusCode)
-		_, err := writer.Write(body)
-		if err != nil {
+
+		if _, err := writer.Write(body); err != nil {
 			log.Fatalln(err)
 		}
 	}))

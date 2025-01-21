@@ -8,6 +8,7 @@ import (
 
 	"github.com/nikhilsbhat/gocd-sdk-go"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 var (
@@ -86,7 +87,7 @@ func Test_client_GetPipelines(t *testing.T) {
 		client.SetRetryWaitTime(1)
 
 		actual, err := client.GetPipelines()
-		assert.EqualError(t, err, "call made to get pipelines errored with: "+
+		require.EqualError(t, err, "call made to get pipelines errored with: "+
 			"Get \"http://localhost:8156/go/api/feed/pipelines.xml\": dial tcp [::1]:8156: connect: connection refused")
 		assert.Equal(t, gocd.PipelinesInfo{}, actual)
 	})
@@ -96,7 +97,7 @@ func Test_client_GetPipelines(t *testing.T) {
 		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		actual, err := client.GetPipelines()
-		assert.EqualError(t, err, "got 502 from GoCD while making GET call for "+server.URL+
+		require.EqualError(t, err, "got 502 from GoCD while making GET call for "+server.URL+
 			"/api/feed/pipelines.xml\nwith BODY:backupJSON")
 		assert.Equal(t, gocd.PipelinesInfo{}, actual)
 	})
@@ -106,7 +107,7 @@ func Test_client_GetPipelines(t *testing.T) {
 		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		actual, err := client.GetPipelines()
-		assert.EqualError(t, err, "reading response body errored with: EOF")
+		require.EqualError(t, err, "reading response body errored with: EOF")
 		assert.Equal(t, gocd.PipelinesInfo{}, actual)
 	})
 
@@ -115,8 +116,8 @@ func Test_client_GetPipelines(t *testing.T) {
 		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		actual, err := client.GetPipelines()
-		assert.NoError(t, err)
-		assert.Equal(t, 3, len(actual.Pipeline))
+		require.NoError(t, err)
+		assert.Len(t, actual.Pipeline, 3)
 	})
 }
 
@@ -127,7 +128,7 @@ func Test_client_GetPipelineSchedules(t *testing.T) {
 		client.SetRetryWaitTime(1)
 
 		actual, err := client.GetPipelineSchedules("helm-images", "0", "2")
-		assert.EqualError(t, err, "call made to get pipeline schedules helm-images errored with: Get "+
+		require.EqualError(t, err, "call made to get pipeline schedules helm-images errored with: Get "+
 			"\"http://localhost:8156/go/pipelineHistory.json?pipelineName=helm-images&perPage=2&start=0\": dial tcp [::1]:8156: connect: connection refused")
 		assert.Equal(t, gocd.PipelineSchedules{}, actual)
 	})
@@ -137,7 +138,7 @@ func Test_client_GetPipelineSchedules(t *testing.T) {
 		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		actual, err := client.GetPipelineSchedules("helm-images", "0", "2")
-		assert.EqualError(t, err, "got 502 from GoCD while making GET call for "+server.URL+
+		require.EqualError(t, err, "got 502 from GoCD while making GET call for "+server.URL+
 			"/pipelineHistory.json?pipelineName=helm-images&perPage=2&start=0\nwith BODY:pipelineSchedulesJSON")
 		assert.Equal(t, gocd.PipelineSchedules{}, actual)
 	})
@@ -147,7 +148,7 @@ func Test_client_GetPipelineSchedules(t *testing.T) {
 		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		actual, err := client.GetPipelineSchedules("helm-images", "0", "2")
-		assert.EqualError(t, err, "reading response body errored with: invalid character '}' after object key")
+		require.EqualError(t, err, "reading response body errored with: invalid character '}' after object key")
 		assert.Equal(t, gocd.PipelineSchedules{}, actual)
 	})
 
@@ -183,7 +184,7 @@ func Test_client_GetPipelineSchedules(t *testing.T) {
 		}
 
 		actual, err := client.GetPipelineSchedules("helm-images", "0", "2")
-		assert.NoError(t, err)
+		require.NoError(t, err)
 		assert.Equal(t, expected, actual)
 	})
 }
@@ -195,7 +196,7 @@ func Test_client_GetPipelineHistory(t *testing.T) {
 		client.SetRetryWaitTime(1)
 
 		actual, err := client.GetPipelineRunHistory("helm-images", "0", time.Duration(2)*time.Second)
-		assert.EqualError(t, err, "call made to get pipeline history for 'helm-images' errored with: "+
+		require.EqualError(t, err, "call made to get pipeline history for 'helm-images' errored with: "+
 			"Get \"http://localhost:8156/go/api/pipelines/helm-images/history?after=0&page_size=0\": dial tcp [::1]:8156: connect: connection refused")
 		assert.Nil(t, actual)
 	})
@@ -205,7 +206,7 @@ func Test_client_GetPipelineHistory(t *testing.T) {
 		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		actual, err := client.GetPipelineRunHistory("helm-images", "0", time.Duration(2)*time.Second)
-		assert.EqualError(t, err, "got 502 from GoCD while making GET call for "+server.URL+
+		require.EqualError(t, err, "got 502 from GoCD while making GET call for "+server.URL+
 			"/api/pipelines/helm-images/history?after=0&page_size=0\nwith BODY:pipelineRunHistoryJSON")
 		assert.Nil(t, actual)
 	})
@@ -215,7 +216,7 @@ func Test_client_GetPipelineHistory(t *testing.T) {
 		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		actual, err := client.GetPipelineRunHistory("helm-images", "0", time.Duration(2)*time.Second)
-		assert.EqualError(t, err, "reading response body errored with: invalid character '}' after object key")
+		require.EqualError(t, err, "reading response body errored with: invalid character '}' after object key")
 		assert.Nil(t, actual)
 	})
 }
@@ -227,7 +228,7 @@ func Test_client_GetLimitedPipelineRunHistory(t *testing.T) {
 		client.SetRetryWaitTime(1)
 
 		actual, err := client.GetLimitedPipelineRunHistory("helm-images", "0", "0")
-		assert.EqualError(t, err, "call made to get limited pipeline history for 'helm-images' errored with: "+
+		require.EqualError(t, err, "call made to get limited pipeline history for 'helm-images' errored with: "+
 			"Get \"http://localhost:8156/go/api/pipelines/helm-images/history?after=0&page_size=0\": dial tcp [::1]:8156: connect: connection refused")
 		assert.Nil(t, actual)
 	})
@@ -237,7 +238,7 @@ func Test_client_GetLimitedPipelineRunHistory(t *testing.T) {
 		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		actual, err := client.GetLimitedPipelineRunHistory("helm-images", "0", "0")
-		assert.EqualError(t, err, "got 502 from GoCD while making GET call for "+server.URL+
+		require.EqualError(t, err, "got 502 from GoCD while making GET call for "+server.URL+
 			"/api/pipelines/helm-images/history?after=0&page_size=0\nwith BODY:pipelineRunHistoryJSON")
 		assert.Nil(t, actual)
 	})
@@ -247,7 +248,7 @@ func Test_client_GetLimitedPipelineRunHistory(t *testing.T) {
 		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		actual, err := client.GetLimitedPipelineRunHistory("helm-images", "0", "0")
-		assert.EqualError(t, err, "reading response body errored with: invalid character '}' after object key")
+		require.EqualError(t, err, "reading response body errored with: invalid character '}' after object key")
 		assert.Nil(t, actual)
 	})
 
@@ -291,7 +292,7 @@ func Test_client_GetLimitedPipelineRunHistory(t *testing.T) {
 		}
 
 		actual, err := client.GetLimitedPipelineRunHistory("helm-images", "0", "0")
-		assert.NoError(t, err)
+		require.NoError(t, err)
 		assert.Equal(t, expected, actual)
 	})
 }
@@ -300,28 +301,28 @@ func Test_client_getPipelineName(t *testing.T) {
 	t.Run("should be able to fetch pipeline name from the href passed", func(t *testing.T) {
 		pipelineLink := "http://localhost:8156/go/api/feed/pipelines/animation-and-action-movies/stages.xml"
 		name, err := gocd.GetPipelineName(pipelineLink)
-		assert.NoError(t, err)
+		require.NoError(t, err)
 		assert.Equal(t, "animation-and-action-movies", name)
 	})
 
 	t.Run("should fetch malformed pipeline name as malformed/invalid (prefix) href passed", func(t *testing.T) {
 		pipelineLink := "http://localhost:8156/go/api/feed/pipelinesss/animation-and-action-movies/stages.xml"
 		name, err := gocd.GetPipelineName(pipelineLink)
-		assert.NoError(t, err)
+		require.NoError(t, err)
 		assert.Equal(t, "/go/api/feed/pipelinesss/animation-and-action-movies", name)
 	})
 
 	t.Run("should fetch malformed pipeline name as malformed/invalid (suffix) href passed", func(t *testing.T) {
 		pipelineLink := "http://localhost:8156/go/api/feed/pipelines/animation-and-action-movies/test/stages.xml"
 		name, err := gocd.GetPipelineName(pipelineLink)
-		assert.NoError(t, err)
+		require.NoError(t, err)
 		assert.Equal(t, "animation-and-action-movies/test", name)
 	})
 
 	t.Run("should fail while fetching pipeline name from malformed/invalid href", func(t *testing.T) {
 		pipelineLink := "://localhost:8153/go/api/feed/pipelines/animation-and-action-movies/stages.xml"
 		name, err := gocd.GetPipelineName(pipelineLink)
-		assert.EqualError(t, err, "parsing URL errored with:"+
+		require.EqualError(t, err, "parsing URL errored with:"+
 			" parse \"://localhost:8153/go/api/feed/pipelines/animation-and-action-movies/stages.xml\": missing protocol scheme")
 		assert.Equal(t, "", name)
 	})
@@ -337,7 +338,7 @@ func Test_client_GetPipelineStatus(t *testing.T) {
 		client.SetRetryWaitTime(1)
 
 		actual, err := client.GetPipelineState(pipeline)
-		assert.EqualError(t, err, "call made to get pipeline state errored with:"+
+		require.EqualError(t, err, "call made to get pipeline state errored with:"+
 			" Get \"http://localhost:8156/go/api/pipelines/action-movies-manual/status\": dial tcp [::1]:8156: connect: connection refused")
 		assert.Equal(t, gocd.PipelineState{}, actual)
 	})
@@ -347,7 +348,7 @@ func Test_client_GetPipelineStatus(t *testing.T) {
 		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		actual, err := client.GetPipelineState(pipeline)
-		assert.EqualError(t, err, "got 502 from GoCD while making GET call for "+server.URL+
+		require.EqualError(t, err, "got 502 from GoCD while making GET call for "+server.URL+
 			"/api/pipelines/action-movies-manual/status\nwith BODY:backupJSON")
 		assert.Equal(t, gocd.PipelineState{}, actual)
 	})
@@ -357,7 +358,7 @@ func Test_client_GetPipelineStatus(t *testing.T) {
 		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		actual, err := client.GetPipelineState(pipeline)
-		assert.EqualError(t, err, "reading response body errored with: invalid character '}' after object key")
+		require.EqualError(t, err, "reading response body errored with: invalid character '}' after object key")
 		assert.Equal(t, gocd.PipelineState{}, actual)
 	})
 
@@ -375,7 +376,7 @@ func Test_client_GetPipelineStatus(t *testing.T) {
 		}
 
 		actual, err := client.GetPipelineState(pipeline)
-		assert.NoError(t, err)
+		require.NoError(t, err)
 		assert.Equal(t, expected, actual)
 	})
 }
@@ -391,7 +392,7 @@ func Test_client_PipelinePause(t *testing.T) {
 		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		err := client.PipelinePause("first_pipeline", "pausing the pipeline")
-		assert.NoError(t, err)
+		require.NoError(t, err)
 	})
 
 	t.Run("Should error out while pausing pipeline due to wrong header", func(t *testing.T) {
@@ -399,7 +400,7 @@ func Test_client_PipelinePause(t *testing.T) {
 		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		err := client.PipelinePause("first_pipeline", "pausing the pipeline")
-		assert.EqualError(t, err, "got 404 from GoCD while making POST call for "+server.URL+
+		require.EqualError(t, err, "got 404 from GoCD while making POST call for "+server.URL+
 			"/api/pipelines/first_pipeline/pause\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 	})
 
@@ -408,7 +409,7 @@ func Test_client_PipelinePause(t *testing.T) {
 		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		err := client.PipelinePause("first_pipeline", "pausing the pipeline")
-		assert.EqualError(t, err, "got 404 from GoCD while making POST call for "+server.URL+
+		require.EqualError(t, err, "got 404 from GoCD while making POST call for "+server.URL+
 			"/api/pipelines/first_pipeline/pause\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 	})
 
@@ -419,7 +420,7 @@ func Test_client_PipelinePause(t *testing.T) {
 		client.SetRetryWaitTime(1)
 
 		err := client.PipelinePause("first_pipeline", "pausing the pipeline")
-		assert.EqualError(t, err, "call made to pause pipeline errored with: "+
+		require.EqualError(t, err, "call made to pause pipeline errored with: "+
 			"Post \"http://localhost:8156/go/api/pipelines/first_pipeline/pause\": dial tcp [::1]:8156: connect: connection refused")
 	})
 }
@@ -435,7 +436,7 @@ func Test_client_PipelineUnPause(t *testing.T) {
 		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		err := client.PipelineUnPause("first_pipeline")
-		assert.NoError(t, err)
+		require.NoError(t, err)
 	})
 
 	t.Run("Should error out while un pausing pipeline due to wrong header", func(t *testing.T) {
@@ -443,7 +444,7 @@ func Test_client_PipelineUnPause(t *testing.T) {
 		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		err := client.PipelineUnPause("first_pipeline")
-		assert.EqualError(t, err, "got 404 from GoCD while making POST call for "+server.URL+
+		require.EqualError(t, err, "got 404 from GoCD while making POST call for "+server.URL+
 			"/api/pipelines/first_pipeline/unpause\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 	})
 
@@ -452,7 +453,7 @@ func Test_client_PipelineUnPause(t *testing.T) {
 		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		err := client.PipelineUnPause("first_pipeline")
-		assert.EqualError(t, err, "got 404 from GoCD while making POST call for "+server.URL+
+		require.EqualError(t, err, "got 404 from GoCD while making POST call for "+server.URL+
 			"/api/pipelines/first_pipeline/unpause\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 	})
 
@@ -463,7 +464,7 @@ func Test_client_PipelineUnPause(t *testing.T) {
 		client.SetRetryWaitTime(1)
 
 		err := client.PipelineUnPause("first_pipeline")
-		assert.EqualError(t, err, "call made to unpause pipeline errored with: "+
+		require.EqualError(t, err, "call made to unpause pipeline errored with: "+
 			"Post \"http://localhost:8156/go/api/pipelines/first_pipeline/unpause\": dial tcp [::1]:8156: connect: connection refused")
 	})
 }
@@ -476,7 +477,7 @@ func Test_client_PipelineUnlock(t *testing.T) {
 		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		err := client.PipelineUnlock("first_pipeline")
-		assert.NoError(t, err)
+		require.NoError(t, err)
 	})
 
 	t.Run("Should error out while unlocking pipeline due to wrong header", func(t *testing.T) {
@@ -484,7 +485,7 @@ func Test_client_PipelineUnlock(t *testing.T) {
 		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		err := client.PipelineUnlock("first_pipeline")
-		assert.EqualError(t, err, "got 404 from GoCD while making POST call for "+server.URL+
+		require.EqualError(t, err, "got 404 from GoCD while making POST call for "+server.URL+
 			"/api/pipelines/first_pipeline/unlock\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 	})
 
@@ -493,7 +494,7 @@ func Test_client_PipelineUnlock(t *testing.T) {
 		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		err := client.PipelineUnlock("first_pipeline")
-		assert.EqualError(t, err, "got 404 from GoCD while making POST call for "+server.URL+
+		require.EqualError(t, err, "got 404 from GoCD while making POST call for "+server.URL+
 			"/api/pipelines/first_pipeline/unlock\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 	})
 
@@ -504,7 +505,7 @@ func Test_client_PipelineUnlock(t *testing.T) {
 		client.SetRetryWaitTime(1)
 
 		err := client.PipelineUnlock("first_pipeline")
-		assert.EqualError(t, err, "call made to unlock pipeline errored with: "+
+		require.EqualError(t, err, "call made to unlock pipeline errored with: "+
 			"Post \"http://localhost:8156/go/api/pipelines/first_pipeline/unlock\": dial tcp [::1]:8156: connect: connection refused")
 	})
 }
@@ -525,7 +526,7 @@ func Test_client_SchedulePipeline(t *testing.T) {
 		}
 
 		err := client.SchedulePipeline("first_pipeline", schedule)
-		assert.NoError(t, err)
+		require.NoError(t, err)
 	})
 
 	t.Run("should error out while scheduling pipeline due to wrong header", func(t *testing.T) {
@@ -536,7 +537,7 @@ func Test_client_SchedulePipeline(t *testing.T) {
 		schedule := gocd.Schedule{}
 
 		err := client.SchedulePipeline("first_pipeline", schedule)
-		assert.EqualError(t, err, "got 404 from GoCD while making POST call for "+server.URL+
+		require.EqualError(t, err, "got 404 from GoCD while making POST call for "+server.URL+
 			"/api/pipelines/first_pipeline/schedule\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 	})
 
@@ -547,7 +548,7 @@ func Test_client_SchedulePipeline(t *testing.T) {
 		schedule := gocd.Schedule{}
 
 		err := client.SchedulePipeline("first_pipeline", schedule)
-		assert.EqualError(t, err, "got 404 from GoCD while making POST call for "+server.URL+
+		require.EqualError(t, err, "got 404 from GoCD while making POST call for "+server.URL+
 			"/api/pipelines/first_pipeline/schedule\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 	})
 
@@ -556,6 +557,7 @@ func Test_client_SchedulePipeline(t *testing.T) {
 
 		client.SetRetryCount(1)
 		client.SetRetryWaitTime(1)
+
 		schedule := gocd.Schedule{
 			EnvVars: []map[string]interface{}{
 				{
@@ -568,7 +570,7 @@ func Test_client_SchedulePipeline(t *testing.T) {
 		}
 
 		err := client.SchedulePipeline("first_pipeline", schedule)
-		assert.EqualError(t, err, "call made to schedule pipeline 'first_pipeline' errored with: "+
+		require.EqualError(t, err, "call made to schedule pipeline 'first_pipeline' errored with: "+
 			"Post \"http://localhost:8156/go/api/pipelines/first_pipeline/schedule\": dial tcp [::1]:8156: connect: connection refused")
 	})
 }
@@ -586,7 +588,7 @@ func Test_client_CommentOnPipeline(t *testing.T) {
 		client := gocd.NewClient(server.URL, auth, "debug", nil)
 
 		err := client.CommentOnPipeline(comment)
-		assert.NoError(t, err)
+		require.NoError(t, err)
 	})
 
 	t.Run("should error out while commenting on pipeline due to wrong header", func(t *testing.T) {
@@ -595,7 +597,7 @@ func Test_client_CommentOnPipeline(t *testing.T) {
 		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		err := client.CommentOnPipeline(comment)
-		assert.EqualError(t, err, "got 404 from GoCD while making POST call for "+server.URL+
+		require.EqualError(t, err, "got 404 from GoCD while making POST call for "+server.URL+
 			"/api/pipelines/pipeline1/1/comment\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 	})
 
@@ -604,7 +606,7 @@ func Test_client_CommentOnPipeline(t *testing.T) {
 		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		err := client.CommentOnPipeline(comment)
-		assert.EqualError(t, err, "got 404 from GoCD while making POST call for "+server.URL+
+		require.EqualError(t, err, "got 404 from GoCD while making POST call for "+server.URL+
 			"/api/pipelines/pipeline1/1/comment\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 	})
 
@@ -618,7 +620,7 @@ func Test_client_CommentOnPipeline(t *testing.T) {
 		}
 
 		err := client.CommentOnPipeline(comments)
-		assert.EqualError(t, err, "comment message cannot be empty <nil>")
+		require.EqualError(t, err, "comment message cannot be empty <nil>")
 	})
 
 	t.Run("should error out while commenting on pipeline as server is not reachable", func(t *testing.T) {
@@ -627,7 +629,7 @@ func Test_client_CommentOnPipeline(t *testing.T) {
 		client.SetRetryWaitTime(1)
 
 		err := client.CommentOnPipeline(comment)
-		assert.EqualError(t, err, "call made to comment on pipeline 'pipeline1' errored with: "+
+		require.EqualError(t, err, "call made to comment on pipeline 'pipeline1' errored with: "+
 			"Post \"http://localhost:8156/go/api/pipelines/pipeline1/1/comment\": dial tcp [::1]:8156: connect: connection refused")
 	})
 }
@@ -646,7 +648,7 @@ func Test_client_GetPipelineInstance(t *testing.T) {
 		expected := pipelineMap
 
 		actual, err := client.GetPipelineInstance(pipelineObj)
-		assert.NoError(t, err)
+		require.NoError(t, err)
 		assert.Equal(t, expected, actual)
 	})
 
@@ -656,7 +658,7 @@ func Test_client_GetPipelineInstance(t *testing.T) {
 		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		actual, err := client.GetPipelineInstance(pipelineObj)
-		assert.EqualError(t, err, "got 404 from GoCD while making GET call for "+server.URL+
+		require.EqualError(t, err, "got 404 from GoCD while making GET call for "+server.URL+
 			"/api/pipelines/pipeline1/1\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 		assert.Nil(t, actual)
 	})
@@ -666,7 +668,7 @@ func Test_client_GetPipelineInstance(t *testing.T) {
 		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		actual, err := client.GetPipelineInstance(pipelineObj)
-		assert.EqualError(t, err, "got 404 from GoCD while making GET call for "+server.URL+
+		require.EqualError(t, err, "got 404 from GoCD while making GET call for "+server.URL+
 			"/api/pipelines/pipeline1/1\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 		assert.Nil(t, actual)
 	})
@@ -676,7 +678,7 @@ func Test_client_GetPipelineInstance(t *testing.T) {
 		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		actual, err := client.GetPipelineInstance(pipelineObj)
-		assert.EqualError(t, err, "reading response body errored with: invalid character 'p' looking for beginning of object key string")
+		require.EqualError(t, err, "reading response body errored with: invalid character 'p' looking for beginning of object key string")
 		assert.Nil(t, actual)
 	})
 
@@ -686,7 +688,7 @@ func Test_client_GetPipelineInstance(t *testing.T) {
 		client.SetRetryWaitTime(1)
 
 		actual, err := client.GetPipelineInstance(pipelineObj)
-		assert.EqualError(t, err, "call made to fetch pipeline instance 'pipeline1' errored with: "+
+		require.EqualError(t, err, "call made to fetch pipeline instance 'pipeline1' errored with: "+
 			"Get \"http://localhost:8156/go/api/pipelines/pipeline1/1\": dial tcp [::1]:8156: connect: connection refused")
 		assert.Nil(t, actual)
 	})
@@ -722,7 +724,7 @@ func Test_client_ExportPipelineToConfigRepoFormat(t *testing.T) {
 		}
 
 		resp, err := client.ExportPipelineToConfigRepoFormat("action-movies", "json.config.plugin")
-		assert.NoError(t, err)
+		require.NoError(t, err)
 		assert.Equal(t, expected, resp)
 	})
 
@@ -731,7 +733,7 @@ func Test_client_ExportPipelineToConfigRepoFormat(t *testing.T) {
 		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		resp, err := client.ExportPipelineToConfigRepoFormat("action-movies", "json.config.plugin")
-		assert.EqualError(t, err, "got 404 from GoCD while making GET call for "+server.URL+
+		require.EqualError(t, err, "got 404 from GoCD while making GET call for "+server.URL+
 			"/api/admin/export/pipelines/action-movies?plugin_id=json.config.plugin\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 		assert.Equal(t, gocd.PipelineExport{}, resp)
 	})
@@ -741,7 +743,7 @@ func Test_client_ExportPipelineToConfigRepoFormat(t *testing.T) {
 		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		resp, err := client.ExportPipelineToConfigRepoFormat("action-movies", "json.config.plugin")
-		assert.EqualError(t, err, "got 404 from GoCD while making GET call for "+server.URL+
+		require.EqualError(t, err, "got 404 from GoCD while making GET call for "+server.URL+
 			"/api/admin/export/pipelines/action-movies?plugin_id=json.config.plugin\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 		assert.Equal(t, gocd.PipelineExport{}, resp)
 	})
@@ -752,7 +754,7 @@ func Test_client_ExportPipelineToConfigRepoFormat(t *testing.T) {
 		client.SetRetryWaitTime(1)
 
 		resp, err := client.ExportPipelineToConfigRepoFormat("action-movies", "json.config.plugin")
-		assert.EqualError(t, err, "call made to export pipeline 'action-movies' to format 'json.config.plugin' errored with: Get "+
+		require.EqualError(t, err, "call made to export pipeline 'action-movies' to format 'json.config.plugin' errored with: Get "+
 			"\"http://localhost:8156/go/api/admin/export/pipelines/action-movies?plugin_id=json.config.plugin\": dial tcp [::1]:8156: connect: connection refused")
 		assert.Equal(t, gocd.PipelineExport{}, resp)
 	})

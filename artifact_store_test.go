@@ -7,6 +7,7 @@ import (
 
 	"github.com/nikhilsbhat/gocd-sdk-go"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 var (
@@ -50,7 +51,7 @@ func Test_client_GetArtifactStores(t *testing.T) {
 		}
 
 		actual, err := client.GetArtifactStores()
-		assert.NoError(t, err)
+		require.NoError(t, err)
 		assert.Equal(t, expected, actual)
 	})
 
@@ -66,7 +67,7 @@ func Test_client_GetArtifactStores(t *testing.T) {
 		}
 
 		actual, err := client.GetArtifactStores()
-		assert.EqualError(t, err, "got 404 from GoCD while making GET call for "+server.URL+
+		require.EqualError(t, err, "got 404 from GoCD while making GET call for "+server.URL+
 			"/api/admin/artifact_stores\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 		assert.Equal(t, expected, actual)
 	})
@@ -82,7 +83,7 @@ func Test_client_GetArtifactStores(t *testing.T) {
 		}
 
 		actual, err := client.GetArtifactStores()
-		assert.EqualError(t, err, "got 404 from GoCD while making GET call for "+server.URL+
+		require.EqualError(t, err, "got 404 from GoCD while making GET call for "+server.URL+
 			"/api/admin/artifact_stores\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 		assert.Equal(t, expected, actual)
 	})
@@ -98,7 +99,7 @@ func Test_client_GetArtifactStores(t *testing.T) {
 		}
 
 		actual, err := client.GetArtifactStores()
-		assert.EqualError(t, err, "reading response body errored with: invalid character 'a' looking for beginning of value")
+		require.EqualError(t, err, "reading response body errored with: invalid character 'a' looking for beginning of value")
 		assert.Equal(t, expected, actual)
 	})
 
@@ -114,7 +115,7 @@ func Test_client_GetArtifactStores(t *testing.T) {
 		}
 
 		actual, err := client.GetArtifactStores()
-		assert.EqualError(t, err, "call made to get artifact stores errored with: "+
+		require.EqualError(t, err, "call made to get artifact stores errored with: "+
 			"Get \"http://localhost:8156/go/api/admin/artifact_stores\": dial tcp [::1]:8156: connect: connection refused")
 		assert.Equal(t, expected, actual)
 	})
@@ -150,7 +151,7 @@ func Test_client_GetArtifactStore(t *testing.T) {
 		}
 
 		actual, err := client.GetArtifactStore("hub.docker")
-		assert.NoError(t, err)
+		require.NoError(t, err)
 		assert.Equal(t, expected, actual)
 	})
 
@@ -165,7 +166,7 @@ func Test_client_GetArtifactStore(t *testing.T) {
 		}
 
 		actual, err := client.GetArtifactStore("hub.docker")
-		assert.EqualError(t, err, "got 404 from GoCD while making GET call for "+server.URL+
+		require.EqualError(t, err, "got 404 from GoCD while making GET call for "+server.URL+
 			"/api/admin/artifact_stores/hub.docker\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 		assert.Equal(t, expected, actual)
 	})
@@ -181,7 +182,7 @@ func Test_client_GetArtifactStore(t *testing.T) {
 		}
 
 		actual, err := client.GetArtifactStore("hub.docker")
-		assert.EqualError(t, err, "got 404 from GoCD while making GET call for "+server.URL+
+		require.EqualError(t, err, "got 404 from GoCD while making GET call for "+server.URL+
 			"/api/admin/artifact_stores/hub.docker\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 		assert.Equal(t, expected, actual)
 	})
@@ -197,7 +198,7 @@ func Test_client_GetArtifactStore(t *testing.T) {
 		}
 
 		actual, err := client.GetArtifactStore("hub.docker")
-		assert.EqualError(t, err, "reading response body errored with: invalid character 'a' looking for beginning of value")
+		require.EqualError(t, err, "reading response body errored with: invalid character 'a' looking for beginning of value")
 		assert.Equal(t, expected, actual)
 	})
 
@@ -212,7 +213,7 @@ func Test_client_GetArtifactStore(t *testing.T) {
 		}
 
 		actual, err := client.GetArtifactStore("hub.docker")
-		assert.EqualError(t, err, "call made to get artifact store hub.docker errored with: "+
+		require.EqualError(t, err, "call made to get artifact store hub.docker errored with: "+
 			"Get \"http://localhost:8156/go/api/admin/artifact_stores/hub.docker\": dial tcp [::1]:8156: connect: connection refused")
 		assert.Equal(t, expected, actual)
 	})
@@ -251,7 +252,7 @@ func Test_client_CreateArtifactStore(t *testing.T) {
 		expected.ETAG = "cbc5f2d5b9c13a2cc1b1efb3d8a6155d"
 
 		actual, err := client.CreateArtifactStore(storeCfg)
-		assert.NoError(t, err)
+		require.NoError(t, err)
 		assert.Equal(t, expected, actual)
 	})
 
@@ -264,7 +265,7 @@ func Test_client_CreateArtifactStore(t *testing.T) {
 		storeCfg := gocd.CommonConfig{}
 
 		actual, err := client.CreateArtifactStore(storeCfg)
-		assert.EqualError(t, err, "got 404 from GoCD while making POST call for "+server.URL+
+		require.EqualError(t, err, "got 404 from GoCD while making POST call for "+server.URL+
 			"/api/admin/artifact_stores\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 		assert.Equal(t, storeCfg, actual)
 	})
@@ -278,7 +279,7 @@ func Test_client_CreateArtifactStore(t *testing.T) {
 		storeCfg := gocd.CommonConfig{}
 
 		actual, err := client.CreateArtifactStore(storeCfg)
-		assert.EqualError(t, err, "got 404 from GoCD while making POST call for "+server.URL+
+		require.EqualError(t, err, "got 404 from GoCD while making POST call for "+server.URL+
 			"/api/admin/artifact_stores\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 		assert.Equal(t, storeCfg, actual)
 	})
@@ -292,7 +293,7 @@ func Test_client_CreateArtifactStore(t *testing.T) {
 		storeCfg := gocd.CommonConfig{}
 
 		actual, err := client.CreateArtifactStore(storeCfg)
-		assert.EqualError(t, err, "reading response body errored with: invalid character 'a' looking for beginning of value")
+		require.EqualError(t, err, "reading response body errored with: invalid character 'a' looking for beginning of value")
 		assert.Equal(t, storeCfg, actual)
 	})
 
@@ -305,7 +306,7 @@ func Test_client_CreateArtifactStore(t *testing.T) {
 		storeCfg := gocd.CommonConfig{ID: "docker"}
 
 		actual, err := client.CreateArtifactStore(storeCfg)
-		assert.EqualError(t, err, "call made to create artifact store docker errored with: "+
+		require.EqualError(t, err, "call made to create artifact store docker errored with: "+
 			"Post \"http://localhost:8156/go/api/admin/artifact_stores\": dial tcp [::1]:8156: connect: connection refused")
 		assert.Equal(t, gocd.CommonConfig{}, actual)
 	})
@@ -344,7 +345,7 @@ func Test_client_UpdateArtifactStore(t *testing.T) {
 		expected.ETAG = "61406622382e51c2079c11dcbdb978fb"
 
 		actual, err := client.UpdateArtifactStore(storeCfg)
-		assert.NoError(t, err)
+		require.NoError(t, err)
 		assert.Equal(t, expected, actual)
 	})
 
@@ -357,7 +358,7 @@ func Test_client_UpdateArtifactStore(t *testing.T) {
 		storeCfg := gocd.CommonConfig{}
 
 		actual, err := client.UpdateArtifactStore(storeCfg)
-		assert.EqualError(t, err, "got 404 from GoCD while making PUT call for "+server.URL+
+		require.EqualError(t, err, "got 404 from GoCD while making PUT call for "+server.URL+
 			"/api/admin/artifact_stores\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 		assert.Equal(t, storeCfg, actual)
 	})
@@ -371,7 +372,7 @@ func Test_client_UpdateArtifactStore(t *testing.T) {
 		storeCfg := gocd.CommonConfig{}
 
 		actual, err := client.UpdateArtifactStore(storeCfg)
-		assert.EqualError(t, err, "got 404 from GoCD while making PUT call for "+server.URL+
+		require.EqualError(t, err, "got 404 from GoCD while making PUT call for "+server.URL+
 			"/api/admin/artifact_stores\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 		assert.Equal(t, storeCfg, actual)
 	})
@@ -385,7 +386,7 @@ func Test_client_UpdateArtifactStore(t *testing.T) {
 		storeCfg := gocd.CommonConfig{}
 
 		actual, err := client.UpdateArtifactStore(storeCfg)
-		assert.EqualError(t, err, "reading response body errored with: invalid character 'a' looking for beginning of value")
+		require.EqualError(t, err, "reading response body errored with: invalid character 'a' looking for beginning of value")
 		assert.Equal(t, storeCfg, actual)
 	})
 
@@ -398,7 +399,7 @@ func Test_client_UpdateArtifactStore(t *testing.T) {
 		storeCfg := gocd.CommonConfig{ID: "docker"}
 
 		actual, err := client.UpdateArtifactStore(storeCfg)
-		assert.EqualError(t, err, "call made to update artifact store docker errored with: "+
+		require.EqualError(t, err, "call made to update artifact store docker errored with: "+
 			"Put \"http://localhost:8156/go/api/admin/artifact_stores/docker\": dial tcp [::1]:8156: connect: connection refused")
 		assert.Equal(t, gocd.CommonConfig{}, actual)
 	})
@@ -414,7 +415,7 @@ func Test_client_DeleteArtifactStore(t *testing.T) {
 		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		err := client.DeleteArtifactStore("docker")
-		assert.NoError(t, err)
+		require.NoError(t, err)
 	})
 
 	t.Run("should error out while deleting an artifact store due to wrong headers", func(t *testing.T) {
@@ -424,7 +425,7 @@ func Test_client_DeleteArtifactStore(t *testing.T) {
 		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		err := client.DeleteArtifactStore("docker")
-		assert.EqualError(t, err, "got 404 from GoCD while making DELETE call for "+server.URL+
+		require.EqualError(t, err, "got 404 from GoCD while making DELETE call for "+server.URL+
 			"/api/admin/artifact_stores/docker\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 	})
 
@@ -435,7 +436,7 @@ func Test_client_DeleteArtifactStore(t *testing.T) {
 		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		err := client.DeleteArtifactStore("docker")
-		assert.EqualError(t, err, "got 404 from GoCD while making DELETE call for "+server.URL+
+		require.EqualError(t, err, "got 404 from GoCD while making DELETE call for "+server.URL+
 			"/api/admin/artifact_stores/docker\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 	})
 
@@ -446,7 +447,7 @@ func Test_client_DeleteArtifactStore(t *testing.T) {
 		client.SetRetryWaitTime(1)
 
 		err := client.DeleteArtifactStore("docker")
-		assert.EqualError(t, err, "call made to delete artifact store docker errored with: "+
+		require.EqualError(t, err, "call made to delete artifact store docker errored with: "+
 			"Delete \"http://localhost:8156/go/api/admin/artifact_stores/docker\": dial tcp [::1]:8156: connect: connection refused")
 	})
 }

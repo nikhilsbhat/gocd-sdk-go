@@ -7,6 +7,7 @@ import (
 
 	"github.com/nikhilsbhat/gocd-sdk-go"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 var (
@@ -60,7 +61,7 @@ func Test_client_GetElasticAgentProfiles(t *testing.T) {
 		}
 
 		actual, err := client.GetElasticAgentProfiles()
-		assert.NoError(t, err)
+		require.NoError(t, err)
 		assert.Equal(t, expected, actual)
 	})
 
@@ -75,7 +76,7 @@ func Test_client_GetElasticAgentProfiles(t *testing.T) {
 		}
 
 		actual, err := client.GetElasticAgentProfiles()
-		assert.EqualError(t, err, "got 404 from GoCD while making GET call for "+server.URL+
+		require.EqualError(t, err, "got 404 from GoCD while making GET call for "+server.URL+
 			"/api/elastic/profiles\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 		assert.Equal(t, expected, actual)
 	})
@@ -90,7 +91,7 @@ func Test_client_GetElasticAgentProfiles(t *testing.T) {
 		}
 
 		actual, err := client.GetElasticAgentProfiles()
-		assert.EqualError(t, err, "got 404 from GoCD while making GET call for "+server.URL+
+		require.EqualError(t, err, "got 404 from GoCD while making GET call for "+server.URL+
 			"/api/elastic/profiles\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 		assert.Equal(t, expected, actual)
 	})
@@ -105,7 +106,7 @@ func Test_client_GetElasticAgentProfiles(t *testing.T) {
 		}
 
 		actual, err := client.GetElasticAgentProfiles()
-		assert.EqualError(t, err, "reading response body errored with: invalid character 'e' looking for beginning of value")
+		require.EqualError(t, err, "reading response body errored with: invalid character 'e' looking for beginning of value")
 		assert.Equal(t, expected, actual)
 	})
 
@@ -120,7 +121,7 @@ func Test_client_GetElasticAgentProfiles(t *testing.T) {
 		}
 
 		actual, err := client.GetElasticAgentProfiles()
-		assert.EqualError(t, err, "call made to get elastic agent profiles errored with: "+
+		require.EqualError(t, err, "call made to get elastic agent profiles errored with: "+
 			"Get \"http://localhost:8156/go/api/elastic/profiles\": dial tcp [::1]:8156: connect: connection refused")
 		assert.Equal(t, expected, actual)
 	})
@@ -153,7 +154,7 @@ func Test_client_GetElasticAgentProfile(t *testing.T) {
 		}
 
 		actual, err := client.GetElasticAgentProfile(profileName)
-		assert.NoError(t, err)
+		require.NoError(t, err)
 		assert.Equal(t, expected, actual)
 	})
 
@@ -166,7 +167,7 @@ func Test_client_GetElasticAgentProfile(t *testing.T) {
 		expected := gocd.CommonConfig{}
 
 		actual, err := client.GetElasticAgentProfile(profileName)
-		assert.EqualError(t, err, "got 404 from GoCD while making GET call for "+server.URL+
+		require.EqualError(t, err, "got 404 from GoCD while making GET call for "+server.URL+
 			"/api/elastic/profiles/prod-cluster\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 		assert.Equal(t, expected, actual)
 	})
@@ -179,7 +180,7 @@ func Test_client_GetElasticAgentProfile(t *testing.T) {
 		expected := gocd.CommonConfig{}
 
 		actual, err := client.GetElasticAgentProfile(profileName)
-		assert.EqualError(t, err, "got 404 from GoCD while making GET call for "+server.URL+
+		require.EqualError(t, err, "got 404 from GoCD while making GET call for "+server.URL+
 			"/api/elastic/profiles/prod-cluster\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 		assert.Equal(t, expected, actual)
 	})
@@ -192,7 +193,7 @@ func Test_client_GetElasticAgentProfile(t *testing.T) {
 		expected := gocd.CommonConfig{}
 
 		actual, err := client.GetElasticAgentProfile(profileName)
-		assert.EqualError(t, err, "reading response body errored with: invalid character 'e' looking for beginning of value")
+		require.EqualError(t, err, "reading response body errored with: invalid character 'e' looking for beginning of value")
 		assert.Equal(t, expected, actual)
 	})
 
@@ -205,7 +206,7 @@ func Test_client_GetElasticAgentProfile(t *testing.T) {
 		expected := gocd.CommonConfig{}
 
 		actual, err := client.GetElasticAgentProfile(profileName)
-		assert.EqualError(t, err, "call made to get elastic agent profile 'prod-cluster' errored with: "+
+		require.EqualError(t, err, "call made to get elastic agent profile 'prod-cluster' errored with: "+
 			"Get \"http://localhost:8156/go/api/elastic/profiles/prod-cluster\": dial tcp [::1]:8156: connect: connection refused")
 		assert.Equal(t, expected, actual)
 	})
@@ -222,7 +223,7 @@ func Test_client_DeleteElasticAgentProfile(t *testing.T) {
 		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		err := client.DeleteElasticAgentProfile(profileName)
-		assert.NoError(t, err)
+		require.NoError(t, err)
 	})
 
 	t.Run("should error out while deleting an elastic agent profile due to wrong headers", func(t *testing.T) {
@@ -232,7 +233,7 @@ func Test_client_DeleteElasticAgentProfile(t *testing.T) {
 		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		err := client.DeleteElasticAgentProfile(profileName)
-		assert.EqualError(t, err, "got 404 from GoCD while making DELETE call for "+server.URL+
+		require.EqualError(t, err, "got 404 from GoCD while making DELETE call for "+server.URL+
 			"/api/elastic/profiles/prod-cluster\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 	})
 
@@ -243,7 +244,7 @@ func Test_client_DeleteElasticAgentProfile(t *testing.T) {
 		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		err := client.DeleteElasticAgentProfile(profileName)
-		assert.EqualError(t, err, "got 404 from GoCD while making DELETE call for "+server.URL+
+		require.EqualError(t, err, "got 404 from GoCD while making DELETE call for "+server.URL+
 			"/api/elastic/profiles/prod-cluster\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 	})
 
@@ -254,7 +255,7 @@ func Test_client_DeleteElasticAgentProfile(t *testing.T) {
 		client.SetRetryWaitTime(1)
 
 		err := client.DeleteElasticAgentProfile(profileName)
-		assert.EqualError(t, err, "call made to delete elastic agent profile 'prod-cluster' errored with: "+
+		require.EqualError(t, err, "call made to delete elastic agent profile 'prod-cluster' errored with: "+
 			"Delete \"http://localhost:8156/go/api/elastic/profiles/prod-cluster\": dial tcp [::1]:8156: connect: connection refused")
 	})
 }
@@ -288,7 +289,7 @@ func Test_client_UpdateElasticAgentProfile(t *testing.T) {
 		expected.ETAG = "61406622382e51c2079c11dcbdb978fb"
 
 		actual, err := client.UpdateElasticAgentProfile(profileCfg)
-		assert.NoError(t, err)
+		require.NoError(t, err)
 		assert.Equal(t, expected, actual)
 	})
 
@@ -302,7 +303,7 @@ func Test_client_UpdateElasticAgentProfile(t *testing.T) {
 		expected := profileCfg
 
 		actual, err := client.UpdateElasticAgentProfile(profileCfg)
-		assert.EqualError(t, err, "got 404 from GoCD while making PUT call for "+server.URL+
+		require.EqualError(t, err, "got 404 from GoCD while making PUT call for "+server.URL+
 			"/api/elastic/profiles\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 		assert.Equal(t, expected, actual)
 	})
@@ -316,7 +317,7 @@ func Test_client_UpdateElasticAgentProfile(t *testing.T) {
 		expected := profileCfg
 
 		actual, err := client.UpdateElasticAgentProfile(profileCfg)
-		assert.EqualError(t, err, "got 404 from GoCD while making PUT call for "+server.URL+
+		require.EqualError(t, err, "got 404 from GoCD while making PUT call for "+server.URL+
 			"/api/elastic/profiles\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 		assert.Equal(t, expected, actual)
 	})
@@ -330,7 +331,7 @@ func Test_client_UpdateElasticAgentProfile(t *testing.T) {
 		expected := profileCfg
 
 		actual, err := client.UpdateElasticAgentProfile(profileCfg)
-		assert.EqualError(t, err, "reading response body errored with: invalid character 'e' looking for beginning of value")
+		require.EqualError(t, err, "reading response body errored with: invalid character 'e' looking for beginning of value")
 		assert.Equal(t, expected, actual)
 	})
 
@@ -344,7 +345,7 @@ func Test_client_UpdateElasticAgentProfile(t *testing.T) {
 		expected := gocd.CommonConfig{}
 
 		actual, err := client.UpdateElasticAgentProfile(profileCfg)
-		assert.EqualError(t, err, "call made to update elastic agent profile 'unit-tests' errored with: "+
+		require.EqualError(t, err, "call made to update elastic agent profile 'unit-tests' errored with: "+
 			"Put \"http://localhost:8156/go/api/elastic/profiles/unit-tests\": dial tcp [::1]:8156: connect: connection refused")
 		assert.Equal(t, expected, actual)
 	})
@@ -379,7 +380,7 @@ func Test_client_CreateElasticAgentProfile(t *testing.T) {
 		expected.ETAG = "61406622382e51c2079c11dcbdb978fb"
 
 		actual, err := client.CreateElasticAgentProfile(elasticAgentProfileCfg)
-		assert.NoError(t, err)
+		require.NoError(t, err)
 		assert.Equal(t, expected, actual)
 	})
 
@@ -393,7 +394,7 @@ func Test_client_CreateElasticAgentProfile(t *testing.T) {
 		expected := profileCfg
 
 		actual, err := client.CreateElasticAgentProfile(profileCfg)
-		assert.EqualError(t, err, "got 404 from GoCD while making POST call for "+server.URL+
+		require.EqualError(t, err, "got 404 from GoCD while making POST call for "+server.URL+
 			"/api/elastic/profiles\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 		assert.Equal(t, expected, actual)
 	})
@@ -407,7 +408,7 @@ func Test_client_CreateElasticAgentProfile(t *testing.T) {
 		expected := profileCfg
 
 		actual, err := client.CreateElasticAgentProfile(profileCfg)
-		assert.EqualError(t, err, "got 404 from GoCD while making POST call for "+server.URL+
+		require.EqualError(t, err, "got 404 from GoCD while making POST call for "+server.URL+
 			"/api/elastic/profiles\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 		assert.Equal(t, expected, actual)
 	})
@@ -421,7 +422,7 @@ func Test_client_CreateElasticAgentProfile(t *testing.T) {
 		expected := profileCfg
 
 		actual, err := client.CreateElasticAgentProfile(profileCfg)
-		assert.EqualError(t, err, "reading response body errored with: invalid character 'e' looking for beginning of value")
+		require.EqualError(t, err, "reading response body errored with: invalid character 'e' looking for beginning of value")
 		assert.Equal(t, expected, actual)
 	})
 
@@ -435,7 +436,7 @@ func Test_client_CreateElasticAgentProfile(t *testing.T) {
 		expected := gocd.CommonConfig{}
 
 		actual, err := client.CreateElasticAgentProfile(profileCfg)
-		assert.EqualError(t, err, "call made to create elastic agent profile 'unit-tests' errored with: "+
+		require.EqualError(t, err, "call made to create elastic agent profile 'unit-tests' errored with: "+
 			"Post \"http://localhost:8156/go/api/elastic/profiles\": dial tcp [::1]:8156: connect: connection refused")
 		assert.Equal(t, expected, actual)
 	})
@@ -467,7 +468,7 @@ func Test_client_GetElasticAgentProfileUsage(t *testing.T) {
 		}
 
 		actual, err := client.GetElasticAgentProfileUsage(profileName)
-		assert.NoError(t, err)
+		require.NoError(t, err)
 		assert.Equal(t, expected, actual)
 	})
 
@@ -478,7 +479,7 @@ func Test_client_GetElasticAgentProfileUsage(t *testing.T) {
 		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		actual, err := client.GetElasticAgentProfileUsage(profileName)
-		assert.EqualError(t, err, "got 404 from GoCD while making GET call for "+server.URL+
+		require.EqualError(t, err, "got 404 from GoCD while making GET call for "+server.URL+
 			"/api/internal/elastic/profiles/prod-cluster/usages\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 		assert.Nil(t, actual)
 	})
@@ -489,7 +490,7 @@ func Test_client_GetElasticAgentProfileUsage(t *testing.T) {
 		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		actual, err := client.GetElasticAgentProfileUsage(profileName)
-		assert.EqualError(t, err, "got 404 from GoCD while making GET call for "+server.URL+
+		require.EqualError(t, err, "got 404 from GoCD while making GET call for "+server.URL+
 			"/api/internal/elastic/profiles/prod-cluster/usages\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 		assert.Nil(t, actual)
 	})
@@ -500,7 +501,7 @@ func Test_client_GetElasticAgentProfileUsage(t *testing.T) {
 		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		actual, err := client.GetElasticAgentProfileUsage(profileName)
-		assert.EqualError(t, err, "reading response body errored with: invalid character 'e' looking for beginning of value")
+		require.EqualError(t, err, "reading response body errored with: invalid character 'e' looking for beginning of value")
 		assert.Nil(t, actual)
 	})
 
@@ -511,7 +512,7 @@ func Test_client_GetElasticAgentProfileUsage(t *testing.T) {
 		client.SetRetryWaitTime(1)
 
 		actual, err := client.GetElasticAgentProfileUsage(profileName)
-		assert.EqualError(t, err, "call made to get elastic agent profile usage 'prod-cluster' errored with: "+
+		require.EqualError(t, err, "call made to get elastic agent profile usage 'prod-cluster' errored with: "+
 			"Get \"http://localhost:8156/go/api/internal/elastic/profiles/prod-cluster/usages\": dial tcp [::1]:8156: connect: connection refused")
 		assert.Nil(t, actual)
 	})

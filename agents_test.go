@@ -11,6 +11,7 @@ import (
 
 	"github.com/nikhilsbhat/gocd-sdk-go"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 var (
@@ -39,7 +40,7 @@ func Test_client_GetAgentsInfo(t *testing.T) {
 		client.SetRetryWaitTime(1)
 
 		actual, err := client.GetAgents()
-		assert.EqualError(t, err, "call made to get agents information errored with: "+
+		require.EqualError(t, err, "call made to get agents information errored with: "+
 			"Get \"http://localhost:8156/go/api/agents\": dial tcp [::1]:8156: connect: connection refused")
 		assert.Nil(t, actual)
 	})
@@ -49,7 +50,7 @@ func Test_client_GetAgentsInfo(t *testing.T) {
 		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		actual, err := client.GetAgents()
-		assert.EqualError(t, err, "got 502 from GoCD while making GET call for "+server.URL+"/api/agents\nwith BODY:agentsJson")
+		require.EqualError(t, err, "got 502 from GoCD while making GET call for "+server.URL+"/api/agents\nwith BODY:agentsJson")
 		assert.Nil(t, actual)
 	})
 
@@ -58,7 +59,7 @@ func Test_client_GetAgentsInfo(t *testing.T) {
 		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		actual, err := client.GetAgents()
-		assert.EqualError(t, err, "reading response body errored with: unexpected end of JSON input")
+		require.EqualError(t, err, "reading response body errored with: unexpected end of JSON input")
 		assert.Nil(t, actual)
 	})
 
@@ -83,7 +84,7 @@ func Test_client_GetAgentsInfo(t *testing.T) {
 		}
 
 		actual, err := client.GetAgents()
-		assert.NoError(t, err)
+		require.NoError(t, err)
 		assert.Equal(t, expected, actual)
 	})
 }
@@ -122,7 +123,7 @@ func Test_client_GetAgent(t *testing.T) {
 		}
 
 		actual, err := client.GetAgent(agentID)
-		assert.NoError(t, err)
+		require.NoError(t, err)
 		assert.Equal(t, expected, actual)
 	})
 
@@ -135,7 +136,7 @@ func Test_client_GetAgent(t *testing.T) {
 		expected := gocd.Agent{}
 
 		actual, err := client.GetAgent(agentID)
-		assert.EqualError(t, err, "got 404 from GoCD while making GET call for "+server.URL+
+		require.EqualError(t, err, "got 404 from GoCD while making GET call for "+server.URL+
 			"/api/agents/adb9540a-b954-4571-9d9b-2f330739d4da\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 		assert.Equal(t, expected, actual)
 	})
@@ -148,7 +149,7 @@ func Test_client_GetAgent(t *testing.T) {
 		expected := gocd.Agent{}
 
 		actual, err := client.GetAgent(agentID)
-		assert.EqualError(t, err, "got 404 from GoCD while making GET call for "+server.URL+
+		require.EqualError(t, err, "got 404 from GoCD while making GET call for "+server.URL+
 			"/api/agents/adb9540a-b954-4571-9d9b-2f330739d4da\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 		assert.Equal(t, expected, actual)
 	})
@@ -161,7 +162,7 @@ func Test_client_GetAgent(t *testing.T) {
 		expected := gocd.Agent{}
 
 		actual, err := client.GetAgent(agentID)
-		assert.EqualError(t, err, "reading response body errored with: invalid character 'a' looking for beginning of value")
+		require.EqualError(t, err, "reading response body errored with: invalid character 'a' looking for beginning of value")
 		assert.Equal(t, expected, actual)
 	})
 
@@ -174,7 +175,7 @@ func Test_client_GetAgent(t *testing.T) {
 		expected := gocd.Agent{}
 
 		actual, err := client.GetAgent(agentID)
-		assert.EqualError(t, err, "call made to get agent 'adb9540a-b954-4571-9d9b-2f330739d4da' information errored with: "+
+		require.EqualError(t, err, "call made to get agent 'adb9540a-b954-4571-9d9b-2f330739d4da' information errored with: "+
 			"Get \"http://localhost:8156/go/api/agents/adb9540a-b954-4571-9d9b-2f330739d4da\": dial tcp [::1]:8156: connect: connection refused")
 		assert.Equal(t, expected, actual)
 	})
@@ -190,7 +191,7 @@ func Test_client_GetAgentJobRunHistory1(t *testing.T) {
 		client.SetRetryWaitTime(1)
 
 		actual, err := client.GetAgentJobRunHistory(agentID)
-		assert.EqualError(t, err, "call made to get agent job run history errored with: "+
+		require.EqualError(t, err, "call made to get agent job run history errored with: "+
 			"Get \"http://localhost:8156/go/api/agents/adb9540a-b954-4571-9d9b-2f330739d4da/job_run_history?sort_order=DESC\": "+
 			"dial tcp [::1]:8156: connect: connection refused")
 		assert.Equal(t, gocd.AgentJobHistory{}, actual)
@@ -201,7 +202,7 @@ func Test_client_GetAgentJobRunHistory1(t *testing.T) {
 		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		actual, err := client.GetAgentJobRunHistory(agentID)
-		assert.EqualError(t, err, "got 502 from GoCD while making GET call for "+server.URL+
+		require.EqualError(t, err, "got 502 from GoCD while making GET call for "+server.URL+
 			"/api/agents/adb9540a-b954-4571-9d9b-2f330739d4da/job_run_history?sort_order=DESC\nwith BODY:agentRunHistoryJSON")
 		assert.Equal(t, gocd.AgentJobHistory{}, actual)
 	})
@@ -211,7 +212,7 @@ func Test_client_GetAgentJobRunHistory1(t *testing.T) {
 		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		actual, err := client.GetAgentJobRunHistory(agentID)
-		assert.EqualError(t, err, "reading response body errored with: unexpected end of JSON input")
+		require.EqualError(t, err, "reading response body errored with: unexpected end of JSON input")
 		assert.Equal(t, gocd.AgentJobHistory{}, actual)
 	})
 
@@ -238,7 +239,7 @@ func Test_client_GetAgentJobRunHistory1(t *testing.T) {
 		}
 
 		actual, err := client.GetAgentJobRunHistory(agentID)
-		assert.NoError(t, err)
+		require.NoError(t, err)
 		assert.Equal(t, expected, actual)
 	})
 }
@@ -262,7 +263,7 @@ func Test_client_UpdateAgent(t *testing.T) {
 		}
 
 		err := client.UpdateAgent(agentUpdateInfo)
-		assert.NoError(t, err)
+		require.NoError(t, err)
 	})
 
 	t.Run("should error out while updating agent information due to wrong headers", func(t *testing.T) {
@@ -278,7 +279,7 @@ func Test_client_UpdateAgent(t *testing.T) {
 		}
 
 		err := client.UpdateAgent(agentUpdateInfo)
-		assert.EqualError(t, err, "got 404 from GoCD while making PATCH call for "+server.URL+
+		require.EqualError(t, err, "got 404 from GoCD while making PATCH call for "+server.URL+
 			"/api/agents/adb9540a-b954-4571-9d9b-2f330739d4da\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 	})
 
@@ -295,7 +296,7 @@ func Test_client_UpdateAgent(t *testing.T) {
 		}
 
 		err := client.UpdateAgent(agentUpdateInfo)
-		assert.EqualError(t, err, "got 404 from GoCD while making PATCH call for "+server.URL+
+		require.EqualError(t, err, "got 404 from GoCD while making PATCH call for "+server.URL+
 			"/api/agents/adb9540a-b954-4571-9d9b-2f330739d4da\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 	})
 
@@ -312,7 +313,7 @@ func Test_client_UpdateAgent(t *testing.T) {
 		}
 
 		err := client.UpdateAgent(agentUpdateInfo)
-		assert.EqualError(t, err, "got 500 from GoCD while making PATCH call for "+server.URL+
+		require.EqualError(t, err, "got 500 from GoCD while making PATCH call for "+server.URL+
 			"/api/agents/adb9540a-b954-4571-9d9b-2f330739d4da\nwith BODY:json: cannot unmarshal string into Go value of type gocd.Agent")
 	})
 
@@ -331,7 +332,7 @@ func Test_client_UpdateAgent(t *testing.T) {
 		}
 
 		err := client.UpdateAgent(agentUpdateInfo)
-		assert.EqualError(t, err, "call made to update agent02.example.com agent information errored with: "+
+		require.EqualError(t, err, "call made to update agent02.example.com agent information errored with: "+
 			"Patch \"http://localhost:8156/go/api/agents/adb9540a-b954-4571-9d9b-2f330739d4da\": dial tcp [::1]:8156: connect: connection refused")
 	})
 }
@@ -342,7 +343,7 @@ func Test_client_UpdateAgentBulk(t *testing.T) {
 	t.Run("should be able to bulk update the specified agents with updated configurations", func(t *testing.T) {
 		var agentInfo gocd.Agent
 		err := json.Unmarshal([]byte(agentsUpdateBulkJSON), &agentInfo)
-		assert.NoError(t, err)
+		require.NoError(t, err)
 
 		server := agentMockServer(agentInfo, http.MethodPatch, correctAgentUpdateHeader)
 		client := gocd.NewClient(server.URL, auth, "info", nil)
@@ -355,7 +356,7 @@ func Test_client_UpdateAgentBulk(t *testing.T) {
 		}
 
 		err = client.UpdateAgentBulk(agentUpdateInfo)
-		assert.NoError(t, err)
+		require.NoError(t, err)
 	})
 
 	t.Run("should error out while bulk updating agents information due to wrong headers", func(t *testing.T) {
@@ -370,7 +371,7 @@ func Test_client_UpdateAgentBulk(t *testing.T) {
 		}
 
 		err := client.UpdateAgentBulk(agentUpdateInfo)
-		assert.EqualError(t, err, "got 404 from GoCD while making PATCH call for "+server.URL+
+		require.EqualError(t, err, "got 404 from GoCD while making PATCH call for "+server.URL+
 			"/api/agents\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 	})
 
@@ -386,7 +387,7 @@ func Test_client_UpdateAgentBulk(t *testing.T) {
 		}
 
 		err := client.UpdateAgentBulk(agentUpdateInfo)
-		assert.EqualError(t, err, "got 404 from GoCD while making PATCH call for "+server.URL+
+		require.EqualError(t, err, "got 404 from GoCD while making PATCH call for "+server.URL+
 			"/api/agents\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 	})
 
@@ -402,7 +403,7 @@ func Test_client_UpdateAgentBulk(t *testing.T) {
 		}
 
 		err := client.UpdateAgentBulk(agentUpdateInfo)
-		assert.EqualError(t, err, "got 500 from GoCD while making PATCH call for "+server.URL+
+		require.EqualError(t, err, "got 500 from GoCD while making PATCH call for "+server.URL+
 			"/api/agents\nwith BODY:json: cannot unmarshal string into Go value of type gocd.Agent")
 	})
 
@@ -420,7 +421,7 @@ func Test_client_UpdateAgentBulk(t *testing.T) {
 		}
 
 		err := client.UpdateAgentBulk(agentUpdateInfo)
-		assert.EqualError(t, err, "call made to bulk update [] agents information errored with: "+
+		require.EqualError(t, err, "call made to bulk update [] agents information errored with: "+
 			"Patch \"http://localhost:8156/go/api/agents\": dial tcp [::1]:8156: connect: connection refused")
 	})
 }
@@ -434,8 +435,8 @@ func Test_client_DeleteAgent(t *testing.T) {
 		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		actual, err := client.DeleteAgent(agentID)
-		assert.NoError(t, err)
-		assert.Equal(t, `{"message": "Deleted 1 agent(s)."}`, actual)
+		require.NoError(t, err)
+		assert.JSONEq(t, `{"message": "Deleted 1 agent(s)."}`, actual)
 	})
 
 	t.Run("should error out while deleting agent due to wrong headers", func(t *testing.T) {
@@ -443,7 +444,7 @@ func Test_client_DeleteAgent(t *testing.T) {
 		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		actual, err := client.DeleteAgent(agentID)
-		assert.EqualError(t, err, "got 404 from GoCD while making DELETE call for "+server.URL+
+		require.EqualError(t, err, "got 404 from GoCD while making DELETE call for "+server.URL+
 			"/api/agents/adb9540a-b954-4571-9d9b-2f330739d4da\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 		assert.Equal(t, "", actual)
 	})
@@ -453,7 +454,7 @@ func Test_client_DeleteAgent(t *testing.T) {
 		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		actual, err := client.DeleteAgent(agentID)
-		assert.EqualError(t, err, "got 404 from GoCD while making DELETE call for "+server.URL+
+		require.EqualError(t, err, "got 404 from GoCD while making DELETE call for "+server.URL+
 			"/api/agents/adb9540a-b954-4571-9d9b-2f330739d4da\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 		assert.Equal(t, "", actual)
 	})
@@ -465,7 +466,7 @@ func Test_client_DeleteAgent(t *testing.T) {
 		client.SetRetryWaitTime(1)
 
 		actual, err := client.DeleteAgent(agentID)
-		assert.EqualError(t, err, "call made to delete agent adb9540a-b954-4571-9d9b-2f330739d4da errored with: "+
+		require.EqualError(t, err, "call made to delete agent adb9540a-b954-4571-9d9b-2f330739d4da errored with: "+
 			"Delete \"http://localhost:8156/go/api/agents/adb9540a-b954-4571-9d9b-2f330739d4da\": dial tcp [::1]:8156: connect: connection refused")
 		assert.Equal(t, "", actual)
 	})
@@ -482,8 +483,8 @@ func Test_client_DeleteAgentBulk(t *testing.T) {
 		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		actual, err := client.DeleteAgentBulk(agent)
-		assert.NoError(t, err)
-		assert.Equal(t, `{"message": "Deleted 1 agent(s)."}`, actual)
+		require.NoError(t, err)
+		assert.JSONEq(t, `{"message": "Deleted 1 agent(s)."}`, actual)
 	})
 
 	t.Run("should error out while bulk deleting agents due to wrong headers", func(t *testing.T) {
@@ -491,7 +492,7 @@ func Test_client_DeleteAgentBulk(t *testing.T) {
 		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		actual, err := client.DeleteAgentBulk(agent)
-		assert.EqualError(t, err, "got 404 from GoCD while making DELETE call for "+server.URL+
+		require.EqualError(t, err, "got 404 from GoCD while making DELETE call for "+server.URL+
 			"/api/agents\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 		assert.Equal(t, "", actual)
 	})
@@ -501,7 +502,7 @@ func Test_client_DeleteAgentBulk(t *testing.T) {
 		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		actual, err := client.DeleteAgentBulk(agent)
-		assert.EqualError(t, err, "got 404 from GoCD while making DELETE call for "+server.URL+
+		require.EqualError(t, err, "got 404 from GoCD while making DELETE call for "+server.URL+
 			"/api/agents\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 		assert.Equal(t, "", actual)
 	})
@@ -513,7 +514,7 @@ func Test_client_DeleteAgentBulk(t *testing.T) {
 		client.SetRetryWaitTime(1)
 
 		actual, err := client.DeleteAgentBulk(agent)
-		assert.EqualError(t, err, "call made to delete agents [adb9540a-b954-4571-9d9b-2f330739d4da adb9540a-5hfh-6453-9d9b-2f37467739d4da] errored with: "+
+		require.EqualError(t, err, "call made to delete agents [adb9540a-b954-4571-9d9b-2f330739d4da adb9540a-5hfh-6453-9d9b-2f37467739d4da] errored with: "+
 			"Delete \"http://localhost:8156/go/api/agents\": dial tcp [::1]:8156: connect: connection refused")
 		assert.Equal(t, "", actual)
 	})
@@ -533,7 +534,7 @@ func Test_client_AgentKillTask(t *testing.T) {
 		agent := gocd.Agent{ID: "adb9540a-5hfh-6453-9d9b-2f37467739d4da"}
 
 		err := client.AgentKillTask(agent)
-		assert.NoError(t, err)
+		require.NoError(t, err)
 	})
 
 	t.Run("should error out while canceling the tasks running on an agent due to wrong headers", func(t *testing.T) {
@@ -545,7 +546,7 @@ func Test_client_AgentKillTask(t *testing.T) {
 		agent := gocd.Agent{ID: "adb9540a-5hfh-6453-9d9b-2f37467739d4da"}
 
 		err := client.AgentKillTask(agent)
-		assert.EqualError(t, err, "got 404 from GoCD while making POST call for "+server.URL+
+		require.EqualError(t, err, "got 404 from GoCD while making POST call for "+server.URL+
 			"/api/agents/adb9540a-5hfh-6453-9d9b-2f37467739d4da/kill_running_tasks\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 	})
 
@@ -558,7 +559,7 @@ func Test_client_AgentKillTask(t *testing.T) {
 		agent := gocd.Agent{ID: "adb9540a-5hfh-6453-9d9b-2f37467739d4da"}
 
 		err := client.AgentKillTask(agent)
-		assert.EqualError(t, err, "got 404 from GoCD while making POST call for "+server.URL+
+		require.EqualError(t, err, "got 404 from GoCD while making POST call for "+server.URL+
 			"/api/agents/adb9540a-5hfh-6453-9d9b-2f37467739d4da/kill_running_tasks\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 	})
 
@@ -571,7 +572,7 @@ func Test_client_AgentKillTask(t *testing.T) {
 		agent := gocd.Agent{ID: "adb9540a-5hfh-6453-9d9b-2f37467739d4da"}
 
 		err := client.AgentKillTask(agent)
-		assert.EqualError(t, err, "call made to kill tasks from agent adb9540a-5hfh-6453-9d9b-2f37467739d4da errored with: "+
+		require.EqualError(t, err, "call made to kill tasks from agent adb9540a-5hfh-6453-9d9b-2f37467739d4da errored with: "+
 			"Post \"http://localhost:8156/go/api/agents/adb9540a-5hfh-6453-9d9b-2f37467739d4da/kill_running_tasks\": dial tcp [::1]:8156: connect: connection refused")
 	})
 }
@@ -580,6 +581,7 @@ func agentMockServer(request interface{}, method string, header map[string]strin
 	return httptest.NewServer(http.HandlerFunc(func(writer http.ResponseWriter, req *http.Request) {
 		if header == nil {
 			writer.WriteHeader(http.StatusNotFound)
+
 			if _, err := writer.Write([]byte(`<html>
 <body>
 	<h2>404 Not found</h2>
@@ -593,10 +595,9 @@ func agentMockServer(request interface{}, method string, header map[string]strin
 		}
 
 		for key, value := range header {
-			val := req.Header.Get(key)
-			_ = val
 			if req.Header.Get(key) != value {
 				writer.WriteHeader(http.StatusNotFound)
+
 				if _, err := writer.Write([]byte(`<html>
 <body>
 	<h2>404 Not found</h2>
@@ -612,6 +613,7 @@ func agentMockServer(request interface{}, method string, header map[string]strin
 
 		if method == http.MethodDelete {
 			writer.WriteHeader(http.StatusOK)
+
 			if _, err := writer.Write([]byte(`{"message": "Deleted 1 agent(s)."}`)); err != nil {
 				log.Fatalln(err)
 			}
@@ -620,6 +622,7 @@ func agentMockServer(request interface{}, method string, header map[string]strin
 		requestByte, err := json.Marshal(request)
 		if err != nil {
 			writer.WriteHeader(http.StatusInternalServerError)
+
 			if _, err = writer.Write([]byte(fmt.Sprintf("%s %s", string(requestByte), err.Error()))); err != nil {
 				log.Fatalln(err)
 			}
@@ -628,8 +631,10 @@ func agentMockServer(request interface{}, method string, header map[string]strin
 		}
 
 		var gocdAgent gocd.Agent
+
 		if err = json.Unmarshal(requestByte, &gocdAgent); err != nil {
 			writer.WriteHeader(http.StatusInternalServerError)
+
 			if _, err = writer.Write([]byte(err.Error())); err != nil {
 				log.Fatalln(err)
 			}
@@ -638,6 +643,7 @@ func agentMockServer(request interface{}, method string, header map[string]strin
 		}
 
 		writer.WriteHeader(http.StatusOK)
+
 		if _, err = writer.Write([]byte("")); err != nil {
 			log.Fatalln(err)
 		}

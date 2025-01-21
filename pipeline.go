@@ -190,7 +190,7 @@ func (conf *client) GetPipelineSchedules(pipeline, start, perPage string) (Pipel
 		}).
 		Get(fmt.Sprintf(LastXPipelineScheduledDates, pipeline))
 	if err != nil {
-		return PipelineSchedules{}, &errors.APIError{Err: err, Message: fmt.Sprintf("get pipeline schedules %s", pipeline)}
+		return PipelineSchedules{}, &errors.APIError{Err: err, Message: "get pipeline schedules " + pipeline}
 	}
 
 	if resp.StatusCode() != http.StatusOK {
@@ -211,7 +211,7 @@ func (conf *client) PipelinePause(name string, message any) error {
 		return err
 	}
 
-	msg := fmt.Sprintf("pausing pipeline %s", name)
+	msg := "pausing pipeline " + name
 	if message != nil {
 		msg = message.(string)
 	}

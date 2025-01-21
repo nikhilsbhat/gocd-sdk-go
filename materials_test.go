@@ -7,6 +7,7 @@ import (
 
 	"github.com/nikhilsbhat/gocd-sdk-go"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 //go:embed internal/fixtures/materials.json
@@ -63,7 +64,7 @@ func Test_client_GetMaterials(t *testing.T) {
 		}
 
 		actual, err := client.GetMaterials()
-		assert.NoError(t, err)
+		require.NoError(t, err)
 		assert.Equal(t, expected, actual)
 	})
 
@@ -76,7 +77,7 @@ func Test_client_GetMaterials(t *testing.T) {
 		var expected []gocd.Material
 
 		actual, err := client.GetMaterials()
-		assert.EqualError(t, err, "got 404 from GoCD while making GET call for "+server.URL+
+		require.EqualError(t, err, "got 404 from GoCD while making GET call for "+server.URL+
 			"/api/internal/materials\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 		assert.Equal(t, expected, actual)
 	})
@@ -89,7 +90,7 @@ func Test_client_GetMaterials(t *testing.T) {
 		var expected []gocd.Material
 
 		actual, err := client.GetMaterials()
-		assert.EqualError(t, err, "got 404 from GoCD while making GET call for "+server.URL+
+		require.EqualError(t, err, "got 404 from GoCD while making GET call for "+server.URL+
 			"/api/internal/materials\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 		assert.Equal(t, expected, actual)
 	})
@@ -102,7 +103,7 @@ func Test_client_GetMaterials(t *testing.T) {
 		var expected []gocd.Material
 
 		actual, err := client.GetMaterials()
-		assert.EqualError(t, err, "reading response body errored with: invalid character 'm' looking for beginning of value")
+		require.EqualError(t, err, "reading response body errored with: invalid character 'm' looking for beginning of value")
 		assert.Equal(t, expected, actual)
 	})
 
@@ -115,7 +116,7 @@ func Test_client_GetMaterials(t *testing.T) {
 		var expected []gocd.Material
 
 		actual, err := client.GetMaterials()
-		assert.EqualError(t, err, "call made to get all available materials errored with: "+
+		require.EqualError(t, err, "call made to get all available materials errored with: "+
 			"Get \"http://localhost:8156/go/api/internal/materials\": dial tcp [::1]:8156: connect: connection refused")
 		assert.Equal(t, expected, actual)
 	})
@@ -141,7 +142,7 @@ func Test_client_GetMaterialUsage(t *testing.T) {
 		}
 
 		actual, err := client.GetMaterialUsage("2faa648612e02becba2b6809fb375f1810acec79498fe50908cebdc5ba0a0a5b")
-		assert.NoError(t, err)
+		require.NoError(t, err)
 		assert.Equal(t, expected, actual)
 	})
 
@@ -152,7 +153,7 @@ func Test_client_GetMaterialUsage(t *testing.T) {
 		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		actual, err := client.GetMaterialUsage("2faa648612e02becba2b6809fb375f1810acec79498fe50908cebdc5ba0a0a5b")
-		assert.EqualError(t, err, "got 404 from GoCD while making GET call for "+server.URL+
+		require.EqualError(t, err, "got 404 from GoCD while making GET call for "+server.URL+
 			"/api/internal/materials/2faa648612e02becba2b6809fb375f1810acec79498fe50908cebdc5ba0a0a5b/usages\nwith "+
 			"BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 		assert.Nil(t, actual)
@@ -164,7 +165,7 @@ func Test_client_GetMaterialUsage(t *testing.T) {
 		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		actual, err := client.GetMaterialUsage("2faa648612e02becba2b6809fb375f1810acec79498fe50908cebdc5ba0a0a5b")
-		assert.EqualError(t, err, "got 404 from GoCD while making GET call for "+server.URL+
+		require.EqualError(t, err, "got 404 from GoCD while making GET call for "+server.URL+
 			"/api/internal/materials/2faa648612e02becba2b6809fb375f1810acec79498fe50908cebdc5ba0a0a5b/usages\nwith "+
 			"BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 		assert.Nil(t, actual)
@@ -176,7 +177,7 @@ func Test_client_GetMaterialUsage(t *testing.T) {
 		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		actual, err := client.GetMaterialUsage("2faa648612e02becba2b6809fb375f1810acec79498fe50908cebdc5ba0a0a5b")
-		assert.EqualError(t, err, "reading response body errored with: invalid character 'm' looking for beginning of value")
+		require.EqualError(t, err, "reading response body errored with: invalid character 'm' looking for beginning of value")
 		assert.Nil(t, actual)
 	})
 
@@ -187,7 +188,7 @@ func Test_client_GetMaterialUsage(t *testing.T) {
 		client.SetRetryWaitTime(1)
 
 		actual, err := client.GetMaterialUsage("2faa648612e02becba2b6809fb375f1810acec79498fe50908cebdc5ba0a0a5b")
-		assert.EqualError(t, err, "call made to get material usage '2faa648612e02becba2b6809fb375f1810acec79498fe50908cebdc5ba0a0a5b' errored with: "+
+		require.EqualError(t, err, "call made to get material usage '2faa648612e02becba2b6809fb375f1810acec79498fe50908cebdc5ba0a0a5b' errored with: "+
 			"Get \"http://localhost:8156/go/api/internal/materials/2faa648612e02becba2b6809fb375f1810acec79498fe50908cebdc5ba0a0a5b/usages\": "+
 			"dial tcp [::1]:8156: connect: connection refused")
 		assert.Nil(t, actual)
@@ -208,7 +209,7 @@ func Test_client_NotifyMaterial(t *testing.T) {
 		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		actual, err := client.NotifyMaterial(material)
-		assert.NoError(t, err)
+		require.NoError(t, err)
 		assert.Equal(t, "The material is now scheduled for an update. Please check relevant pipeline(s) for status.", actual)
 	})
 
@@ -219,7 +220,7 @@ func Test_client_NotifyMaterial(t *testing.T) {
 		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		actual, err := client.NotifyMaterial(material)
-		assert.EqualError(t, err, "got 404 from GoCD while making POST call for "+server.URL+
+		require.EqualError(t, err, "got 404 from GoCD while making POST call for "+server.URL+
 			"/api/admin/materials/git/notify\nwith "+
 			"BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 		assert.Equal(t, "", actual)
@@ -231,7 +232,7 @@ func Test_client_NotifyMaterial(t *testing.T) {
 		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		actual, err := client.NotifyMaterial(material)
-		assert.EqualError(t, err, "got 404 from GoCD while making POST call for "+server.URL+
+		require.EqualError(t, err, "got 404 from GoCD while making POST call for "+server.URL+
 			"/api/admin/materials/git/notify\nwith "+
 			"BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 		assert.Equal(t, "", actual)
@@ -244,7 +245,7 @@ func Test_client_NotifyMaterial(t *testing.T) {
 		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		actual, err := client.NotifyMaterial(material)
-		assert.EqualError(t, err, "reading response body errored with: unexpected end of JSON input")
+		require.EqualError(t, err, "reading response body errored with: unexpected end of JSON input")
 		assert.Equal(t, "", actual)
 	})
 
@@ -255,7 +256,7 @@ func Test_client_NotifyMaterial(t *testing.T) {
 		client.SetRetryWaitTime(1)
 
 		actual, err := client.NotifyMaterial(material)
-		assert.EqualError(t, err, "call made to notify material 'https://github.com/nikhilsbhat/helm-images' of type git errored with: "+
+		require.EqualError(t, err, "call made to notify material 'https://github.com/nikhilsbhat/helm-images' of type git errored with: "+
 			"Post \"http://localhost:8156/go/api/admin/materials/git/notify\": "+
 			"dial tcp [::1]:8156: connect: connection refused")
 		assert.Equal(t, "", actual)
@@ -275,7 +276,7 @@ func Test_client_MaterialTriggerUpdate(t *testing.T) {
 		expected := map[string]string{"message": "OK"}
 
 		actual, err := client.MaterialTriggerUpdate(materialID)
-		assert.NoError(t, err)
+		require.NoError(t, err)
 		assert.Equal(t, expected, actual)
 	})
 
@@ -286,7 +287,7 @@ func Test_client_MaterialTriggerUpdate(t *testing.T) {
 		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		actual, err := client.MaterialTriggerUpdate(materialID)
-		assert.EqualError(t, err, "got 404 from GoCD while making POST call for "+server.URL+
+		require.EqualError(t, err, "got 404 from GoCD while making POST call for "+server.URL+
 			"/api/internal/materials/5fc2198707d4e5b7dfa8cc5c6e398b9ea4bcb17d3aa54f0146ccb361cf03bbd4/trigger_update\nwith "+
 			"BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 		assert.Nil(t, actual)
@@ -298,7 +299,7 @@ func Test_client_MaterialTriggerUpdate(t *testing.T) {
 		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		actual, err := client.MaterialTriggerUpdate(materialID)
-		assert.EqualError(t, err, "got 404 from GoCD while making POST call for "+server.URL+
+		require.EqualError(t, err, "got 404 from GoCD while making POST call for "+server.URL+
 			"/api/internal/materials/5fc2198707d4e5b7dfa8cc5c6e398b9ea4bcb17d3aa54f0146ccb361cf03bbd4/trigger_update\nwith "+
 			"BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 		assert.Nil(t, actual)
@@ -311,7 +312,7 @@ func Test_client_MaterialTriggerUpdate(t *testing.T) {
 		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		actual, err := client.MaterialTriggerUpdate(materialID)
-		assert.EqualError(t, err, "reading response body errored with: unexpected end of JSON input")
+		require.EqualError(t, err, "reading response body errored with: unexpected end of JSON input")
 		assert.Nil(t, actual)
 	})
 
@@ -322,7 +323,7 @@ func Test_client_MaterialTriggerUpdate(t *testing.T) {
 		client.SetRetryWaitTime(1)
 
 		actual, err := client.MaterialTriggerUpdate(materialID)
-		assert.EqualError(t, err, "call made to trigger update '5fc2198707d4e5b7dfa8cc5c6e398b9ea4bcb17d3aa54f0146ccb361cf03bbd4' errored with: "+
+		require.EqualError(t, err, "call made to trigger update '5fc2198707d4e5b7dfa8cc5c6e398b9ea4bcb17d3aa54f0146ccb361cf03bbd4' errored with: "+
 			"Post \"http://localhost:8156/go/api/internal/materials/5fc2198707d4e5b7dfa8cc5c6e398b9ea4bcb17d3aa54f0146ccb361cf03bbd4/trigger_update\": "+
 			"dial tcp [::1]:8156: connect: connection refused")
 		assert.Nil(t, actual)

@@ -161,7 +161,7 @@ func (conf *client) DeleteAgent(agentID string) (string, error) {
 		}).
 		Delete(filepath.Join(AgentsEndpoint, agentID))
 	if err != nil {
-		return "", &errors.APIError{Err: err, Message: fmt.Sprintf("delete agent %s", agentID)}
+		return "", &errors.APIError{Err: err, Message: "delete agent " + agentID}
 	}
 
 	if resp.StatusCode() != http.StatusOK {
@@ -209,7 +209,7 @@ func (conf *client) AgentKillTask(agent Agent) error {
 		}).
 		Post(filepath.Join(AgentsEndpoint, agent.ID, "kill_running_tasks"))
 	if err != nil {
-		return &errors.APIError{Err: err, Message: fmt.Sprintf("kill tasks from agent %s", agent.ID)}
+		return &errors.APIError{Err: err, Message: "kill tasks from agent " + agent.ID}
 	}
 
 	if resp.StatusCode() != http.StatusOK {

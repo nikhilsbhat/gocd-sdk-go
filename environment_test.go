@@ -8,6 +8,7 @@ import (
 
 	"github.com/nikhilsbhat/gocd-sdk-go"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 var (
@@ -32,7 +33,7 @@ func Test_client_GetEnvironmentInfo(t *testing.T) {
 		client.SetRetryWaitTime(1)
 
 		actual, err := client.GetEnvironments()
-		assert.EqualError(t, err, "call made to get environments errored with: "+
+		require.EqualError(t, err, "call made to get environments errored with: "+
 			"Get \"http://localhost:8156/go/api/admin/environments\": dial tcp [::1]:8156: connect: connection refused")
 		assert.Nil(t, actual)
 	})
@@ -42,7 +43,7 @@ func Test_client_GetEnvironmentInfo(t *testing.T) {
 		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		actual, err := client.GetEnvironments()
-		assert.EqualError(t, err, "got 502 from GoCD while making GET call for "+server.URL+
+		require.EqualError(t, err, "got 502 from GoCD while making GET call for "+server.URL+
 			"/api/admin/environments\nwith BODY:backupJSON")
 		assert.Nil(t, actual)
 	})
@@ -52,7 +53,7 @@ func Test_client_GetEnvironmentInfo(t *testing.T) {
 		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		actual, err := client.GetEnvironments()
-		assert.EqualError(t, err, "reading response body errored with: invalid character '}' after object key")
+		require.EqualError(t, err, "reading response body errored with: invalid character '}' after object key")
 		assert.Nil(t, actual)
 	})
 
@@ -104,7 +105,7 @@ func Test_client_GetEnvironmentInfo(t *testing.T) {
 		}
 
 		actual, err := client.GetEnvironments()
-		assert.NoError(t, err)
+		require.NoError(t, err)
 		assert.Equal(t, expected, actual)
 	})
 }
@@ -138,7 +139,7 @@ func Test_client_CreateEnvironments(t *testing.T) {
 		}
 
 		err := client.CreateEnvironment(environment)
-		assert.NoError(t, err)
+		require.NoError(t, err)
 	})
 
 	t.Run("should error out while creating environment due to wrong headers set", func(t *testing.T) {
@@ -148,7 +149,7 @@ func Test_client_CreateEnvironments(t *testing.T) {
 		environment := gocd.Environment{}
 
 		err := client.CreateEnvironment(environment)
-		assert.EqualError(t, err, "got 404 from GoCD while making POST call for "+server.URL+
+		require.EqualError(t, err, "got 404 from GoCD while making POST call for "+server.URL+
 			"/api/admin/environments\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 	})
 
@@ -159,7 +160,7 @@ func Test_client_CreateEnvironments(t *testing.T) {
 		environment := gocd.Environment{}
 
 		err := client.CreateEnvironment(environment)
-		assert.EqualError(t, err, "got 404 from GoCD while making POST call for "+server.URL+
+		require.EqualError(t, err, "got 404 from GoCD while making POST call for "+server.URL+
 			"/api/admin/environments\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 	})
 
@@ -171,7 +172,7 @@ func Test_client_CreateEnvironments(t *testing.T) {
 
 		environment := gocd.Environment{Name: "test"}
 		err := client.CreateEnvironment(environment)
-		assert.EqualError(t, err, "call made to create environment 'test' errored with: "+
+		require.EqualError(t, err, "call made to create environment 'test' errored with: "+
 			"Post \"http://localhost:8156/go/api/admin/environments\": dial tcp [::1]:8156: connect: connection refused")
 	})
 }
@@ -182,7 +183,7 @@ func Test_client_DeleteEnvironment(t *testing.T) {
 		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		err := client.DeleteEnvironment("env1")
-		assert.NoError(t, err)
+		require.NoError(t, err)
 	})
 
 	t.Run("should error out while deleting the environment as wrong headers set", func(t *testing.T) {
@@ -190,7 +191,7 @@ func Test_client_DeleteEnvironment(t *testing.T) {
 		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		err := client.DeleteEnvironment("env1")
-		assert.EqualError(t, err, "got 404 from GoCD while making DELETE call for "+server.URL+
+		require.EqualError(t, err, "got 404 from GoCD while making DELETE call for "+server.URL+
 			"/api/admin/environments/env1\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 	})
 
@@ -199,7 +200,7 @@ func Test_client_DeleteEnvironment(t *testing.T) {
 		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		err := client.DeleteEnvironment("env1")
-		assert.EqualError(t, err, "got 404 from GoCD while making DELETE call for "+server.URL+
+		require.EqualError(t, err, "got 404 from GoCD while making DELETE call for "+server.URL+
 			"/api/admin/environments/env1\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 	})
 
@@ -210,7 +211,7 @@ func Test_client_DeleteEnvironment(t *testing.T) {
 		client.SetRetryWaitTime(1)
 
 		err := client.DeleteEnvironment("env1")
-		assert.EqualError(t, err, "call made to delete environment 'env1' errored with: "+
+		require.EqualError(t, err, "call made to delete environment 'env1' errored with: "+
 			"Delete \"http://localhost:8156/go/api/admin/environments/env1\": dial tcp [::1]:8156: connect: connection refused")
 	})
 }
@@ -232,10 +233,10 @@ func Test_client_UpdateEnvironment(t *testing.T) {
 
 		var expected gocd.Environment
 		unMarshallErr := json.Unmarshal([]byte(environmentUpdateJSON), &expected)
-		assert.NoError(t, unMarshallErr)
+		require.NoError(t, unMarshallErr)
 
 		actual, err := client.UpdateEnvironment(environment)
-		assert.NoError(t, err)
+		require.NoError(t, err)
 		assert.Equal(t, expected, actual)
 	})
 
@@ -249,7 +250,7 @@ func Test_client_UpdateEnvironment(t *testing.T) {
 
 		environment := gocd.Environment{}
 		actual, err := client.UpdateEnvironment(environment)
-		assert.EqualError(t, err, "got 404 from GoCD while making PUT call for "+server.URL+
+		require.EqualError(t, err, "got 404 from GoCD while making PUT call for "+server.URL+
 			"/api/admin/environments\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 		assert.Equal(t, gocd.Environment{}, actual)
 	})
@@ -260,7 +261,7 @@ func Test_client_UpdateEnvironment(t *testing.T) {
 
 		environment := gocd.Environment{}
 		actual, err := client.UpdateEnvironment(environment)
-		assert.EqualError(t, err, "got 404 from GoCD while making PUT call for "+server.URL+
+		require.EqualError(t, err, "got 404 from GoCD while making PUT call for "+server.URL+
 			"/api/admin/environments\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 		assert.Equal(t, gocd.Environment{}, actual)
 	})
@@ -273,7 +274,7 @@ func Test_client_UpdateEnvironment(t *testing.T) {
 			ETAG: "26b227605daf6f2d7768c8edaf61b861",
 		}
 		actual, err := client.UpdateEnvironment(environment)
-		assert.EqualError(t, err, "reading response body errored with: invalid character 'e' looking for beginning of value")
+		require.EqualError(t, err, "reading response body errored with: invalid character 'e' looking for beginning of value")
 		assert.Equal(t, gocd.Environment{}, actual)
 	})
 
@@ -286,7 +287,7 @@ func Test_client_UpdateEnvironment(t *testing.T) {
 		environment := gocd.Environment{Name: "test"}
 
 		actual, err := client.UpdateEnvironment(environment)
-		assert.EqualError(t, err, "call made to update environment 'test' errored with: "+
+		require.EqualError(t, err, "call made to update environment 'test' errored with: "+
 			"Put \"http://localhost:8156/go/api/admin/environments/test\": dial tcp [::1]:8156: connect: connection refused")
 		assert.Equal(t, gocd.Environment{}, actual)
 	})
@@ -328,10 +329,10 @@ func Test_client_PatchEnvironment(t *testing.T) {
 
 		var expected gocd.Environment
 		unMarshallErr := json.Unmarshal([]byte(environmentPatchJSON), &expected)
-		assert.NoError(t, unMarshallErr)
+		require.NoError(t, unMarshallErr)
 
 		actual, err := client.PatchEnvironment(patch)
-		assert.NoError(t, err)
+		require.NoError(t, err)
 		assert.Equal(t, expected, actual)
 	})
 
@@ -341,7 +342,7 @@ func Test_client_PatchEnvironment(t *testing.T) {
 		patch := gocd.PatchEnvironment{}
 
 		actual, err := client.PatchEnvironment(patch)
-		assert.EqualError(t, err, "got 404 from GoCD while making PATCH call for "+server.URL+
+		require.EqualError(t, err, "got 404 from GoCD while making PATCH call for "+server.URL+
 			"/api/admin/environments\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 		assert.Equal(t, gocd.Environment{}, actual)
 	})
@@ -352,7 +353,7 @@ func Test_client_PatchEnvironment(t *testing.T) {
 		patch := gocd.PatchEnvironment{}
 
 		actual, err := client.PatchEnvironment(patch)
-		assert.EqualError(t, err, "got 404 from GoCD while making PATCH call for "+server.URL+
+		require.EqualError(t, err, "got 404 from GoCD while making PATCH call for "+server.URL+
 			"/api/admin/environments\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 		assert.Equal(t, gocd.Environment{}, actual)
 	})
@@ -363,7 +364,7 @@ func Test_client_PatchEnvironment(t *testing.T) {
 		patch := gocd.PatchEnvironment{}
 
 		actual, err := client.PatchEnvironment(patch)
-		assert.EqualError(t, err, "reading response body errored with: invalid character 'e' looking for beginning of value")
+		require.EqualError(t, err, "reading response body errored with: invalid character 'e' looking for beginning of value")
 		assert.Equal(t, gocd.Environment{}, actual)
 	})
 
@@ -376,7 +377,7 @@ func Test_client_PatchEnvironment(t *testing.T) {
 		patch := gocd.PatchEnvironment{Name: "test"}
 
 		actual, err := client.PatchEnvironment(patch)
-		assert.EqualError(t, err, "call made to patch environment 'test' errored with: "+
+		require.EqualError(t, err, "call made to patch environment 'test' errored with: "+
 			"Patch \"http://localhost:8156/go/api/admin/environments/test\": dial tcp [::1]:8156: connect: connection refused")
 		assert.Equal(t, gocd.Environment{}, actual)
 	})
@@ -407,7 +408,7 @@ func Test_client_GetEnvironment(t *testing.T) {
 		}
 
 		actual, err := client.GetEnvironment(envName)
-		assert.NoError(t, err)
+		require.NoError(t, err)
 		assert.Equal(t, expected, actual)
 	})
 
@@ -416,7 +417,7 @@ func Test_client_GetEnvironment(t *testing.T) {
 		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		actual, err := client.GetEnvironment(envName)
-		assert.EqualError(t, err, "got 404 from GoCD while making GET call for "+server.URL+
+		require.EqualError(t, err, "got 404 from GoCD while making GET call for "+server.URL+
 			"/api/admin/environments/my_environment\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 		assert.Equal(t, gocd.Environment{}, actual)
 	})
@@ -426,7 +427,7 @@ func Test_client_GetEnvironment(t *testing.T) {
 		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		actual, err := client.GetEnvironment(envName)
-		assert.EqualError(t, err, "got 404 from GoCD while making GET call for "+server.URL+
+		require.EqualError(t, err, "got 404 from GoCD while making GET call for "+server.URL+
 			"/api/admin/environments/my_environment\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 		assert.Equal(t, gocd.Environment{}, actual)
 	})
@@ -436,7 +437,7 @@ func Test_client_GetEnvironment(t *testing.T) {
 		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		actual, err := client.GetEnvironment(envName)
-		assert.EqualError(t, err, "reading response body errored with: invalid character 'e' looking for beginning of value")
+		require.EqualError(t, err, "reading response body errored with: invalid character 'e' looking for beginning of value")
 		assert.Equal(t, gocd.Environment{}, actual)
 	})
 
@@ -447,7 +448,7 @@ func Test_client_GetEnvironment(t *testing.T) {
 		client.SetRetryWaitTime(1)
 
 		actual, err := client.GetEnvironment(envName)
-		assert.EqualError(t, err, "call made to get environment 'my_environment' errored with: "+
+		require.EqualError(t, err, "call made to get environment 'my_environment' errored with: "+
 			"Get \"http://localhost:8156/go/api/admin/environments/my_environment\": dial tcp [::1]:8156: connect: connection refused")
 		assert.Equal(t, gocd.Environment{}, actual)
 	})
@@ -462,7 +463,7 @@ func Test_client_GetEnvironmentMappings(t *testing.T) {
 		client.SetRetryWaitTime(1)
 
 		actual, err := client.GetEnvironmentsMerged([]string{"example_environment"})
-		assert.EqualError(t, err, "call made to get environment mapping of 'example_environment' errored with: "+
+		require.EqualError(t, err, "call made to get environment mapping of 'example_environment' errored with: "+
 			"Get \"http://localhost:8156/go/api/admin/internal/environments/merged\": dial tcp [::1]:8156: connect: connection refused")
 		assert.Nil(t, actual)
 	})
@@ -472,7 +473,7 @@ func Test_client_GetEnvironmentMappings(t *testing.T) {
 		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		actual, err := client.GetEnvironmentsMerged([]string{"example_environment"})
-		assert.EqualError(t, err, "got 502 from GoCD while making GET call for "+server.URL+
+		require.EqualError(t, err, "got 502 from GoCD while making GET call for "+server.URL+
 			"/api/admin/internal/environments/merged\nwith BODY:backupJSON")
 		assert.Nil(t, actual)
 	})
@@ -482,7 +483,7 @@ func Test_client_GetEnvironmentMappings(t *testing.T) {
 		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		actual, err := client.GetEnvironmentsMerged([]string{"example_environment"})
-		assert.EqualError(t, err, "reading response body errored with: invalid character '}' after object key")
+		require.EqualError(t, err, "reading response body errored with: invalid character '}' after object key")
 		assert.Nil(t, actual)
 	})
 
@@ -491,7 +492,7 @@ func Test_client_GetEnvironmentMappings(t *testing.T) {
 		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		actual, err := client.GetEnvironmentsMerged([]string{"sample"})
-		assert.EqualError(t, err, "no environments found with names 'sample' to get mappings")
+		require.EqualError(t, err, "no environments found with names 'sample' to get mappings")
 		assert.Nil(t, actual)
 	})
 
@@ -536,7 +537,7 @@ func Test_client_GetEnvironmentMappings(t *testing.T) {
 		}
 
 		actual, err := client.GetEnvironmentsMerged([]string{"sample_environment", "example_environment"})
-		assert.NoError(t, err)
+		require.NoError(t, err)
 		assert.Equal(t, expected, actual)
 	})
 }

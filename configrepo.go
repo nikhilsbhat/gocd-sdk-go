@@ -345,8 +345,8 @@ func (conf *client) GetPipelineFiles(path string, pipelines []string, patterns .
 	if len(pipelines) != 0 {
 		for _, goCDPipeline := range pipelines {
 			conf.logger.Debugf("finding absolute path of the pipeline '%s'", goCDPipeline)
-			_, err := os.Stat(goCDPipeline)
-			if err != nil {
+
+			if _, err := os.Stat(goCDPipeline); err != nil {
 				return nil, err
 			}
 

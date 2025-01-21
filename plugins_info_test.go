@@ -7,6 +7,7 @@ import (
 
 	"github.com/nikhilsbhat/gocd-sdk-go"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 var (
@@ -74,7 +75,7 @@ func Test_client_GetPluginsInfo(t *testing.T) {
 		}
 
 		actual, err := client.GetPluginsInfo()
-		assert.NoError(t, err)
+		require.NoError(t, err)
 		assert.Equal(t, expected, actual)
 	})
 
@@ -87,7 +88,7 @@ func Test_client_GetPluginsInfo(t *testing.T) {
 		expected := gocd.PluginsInfo{}
 
 		actual, err := client.GetPluginsInfo()
-		assert.EqualError(t, err, "got 404 from GoCD while making GET call for "+server.URL+
+		require.EqualError(t, err, "got 404 from GoCD while making GET call for "+server.URL+
 			"/api/admin/plugin_info?include_bad=true\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 		assert.Equal(t, expected, actual)
 	})
@@ -100,7 +101,7 @@ func Test_client_GetPluginsInfo(t *testing.T) {
 		expected := gocd.PluginsInfo{}
 
 		actual, err := client.GetPluginsInfo()
-		assert.EqualError(t, err, "got 404 from GoCD while making GET call for "+server.URL+
+		require.EqualError(t, err, "got 404 from GoCD while making GET call for "+server.URL+
 			"/api/admin/plugin_info?include_bad=true\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 		assert.Equal(t, expected, actual)
 	})
@@ -113,7 +114,7 @@ func Test_client_GetPluginsInfo(t *testing.T) {
 		expected := gocd.PluginsInfo{}
 
 		actual, err := client.GetPluginsInfo()
-		assert.EqualError(t, err, "reading response body errored with: invalid character 'p' looking for beginning of value")
+		require.EqualError(t, err, "reading response body errored with: invalid character 'p' looking for beginning of value")
 		assert.Equal(t, expected, actual)
 	})
 
@@ -126,7 +127,7 @@ func Test_client_GetPluginsInfo(t *testing.T) {
 		expected := gocd.PluginsInfo{}
 
 		actual, err := client.GetPluginsInfo()
-		assert.EqualError(t, err, "call made to get all plugins info errored with: "+
+		require.EqualError(t, err, "call made to get all plugins info errored with: "+
 			"Get \"http://localhost:8156/go/api/admin/plugin_info?include_bad=true\": dial tcp [::1]:8156: connect: connection refused")
 		assert.Equal(t, expected, actual)
 	})
@@ -186,7 +187,7 @@ func Test_client_GetPluginInfo(t *testing.T) {
 		}
 
 		actual, err := client.GetPluginInfo("")
-		assert.NoError(t, err)
+		require.NoError(t, err)
 		assert.Equal(t, expected, actual)
 	})
 
@@ -199,7 +200,7 @@ func Test_client_GetPluginInfo(t *testing.T) {
 		expected := gocd.Plugin{}
 
 		actual, err := client.GetPluginInfo("")
-		assert.EqualError(t, err, "got 404 from GoCD while making GET call for "+server.URL+
+		require.EqualError(t, err, "got 404 from GoCD while making GET call for "+server.URL+
 			"/api/admin/plugin_info\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 		assert.Equal(t, expected, actual)
 	})
@@ -212,7 +213,7 @@ func Test_client_GetPluginInfo(t *testing.T) {
 		expected := gocd.Plugin{}
 
 		actual, err := client.GetPluginInfo("")
-		assert.EqualError(t, err, "got 404 from GoCD while making GET call for "+server.URL+
+		require.EqualError(t, err, "got 404 from GoCD while making GET call for "+server.URL+
 			"/api/admin/plugin_info\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 		assert.Equal(t, expected, actual)
 	})
@@ -225,7 +226,7 @@ func Test_client_GetPluginInfo(t *testing.T) {
 		expected := gocd.Plugin{}
 
 		actual, err := client.GetPluginInfo("")
-		assert.EqualError(t, err, "reading response body errored with: invalid character 'p' looking for beginning of value")
+		require.EqualError(t, err, "reading response body errored with: invalid character 'p' looking for beginning of value")
 		assert.Equal(t, expected, actual)
 	})
 
@@ -238,7 +239,7 @@ func Test_client_GetPluginInfo(t *testing.T) {
 		expected := gocd.Plugin{}
 
 		actual, err := client.GetPluginInfo("my_plugin")
-		assert.EqualError(t, err, "call made to get plugin info 'my_plugin' errored with: "+
+		require.EqualError(t, err, "call made to get plugin info 'my_plugin' errored with: "+
 			"Get \"http://localhost:8156/go/api/admin/plugin_info/my_plugin\": dial tcp [::1]:8156: connect: connection refused")
 		assert.Equal(t, expected, actual)
 	})

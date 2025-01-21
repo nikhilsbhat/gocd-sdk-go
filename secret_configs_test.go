@@ -7,6 +7,7 @@ import (
 
 	"github.com/nikhilsbhat/gocd-sdk-go"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 var (
@@ -50,7 +51,7 @@ func Test_client_GetSecretConfigs(t *testing.T) {
 		}
 
 		actual, err := client.GetSecretConfigs()
-		assert.NoError(t, err)
+		require.NoError(t, err)
 		assert.Equal(t, expected, actual)
 	})
 
@@ -65,7 +66,7 @@ func Test_client_GetSecretConfigs(t *testing.T) {
 		}
 
 		actual, err := client.GetSecretConfigs()
-		assert.EqualError(t, err, "got 404 from GoCD while making GET call for "+server.URL+
+		require.EqualError(t, err, "got 404 from GoCD while making GET call for "+server.URL+
 			"/api/admin/secret_configs\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 		assert.Equal(t, expected, actual)
 	})
@@ -80,7 +81,7 @@ func Test_client_GetSecretConfigs(t *testing.T) {
 		}
 
 		actual, err := client.GetSecretConfigs()
-		assert.EqualError(t, err, "got 404 from GoCD while making GET call for "+server.URL+
+		require.EqualError(t, err, "got 404 from GoCD while making GET call for "+server.URL+
 			"/api/admin/secret_configs\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 		assert.Equal(t, expected, actual)
 	})
@@ -95,7 +96,7 @@ func Test_client_GetSecretConfigs(t *testing.T) {
 		}
 
 		actual, err := client.GetSecretConfigs()
-		assert.EqualError(t, err, "reading response body errored with: invalid character 's' looking for beginning of value")
+		require.EqualError(t, err, "reading response body errored with: invalid character 's' looking for beginning of value")
 		assert.Equal(t, expected, actual)
 	})
 
@@ -110,7 +111,7 @@ func Test_client_GetSecretConfigs(t *testing.T) {
 		}
 
 		actual, err := client.GetSecretConfigs()
-		assert.EqualError(t, err, "call made to get secret configs errored with: "+
+		require.EqualError(t, err, "call made to get secret configs errored with: "+
 			"Get \"http://localhost:8156/go/api/admin/secret_configs\": dial tcp [::1]:8156: connect: connection refused")
 		assert.Equal(t, expected, actual)
 	})
@@ -146,7 +147,7 @@ func Test_client_GetSecretConfig(t *testing.T) {
 		}
 
 		actual, err := client.GetSecretConfig("demo")
-		assert.NoError(t, err)
+		require.NoError(t, err)
 		assert.Equal(t, expected, actual)
 	})
 
@@ -159,7 +160,7 @@ func Test_client_GetSecretConfig(t *testing.T) {
 		expected := gocd.CommonConfig{}
 
 		actual, err := client.GetSecretConfig("demo")
-		assert.EqualError(t, err, "got 404 from GoCD while making GET call for "+server.URL+
+		require.EqualError(t, err, "got 404 from GoCD while making GET call for "+server.URL+
 			"/api/admin/secret_configs/demo\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 		assert.Equal(t, expected, actual)
 	})
@@ -172,7 +173,7 @@ func Test_client_GetSecretConfig(t *testing.T) {
 		expected := gocd.CommonConfig{}
 
 		actual, err := client.GetSecretConfig("demo")
-		assert.EqualError(t, err, "got 404 from GoCD while making GET call for "+server.URL+
+		require.EqualError(t, err, "got 404 from GoCD while making GET call for "+server.URL+
 			"/api/admin/secret_configs/demo\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 		assert.Equal(t, expected, actual)
 	})
@@ -185,7 +186,7 @@ func Test_client_GetSecretConfig(t *testing.T) {
 		expected := gocd.CommonConfig{}
 
 		actual, err := client.GetSecretConfig("demo")
-		assert.EqualError(t, err, "reading response body errored with: invalid character 's' looking for beginning of value")
+		require.EqualError(t, err, "reading response body errored with: invalid character 's' looking for beginning of value")
 		assert.Equal(t, expected, actual)
 	})
 
@@ -198,7 +199,7 @@ func Test_client_GetSecretConfig(t *testing.T) {
 		expected := gocd.CommonConfig{}
 
 		actual, err := client.GetSecretConfig("demo")
-		assert.EqualError(t, err, "call made to get secret config 'demo' errored with: "+
+		require.EqualError(t, err, "call made to get secret config 'demo' errored with: "+
 			"Get \"http://localhost:8156/go/api/admin/secret_configs/demo\": dial tcp [::1]:8156: connect: connection refused")
 		assert.Equal(t, expected, actual)
 	})
@@ -215,7 +216,7 @@ func Test_client_DeleteSecretConfig(t *testing.T) {
 		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		err := client.DeleteSecretConfig(secretCfgID)
-		assert.NoError(t, err)
+		require.NoError(t, err)
 	})
 
 	t.Run("should error out while deleting an secret config due to wrong headers", func(t *testing.T) {
@@ -225,7 +226,7 @@ func Test_client_DeleteSecretConfig(t *testing.T) {
 		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		err := client.DeleteSecretConfig(secretCfgID)
-		assert.EqualError(t, err, "got 404 from GoCD while making DELETE call for "+server.URL+
+		require.EqualError(t, err, "got 404 from GoCD while making DELETE call for "+server.URL+
 			"/api/admin/secret_configs/demo\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 	})
 
@@ -236,7 +237,7 @@ func Test_client_DeleteSecretConfig(t *testing.T) {
 		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		err := client.DeleteSecretConfig(secretCfgID)
-		assert.EqualError(t, err, "got 404 from GoCD while making DELETE call for "+server.URL+
+		require.EqualError(t, err, "got 404 from GoCD while making DELETE call for "+server.URL+
 			"/api/admin/secret_configs/demo\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 	})
 
@@ -247,7 +248,7 @@ func Test_client_DeleteSecretConfig(t *testing.T) {
 		client.SetRetryWaitTime(1)
 
 		err := client.DeleteSecretConfig(secretCfgID)
-		assert.EqualError(t, err, "call made to delete secret config 'demo' errored with: "+
+		require.EqualError(t, err, "call made to delete secret config 'demo' errored with: "+
 			"Delete \"http://localhost:8156/go/api/admin/secret_configs/demo\": dial tcp [::1]:8156: connect: connection refused")
 	})
 }
@@ -286,7 +287,7 @@ func Test_client_UpdateSecretConfig(t *testing.T) {
 		expected.ETAG = "61406622382e51c2079c11dcbdb978fb"
 
 		actual, err := client.UpdateSecretConfig(profileCfg)
-		assert.NoError(t, err)
+		require.NoError(t, err)
 		assert.Equal(t, expected, actual)
 	})
 
@@ -300,7 +301,7 @@ func Test_client_UpdateSecretConfig(t *testing.T) {
 		expected := profileCfg
 
 		actual, err := client.UpdateSecretConfig(profileCfg)
-		assert.EqualError(t, err, "got 404 from GoCD while making PUT call for "+server.URL+
+		require.EqualError(t, err, "got 404 from GoCD while making PUT call for "+server.URL+
 			"/api/admin/secret_configs\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 		assert.Equal(t, expected, actual)
 	})
@@ -314,7 +315,7 @@ func Test_client_UpdateSecretConfig(t *testing.T) {
 		expected := profileCfg
 
 		actual, err := client.UpdateSecretConfig(profileCfg)
-		assert.EqualError(t, err, "got 404 from GoCD while making PUT call for "+server.URL+
+		require.EqualError(t, err, "got 404 from GoCD while making PUT call for "+server.URL+
 			"/api/admin/secret_configs\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 		assert.Equal(t, expected, actual)
 	})
@@ -328,7 +329,7 @@ func Test_client_UpdateSecretConfig(t *testing.T) {
 		expected := secretCfg
 
 		actual, err := client.UpdateSecretConfig(secretCfg)
-		assert.EqualError(t, err, "reading response body errored with: invalid character 's' looking for beginning of value")
+		require.EqualError(t, err, "reading response body errored with: invalid character 's' looking for beginning of value")
 		assert.Equal(t, expected, actual)
 	})
 
@@ -342,7 +343,7 @@ func Test_client_UpdateSecretConfig(t *testing.T) {
 		expected := gocd.CommonConfig{}
 
 		actual, err := client.UpdateSecretConfig(profileCfg)
-		assert.EqualError(t, err, "call made to update secret config 'demo' errored with: "+
+		require.EqualError(t, err, "call made to update secret config 'demo' errored with: "+
 			"Put \"http://localhost:8156/go/api/admin/secret_configs/demo\": dial tcp [::1]:8156: connect: connection refused")
 		assert.Equal(t, expected, actual)
 	})
@@ -381,7 +382,7 @@ func Test_client_CreateSecretConfig(t *testing.T) {
 		expected.ETAG = "61406622382e51c2079c11dcbdb978fb"
 
 		actual, err := client.CreateSecretConfig(secretCfg)
-		assert.NoError(t, err)
+		require.NoError(t, err)
 		assert.Equal(t, expected, actual)
 	})
 
@@ -395,7 +396,7 @@ func Test_client_CreateSecretConfig(t *testing.T) {
 		expected := secretCfg
 
 		actual, err := client.CreateSecretConfig(secretCfg)
-		assert.EqualError(t, err, "got 404 from GoCD while making POST call for "+server.URL+
+		require.EqualError(t, err, "got 404 from GoCD while making POST call for "+server.URL+
 			"/api/admin/secret_configs\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 		assert.Equal(t, expected, actual)
 	})
@@ -409,7 +410,7 @@ func Test_client_CreateSecretConfig(t *testing.T) {
 		expected := profileCfg
 
 		actual, err := client.CreateSecretConfig(profileCfg)
-		assert.EqualError(t, err, "got 404 from GoCD while making POST call for "+server.URL+
+		require.EqualError(t, err, "got 404 from GoCD while making POST call for "+server.URL+
 			"/api/admin/secret_configs\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 		assert.Equal(t, expected, actual)
 	})
@@ -423,7 +424,7 @@ func Test_client_CreateSecretConfig(t *testing.T) {
 		expected := secretCfg
 
 		actual, err := client.CreateSecretConfig(secretCfg)
-		assert.EqualError(t, err, "reading response body errored with: invalid character 's' looking for beginning of value")
+		require.EqualError(t, err, "reading response body errored with: invalid character 's' looking for beginning of value")
 		assert.Equal(t, expected, actual)
 	})
 
@@ -437,7 +438,7 @@ func Test_client_CreateSecretConfig(t *testing.T) {
 		expected := gocd.CommonConfig{}
 
 		actual, err := client.CreateSecretConfig(profileCfg)
-		assert.EqualError(t, err, "call made to create secrets config 'demo' errored with: "+
+		require.EqualError(t, err, "call made to create secrets config 'demo' errored with: "+
 			"Post \"http://localhost:8156/go/api/admin/secret_configs\": dial tcp [::1]:8156: connect: connection refused")
 		assert.Equal(t, expected, actual)
 	})

@@ -7,6 +7,7 @@ import (
 
 	"github.com/nikhilsbhat/gocd-sdk-go"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 //go:embed internal/fixtures/pipeline_confg.json
@@ -37,28 +38,11 @@ func Test_client_GetPipelineConfig(t *testing.T) {
 				{
 					Type: "git", Fingerprint: "",
 					Attributes: gocd.Attribute{
-						URL:                 "git@github.com:sample_repo/example.git",
-						Username:            "",
-						Password:            "",
-						EncryptedPassword:   "",
-						Branch:              "master",
-						AutoUpdate:          true,
-						CheckExternals:      false,
-						UseTickets:          false,
-						View:                "",
-						Port:                "",
-						ProjectPath:         "",
-						Domain:              "",
-						Ref:                 "",
-						Name:                "",
-						Stage:               "",
-						Pipeline:            "",
-						IgnoreForScheduling: false,
-						Destination:         "dest",
-						InvertFilter:        false,
-						SubmoduleFolder:     "",
-						ShallowClone:        false,
-						Origin:              map[string]string(nil),
+						URL:         "git@github.com:sample_repo/example.git",
+						Branch:      "master",
+						AutoUpdate:  true,
+						Destination: "dest",
+						Origin:      map[string]string(nil),
 						Filter: struct {
 							Ignore []string "json:\"ignore,omitempty\" yaml:\"ignore,omitempty\""
 						}{Ignore: []string(nil)},
@@ -68,28 +52,7 @@ func Test_client_GetPipelineConfig(t *testing.T) {
 						Type:        "",
 						Fingerprint: "",
 						Attributes: gocd.Attribute{
-							URL:                 "",
-							Username:            "",
-							Password:            "",
-							EncryptedPassword:   "",
-							Branch:              "",
-							AutoUpdate:          false,
-							CheckExternals:      false,
-							UseTickets:          false,
-							View:                "",
-							Port:                "",
-							ProjectPath:         "",
-							Domain:              "",
-							Ref:                 "",
-							Name:                "",
-							Stage:               "",
-							Pipeline:            "",
-							IgnoreForScheduling: false,
-							Destination:         "",
-							InvertFilter:        false,
-							SubmoduleFolder:     "",
-							ShallowClone:        false,
-							Origin:              map[string]string(nil),
+							Origin: map[string]string(nil),
 							Filter: struct {
 								Ignore []string "json:\"ignore,omitempty\" yaml:\"ignore,omitempty\""
 							}{Ignore: []string(nil)},
@@ -126,19 +89,11 @@ func Test_client_GetPipelineConfig(t *testing.T) {
 								{
 									Type: "exec",
 									Attributes: gocd.TaskAttributeConfig{
-										IsSourceAFile:    false,
-										ArtifactID:       "",
-										ArtifactOrigin:   "",
-										Command:          "ls",
-										WorkingDirectory: "",
-										Pipeline:         "",
-										Stage:            "",
-										Job:              "",
-										Source:           "",
-										Destination:      "",
-										Configuration:    []gocd.PluginConfiguration(nil),
-										RunIf:            []string{"passed"},
-										Arguments:        []string(nil),
+										IsSourceAFile: false,
+										Command:       "ls",
+										Configuration: []gocd.PluginConfiguration(nil),
+										RunIf:         []string{"passed"},
+										Arguments:     []string(nil),
 										PluginConfiguration: struct {
 											ID      string "json:\"id,omitempty\" yaml:\"id,omitempty\""
 											Version string "json:\"version,omitempty\" yaml:\"version,omitempty\""
@@ -191,18 +146,13 @@ func Test_client_GetPipelineConfig(t *testing.T) {
 								{
 									Type: "fetch",
 									Attributes: gocd.TaskAttributeConfig{
-										IsSourceAFile:    false,
-										ArtifactID:       "docker-image",
-										ArtifactOrigin:   "external",
-										Command:          "",
-										WorkingDirectory: "",
-										Pipeline:         "",
-										Stage:            "defaultStage",
-										Job:              "defaultJob",
-										Source:           "",
-										Destination:      "",
-										Configuration:    []gocd.PluginConfiguration(nil),
-										RunIf:            []string{}, Arguments: []string(nil), PluginConfiguration: struct {
+										IsSourceAFile:  false,
+										ArtifactID:     "docker-image",
+										ArtifactOrigin: "external",
+										Stage:          "defaultStage",
+										Job:            "defaultJob",
+										Configuration:  []gocd.PluginConfiguration(nil),
+										RunIf:          []string{}, Arguments: []string(nil), PluginConfiguration: struct {
 											ID      string "json:\"id,omitempty\" yaml:\"id,omitempty\""
 											Version string "json:\"version,omitempty\" yaml:\"version,omitempty\""
 										}{ID: "", Version: ""},
@@ -241,7 +191,7 @@ func Test_client_GetPipelineConfig(t *testing.T) {
 		}
 
 		actual, err := client.GetPipelineConfig("new_pipeline")
-		assert.NoError(t, err)
+		require.NoError(t, err)
 		assert.EqualValues(t, expected, actual)
 	})
 
@@ -254,7 +204,7 @@ func Test_client_GetPipelineConfig(t *testing.T) {
 		expected := gocd.PipelineConfig{}
 
 		actual, err := client.GetPipelineConfig("new_pipeline")
-		assert.EqualError(t, err, "got 404 from GoCD while making GET call for "+server.URL+
+		require.EqualError(t, err, "got 404 from GoCD while making GET call for "+server.URL+
 			"/api/admin/pipelines/new_pipeline\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 		assert.Equal(t, expected, actual)
 	})
@@ -267,7 +217,7 @@ func Test_client_GetPipelineConfig(t *testing.T) {
 		expected := gocd.PipelineConfig{}
 
 		actual, err := client.GetPipelineConfig("new_pipeline")
-		assert.EqualError(t, err, "got 404 from GoCD while making GET call for "+server.URL+
+		require.EqualError(t, err, "got 404 from GoCD while making GET call for "+server.URL+
 			"/api/admin/pipelines/new_pipeline\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 		assert.Equal(t, expected, actual)
 	})
@@ -280,7 +230,7 @@ func Test_client_GetPipelineConfig(t *testing.T) {
 		expected := gocd.PipelineConfig{}
 
 		actual, err := client.GetPipelineConfig("new_pipeline")
-		assert.EqualError(t, err, "reading response body errored with: invalid character 'p' looking for beginning of value")
+		require.EqualError(t, err, "reading response body errored with: invalid character 'p' looking for beginning of value")
 		assert.Equal(t, expected, actual)
 	})
 
@@ -293,7 +243,7 @@ func Test_client_GetPipelineConfig(t *testing.T) {
 		expected := gocd.PipelineConfig{}
 
 		actual, err := client.GetPipelineConfig("new_pipeline")
-		assert.EqualError(t, err, "call made to get pipeline config 'new_pipeline' errored with: Get "+
+		require.EqualError(t, err, "call made to get pipeline config 'new_pipeline' errored with: Get "+
 			"\"http://localhost:8156/go/api/admin/pipelines/new_pipeline\": dial tcp [::1]:8156: connect: connection refused")
 		assert.Equal(t, expected, actual)
 	})
@@ -307,7 +257,7 @@ func Test_client_DeletePipeline(t *testing.T) {
 		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		err := client.DeletePipeline("pipeline_group_1")
-		assert.NoError(t, err)
+		require.NoError(t, err)
 	})
 
 	t.Run("should error out while deleting pipeline due to wrong headers passed", func(t *testing.T) {
@@ -315,7 +265,7 @@ func Test_client_DeletePipeline(t *testing.T) {
 		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		err := client.DeletePipeline("pipeline_group_1")
-		assert.EqualError(t, err, "got 404 from GoCD while making DELETE call for "+server.URL+
+		require.EqualError(t, err, "got 404 from GoCD while making DELETE call for "+server.URL+
 			"/api/admin/pipelines/pipeline_group_1\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 	})
 
@@ -324,7 +274,7 @@ func Test_client_DeletePipeline(t *testing.T) {
 		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		err := client.DeletePipeline("pipeline_group_1")
-		assert.EqualError(t, err, "got 404 from GoCD while making DELETE call for "+server.URL+
+		require.EqualError(t, err, "got 404 from GoCD while making DELETE call for "+server.URL+
 			"/api/admin/pipelines/pipeline_group_1\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 	})
 
@@ -335,7 +285,7 @@ func Test_client_DeletePipeline(t *testing.T) {
 		client.SetRetryWaitTime(1)
 
 		err := client.DeletePipeline("pipeline_group_1")
-		assert.EqualError(t, err, "call made to delete pipeline config 'pipeline_group_1' errored with: "+
+		require.EqualError(t, err, "call made to delete pipeline config 'pipeline_group_1' errored with: "+
 			"Delete \"http://localhost:8156/go/api/admin/pipelines/pipeline_group_1\": dial tcp [::1]:8156: connect: connection refused")
 	})
 }
@@ -349,7 +299,7 @@ func Test_client_ExtractTemplatePipeline(t *testing.T) {
 
 		response, err := client.ExtractTemplatePipeline("pipeline_group_1", "my_template")
 		assert.NotNil(t, response)
-		assert.NoError(t, err)
+		require.NoError(t, err)
 	})
 
 	t.Run("should error out while extracting template from pipeline due to wrong headers passed", func(t *testing.T) {
@@ -358,7 +308,7 @@ func Test_client_ExtractTemplatePipeline(t *testing.T) {
 
 		response, err := client.ExtractTemplatePipeline("pipeline_group_1", "my_template")
 		assert.NotNil(t, response)
-		assert.EqualError(t, err, "got 404 from GoCD while making PUT call for "+server.URL+
+		require.EqualError(t, err, "got 404 from GoCD while making PUT call for "+server.URL+
 			"/api/admin/pipelines/pipeline_group_1/extract_to_template\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 	})
 
@@ -368,7 +318,7 @@ func Test_client_ExtractTemplatePipeline(t *testing.T) {
 
 		response, err := client.ExtractTemplatePipeline("pipeline_group_1", "my_template")
 		assert.NotNil(t, response)
-		assert.EqualError(t, err, "got 404 from GoCD while making PUT call for "+server.URL+
+		require.EqualError(t, err, "got 404 from GoCD while making PUT call for "+server.URL+
 			"/api/admin/pipelines/pipeline_group_1/extract_to_template\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 	})
 
@@ -379,7 +329,7 @@ func Test_client_ExtractTemplatePipeline(t *testing.T) {
 
 		response, err := client.ExtractTemplatePipeline("pipeline_group_1", "my_template")
 		assert.NotNil(t, response)
-		assert.EqualError(t, err, "reading response body errored with: invalid character 'p' looking for beginning of value")
+		require.EqualError(t, err, "reading response body errored with: invalid character 'p' looking for beginning of value")
 	})
 
 	t.Run("should error out while extracting template from pipeline as server is not reachable", func(t *testing.T) {
@@ -390,7 +340,7 @@ func Test_client_ExtractTemplatePipeline(t *testing.T) {
 
 		response, err := client.ExtractTemplatePipeline("pipeline_group_1", "my_template")
 		assert.NotNil(t, response)
-		assert.EqualError(t, err, "call made to extracting template from pipeline 'pipeline_group_1' errored with: "+
+		require.EqualError(t, err, "call made to extracting template from pipeline 'pipeline_group_1' errored with: "+
 			"Put \"http://localhost:8156/go/api/admin/pipelines/pipeline_group_1/extract_to_template\": dial tcp [::1]:8156: connect: connection refused")
 	})
 }
@@ -422,34 +372,20 @@ func Test_client_UpdatePipelineConfig(t *testing.T) {
 					Type:        "git",
 					Fingerprint: "",
 					Attributes: gocd.Attribute{
-						URL:                 "git@github.com:sample_repo/example.git",
-						Username:            "",
-						Password:            "",
-						EncryptedPassword:   "",
-						Branch:              "master",
-						AutoUpdate:          true,
-						CheckExternals:      false,
-						UseTickets:          false,
-						View:                "",
-						Port:                "",
-						ProjectPath:         "",
-						Domain:              "",
-						Ref:                 "",
-						Name:                "",
-						Stage:               "",
-						Pipeline:            "",
-						IgnoreForScheduling: false,
-						Destination:         "dest",
-						InvertFilter:        false,
-						SubmoduleFolder:     "",
-						ShallowClone:        false,
-						Origin:              map[string]string(nil),
+						URL:         "git@github.com:sample_repo/example.git",
+						Branch:      "master",
+						AutoUpdate:  true,
+						Destination: "dest",
 						Filter: struct {
 							Ignore []string "json:\"ignore,omitempty\" yaml:\"ignore,omitempty\""
 						}{Ignore: []string(nil)},
-					}, RepoURL: "", Config: gocd.MaterialConfig{Type: "", Fingerprint: "", Attributes: gocd.Attribute{URL: "", Username: "", Password: "", EncryptedPassword: "", Branch: "", AutoUpdate: false, CheckExternals: false, UseTickets: false, View: "", Port: "", ProjectPath: "", Domain: "", Ref: "", Name: "", Stage: "", Pipeline: "", IgnoreForScheduling: false, Destination: "", InvertFilter: false, SubmoduleFolder: "", ShallowClone: false, Origin: map[string]string(nil), Filter: struct {
-						Ignore []string "json:\"ignore,omitempty\" yaml:\"ignore,omitempty\""
-					}{Ignore: []string(nil)}}},
+					}, RepoURL: "", Config: gocd.MaterialConfig{
+						Attributes: gocd.Attribute{
+							Filter: struct {
+								Ignore []string "json:\"ignore,omitempty\" yaml:\"ignore,omitempty\""
+							}{Ignore: []string(nil)},
+						},
+					},
 					CanTriggerUpdate:         false,
 					MaterialUpdateInProgress: false,
 					Messages:                 []map[string]string(nil),
@@ -457,10 +393,8 @@ func Test_client_UpdatePipelineConfig(t *testing.T) {
 			},
 			Stages: []gocd.PipelineStageConfig{
 				{
-					Name:                  "defaultStage",
-					FetchMaterials:        true,
-					CleanWorkingDirectory: false,
-					NeverCleanupArtifacts: false,
+					Name:           "defaultStage",
+					FetchMaterials: true,
 					Approval: gocd.PipelineApprovalConfig{
 						Type:               "success",
 						AllowOnlyOnSuccess: false,
@@ -481,19 +415,11 @@ func Test_client_UpdatePipelineConfig(t *testing.T) {
 							Tasks: []gocd.PipelineTaskConfig{{
 								Type: "exec",
 								Attributes: gocd.TaskAttributeConfig{
-									IsSourceAFile:    false,
-									ArtifactID:       "",
-									ArtifactOrigin:   "",
-									Command:          "ls",
-									WorkingDirectory: "",
-									Pipeline:         "",
-									Stage:            "",
-									Job:              "",
-									Source:           "",
-									Destination:      "",
-									Configuration:    []gocd.PluginConfiguration(nil),
-									RunIf:            []string{"passed"},
-									Arguments:        []string(nil),
+									IsSourceAFile: false,
+									Command:       "ls",
+									Configuration: []gocd.PluginConfiguration(nil),
+									RunIf:         []string{"passed"},
+									Arguments:     []string(nil),
 									PluginConfiguration: struct {
 										ID      string "json:\"id,omitempty\" yaml:\"id,omitempty\""
 										Version string "json:\"version,omitempty\" yaml:\"version,omitempty\""
@@ -509,9 +435,6 @@ func Test_client_UpdatePipelineConfig(t *testing.T) {
 							Tabs: []gocd.PipelineTab{},
 							Artifacts: []gocd.PipelineArtifact{{
 								Type:          "external",
-								Source:        "",
-								Destination:   "",
-								ArtifactID:    "",
 								StoreID:       "dockerhub",
 								Configuration: []map[string]string{{"key": "Image", "value": "gocd/gocd-server"}, {"key": "Tag", "value": "v${GO_PIPELINE_LABEL}"}},
 							}},
@@ -544,19 +467,14 @@ func Test_client_UpdatePipelineConfig(t *testing.T) {
 								{
 									Type: "fetch",
 									Attributes: gocd.TaskAttributeConfig{
-										IsSourceAFile:    false,
-										ArtifactID:       "docker-image",
-										ArtifactOrigin:   "external",
-										Command:          "",
-										WorkingDirectory: "",
-										Pipeline:         "",
-										Stage:            "defaultStage",
-										Job:              "defaultJob",
-										Source:           "",
-										Destination:      "",
-										Configuration:    []gocd.PluginConfiguration(nil),
-										RunIf:            []string{},
-										Arguments:        []string(nil),
+										IsSourceAFile:  false,
+										ArtifactID:     "docker-image",
+										ArtifactOrigin: "external",
+										Stage:          "defaultStage",
+										Job:            "defaultJob",
+										Configuration:  []gocd.PluginConfiguration(nil),
+										RunIf:          []string{},
+										Arguments:      []string(nil),
 										PluginConfiguration: struct {
 											ID      string "json:\"id,omitempty\" yaml:\"id,omitempty\""
 											Version string "json:\"version,omitempty\" yaml:\"version,omitempty\""
@@ -570,10 +488,8 @@ func Test_client_UpdatePipelineConfig(t *testing.T) {
 											Arguments        []string "json:\"arguments,omitempty\" yaml:\"arguments,omitempty\""
 											WorkingDirectory string   "json:\"working_directory,omitempty\" yaml:\"working_directory,omitempty\""
 										}{
-											RunIf:            []string(nil),
-											Command:          "",
-											Arguments:        []string(nil),
-											WorkingDirectory: "",
+											RunIf:     []string(nil),
+											Arguments: []string(nil),
 										},
 									},
 								},
@@ -602,7 +518,7 @@ func Test_client_UpdatePipelineConfig(t *testing.T) {
 		}
 
 		actual, err := client.UpdatePipelineConfig(input)
-		assert.NoError(t, err)
+		require.NoError(t, err)
 		assert.Equal(t, expected, actual)
 	})
 
@@ -619,7 +535,7 @@ func Test_client_UpdatePipelineConfig(t *testing.T) {
 		}
 
 		actual, err := client.UpdatePipelineConfig(input)
-		assert.EqualError(t, err, "got 404 from GoCD while making PUT call for "+server.URL+
+		require.EqualError(t, err, "got 404 from GoCD while making PUT call for "+server.URL+
 			"/api/admin/pipelines/new_pipeline\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 		assert.Equal(t, expected, actual)
 	})
@@ -636,7 +552,7 @@ func Test_client_UpdatePipelineConfig(t *testing.T) {
 		}
 
 		actual, err := client.UpdatePipelineConfig(input)
-		assert.EqualError(t, err, "got 404 from GoCD while making PUT call for "+server.URL+
+		require.EqualError(t, err, "got 404 from GoCD while making PUT call for "+server.URL+
 			"/api/admin/pipelines/new_pipeline\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 		assert.Equal(t, expected, actual)
 	})
@@ -653,7 +569,7 @@ func Test_client_UpdatePipelineConfig(t *testing.T) {
 		}
 
 		actual, err := client.UpdatePipelineConfig(input)
-		assert.EqualError(t, err, "reading response body errored with: invalid character 'p' looking for beginning of value")
+		require.EqualError(t, err, "reading response body errored with: invalid character 'p' looking for beginning of value")
 		assert.Equal(t, expected, actual)
 	})
 
@@ -670,7 +586,7 @@ func Test_client_UpdatePipelineConfig(t *testing.T) {
 		}
 
 		actual, err := client.UpdatePipelineConfig(input)
-		assert.EqualError(t, err, "call made to update pipeline config 'new_pipeline' errored with: Put "+
+		require.EqualError(t, err, "call made to update pipeline config 'new_pipeline' errored with: Put "+
 			"\"http://localhost:8156/go/api/admin/pipelines/new_pipeline\": dial tcp [::1]:8156: connect: connection refused")
 		assert.Equal(t, expected, actual)
 	})
@@ -695,7 +611,7 @@ func Test_client_CreatePipeline(t *testing.T) {
 		}
 
 		out, err := client.CreatePipeline(input)
-		assert.NoError(t, err)
+		require.NoError(t, err)
 		assert.Equal(t, "new_group", out.Group)
 	})
 
@@ -711,7 +627,7 @@ func Test_client_CreatePipeline(t *testing.T) {
 		}
 
 		_, err := client.CreatePipeline(input)
-		assert.EqualError(t, err, "got 404 from GoCD while making POST call for "+server.URL+
+		require.EqualError(t, err, "got 404 from GoCD while making POST call for "+server.URL+
 			"/api/admin/pipelines\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 	})
 
@@ -726,7 +642,7 @@ func Test_client_CreatePipeline(t *testing.T) {
 		}
 
 		_, err := client.CreatePipeline(input)
-		assert.EqualError(t, err, "got 404 from GoCD while making POST call for "+server.URL+
+		require.EqualError(t, err, "got 404 from GoCD while making POST call for "+server.URL+
 			"/api/admin/pipelines\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
 	})
 
@@ -742,7 +658,7 @@ func Test_client_CreatePipeline(t *testing.T) {
 
 		response, err := client.CreatePipeline(input)
 		assert.NotNil(t, response)
-		assert.EqualError(t, err, "reading response body errored with: invalid character 'p' looking for beginning of value")
+		require.EqualError(t, err, "reading response body errored with: invalid character 'p' looking for beginning of value")
 	})
 
 	t.Run("should error out while creating pipeline configuration present in GoCD as server is not reachable", func(t *testing.T) {
@@ -757,7 +673,7 @@ func Test_client_CreatePipeline(t *testing.T) {
 		}
 
 		_, err := client.CreatePipeline(input)
-		assert.EqualError(t, err, "call made to create pipeline config 'new_pipeline' errored with: Post "+
+		require.EqualError(t, err, "call made to create pipeline config 'new_pipeline' errored with: Post "+
 			"\"http://localhost:8156/go/api/admin/pipelines\": dial tcp [::1]:8156: connect: connection refused")
 	})
 }

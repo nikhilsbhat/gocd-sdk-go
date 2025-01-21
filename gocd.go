@@ -92,14 +92,14 @@ type GoCd interface {
 	EncryptText(value string) (Encrypted, error)
 	DecryptText(value, cipherKey string) (string, error)
 	GetArtifactConfig() (ArtifactInfo, error)
-	UpdateArtifactConfig(ArtifactInfo) (ArtifactInfo, error)
+	UpdateArtifactConfig(info ArtifactInfo) (ArtifactInfo, error)
 	GetAuthConfigs() ([]CommonConfig, error)
 	GetAuthConfig(name string) (CommonConfig, error)
 	CreateAuthConfig(config CommonConfig) (CommonConfig, error)
 	UpdateAuthConfig(config CommonConfig) (CommonConfig, error)
 	DeleteAuthConfig(name string) error
 	GetSiteURL() (SiteURLConfig, error)
-	CreateOrUpdateSiteURL(SiteURLConfig) (SiteURLConfig, error)
+	CreateOrUpdateSiteURL(config SiteURLConfig) (SiteURLConfig, error)
 	GetMailServerConfig() (MailServerConfig, error)
 	CreateOrUpdateMailServerConfig(mailConfig MailServerConfig) (MailServerConfig, error)
 	DeleteMailServerConfig() error
@@ -211,11 +211,12 @@ func NewClient(baseURL string, auth Auth, logLevel string, caContent []byte) GoC
 }
 
 func (auth *Auth) setAuth(newClient *resty.Client) {
-	if auth.NoAuth {
-		// skip do nothing
-	} else if len(auth.BearerToken) != 0 {
+	switch {
+	case auth.NoAuth:
+		// Skip, do nothing
+	case len(auth.BearerToken) != 0:
 		newClient.SetAuthToken(auth.BearerToken)
-	} else {
+	default:
 		newClient.SetBasicAuth(auth.UserName, auth.Password)
 	}
 }

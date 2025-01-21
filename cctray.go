@@ -26,6 +26,7 @@ func (conf *client) GetCCTray() ([]Project, error) {
 		return nil, &errors.NonOkError{Code: resp.StatusCode(), Response: resp}
 	}
 
+	//nolint:musttag
 	if err = xml.Unmarshal(resp.Body(), &projectsConf); err != nil {
 		return nil, &errors.MarshalError{Err: err}
 	}
