@@ -20,7 +20,7 @@ pipelines:
     materials:
       mygit: # this is the name of material, the name can contain only of alphanumeric & underscore characters
         # keyword git says about type of material and url at once
-        git: http://my.example.org/mygit.git
+        git: https://github.com/nikhilsbhat/helm-images.git
         branch: ci
       myupstream: # this name does not matter, but there should be no 2 materials with the same name
         # type is optional here, material type is implied based on presence of pipeline and stage fields

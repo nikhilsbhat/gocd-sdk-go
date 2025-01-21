@@ -27,7 +27,7 @@ func Test_client_GetPluginsInfo(t *testing.T) {
 
 		expected := gocd.PluginsInfo{
 			ETAG: "cbc5f2d5b9c13a2cc1b1efb3d8a6155d",
-			Plugins: []gocd.Plugin{
+			Plugins: []*gocd.Plugin{
 				{
 					ID:                 "json.config.plugin",
 					PluginFileLocation: "/Users/varshavs/gocd/server/plugins/bundled/gocd-json-config-plugin.jar",
@@ -50,7 +50,7 @@ func Test_client_GetPluginsInfo(t *testing.T) {
 						{
 							Type: "configrepo",
 							PluginSettings: &gocd.PluginSettingAttribute{
-								Configurations: []gocd.PluginConfiguration{
+								Configurations: []*gocd.PluginConfiguration{
 									{
 										Key: "pipeline_pattern",
 										Metadata: map[string]interface{}{
@@ -164,7 +164,7 @@ func Test_client_GetPluginInfo(t *testing.T) {
 				{
 					Type: "configrepo",
 					PluginSettings: &gocd.PluginSettingAttribute{
-						Configurations: []gocd.PluginConfiguration{
+						Configurations: []*gocd.PluginConfiguration{
 							{
 								Key: "pipeline_pattern",
 								Metadata: map[string]interface{}{

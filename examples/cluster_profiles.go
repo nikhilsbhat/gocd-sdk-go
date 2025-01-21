@@ -8,7 +8,7 @@ import (
 	"github.com/nikhilsbhat/gocd-sdk-go"
 )
 
-func main() {
+func clusterProfiles() {
 	auth := gocd.Auth{
 		UserName: "admin",
 		Password: "admin",

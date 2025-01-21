@@ -20,6 +20,9 @@ linters:
     - maligned
     - tagalign
     - depguard
+    - copyloopvar
+    - exportloopref
+    - intrange
 
 issues:
   exclude-rules:

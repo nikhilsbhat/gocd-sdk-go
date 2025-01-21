@@ -23,7 +23,7 @@ func Test_client_GetPluginSettings(t *testing.T) {
 
 		expected := gocd.PluginSettings{
 			ID: pluginName,
-			Configuration: []gocd.PluginConfiguration{
+			Configuration: []*gocd.PluginConfiguration{
 				{
 					Key:   "consumer_key",
 					Value: "consumerkey",
@@ -113,7 +113,7 @@ func Test_client_CreatePluginSettings(t *testing.T) {
 
 		pluginSettings := gocd.PluginSettings{
 			ID: pluginName,
-			Configuration: []gocd.PluginConfiguration{
+			Configuration: []*gocd.PluginConfiguration{
 				{
 					Key:   "consumer_key",
 					Value: "consumerkey",
@@ -207,7 +207,7 @@ func Test_client_UpdatePluginSettings(t *testing.T) {
 
 		pluginSettings := gocd.PluginSettings{
 			ID: pluginName,
-			Configuration: []gocd.PluginConfiguration{
+			Configuration: []*gocd.PluginConfiguration{
 				{
 					Key:   "consumer_key",
 					Value: "consumerkey",

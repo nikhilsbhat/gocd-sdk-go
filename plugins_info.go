@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"net/http"
 	"path/filepath"
+	"regexp"
+	"strings"
 
 	"github.com/jinzhu/copier"
 	"github.com/nikhilsbhat/gocd-sdk-go/pkg/errors"
@@ -36,6 +38,10 @@ func (conf *client) GetPluginsInfo() (PluginsInfo, error) {
 		return PluginsInfo{}, &errors.MarshalError{Err: err}
 	}
 
+	for _, plugin := range pluginInfosCfg.PluginsInfos.Plugins {
+		correctKeys(plugin)
+	}
+
 	pluginInfosCfg.PluginsInfos.ETAG = resp.Header().Get("ETag")
 
 	return pluginInfosCfg.PluginsInfos, nil
@@ -47,7 +53,7 @@ func (conf *client) GetPluginInfo(name string) (Plugin, error) {
 		return Plugin{}, err
 	}
 
-	var pluginInfoCfg Plugin
+	var pluginInfoCfg *Plugin
 
 	resp, err := newClient.httpClient.R().
 		SetHeaders(map[string]string{
@@ -66,7 +72,77 @@ func (conf *client) GetPluginInfo(name string) (Plugin, error) {
 		return Plugin{}, &errors.MarshalError{Err: err}
 	}
 
+	correctKeys(pluginInfoCfg)
+
 	pluginInfoCfg.ETAG = resp.Header().Get("ETag")
 
-	return pluginInfoCfg, nil
+	return *pluginInfoCfg, nil
+}
+
+func correctKeys(plugin *Plugin) {
+	for _, extension := range plugin.Extensions {
+		if extension.AuthConfigSettings != nil {
+			convertKeysToSnakeCase(extension.AuthConfigSettings.Configurations)
+		}
+
+		if extension.ArtifactConfigSettings != nil {
+			convertKeysToSnakeCase(extension.ArtifactConfigSettings.Configurations)
+		}
+
+		if extension.ElasticAgentProfileSettings != nil {
+			convertKeysToSnakeCase(extension.ElasticAgentProfileSettings.Configurations)
+		}
+
+		if extension.FetchArtifactSettings != nil {
+			convertKeysToSnakeCase(extension.FetchArtifactSettings.Configurations)
+		}
+
+		if extension.ClusterProfileSettings != nil {
+			convertKeysToSnakeCase(extension.ClusterProfileSettings.Configurations)
+		}
+
+		if extension.PluginSettings != nil {
+			convertKeysToSnakeCase(extension.PluginSettings.Configurations)
+		}
+
+		if extension.PackageSettings != nil {
+			convertKeysToSnakeCase(extension.PackageSettings.Configurations)
+		}
+
+		if extension.RepositorySettings != nil {
+			convertKeysToSnakeCase(extension.RepositorySettings.Configurations)
+		}
+
+		if extension.ScmSettings != nil {
+			convertKeysToSnakeCase(extension.ScmSettings.Configurations)
+		}
+
+		if extension.StoreConfigSettings != nil {
+			convertKeysToSnakeCase(extension.StoreConfigSettings.Configurations)
+		}
+
+		if extension.SecretConfigSettings != nil {
+			convertKeysToSnakeCase(extension.SecretConfigSettings.Configurations)
+		}
+
+		if extension.RoleSettings != nil {
+			convertKeysToSnakeCase(extension.RoleSettings.Configurations)
+		}
+
+		if extension.TaskSettings != nil {
+			convertKeysToSnakeCase(extension.TaskSettings.Configurations)
+		}
+	}
+}
+
+func convertKeysToSnakeCase(input []*PluginConfiguration) {
+	for _, configuration := range input {
+		configuration.Key = camelToSnake(configuration.Key)
+	}
+}
+
+func camelToSnake(s string) string {
+	re := regexp.MustCompile("([a-z])([A-Z])")
+	snake := re.ReplaceAllString(s, "${1}_${2}")
+	return strings.ToLower(snake)
 }

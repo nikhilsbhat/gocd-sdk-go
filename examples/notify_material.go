@@ -7,7 +7,7 @@ import (
 	"github.com/nikhilsbhat/gocd-sdk-go"
 )
 
-func main() {
+func notifyMaterial() {
 	auth := gocd.Auth{
 		UserName: "admin",
 		Password: "admin",

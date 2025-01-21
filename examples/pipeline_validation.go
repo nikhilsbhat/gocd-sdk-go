@@ -9,7 +9,7 @@ import (
 	"github.com/nikhilsbhat/gocd-sdk-go/pkg/plugin"
 )
 
-func main() {
+func pipelineValidation() {
 	pluginCfg := plugin.NewPluginConfig("", "", "", "debug")
 	auth := gocd.Auth{
 		UserName: "admin",

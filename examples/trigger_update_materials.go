@@ -8,7 +8,7 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
-func main() {
+func triggerUpdateMaterials() {
 	auth := gocd.Auth{
 		UserName: "admin",
 		Password: "admin",

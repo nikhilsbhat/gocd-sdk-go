@@ -8,7 +8,7 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
-func main() {
+func getMaterials() {
 	auth := gocd.Auth{
 		UserName: "admin",
 		Password: "admin",

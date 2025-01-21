@@ -422,9 +422,9 @@ type MailServerConfig struct {
 
 // PluginSettings holds information of plugin settings of GoCD.
 type PluginSettings struct {
-	ID            string                `json:"plugin_id,omitempty" yaml:"plugin_id,omitempty"`
-	Configuration []PluginConfiguration `json:"configuration,omitempty" yaml:"configuration,omitempty"`
-	ETAG          string                `json:"etag,omitempty" yaml:"etag,omitempty"`
+	ID            string                 `json:"plugin_id,omitempty" yaml:"plugin_id,omitempty"`
+	Configuration []*PluginConfiguration `json:"configuration,omitempty" yaml:"configuration,omitempty"`
+	ETAG          string                 `json:"etag,omitempty" yaml:"etag,omitempty"`
 }
 
 // PipelineObject holds information required to comment/get/history of pipeline or instance of the same.
@@ -616,8 +616,8 @@ type PluginsInfos struct {
 
 // PluginsInfo holds information of all plugins present in GoCd.
 type PluginsInfo struct {
-	Plugins []Plugin `json:"plugin_info,omitempty" yaml:"plugin_info,omitempty"`
-	ETAG    string   `json:"etag,omitempty" yaml:"etag,omitempty"`
+	Plugins []*Plugin `json:"plugin_info,omitempty" yaml:"plugin_info,omitempty"`
+	ETAG    string    `json:"etag,omitempty" yaml:"etag,omitempty"`
 }
 
 // Plugin holds information of a specific plugins present in GoCd.
@@ -657,7 +657,7 @@ type PluginAttributes struct {
 
 // PluginSettingAttribute holds plugin configuration information.
 type PluginSettingAttribute struct {
-	Configurations []PluginConfiguration `json:"configurations,omitempty" yaml:"configurations,omitempty"`
+	Configurations []*PluginConfiguration `json:"configurations,omitempty" yaml:"configurations,omitempty"`
 }
 
 // Users holds information of all users present in GoCD.

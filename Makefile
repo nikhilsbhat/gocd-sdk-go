@@ -1,3 +1,5 @@
+include makefiles/security.mk
+
 GOFMT_FILES?=$(shell find . -not -path "./vendor/*" -type f -name '*.go')
 BUILD_ENVIRONMENT?=${ENVIRONMENT}
 GOVERSION?=$(shell go version | awk '{printf $$3}')

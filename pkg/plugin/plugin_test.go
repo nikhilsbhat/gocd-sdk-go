@@ -61,7 +61,7 @@ func (suite *YAMLPluginTestSuite) TestValidatePluginTests_ShouldFailValidatingYA
 
 	actual, err := suite.config.ValidatePlugin([]string{pipelinePath})
 	suite.EqualError(err, expectedError)
-	suite.Equal(false, actual)
+	suite.False(false, actual)
 }
 
 func (suite *YAMLPluginTestSuite) TestValidatePluginTests_ShouldSuccessfullyValidateTheYAMLPipelineFile() {
@@ -75,7 +75,7 @@ func (suite *YAMLPluginTestSuite) TestValidatePluginTests_ShouldSuccessfullyVali
 
 	actual, err := suite.config.ValidatePlugin([]string{pipelinePath})
 	suite.NoError(err)
-	suite.Equal(true, actual)
+	suite.True(true, actual)
 }
 
 func (suite *YAMLPluginTestSuite) TestValidatePluginTests_ValidationShouldFailDueToErrorsInYAMLPipelineFile() {
@@ -89,7 +89,7 @@ func (suite *YAMLPluginTestSuite) TestValidatePluginTests_ValidationShouldFailDu
 
 	actual, err := suite.config.ValidatePlugin([]string{pipelinePath})
 	suite.Error(err)
-	suite.Equal(false, actual)
+	suite.False(false, actual)
 }
 
 func TestPipelineValidateTestSuite(t *testing.T) {
@@ -137,7 +137,7 @@ func (suite *JOSNPluginTestSuite) TestValidatePluginTests_ShouldFailValidatingJS
 
 	actual, err := suite.config.ValidatePlugin([]string{pipelinePath})
 	suite.EqualError(err, expectedError)
-	suite.Equal(false, actual)
+	suite.False(false, actual)
 }
 
 func (suite *JOSNPluginTestSuite) TestValidatePluginTests_ShouldSuccessfullyValidateTheJSONPipelineFile() {
@@ -151,7 +151,7 @@ func (suite *JOSNPluginTestSuite) TestValidatePluginTests_ShouldSuccessfullyVali
 
 	actual, err := suite.config.ValidatePlugin([]string{pipelinePath})
 	suite.NoError(err)
-	suite.Equal(true, actual)
+	suite.True(true, actual)
 }
 
 func (suite *JOSNPluginTestSuite) TestValidatePluginTests_ValidationShouldFailDueToErrorsInJSONPipelineFile() {
@@ -165,7 +165,7 @@ func (suite *JOSNPluginTestSuite) TestValidatePluginTests_ValidationShouldFailDu
 
 	actual, err := suite.config.ValidatePlugin([]string{pipelinePath})
 	suite.Error(err)
-	suite.Equal(false, actual)
+	suite.False(false, actual)
 }
 
 func TestJSONPipelineValidateTestSuite(t *testing.T) {
@@ -213,7 +213,7 @@ func (suite *GroovyPluginTestSuite) TestValidatePluginTests_ShouldFailValidating
 
 	actual, err := suite.config.ValidatePlugin([]string{pipelinePath})
 	suite.EqualError(err, expectedError)
-	suite.Equal(false, actual)
+	suite.False(false, actual)
 }
 
 func (suite *GroovyPluginTestSuite) TestValidatePluginTests_ShouldSuccessfullyValidateTheGroovyPipelineFile() {
@@ -227,7 +227,7 @@ func (suite *GroovyPluginTestSuite) TestValidatePluginTests_ShouldSuccessfullyVa
 
 	actual, err := suite.config.ValidatePlugin([]string{pipelinePath})
 	suite.NoError(err)
-	suite.Equal(true, actual)
+	suite.True(true, actual)
 }
 
 func (suite *GroovyPluginTestSuite) TestValidatePluginTests_ValidationShouldFailDueToErrorsInGroovyPipelineFile() {
@@ -241,7 +241,7 @@ func (suite *GroovyPluginTestSuite) TestValidatePluginTests_ValidationShouldFail
 
 	actual, err := suite.config.ValidatePlugin([]string{pipelinePath})
 	suite.Error(err)
-	suite.Equal(false, actual)
+	suite.False(false, actual)
 }
 
 func TestGroovyPipelineValidateTestSuite(t *testing.T) {
