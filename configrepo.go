@@ -131,10 +131,6 @@ func (conf *client) GetConfigRepoDefinitions(repo string) (ConfigRepo, error) {
 	}
 
 	if resp.StatusCode() != http.StatusOK {
-		if resp.StatusCode() == http.StatusNotFound {
-			return ConfigRepo{}, &errors.NonFoundError{Code: resp.StatusCode(), Response: resp}
-		}
-
 		return ConfigRepo{}, &errors.NonOkError{Code: resp.StatusCode(), Response: resp}
 	}
 

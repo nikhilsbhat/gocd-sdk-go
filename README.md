@@ -207,7 +207,7 @@ Below are the list of supported APIs:
 - [x] [System Admin](https://api.gocd.org/current/#system-admins)
     - [x] Get All system admins
     - [x] Update system Admin
-    - [ ] <del>Bulk update system admins<del>
+    - [x] Bulk update system admins
 - [x] [Role](https://api.gocd.org/current/#roles)
     - [x] Get all roles
     - [X] Get all roles by type

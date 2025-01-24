@@ -69,3 +69,36 @@ func (conf *client) UpdateSystemAdmins(data SystemAdmins) (SystemAdmins, error) 
 
 	return admins, nil
 }
+
+// UpdateSystemAdminsBulk should bulk update system admins with list of users or roles.
+func (conf *client) UpdateSystemAdminsBulk(data Operations) (SystemAdmins, error) {
+	var admins SystemAdmins
+
+	newClient := &client{}
+	if err := copier.CopyWithOption(newClient, conf, copier.Option{IgnoreEmpty: true, DeepCopy: true}); err != nil {
+		return admins, err
+	}
+
+	resp, err := newClient.httpClient.R().
+		SetHeaders(map[string]string{
+			"Accept":       HeaderVersionTwo,
+			"Content-Type": ContentJSON,
+		}).
+		SetBody(map[string]Operations{
+			"operations": data,
+		}).
+		Patch(SystemAdminEndpoint)
+	if err != nil {
+		return admins, &errors.APIError{Err: err, Message: "bulk update system admins"}
+	}
+
+	if resp.StatusCode() != http.StatusOK {
+		return admins, &errors.NonOkError{Code: resp.StatusCode(), Response: resp}
+	}
+
+	if err = json.Unmarshal(resp.Body(), &admins); err != nil {
+		return admins, &errors.MarshalError{Err: err}
+	}
+
+	return admins, nil
+}

@@ -48,6 +48,7 @@ type GoCd interface {
 	GetMaintenanceModeInfo() (Maintenance, error)
 	GetSystemAdmins() (SystemAdmins, error)
 	UpdateSystemAdmins(data SystemAdmins) (SystemAdmins, error)
+	UpdateSystemAdminsBulk(data Operations) (SystemAdmins, error)
 	CreatePipelineGroup(group PipelineGroup) error
 	GetPipelineGroups() ([]PipelineGroup, error)
 	GetPipelineGroup(name string) (PipelineGroup, error)

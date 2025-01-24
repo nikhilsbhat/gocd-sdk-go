@@ -48,6 +48,8 @@ type BuildInfo struct {
 type Operations struct {
 	Resources    AddRemoves `json:"resources,omitempty" yaml:"resources,omitempty"`
 	Environments AddRemoves `json:"environments,omitempty" yaml:"environments,omitempty"`
+	Users        AddRemoves `json:"users,omitempty" yaml:"users,omitempty"`
+	Roles        AddRemoves `json:"roles,omitempty" yaml:"roles,omitempty"`
 }
 
 type AddRemoves struct {

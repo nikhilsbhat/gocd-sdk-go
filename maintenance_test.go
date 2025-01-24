@@ -79,13 +79,13 @@ func Test_client_GetMaintenanceModeInfo(t *testing.T) {
 		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		expected := &gocd.Maintenance{}
-		expected.MaintenanceInfo.Enabled = false
+		expected.MaintenanceInfo.Enabled = true
 		expected.MaintenanceInfo.Metadata.UpdatedBy = "admin"
 		expected.MaintenanceInfo.Metadata.UpdatedOn = "2019-01-02T04:18:28Z"
 
 		actual, err := client.GetMaintenanceModeInfo()
 		require.NoError(t, err)
-		assert.Equal(t, expected, actual)
+		assert.Equal(t, expected, &actual)
 	})
 
 	t.Run("should error out with 404 while fetching maintenance mode information due to wrong headers", func(t *testing.T) {

@@ -192,3 +192,110 @@ func Test_client_UpdateSystemAdmins(t *testing.T) {
 		assert.Equal(t, gocd.SystemAdmins{}, actual)
 	})
 }
+
+func Test_client_UpdateSystemAdminsBulk(t *testing.T) {
+	correctAdminHeader := map[string]string{
+		"Accept":       gocd.HeaderVersionTwo,
+		"Content-Type": gocd.ContentJSON,
+	}
+
+	t.Run("should be able to bulk update the system admins successfully", func(t *testing.T) {
+		output := `{
+    "roles": [
+        "manager"
+    ],
+    "users": [
+        "john",
+        "maria"
+    ]
+}`
+		server := mockServer([]byte(output), http.StatusOK, correctAdminHeader,
+			false, nil)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
+
+		input := gocd.Operations{
+			Roles: gocd.AddRemoves{
+				Add: []string{"manager"},
+			},
+			Users: gocd.AddRemoves{
+				Add: []string{"john", "maria"},
+			},
+		}
+
+		expected := gocd.SystemAdmins{
+			Roles: []string{"manager"},
+			Users: []string{"john", "maria"},
+		}
+
+		actual, err := client.UpdateSystemAdminsBulk(input)
+		require.NoError(t, err)
+		assert.Equal(t, expected, actual)
+	})
+
+	t.Run("should error out while bulk updating system admins due to wrong headers", func(t *testing.T) {
+		server := mockServer([]byte(systemAdmins), http.StatusOK, map[string]string{
+			"Accept":       gocd.HeaderVersionThree,
+			"Content-Type": gocd.ContentJSON,
+		},
+			false, nil)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
+
+		input := gocd.Operations{}
+
+		actual, err := client.UpdateSystemAdminsBulk(input)
+		require.EqualError(t, err, "got 404 from GoCD while making PATCH call for "+server.URL+
+			"/api/admin/security/system_admins\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
+		assert.Equal(t, gocd.SystemAdmins{}, actual)
+	})
+
+	t.Run("should error out while bulk updating system admins due to missing headers", func(t *testing.T) {
+		server := mockServer([]byte(systemAdmins), http.StatusOK, nil,
+			false, nil)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
+
+		input := gocd.Operations{}
+
+		actual, err := client.UpdateSystemAdminsBulk(input)
+		require.EqualError(t, err, "got 404 from GoCD while making PATCH call for "+server.URL+
+			"/api/admin/security/system_admins\nwith BODY:<html>\n<body>\n\t<h2>404 Not found</h2>\n</body>\n\n</html>")
+		assert.Equal(t, gocd.SystemAdmins{}, actual)
+	})
+
+	t.Run("should error out while bulk updating system admins as server returned malformed response", func(t *testing.T) {
+		server := mockServer([]byte("systemAdmins"), http.StatusOK, correctAdminHeader,
+			false, nil)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
+
+		input := gocd.Operations{}
+
+		actual, err := client.UpdateSystemAdminsBulk(input)
+		require.EqualError(t, err, "reading response body errored with: invalid character 's' looking for beginning of value")
+		assert.Equal(t, gocd.SystemAdmins{}, actual)
+	})
+
+	t.Run("should error out while bulk updating system admins as server returned malformed response", func(t *testing.T) {
+		server := mockServer([]byte("systemAdmins"), http.StatusOK, correctAdminHeader,
+			false, nil)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
+
+		input := gocd.Operations{}
+
+		actual, err := client.UpdateSystemAdminsBulk(input)
+		require.EqualError(t, err, "reading response body errored with: invalid character 's' looking for beginning of value")
+		assert.Equal(t, gocd.SystemAdmins{}, actual)
+	})
+
+	t.Run("should error out while bulk updating system admins as server was not reachable", func(t *testing.T) {
+		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
+
+		client.SetRetryCount(1)
+		client.SetRetryWaitTime(1)
+
+		input := gocd.Operations{}
+
+		actual, err := client.UpdateSystemAdminsBulk(input)
+		require.EqualError(t, err, "call made to bulk update system admins errored with: "+
+			"Patch \"http://localhost:8156/go/api/admin/security/system_admins\": dial tcp [::1]:8156: connect: connection refused")
+		assert.Equal(t, gocd.SystemAdmins{}, actual)
+	})
+}
