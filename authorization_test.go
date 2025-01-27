@@ -334,7 +334,7 @@ func Test_client_UpdateAuthConfig(t *testing.T) {
 
 		actual, err := client.UpdateAuthConfig(gocd.CommonConfig{ID: "ldap"})
 		require.EqualError(t, err, "call made to update auth config 'ldap' errored with:"+
-			" Put \"http://localhost:8156/go/api/admin/security/auth_configs\": dial tcp [::1]:8156: connect: connection refused")
+			" Put \"http://localhost:8156/go/api/admin/security/auth_configs/ldap\": dial tcp [::1]:8156: connect: connection refused")
 		assert.Equal(t, expected, actual)
 	})
 }

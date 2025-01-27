@@ -119,7 +119,7 @@ func (conf *client) UpdateAuthConfig(config CommonConfig) (CommonConfig, error) 
 			"If-Match":     config.ETAG,
 		}).
 		SetBody(config).
-		Put(AuthConfigEndpoint)
+		Put(filepath.Join(AuthConfigEndpoint, config.ID))
 	if err != nil {
 		return auth, &errors.APIError{Err: err, Message: fmt.Sprintf("update auth config '%s'", config.ID)}
 	}
