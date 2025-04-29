@@ -759,7 +759,7 @@ type PipelineJobConfig struct {
 	Name                 string                         `json:"name,omitempty" yaml:"name,omitempty"`
 	RunInstanceCount     interface{}                    `json:"run_instance_count,omitempty" yaml:"run_instance_count,omitempty"`
 	ElasticProfileID     string                         `json:"elastic_profile_id,omitempty" yaml:"elastic_profile_id,omitempty"`
-	Timeout              int                            `json:"timeout,omitempty" yaml:"timeout,omitempty"`
+	Timeout              interface{}                    `json:"timeout,omitempty" yaml:"timeout,omitempty"`
 	EnvironmentVariables []PipelineEnvironmentVariables `json:"environment_variables,omitempty" yaml:"environment_variables,omitempty"`
 	Resources            []string                       `json:"resources,omitempty" yaml:"resources,omitempty"`
 	Tasks                []PipelineTaskConfig           `json:"tasks,omitempty" yaml:"tasks,omitempty"`

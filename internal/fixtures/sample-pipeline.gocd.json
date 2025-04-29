@@ -1,9 +1,9 @@
 {
-  "format_version" : 9,
+  "format_version": 9,
   "label_template": "${COUNT}",
   "enable_pipeline_locking": false,
   "name": "my_pipeline",
-  "group" : "configrepo-example",
+  "group": "configrepo-example",
   "tracking_tool": null,
   "timer": null,
   "environment_variables": [],
@@ -37,6 +37,39 @@
           "name": "my_job_1",
           "run_instance_count": null,
           "timeout": 0,
+          "environment_variables": [],
+          "tasks": [
+            {
+              "type": "exec",
+              "run_if": "passed",
+              "on_cancel": {
+                "type": "exec",
+                "command": "ls",
+                "working_directory": null
+              },
+              "command": "echo",
+              "arguments": [
+                "Hello From GOCD pipeline"
+              ],
+              "working_directory": null
+            }
+          ],
+          "properties": null
+        }
+      ]
+    },
+    {
+      "name": "my_stage_2",
+      "fetch_materials": true,
+      "clean_working_directory": false,
+      "never_cleanup_artifacts": false,
+      "approval": null,
+      "environment_variables": [],
+      "jobs": [
+        {
+          "name": "my_job_1",
+          "run_instance_count": null,
+          "timeout": "Never",
           "environment_variables": [],
           "tasks": [
             {

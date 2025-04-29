@@ -82,7 +82,6 @@ func Test_client_GetPipelineConfig(t *testing.T) {
 							Name:                 "defaultJob",
 							RunInstanceCount:     interface{}(nil),
 							ElasticProfileID:     "",
-							Timeout:              0,
 							EnvironmentVariables: []gocd.PipelineEnvironmentVariables{},
 							Resources:            []string{},
 							Tasks: []gocd.PipelineTaskConfig{
@@ -139,7 +138,7 @@ func Test_client_GetPipelineConfig(t *testing.T) {
 						{
 							Name: "j2", RunInstanceCount: interface{}(nil),
 							ElasticProfileID:     "",
-							Timeout:              0,
+							Timeout:              "Never",
 							EnvironmentVariables: []gocd.PipelineEnvironmentVariables{},
 							Resources:            []string{},
 							Tasks: []gocd.PipelineTaskConfig{
@@ -409,7 +408,7 @@ func Test_client_UpdatePipelineConfig(t *testing.T) {
 							Name:                 "defaultJob",
 							RunInstanceCount:     interface{}(nil),
 							ElasticProfileID:     "",
-							Timeout:              0,
+							Timeout:              interface{}(nil),
 							EnvironmentVariables: []gocd.PipelineEnvironmentVariables{},
 							Resources:            []string{},
 							Tasks: []gocd.PipelineTaskConfig{{
@@ -460,7 +459,7 @@ func Test_client_UpdatePipelineConfig(t *testing.T) {
 							Name:                 "j2",
 							RunInstanceCount:     interface{}(nil),
 							ElasticProfileID:     "",
-							Timeout:              0,
+							Timeout:              "Never",
 							EnvironmentVariables: []gocd.PipelineEnvironmentVariables{},
 							Resources:            []string{},
 							Tasks: []gocd.PipelineTaskConfig{

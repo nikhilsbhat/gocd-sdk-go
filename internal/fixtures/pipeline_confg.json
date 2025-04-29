@@ -116,7 +116,7 @@
         {
           "name": "j2",
           "run_instance_count": null,
-          "timeout": null,
+          "timeout": "Never",
           "environment_variables": [],
           "resources": [],
           "tasks": [
