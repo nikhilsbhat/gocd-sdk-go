@@ -560,9 +560,9 @@ type Attribute struct {
 	Password            string            `json:"password,omitempty" yaml:"password,omitempty"`
 	EncryptedPassword   string            `json:"encrypted_password,omitempty" yaml:"encrypted_password,omitempty"`
 	Branch              string            `json:"branch,omitempty" yaml:"branch,omitempty"`
-	AutoUpdate          bool              `json:"auto_update,omitempty" yaml:"auto_update,omitempty"`
-	CheckExternals      bool              `json:"check_externals,omitempty" yaml:"check_externals,omitempty"`
-	UseTickets          bool              `json:"use_tickets,omitempty" yaml:"use_tickets,omitempty"`
+	AutoUpdate          bool              `json:"auto_update" yaml:"auto_update"`
+	CheckExternals      bool              `json:"check_externals" yaml:"check_externals"`
+	UseTickets          bool              `json:"use_tickets" yaml:"use_tickets"`
 	View                string            `json:"view,omitempty" yaml:"view,omitempty"`
 	Port                string            `json:"port,omitempty" yaml:"port,omitempty"`
 	ProjectPath         string            `json:"project_path,omitempty" yaml:"project_path,omitempty"`
@@ -571,9 +571,9 @@ type Attribute struct {
 	Name                string            `json:"name,omitempty" yaml:"name,omitempty"`
 	Stage               string            `json:"stage,omitempty" yaml:"stage,omitempty"`
 	Pipeline            string            `json:"pipeline,omitempty" yaml:"pipeline,omitempty"`
-	IgnoreForScheduling bool              `json:"ignore_for_scheduling,omitempty" yaml:"ignore_for_scheduling,omitempty"`
+	IgnoreForScheduling bool              `json:"ignore_for_scheduling" yaml:"ignore_for_scheduling"`
 	Destination         string            `json:"destination,omitempty" yaml:"destination,omitempty"`
-	InvertFilter        bool              `json:"invert_filter,omitempty" yaml:"invert_filter,omitempty"`
+	InvertFilter        bool              `json:"invert_filter" yaml:"invert_filter"`
 	SubmoduleFolder     string            `json:"submodule_folder,omitempty" yaml:"submodule_folder,omitempty"`
 	ShallowClone        bool              `json:"shallow_clone,omitempty" yaml:"shallow_clone,omitempty"`
 	Origin              map[string]string `json:"origin,omitempty" yaml:"origin,omitempty"`
