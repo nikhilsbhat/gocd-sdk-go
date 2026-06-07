@@ -4,16 +4,12 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"github.com/jinzhu/copier"
 	"github.com/nikhilsbhat/gocd-sdk-go/pkg/errors"
 )
 
 // UpdateArtifactConfig updates the artifact config with the latest config provided.
 func (conf *client) UpdateArtifactConfig(info ArtifactInfo) (ArtifactInfo, error) {
-	newClient := &client{}
-	if err := copier.CopyWithOption(newClient, conf, copier.Option{IgnoreEmpty: true, DeepCopy: true}); err != nil {
-		return ArtifactInfo{}, err
-	}
+	newClient := conf.clone()
 
 	var artifactInfo ArtifactInfo
 
@@ -42,10 +38,7 @@ func (conf *client) UpdateArtifactConfig(info ArtifactInfo) (ArtifactInfo, error
 
 // GetArtifactConfig fetches the latest artifact config available from GoCD.
 func (conf *client) GetArtifactConfig() (ArtifactInfo, error) {
-	newClient := &client{}
-	if err := copier.CopyWithOption(newClient, conf, copier.Option{IgnoreEmpty: true, DeepCopy: true}); err != nil {
-		return ArtifactInfo{}, err
-	}
+	newClient := conf.clone()
 
 	var artifactInfo ArtifactInfo
 

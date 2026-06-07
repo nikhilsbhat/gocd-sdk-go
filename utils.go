@@ -1,8 +1,11 @@
 package gocd
 
-func GetSLice(values interface{}) []string {
-	newValue := make([]string, 0)
-	for _, value := range values.([]interface{}) {
+func GetSLice(values any) []string {
+	vals := values.([]any)
+
+	newValue := make([]string, 0, len(vals))
+
+	for _, value := range values.([]any) {
 		newValue = append(newValue, value.(string))
 	}
 

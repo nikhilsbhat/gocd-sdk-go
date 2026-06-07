@@ -3,6 +3,7 @@ package gocd_test
 import (
 	_ "embed"
 	"net/http"
+	"net/http/httptest"
 	"testing"
 	"time"
 
@@ -218,6 +219,46 @@ func Test_client_GetPipelineHistory(t *testing.T) {
 		actual, err := client.GetPipelineRunHistory("helm-images", "0", time.Duration(2)*time.Second)
 		require.EqualError(t, err, "reading response body errored with: invalid character '}' after object key")
 		assert.Nil(t, actual)
+	})
+
+	t.Run("should be able to fetch paginated pipeline run history", func(t *testing.T) {
+		requests := 0
+		server := httptest.NewServer(http.HandlerFunc(func(writer http.ResponseWriter, req *http.Request) {
+			assert.Equal(t, gocd.HeaderVersionOne, req.Header.Get("Accept"))
+			assert.Equal(t, gocd.ContentJSON, req.Header.Get("Content-Type"))
+			assert.Equal(t, "/api/pipelines/helm-images/history", req.URL.Path)
+
+			requests++
+			switch requests {
+			case 1:
+				assert.Equal(t, "0", req.URL.Query().Get("after"))
+				_, err := writer.Write([]byte(`{
+					"_links": {"next": {"href": "http://localhost:8156/go/api/pipelines/helm-images/history?after=10"}},
+					"pipelines": [{"name": "helm-images", "counter": 3, "scheduled_date": 1678470766332}]
+				}`))
+				require.NoError(t, err)
+			case 2:
+				assert.Equal(t, "10", req.URL.Query().Get("after"))
+				_, err := writer.Write([]byte(`{
+					"_links": {},
+					"pipelines": [{"name": "helm-images", "counter": 2, "scheduled_date": 1677128882155}]
+				}`))
+				require.NoError(t, err)
+			default:
+				t.Fatalf("unexpected request count %d", requests)
+			}
+		}))
+		defer server.Close()
+
+		client := gocd.NewClient(server.URL, auth, "info", nil)
+
+		actual, err := client.GetPipelineRunHistory("helm-images", "10", 0)
+		require.NoError(t, err)
+		assert.Equal(t, []gocd.PipelineRunHistory{
+			{Name: "helm-images", Counter: 3, ScheduledDate: 1678470766332},
+			{Name: "helm-images", Counter: 2, ScheduledDate: 1677128882155},
+		}, actual)
+		assert.Equal(t, 2, requests)
 	})
 }
 

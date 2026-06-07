@@ -6,17 +6,13 @@ import (
 	"net/http"
 	"path/filepath"
 
-	"github.com/jinzhu/copier"
 	"github.com/nikhilsbhat/gocd-sdk-go/pkg/errors"
 )
 
 func (conf *client) GetPipelineConfig(name string) (PipelineConfig, error) {
 	var pipelineConfig PipelineConfig
 
-	newClient := &client{}
-	if err := copier.CopyWithOption(newClient, conf, copier.Option{IgnoreEmpty: true, DeepCopy: true}); err != nil {
-		return pipelineConfig, err
-	}
+	newClient := conf.clone()
 
 	resp, err := newClient.httpClient.R().
 		SetHeaders(map[string]string{
@@ -43,10 +39,7 @@ func (conf *client) GetPipelineConfig(name string) (PipelineConfig, error) {
 func (conf *client) UpdatePipelineConfig(config PipelineConfig) (PipelineConfig, error) {
 	var pipelineConfig PipelineConfig
 
-	newClient := &client{}
-	if err := copier.CopyWithOption(newClient, conf, copier.Option{IgnoreEmpty: true, DeepCopy: true}); err != nil {
-		return pipelineConfig, err
-	}
+	newClient := conf.clone()
 
 	resp, err := newClient.httpClient.R().
 		SetHeaders(map[string]string{
@@ -76,10 +69,7 @@ func (conf *client) UpdatePipelineConfig(config PipelineConfig) (PipelineConfig,
 func (conf *client) CreatePipeline(config PipelineConfig) (PipelineConfig, error) {
 	var pipelineConfig PipelineConfig
 
-	newClient := &client{}
-	if err := copier.CopyWithOption(newClient, conf, copier.Option{IgnoreEmpty: true, DeepCopy: true}); err != nil {
-		return PipelineConfig{}, err
-	}
+	newClient := conf.clone()
 
 	defaultHeaders := map[string]string{
 		"Accept":       HeaderVersionEleven,
@@ -116,10 +106,7 @@ func (conf *client) CreatePipeline(config PipelineConfig) (PipelineConfig, error
 }
 
 func (conf *client) DeletePipeline(name string) error {
-	newClient := &client{}
-	if err := copier.CopyWithOption(newClient, conf, copier.Option{IgnoreEmpty: true, DeepCopy: true}); err != nil {
-		return err
-	}
+	newClient := conf.clone()
 
 	resp, err := newClient.httpClient.R().
 		SetHeaders(map[string]string{
@@ -140,10 +127,7 @@ func (conf *client) DeletePipeline(name string) error {
 func (conf *client) ExtractTemplatePipeline(pipeline, template string) (PipelineConfig, error) {
 	var pipelineConfig PipelineConfig
 
-	newClient := &client{}
-	if err := copier.CopyWithOption(newClient, conf, copier.Option{IgnoreEmpty: true, DeepCopy: true}); err != nil {
-		return pipelineConfig, err
-	}
+	newClient := conf.clone()
 
 	resp, err := newClient.httpClient.R().
 		SetHeaders(map[string]string{

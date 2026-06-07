@@ -7,15 +7,11 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/jinzhu/copier"
 	"github.com/nikhilsbhat/gocd-sdk-go/pkg/errors"
 )
 
 func (conf *client) GetRoles() (RolesConfig, error) {
-	newClient := &client{}
-	if err := copier.CopyWithOption(newClient, conf, copier.Option{IgnoreEmpty: true, DeepCopy: true}); err != nil {
-		return RolesConfig{}, err
-	}
+	newClient := conf.clone()
 
 	var rolesCfg RolesConfigs
 
@@ -42,10 +38,7 @@ func (conf *client) GetRoles() (RolesConfig, error) {
 }
 
 func (conf *client) GetRole(name string) (Role, error) {
-	newClient := &client{}
-	if err := copier.CopyWithOption(newClient, conf, copier.Option{IgnoreEmpty: true, DeepCopy: true}); err != nil {
-		return Role{}, err
-	}
+	newClient := conf.clone()
 
 	var roleCfg Role
 
@@ -72,10 +65,7 @@ func (conf *client) GetRole(name string) (Role, error) {
 }
 
 func (conf *client) GetRolesByType(roleType string) (RolesConfig, error) {
-	newClient := &client{}
-	if err := copier.CopyWithOption(newClient, conf, copier.Option{IgnoreEmpty: true, DeepCopy: true}); err != nil {
-		return RolesConfig{}, err
-	}
+	newClient := conf.clone()
 
 	var roleCfg RolesConfigs
 
@@ -103,10 +93,7 @@ func (conf *client) GetRolesByType(roleType string) (RolesConfig, error) {
 }
 
 func (conf *client) CreateRole(config Role) (Role, error) {
-	newClient := &client{}
-	if err := copier.CopyWithOption(newClient, conf, copier.Option{IgnoreEmpty: true, DeepCopy: true}); err != nil {
-		return Role{}, err
-	}
+	newClient := conf.clone()
 
 	var roleCfg Role
 
@@ -135,10 +122,7 @@ func (conf *client) CreateRole(config Role) (Role, error) {
 }
 
 func (conf *client) UpdateRole(config Role) (Role, error) {
-	newClient := &client{}
-	if err := copier.CopyWithOption(newClient, conf, copier.Option{IgnoreEmpty: true, DeepCopy: true}); err != nil {
-		return Role{}, err
-	}
+	newClient := conf.clone()
 
 	var roleCfg Role
 
@@ -168,10 +152,7 @@ func (conf *client) UpdateRole(config Role) (Role, error) {
 }
 
 func (conf *client) DeleteRole(name string) error {
-	newClient := &client{}
-	if err := copier.CopyWithOption(newClient, conf, copier.Option{IgnoreEmpty: true, DeepCopy: true}); err != nil {
-		return err
-	}
+	newClient := conf.clone()
 
 	resp, err := newClient.httpClient.R().
 		SetHeaders(map[string]string{

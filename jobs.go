@@ -6,7 +6,6 @@ import (
 	"net/http"
 	"path/filepath"
 
-	"github.com/jinzhu/copier"
 	"github.com/nikhilsbhat/gocd-sdk-go/pkg/errors"
 )
 
@@ -14,10 +13,7 @@ import (
 func (conf *client) GetScheduledJobs() (ScheduledJobs, error) {
 	var scheduledJobs ScheduledJobs
 
-	newClient := &client{}
-	if err := copier.CopyWithOption(newClient, conf, copier.Option{IgnoreEmpty: true, DeepCopy: true}); err != nil {
-		return scheduledJobs, err
-	}
+	newClient := conf.clone()
 
 	resp, err := newClient.httpClient.R().
 		Get(APIJobFeedEndpoint)
@@ -38,10 +34,7 @@ func (conf *client) GetScheduledJobs() (ScheduledJobs, error) {
 
 // RunFailedJobs runs all failed jobs from a selected pipeline.
 func (conf *client) RunFailedJobs(stage Stage) (string, error) {
-	newClient := &client{}
-	if err := copier.CopyWithOption(newClient, conf, copier.Option{IgnoreEmpty: true, DeepCopy: true}); err != nil {
-		return "", err
-	}
+	newClient := conf.clone()
 
 	resp, err := newClient.httpClient.R().
 		SetHeaders(map[string]string{
@@ -68,10 +61,7 @@ func (conf *client) RunFailedJobs(stage Stage) (string, error) {
 
 // RunJobs runs all selected jobs from a selected pipeline.
 func (conf *client) RunJobs(stage Stage) (string, error) {
-	newClient := &client{}
-	if err := copier.CopyWithOption(newClient, conf, copier.Option{IgnoreEmpty: true, DeepCopy: true}); err != nil {
-		return "", err
-	}
+	newClient := conf.clone()
 
 	resp, err := newClient.httpClient.R().
 		SetBody(stage).

@@ -1,4 +1,8 @@
 #ci.gocd.yaml
+common:
+  diff_tasks: &diff_tasks
+    # shorthand for script-executor plugin
+    - script: ./build.sh ci
 format_version: 9
 environments:
   testing:
@@ -56,5 +60,4 @@ pipelines:
                     command: make
                     arguments:
                       - "VERBOSE=true"
-                # shorthand for script-executor plugin
-                - script: ./build.sh ci
+                - <<: *diff_tasks

@@ -5,15 +5,11 @@ import (
 	"net/http"
 	"path/filepath"
 
-	"github.com/jinzhu/copier"
 	"github.com/nikhilsbhat/gocd-sdk-go/pkg/errors"
 )
 
 func (conf *client) GetArtifactStores() (ArtifactStoresConfig, error) {
-	newClient := &client{}
-	if err := copier.CopyWithOption(newClient, conf, copier.Option{IgnoreEmpty: true, DeepCopy: true}); err != nil {
-		return ArtifactStoresConfig{}, err
-	}
+	newClient := conf.clone()
 
 	var storeCfg ArtifactStoresConfigs
 
@@ -40,10 +36,7 @@ func (conf *client) GetArtifactStores() (ArtifactStoresConfig, error) {
 }
 
 func (conf *client) GetArtifactStore(name string) (CommonConfig, error) {
-	newClient := &client{}
-	if err := copier.CopyWithOption(newClient, conf, copier.Option{IgnoreEmpty: true, DeepCopy: true}); err != nil {
-		return CommonConfig{}, err
-	}
+	newClient := conf.clone()
 
 	var storeCfg CommonConfig
 
@@ -70,10 +63,7 @@ func (conf *client) GetArtifactStore(name string) (CommonConfig, error) {
 }
 
 func (conf *client) CreateArtifactStore(config CommonConfig) (CommonConfig, error) {
-	newClient := &client{}
-	if err := copier.CopyWithOption(newClient, conf, copier.Option{IgnoreEmpty: true, DeepCopy: true}); err != nil {
-		return CommonConfig{}, err
-	}
+	newClient := conf.clone()
 
 	var storeCfg CommonConfig
 
@@ -102,10 +92,7 @@ func (conf *client) CreateArtifactStore(config CommonConfig) (CommonConfig, erro
 }
 
 func (conf *client) UpdateArtifactStore(config CommonConfig) (CommonConfig, error) {
-	newClient := &client{}
-	if err := copier.CopyWithOption(newClient, conf, copier.Option{IgnoreEmpty: true, DeepCopy: true}); err != nil {
-		return CommonConfig{}, err
-	}
+	newClient := conf.clone()
 
 	var storeCfg CommonConfig
 
@@ -135,10 +122,7 @@ func (conf *client) UpdateArtifactStore(config CommonConfig) (CommonConfig, erro
 }
 
 func (conf *client) DeleteArtifactStore(name string) error {
-	newClient := &client{}
-	if err := copier.CopyWithOption(newClient, conf, copier.Option{IgnoreEmpty: true, DeepCopy: true}); err != nil {
-		return err
-	}
+	newClient := conf.clone()
 
 	resp, err := newClient.httpClient.R().
 		SetHeaders(map[string]string{

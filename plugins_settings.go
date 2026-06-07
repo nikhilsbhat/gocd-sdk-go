@@ -6,7 +6,6 @@ import (
 	"net/http"
 	"path/filepath"
 
-	"github.com/jinzhu/copier"
 	"github.com/nikhilsbhat/gocd-sdk-go/pkg/errors"
 )
 
@@ -14,10 +13,7 @@ import (
 func (conf *client) GetPluginSettings(name string) (PluginSettings, error) {
 	var setting PluginSettings
 
-	newClient := &client{}
-	if err := copier.CopyWithOption(newClient, conf, copier.Option{IgnoreEmpty: true, DeepCopy: true}); err != nil {
-		return setting, err
-	}
+	newClient := conf.clone()
 
 	resp, err := newClient.httpClient.R().
 		SetHeaders(map[string]string{
@@ -45,10 +41,7 @@ func (conf *client) GetPluginSettings(name string) (PluginSettings, error) {
 func (conf *client) CreatePluginSettings(settings PluginSettings) (PluginSettings, error) {
 	var setting PluginSettings
 
-	newClient := &client{}
-	if err := copier.CopyWithOption(newClient, conf, copier.Option{IgnoreEmpty: true, DeepCopy: true}); err != nil {
-		return setting, err
-	}
+	newClient := conf.clone()
 
 	resp, err := newClient.httpClient.R().
 		SetHeaders(map[string]string{
@@ -76,10 +69,7 @@ func (conf *client) CreatePluginSettings(settings PluginSettings) (PluginSetting
 func (conf *client) UpdatePluginSettings(settings PluginSettings) (PluginSettings, error) {
 	var setting PluginSettings
 
-	newClient := &client{}
-	if err := copier.CopyWithOption(newClient, conf, copier.Option{IgnoreEmpty: true, DeepCopy: true}); err != nil {
-		return setting, err
-	}
+	newClient := conf.clone()
 
 	resp, err := newClient.httpClient.R().
 		SetHeaders(map[string]string{

@@ -77,7 +77,7 @@ type GoCd interface {
 	PipelineUnPause(name string) error
 	PipelineUnlock(name string) error
 	SchedulePipeline(name string, schedule Schedule) error
-	GetPipelineInstance(pipeline PipelineObject) (map[string]interface{}, error)
+	GetPipelineInstance(pipeline PipelineObject) (map[string]any, error)
 	CommentOnPipeline(comment PipelineObject) error
 	GetPipelineConfig(name string) (PipelineConfig, error)
 	UpdatePipelineConfig(config PipelineConfig) (PipelineConfig, error)
@@ -90,6 +90,14 @@ type GoCd interface {
 	RunStage(stage Stage) (string, error)
 	CancelStage(stage Stage) (string, error)
 	ExtractTemplatePipeline(pipeline, template string) (PipelineConfig, error)
+	GetTemplates() (Templates, error)
+	GetTemplate(name string) (Template, error)
+	CreateTemplate(config Template) (Template, error)
+	UpdateTemplate(config Template) (Template, error)
+	DeleteTemplate(name string) error
+	GetTemplateParameters(name string) (TemplateParameters, error)
+	GetTemplateAuthorization(name string) (TemplateAuthorization, error)
+	UpdateTemplateAuthorization(name string, authorization TemplateAuthorization) (TemplateAuthorization, error)
 	EncryptText(value string) (Encrypted, error)
 	DecryptText(value, cipherKey string) (string, error)
 	GetArtifactConfig() (ArtifactInfo, error)
@@ -159,8 +167,8 @@ type GoCd interface {
 	UpdateUser(user User) (User, error)
 	UpdateCurrentUser(user User) (User, error)
 	DeleteUser(user string) error
-	BulkDeleteUsers(users map[string]interface{}) error
-	BulkEnableDisableUsers(users map[string]interface{}) error
+	BulkDeleteUsers(users map[string]any) error
+	BulkEnableDisableUsers(users map[string]any) error
 	GetPipelineVSM(pipeline, instance string) (VSM, error)
 	GetPermissions(query map[string]string) (Permission, error)
 	GetCCTray() ([]Project, error)
@@ -233,7 +241,7 @@ func (conf *client) SetRetryWaitTime(count int) {
 }
 
 func GetGoCDMethodNames() []string {
-	t := reflect.TypeOf((*GoCd)(nil)).Elem()
+	t := reflect.TypeFor[GoCd]()
 
 	var methodNames []string
 

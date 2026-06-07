@@ -9,7 +9,6 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/jinzhu/copier"
 	"github.com/nikhilsbhat/gocd-sdk-go/pkg/errors"
 )
 
@@ -18,12 +17,11 @@ type PipelineFiles struct {
 	Path string
 }
 
+var filepathAbs = filepath.Abs
+
 // GetConfigRepo fetches information of a specific config-repo from GoCD server.
 func (conf *client) GetConfigRepo(repo string) (ConfigRepo, error) {
-	newClient := &client{}
-	if err := copier.CopyWithOption(newClient, conf, copier.Option{IgnoreEmpty: true, DeepCopy: true}); err != nil {
-		return ConfigRepo{}, err
-	}
+	newClient := conf.clone()
 
 	var repoConf ConfigRepo
 
@@ -55,10 +53,7 @@ func (conf *client) GetConfigRepo(repo string) (ConfigRepo, error) {
 
 // GetConfigRepos fetches information of all config-repos from GoCD server.
 func (conf *client) GetConfigRepos() ([]ConfigRepo, error) {
-	newClient := &client{}
-	if err := copier.CopyWithOption(newClient, conf, copier.Option{IgnoreEmpty: true, DeepCopy: true}); err != nil {
-		return nil, err
-	}
+	newClient := conf.clone()
 
 	var reposConf ConfigRepoConfig
 
@@ -85,10 +80,7 @@ func (conf *client) GetConfigRepos() ([]ConfigRepo, error) {
 // GetConfigReposInternal fetches information about all config repos from the GoCD server using GoCD's internal API.
 // Use GetConfigRepos for fetching all config-repos information; use this only if you know why it is being used.
 func (conf *client) GetConfigReposInternal() ([]ConfigRepo, error) {
-	newClient := &client{}
-	if err := copier.CopyWithOption(newClient, conf, copier.Option{IgnoreEmpty: true, DeepCopy: true}); err != nil {
-		return nil, err
-	}
+	newClient := conf.clone()
 
 	var reposConf ConfigRepoConfig
 
@@ -114,10 +106,7 @@ func (conf *client) GetConfigReposInternal() ([]ConfigRepo, error) {
 
 // GetConfigRepoDefinitions fetches information of a specific config-repo from GoCD server.
 func (conf *client) GetConfigRepoDefinitions(repo string) (ConfigRepo, error) {
-	newClient := &client{}
-	if err := copier.CopyWithOption(newClient, conf, copier.Option{IgnoreEmpty: true, DeepCopy: true}); err != nil {
-		return ConfigRepo{}, err
-	}
+	newClient := conf.clone()
 
 	var repoConf ConfigRepo
 
@@ -143,10 +132,7 @@ func (conf *client) GetConfigRepoDefinitions(repo string) (ConfigRepo, error) {
 
 // CreateConfigRepo fetches information of all config-repos in GoCD server.
 func (conf *client) CreateConfigRepo(repoObj ConfigRepo) error {
-	newClient := &client{}
-	if err := copier.CopyWithOption(newClient, conf, copier.Option{IgnoreEmpty: true, DeepCopy: true}); err != nil {
-		return err
-	}
+	newClient := conf.clone()
 
 	resp, err := newClient.httpClient.R().
 		SetHeaders(map[string]string{
@@ -168,10 +154,7 @@ func (conf *client) CreateConfigRepo(repoObj ConfigRepo) error {
 
 // UpdateConfigRepo updates the config repo configurations with the latest configurations provided.
 func (conf *client) UpdateConfigRepo(repo ConfigRepo) (string, error) {
-	newClient := &client{}
-	if err := copier.CopyWithOption(newClient, conf, copier.Option{IgnoreEmpty: true, DeepCopy: true}); err != nil {
-		return "", err
-	}
+	newClient := conf.clone()
 
 	resp, err := newClient.httpClient.R().
 		SetHeaders(map[string]string{
@@ -194,10 +177,7 @@ func (conf *client) UpdateConfigRepo(repo ConfigRepo) (string, error) {
 
 // DeleteConfigRepo deletes a specific config repo.
 func (conf *client) DeleteConfigRepo(repo string) error {
-	newClient := &client{}
-	if err := copier.CopyWithOption(newClient, conf, copier.Option{IgnoreEmpty: true, DeepCopy: true}); err != nil {
-		return err
-	}
+	newClient := conf.clone()
 
 	resp, err := newClient.httpClient.R().
 		SetHeaders(map[string]string{
@@ -218,10 +198,7 @@ func (conf *client) DeleteConfigRepo(repo string) error {
 
 // ConfigRepoTriggerUpdate triggers config repo update for a specific config-repo.
 func (conf *client) ConfigRepoTriggerUpdate(name string) (map[string]string, error) {
-	newClient := &client{}
-	if err := copier.CopyWithOption(newClient, conf, copier.Option{IgnoreEmpty: true, DeepCopy: true}); err != nil {
-		return nil, err
-	}
+	newClient := conf.clone()
 
 	resp, err := newClient.httpClient.R().
 		SetHeaders(map[string]string{
@@ -247,10 +224,7 @@ func (conf *client) ConfigRepoTriggerUpdate(name string) (map[string]string, err
 
 // ConfigRepoStatus fetches the latest available status of the specified config repo.
 func (conf *client) ConfigRepoStatus(repo string) (map[string]bool, error) {
-	newClient := &client{}
-	if err := copier.CopyWithOption(newClient, conf, copier.Option{IgnoreEmpty: true, DeepCopy: true}); err != nil {
-		return nil, err
-	}
+	newClient := conf.clone()
 
 	resp, err := newClient.httpClient.R().
 		SetHeaders(map[string]string{
@@ -277,10 +251,7 @@ func (conf *client) ConfigRepoStatus(repo string) (map[string]bool, error) {
 // ConfigRepoPreflightCheck runs the pre-flight checks on the config-repo with the provided pipeline files.
 // Checks posted definition file(s) for syntax and merge errors without updating the current GoCD configuration.
 func (conf *client) ConfigRepoPreflightCheck(pipelines map[string]string, pluginID string, repoID string) (bool, error) {
-	newClient := &client{}
-	if err := copier.CopyWithOption(newClient, conf, copier.Option{IgnoreEmpty: true, DeepCopy: true}); err != nil {
-		return false, err
-	}
+	newClient := conf.clone()
 
 	request := newClient.httpClient.R().
 		SetHeaders(map[string]string{
@@ -307,7 +278,7 @@ func (conf *client) ConfigRepoPreflightCheck(pipelines map[string]string, plugin
 		return false, &errors.NonOkError{Code: resp.StatusCode(), Response: resp}
 	}
 
-	var response map[string]interface{}
+	var response map[string]any
 
 	if err = json.Unmarshal(resp.Body(), &response); err != nil {
 		return false, &errors.MarshalError{Err: err}
@@ -346,7 +317,7 @@ func (conf *client) GetPipelineFiles(path string, pipelines []string, patterns .
 				return nil, err
 			}
 
-			absFilePath, err := filepath.Abs(goCDPipeline)
+			absFilePath, err := filepathAbs(goCDPipeline)
 			if err != nil {
 				return pipelineFiles, err
 			}
@@ -381,7 +352,7 @@ func (conf *client) GetPipelineFiles(path string, pipelines []string, patterns .
 			if match {
 				conf.logger.Debugf("identified pipeline '%s' under path '%s'", info.Name(), filepath.Dir(path))
 
-				absPath, err := filepath.Abs(path)
+				absPath, err := filepathAbs(path)
 				if err != nil {
 					conf.logger.Errorf("finding absolute path of pipeline '%s' errored with '%s'", info.Name(), err)
 				} else {

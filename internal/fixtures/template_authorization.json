@@ -1,0 +1,15 @@
+{
+  "all_group_admins_are_view_users": true,
+  "admin": {
+    "roles": [
+      "template-admins"
+    ],
+    "users": []
+  },
+  "view": {
+    "roles": [],
+    "users": [
+      "template-viewer"
+    ]
+  }
+}

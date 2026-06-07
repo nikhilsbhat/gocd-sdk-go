@@ -25,6 +25,7 @@ const (
 	PipelinesEndpoint           = "/api/pipelines"
 	PipelineConfigEndpoint      = "/api/admin/pipelines"
 	PipelineExportEndpoint      = "/api/admin/export/pipelines"
+	TemplateConfigEndpoint      = "/api/admin/templates"
 	HealthEndpoint              = "/api/v1/health"
 	DefaultTimeoutEndpoint      = "/api/admin/config/server/default_job_timeout"
 	MailServerConfigEndpoint    = "/api/config/mailserver"

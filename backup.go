@@ -5,16 +5,12 @@ import (
 	"net/http"
 	"path/filepath"
 
-	"github.com/jinzhu/copier"
 	"github.com/nikhilsbhat/gocd-sdk-go/pkg/errors"
 )
 
 // GetBackupConfig fetches information of backup configured in GoCD server.
 func (conf *client) GetBackupConfig() (BackupConfig, error) {
-	newClient := &client{}
-	if err := copier.CopyWithOption(newClient, conf, copier.Option{IgnoreEmpty: true, DeepCopy: true}); err != nil {
-		return BackupConfig{}, err
-	}
+	newClient := conf.clone()
 
 	var backUpConf BackupConfig
 
@@ -40,10 +36,7 @@ func (conf *client) GetBackupConfig() (BackupConfig, error) {
 
 // CreateOrUpdateBackupConfig will either create or update the config repo, it creates one if not created else update the existing with newer configuration.
 func (conf *client) CreateOrUpdateBackupConfig(backup BackupConfig) error {
-	newClient := &client{}
-	if err := copier.CopyWithOption(newClient, conf, copier.Option{IgnoreEmpty: true, DeepCopy: true}); err != nil {
-		return err
-	}
+	newClient := conf.clone()
 
 	resp, err := newClient.httpClient.R().
 		SetHeaders(map[string]string{
@@ -65,10 +58,7 @@ func (conf *client) CreateOrUpdateBackupConfig(backup BackupConfig) error {
 
 // DeleteBackupConfig deletes the backup config configured in GoCD.
 func (conf *client) DeleteBackupConfig() error {
-	newClient := &client{}
-	if err := copier.CopyWithOption(newClient, conf, copier.Option{IgnoreEmpty: true, DeepCopy: true}); err != nil {
-		return err
-	}
+	newClient := conf.clone()
 
 	resp, err := newClient.httpClient.R().
 		SetHeaders(map[string]string{
@@ -88,10 +78,7 @@ func (conf *client) DeleteBackupConfig() error {
 
 // GetBackup gets the information of the backup which was taken earlier.
 func (conf *client) GetBackup(backupID string) (BackupStats, error) {
-	newClient := &client{}
-	if err := copier.CopyWithOption(newClient, conf, copier.Option{IgnoreEmpty: true, DeepCopy: true}); err != nil {
-		return BackupStats{}, err
-	}
+	newClient := conf.clone()
 
 	var backUpStats BackupStats
 
@@ -118,10 +105,7 @@ func (conf *client) GetBackup(backupID string) (BackupStats, error) {
 func (conf *client) ScheduleBackup() (map[string]string, error) {
 	var backupStats map[string]string
 
-	newClient := &client{}
-	if err := copier.CopyWithOption(newClient, conf, copier.Option{IgnoreEmpty: true, DeepCopy: true}); err != nil {
-		return backupStats, err
-	}
+	newClient := conf.clone()
 
 	resp, err := newClient.httpClient.R().
 		SetHeaders(map[string]string{

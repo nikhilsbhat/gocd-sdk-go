@@ -5,15 +5,11 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/jinzhu/copier"
 	"github.com/nikhilsbhat/gocd-sdk-go/pkg/errors"
 )
 
 func (conf *client) GetMaterials() ([]Material, error) {
-	newClient := &client{}
-	if err := copier.CopyWithOption(newClient, conf, copier.Option{IgnoreEmpty: true, DeepCopy: true}); err != nil {
-		return nil, err
-	}
+	newClient := conf.clone()
 
 	var materials Materials
 
@@ -38,10 +34,7 @@ func (conf *client) GetMaterials() ([]Material, error) {
 }
 
 func (conf *client) GetMaterialUsage(materialID string) ([]string, error) {
-	newClient := &client{}
-	if err := copier.CopyWithOption(newClient, conf, copier.Option{IgnoreEmpty: true, DeepCopy: true}); err != nil {
-		return nil, err
-	}
+	newClient := conf.clone()
 
 	var materialUsage MaterialUsage
 
@@ -66,10 +59,7 @@ func (conf *client) GetMaterialUsage(materialID string) ([]string, error) {
 }
 
 func (conf *client) NotifyMaterial(material Material) (string, error) {
-	newClient := &client{}
-	if err := copier.CopyWithOption(newClient, conf, copier.Option{IgnoreEmpty: true, DeepCopy: true}); err != nil {
-		return "", err
-	}
+	newClient := conf.clone()
 
 	resp, err := newClient.httpClient.R().
 		SetHeaders(map[string]string{
@@ -98,10 +88,7 @@ func (conf *client) NotifyMaterial(material Material) (string, error) {
 }
 
 func (conf *client) MaterialTriggerUpdate(materialID string) (map[string]string, error) {
-	newClient := &client{}
-	if err := copier.CopyWithOption(newClient, conf, copier.Option{IgnoreEmpty: true, DeepCopy: true}); err != nil {
-		return nil, err
-	}
+	newClient := conf.clone()
 
 	resp, err := newClient.httpClient.R().
 		SetHeaders(map[string]string{

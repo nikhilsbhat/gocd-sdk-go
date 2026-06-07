@@ -6,15 +6,11 @@ import (
 	"net/http"
 	"path/filepath"
 
-	"github.com/jinzhu/copier"
 	"github.com/nikhilsbhat/gocd-sdk-go/pkg/errors"
 )
 
 func (conf *client) GetPackageRepositories() ([]PackageRepository, error) {
-	newClient := &client{}
-	if err := copier.CopyWithOption(newClient, conf, copier.Option{IgnoreEmpty: true, DeepCopy: true}); err != nil {
-		return nil, err
-	}
+	newClient := conf.clone()
 
 	var packageRepositoriesCfg PackageRepositories
 
@@ -39,10 +35,7 @@ func (conf *client) GetPackageRepositories() ([]PackageRepository, error) {
 }
 
 func (conf *client) GetPackageRepository(repoID string) (PackageRepository, error) {
-	newClient := &client{}
-	if err := copier.CopyWithOption(newClient, conf, copier.Option{IgnoreEmpty: true, DeepCopy: true}); err != nil {
-		return PackageRepository{}, err
-	}
+	newClient := conf.clone()
 
 	var repositoryCfg PackageRepository
 
@@ -69,10 +62,7 @@ func (conf *client) GetPackageRepository(repoID string) (PackageRepository, erro
 }
 
 func (conf *client) CreatePackageRepository(config PackageRepository) (PackageRepository, error) {
-	newClient := &client{}
-	if err := copier.CopyWithOption(newClient, conf, copier.Option{IgnoreEmpty: true, DeepCopy: true}); err != nil {
-		return PackageRepository{}, err
-	}
+	newClient := conf.clone()
 
 	var repositoryCfg PackageRepository
 
@@ -101,10 +91,7 @@ func (conf *client) CreatePackageRepository(config PackageRepository) (PackageRe
 }
 
 func (conf *client) UpdatePackageRepository(config PackageRepository) (PackageRepository, error) {
-	newClient := &client{}
-	if err := copier.CopyWithOption(newClient, conf, copier.Option{IgnoreEmpty: true, DeepCopy: true}); err != nil {
-		return PackageRepository{}, err
-	}
+	newClient := conf.clone()
 
 	var repositoryCfg PackageRepository
 
@@ -134,10 +121,7 @@ func (conf *client) UpdatePackageRepository(config PackageRepository) (PackageRe
 }
 
 func (conf *client) DeletePackageRepository(repoID string) error {
-	newClient := &client{}
-	if err := copier.CopyWithOption(newClient, conf, copier.Option{IgnoreEmpty: true, DeepCopy: true}); err != nil {
-		return err
-	}
+	newClient := conf.clone()
 
 	resp, err := newClient.httpClient.R().
 		SetHeaders(map[string]string{

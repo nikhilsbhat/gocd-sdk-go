@@ -6,15 +6,11 @@ import (
 	"net/http"
 	"path/filepath"
 
-	"github.com/jinzhu/copier"
 	"github.com/nikhilsbhat/gocd-sdk-go/pkg/errors"
 )
 
 func (conf *client) GetPipelineVSM(pipeline, instance string) (VSM, error) {
-	newClient := &client{}
-	if err := copier.CopyWithOption(newClient, conf, copier.Option{IgnoreEmpty: true, DeepCopy: true}); err != nil {
-		return VSM{}, err
-	}
+	newClient := conf.clone()
 
 	var vsmObj VSM
 

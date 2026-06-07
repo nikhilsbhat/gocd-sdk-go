@@ -19,23 +19,23 @@ type Agents struct {
 
 // Agent holds information of a particular agent.
 type Agent struct {
-	ID                 string      `json:"uuid,omitempty" yaml:"uuid,omitempty"`
-	Name               string      `json:"hostname,omitempty" yaml:"hostname,omitempty"`
-	ElasticAgentID     string      `json:"elastic_agent_id,omitempty" yaml:"elastic_agent_id,omitempty"`
-	ElasticPluginID    string      `json:"elastic_plugin_id,omitempty" yaml:"elastic_plugin_id,omitempty"`
-	IPAddress          string      `json:"ip_address,omitempty" yaml:"ip_address,omitempty"`
-	Sandbox            string      `json:"sandbox,omitempty" yaml:"sandbox,omitempty"`
-	OS                 string      `json:"operating_system,omitempty" yaml:"operating_system,omitempty"`
-	DiskSpaceAvailable interface{} `json:"free_space,omitempty" yaml:"free_space,omitempty"`
-	ConfigState        string      `json:"agent_config_state,omitempty" yaml:"agent_config_state,omitempty"`
-	CurrentState       string      `json:"agent_state,omitempty" yaml:"agent_state,omitempty"`
-	Version            string      `json:"agent_version,omitempty" yaml:"agent_version,omitempty"`
-	Resources          []string    `json:"resources,omitempty" yaml:"resources,omitempty"`
-	Environments       any         `json:"environments,omitempty" yaml:"environments,omitempty"`
-	BuildState         string      `json:"build_state,omitempty" yaml:"build_state,omitempty"`
-	BuildDetails       BuildInfo   `json:"build_details,omitempty" yaml:"build_details,omitempty"`
-	Operations         Operations  `json:"operations,omitempty" yaml:"operations,omitempty"`
-	UUIDS              []string    `json:"uuids,omitempty" yaml:"uuids,omitempty"`
+	ID                 string     `json:"uuid,omitempty" yaml:"uuid,omitempty"`
+	Name               string     `json:"hostname,omitempty" yaml:"hostname,omitempty"`
+	ElasticAgentID     string     `json:"elastic_agent_id,omitempty" yaml:"elastic_agent_id,omitempty"`
+	ElasticPluginID    string     `json:"elastic_plugin_id,omitempty" yaml:"elastic_plugin_id,omitempty"`
+	IPAddress          string     `json:"ip_address,omitempty" yaml:"ip_address,omitempty"`
+	Sandbox            string     `json:"sandbox,omitempty" yaml:"sandbox,omitempty"`
+	OS                 string     `json:"operating_system,omitempty" yaml:"operating_system,omitempty"`
+	DiskSpaceAvailable any        `json:"free_space,omitempty" yaml:"free_space,omitempty"`
+	ConfigState        string     `json:"agent_config_state,omitempty" yaml:"agent_config_state,omitempty"`
+	CurrentState       string     `json:"agent_state,omitempty" yaml:"agent_state,omitempty"`
+	Version            string     `json:"agent_version,omitempty" yaml:"agent_version,omitempty"`
+	Resources          []string   `json:"resources,omitempty" yaml:"resources,omitempty"`
+	Environments       any        `json:"environments,omitempty" yaml:"environments,omitempty"`
+	BuildState         string     `json:"build_state,omitempty" yaml:"build_state,omitempty"`
+	BuildDetails       BuildInfo  `json:"build_details,omitempty" yaml:"build_details,omitempty"`
+	Operations         Operations `json:"operations,omitempty" yaml:"operations,omitempty"`
+	UUIDS              []string   `json:"uuids,omitempty" yaml:"uuids,omitempty"`
 }
 
 type BuildInfo struct {
@@ -97,9 +97,9 @@ type ConfigRepo struct {
 }
 
 type ConfigRepoParseInfo struct {
-	LatestParsedModification map[string]interface{} `json:"latest_parsed_modification,omitempty" yaml:"latest_parsed_modification,omitempty"`
-	Error                    string                 `json:"error,omitempty" yaml:"error,omitempty"`
-	GoodModification         map[string]interface{} `json:"good_modification,omitempty" yaml:"good_modification,omitempty"`
+	LatestParsedModification map[string]any `json:"latest_parsed_modification,omitempty" yaml:"latest_parsed_modification,omitempty"`
+	Error                    string         `json:"error,omitempty" yaml:"error,omitempty"`
+	GoodModification         map[string]any `json:"good_modification,omitempty" yaml:"good_modification,omitempty"`
 }
 
 // PipelineGroupsConfig holds information on the various pipeline groups present in GoCD.
@@ -180,8 +180,55 @@ type PipelineConfig struct {
 	TrackingTool         PipelineTracingToolConfig      `json:"tracking_tool" yaml:"tracking_tool"`
 	Timer                PipelineTimerConfig            `json:"timer" yaml:"timer"`
 	CreateOptions        PipelineCreateOptions          `json:"create_options" yaml:"create_options"`
-	Config               map[string]interface{}         `json:"config,omitempty" yaml:"config,omitempty"`
+	Config               map[string]any                 `json:"config,omitempty" yaml:"config,omitempty"`
 	ETAG                 string                         `json:"etag,omitempty" yaml:"etag,omitempty"`
+}
+
+// TemplatesConfig holds information on the templates present in GoCD.
+type TemplatesConfig struct {
+	Templates Templates `json:"_embedded,omitempty" yaml:"_embedded,omitempty"`
+}
+
+// Templates holds information on the templates present in GoCD.
+type Templates struct {
+	Templates []Template `json:"templates,omitempty" yaml:"templates,omitempty"`
+	ETAG      string     `json:"etag,omitempty" yaml:"etag,omitempty"`
+}
+
+// Template holds configuration information of a specific template.
+type Template struct {
+	Name          string                `json:"name,omitempty" yaml:"name,omitempty"`
+	CanEdit       bool                  `json:"can_edit,omitempty" yaml:"can_edit,omitempty"`
+	CanAdminister bool                  `json:"can_administer,omitempty" yaml:"can_administer,omitempty"`
+	Pipelines     *TemplatePipelines    `json:"_embedded,omitempty" yaml:"_embedded,omitempty"`
+	Stages        []PipelineStageConfig `json:"stages,omitempty" yaml:"stages,omitempty"`
+	ETAG          string                `json:"etag,omitempty" yaml:"etag,omitempty"`
+}
+
+// TemplatePipelines holds the list of pipelines using a template.
+type TemplatePipelines struct {
+	Pipelines []TemplatePipeline `json:"pipelines,omitempty" yaml:"pipelines,omitempty"`
+}
+
+// TemplatePipeline holds shallow pipeline information for a template.
+type TemplatePipeline struct {
+	Name          string `json:"name,omitempty" yaml:"name,omitempty"`
+	CanAdminister bool   `json:"can_administer,omitempty" yaml:"can_administer,omitempty"`
+}
+
+// TemplateParameters holds parameters required by a template.
+type TemplateParameters struct {
+	Name       string   `json:"name,omitempty" yaml:"name,omitempty"`
+	Parameters []string `json:"parameters,omitempty" yaml:"parameters,omitempty"`
+	ETAG       string   `json:"etag,omitempty" yaml:"etag,omitempty"`
+}
+
+// TemplateAuthorization holds authorization information for a template.
+type TemplateAuthorization struct {
+	AllGroupAdminsAreViewUsers bool                `json:"all_group_admins_are_view_users,omitempty" yaml:"all_group_admins_are_view_users,omitempty"`
+	Admin                      AuthorizationConfig `json:"admin,omitempty" yaml:"admin,omitempty"`
+	View                       AuthorizationConfig `json:"view,omitempty" yaml:"view,omitempty"`
+	ETAG                       string              `json:"etag,omitempty" yaml:"etag,omitempty"`
 }
 
 // PipelineOrigin holds the information on the source of pipeline present on GoCD.
@@ -384,9 +431,9 @@ type PurgeSettings struct {
 
 // Schedule holds config of the pipeline that needs to be scheduled.
 type Schedule struct {
-	EnvVars        []map[string]interface{} `json:"environment_variables,omitempty" yaml:"environment_variables,omitempty"`
-	Materials      []map[string]interface{} `json:"materials,omitempty" yaml:"materials,omitempty"`
-	UpdateMaterial bool                     `json:"update_materials_before_scheduling,omitempty" yaml:"update_materials_before_scheduling,omitempty"`
+	EnvVars        []map[string]any `json:"environment_variables,omitempty" yaml:"environment_variables,omitempty"`
+	Materials      []map[string]any `json:"materials,omitempty" yaml:"materials,omitempty"`
+	UpdateMaterial bool             `json:"update_materials_before_scheduling,omitempty" yaml:"update_materials_before_scheduling,omitempty"`
 }
 
 // AuthConfigs holds information of multiple authorization configurations.
@@ -398,11 +445,11 @@ type AuthConfigs struct {
 
 // PluginConfiguration holds information of the various plugin properties.
 type PluginConfiguration struct {
-	Key            string                 `json:"key,omitempty" yaml:"key,omitempty"`
-	Value          string                 `json:"value,omitempty" yaml:"value,omitempty"`
-	EncryptedValue string                 `json:"encrypted_value,omitempty" yaml:"encrypted_value,omitempty"`
-	IsSecure       bool                   `json:"is_secure,omitempty" yaml:"is_secure,omitempty"`
-	Metadata       map[string]interface{} `json:"metadata,omitempty" yaml:"metadata,omitempty"`
+	Key            string         `json:"key,omitempty" yaml:"key,omitempty"`
+	Value          string         `json:"value,omitempty" yaml:"value,omitempty"`
+	EncryptedValue string         `json:"encrypted_value,omitempty" yaml:"encrypted_value,omitempty"`
+	IsSecure       bool           `json:"is_secure,omitempty" yaml:"is_secure,omitempty"`
+	Metadata       map[string]any `json:"metadata,omitempty" yaml:"metadata,omitempty"`
 }
 
 // SiteURLConfig holds information of the site url of GoCD.
@@ -438,8 +485,8 @@ type PipelineObject struct {
 
 // PipelineHistory holds information of the pipeline history that also helps in paginating the responses.
 type PipelineHistory struct {
-	Links     map[string]interface{}   `json:"_links,omitempty" yaml:"_links,omitempty"`
-	Pipelines []map[string]interface{} `json:"pipelines,omitempty" yaml:"pipelines,omitempty"`
+	Links     map[string]any   `json:"_links,omitempty" yaml:"_links,omitempty"`
+	Pipelines []map[string]any `json:"pipelines,omitempty" yaml:"pipelines,omitempty"`
 }
 
 // ArtifactStoresConfigs holds information of the specified artifact-stores/cluster-profiles/agent-profiles.
@@ -518,6 +565,7 @@ type Packages struct {
 // Package holds information of the specified packages of the package repository.
 type Package struct {
 	CommonConfig
+
 	AutoUpdate    bool                  `json:"auto_update,omitempty" yaml:"auto_update,omitempty"`
 	PackageRepos  CommonConfig          `json:"package_repo,omitempty" yaml:"package_repo,omitempty"`
 	Configuration []PluginConfiguration `json:"configuration,omitempty" yaml:"configuration,omitempty"`
@@ -624,13 +672,13 @@ type PluginsInfo struct {
 
 // Plugin holds information of a specific plugins present in GoCd.
 type Plugin struct {
-	ID                 string                 `json:"id,omitempty" yaml:"id,omitempty"`
-	Status             PluginStatus           `json:"status,omitempty" yaml:"status,omitempty"`
-	PluginFileLocation string                 `json:"plugin_file_location,omitempty" yaml:"plugin_file_location,omitempty"`
-	BundledPlugin      bool                   `json:"bundled_plugin,omitempty" yaml:"bundled_plugin,omitempty"`
-	About              map[string]interface{} `json:"about,omitempty" yaml:"about,omitempty"`
-	Extensions         []PluginAttributes     `json:"extensions,omitempty" yaml:"extensions,omitempty"`
-	ETAG               string                 `json:"etag,omitempty" yaml:"etag,omitempty"`
+	ID                 string             `json:"id,omitempty" yaml:"id,omitempty"`
+	Status             PluginStatus       `json:"status,omitempty" yaml:"status,omitempty"`
+	PluginFileLocation string             `json:"plugin_file_location,omitempty" yaml:"plugin_file_location,omitempty"`
+	BundledPlugin      bool               `json:"bundled_plugin,omitempty" yaml:"bundled_plugin,omitempty"`
+	About              map[string]any     `json:"about,omitempty" yaml:"about,omitempty"`
+	Extensions         []PluginAttributes `json:"extensions,omitempty" yaml:"extensions,omitempty"`
+	ETAG               string             `json:"etag,omitempty" yaml:"etag,omitempty"`
 }
 
 // PluginStatus holds the status information of the plugin.
@@ -757,9 +805,9 @@ type PipelineStageConfig struct {
 // PipelineJobConfig holds information of pipeline job.
 type PipelineJobConfig struct {
 	Name                 string                         `json:"name,omitempty" yaml:"name,omitempty"`
-	RunInstanceCount     interface{}                    `json:"run_instance_count,omitempty" yaml:"run_instance_count,omitempty"`
+	RunInstanceCount     any                            `json:"run_instance_count,omitempty" yaml:"run_instance_count,omitempty"`
 	ElasticProfileID     string                         `json:"elastic_profile_id,omitempty" yaml:"elastic_profile_id,omitempty"`
-	Timeout              interface{}                    `json:"timeout,omitempty" yaml:"timeout,omitempty"`
+	Timeout              any                            `json:"timeout,omitempty" yaml:"timeout,omitempty"`
 	EnvironmentVariables []PipelineEnvironmentVariables `json:"environment_variables,omitempty" yaml:"environment_variables,omitempty"`
 	Resources            []string                       `json:"resources,omitempty" yaml:"resources,omitempty"`
 	Tasks                []PipelineTaskConfig           `json:"tasks,omitempty" yaml:"tasks,omitempty"`

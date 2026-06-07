@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"github.com/jinzhu/copier"
 	"github.com/nikhilsbhat/gocd-sdk-go/pkg/errors"
 )
 
@@ -12,10 +11,7 @@ import (
 func (conf *client) GetSiteURL() (SiteURLConfig, error) {
 	var site SiteURLConfig
 
-	newClient := &client{}
-	if err := copier.CopyWithOption(newClient, conf, copier.Option{IgnoreEmpty: true, DeepCopy: true}); err != nil {
-		return site, err
-	}
+	newClient := conf.clone()
 
 	resp, err := newClient.httpClient.R().
 		SetHeaders(map[string]string{
@@ -41,10 +37,7 @@ func (conf *client) GetSiteURL() (SiteURLConfig, error) {
 func (conf *client) CreateOrUpdateSiteURL(config SiteURLConfig) (SiteURLConfig, error) {
 	var site SiteURLConfig
 
-	newClient := &client{}
-	if err := copier.CopyWithOption(newClient, conf, copier.Option{IgnoreEmpty: true, DeepCopy: true}); err != nil {
-		return site, err
-	}
+	newClient := conf.clone()
 
 	resp, err := newClient.httpClient.R().
 		SetHeaders(map[string]string{

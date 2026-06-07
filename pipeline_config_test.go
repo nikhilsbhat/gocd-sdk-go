@@ -614,6 +614,31 @@ func Test_client_CreatePipeline(t *testing.T) {
 		assert.Equal(t, "new_group", out.Group)
 	})
 
+	t.Run("should be able to create paused pipeline with pause reason", func(t *testing.T) {
+		server := mockServer([]byte(pipelineConfigJSON), http.StatusOK,
+			map[string]string{
+				"Accept":           gocd.HeaderVersionEleven,
+				"Content-Type":     gocd.ContentJSON,
+				"X-pause-pipeline": "true",
+				"X-pause-cause":    "maintenance window",
+			}, false, map[string]string{"ETag": "65dbc5f2d5b9c13a2cwxlfkjdlw23654eofixnwe3b3d8a6155d"})
+
+		client := gocd.NewClient(server.URL, auth, "info", nil)
+
+		input := gocd.PipelineConfig{
+			Group: "new_group",
+			Name:  "new_pipeline",
+			CreateOptions: gocd.PipelineCreateOptions{
+				PausePipeline: true,
+				PauseReason:   "maintenance window",
+			},
+		}
+
+		out, err := client.CreatePipeline(input)
+		require.NoError(t, err)
+		assert.Equal(t, "new_group", out.Group)
+	})
+
 	t.Run("should error out while creating pipeline configuration in GoCD due to wrong headers", func(t *testing.T) {
 		server := mockServer([]byte(pipelineConfigJSON), http.StatusOK,
 			map[string]string{"Accept": gocd.HeaderVersionTwo}, false, nil)

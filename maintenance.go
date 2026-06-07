@@ -5,16 +5,12 @@ import (
 	"net/http"
 	"path/filepath"
 
-	"github.com/jinzhu/copier"
 	"github.com/nikhilsbhat/gocd-sdk-go/pkg/errors"
 )
 
 // EnableMaintenanceMode enables maintenance mode.
 func (conf *client) EnableMaintenanceMode() error {
-	newClient := &client{}
-	if err := copier.CopyWithOption(newClient, conf, copier.Option{IgnoreEmpty: true, DeepCopy: true}); err != nil {
-		return err
-	}
+	newClient := conf.clone()
 
 	resp, err := newClient.httpClient.R().
 		SetHeaders(map[string]string{
@@ -35,10 +31,7 @@ func (conf *client) EnableMaintenanceMode() error {
 
 // GetMaintenanceModeInfo fetches the latest information of server maintenance mode information.
 func (conf *client) GetMaintenanceModeInfo() (Maintenance, error) {
-	newClient := &client{}
-	if err := copier.CopyWithOption(newClient, conf, copier.Option{IgnoreEmpty: true, DeepCopy: true}); err != nil {
-		return Maintenance{}, err
-	}
+	newClient := conf.clone()
 
 	var maintenanceInfo Maintenance
 
@@ -64,10 +57,7 @@ func (conf *client) GetMaintenanceModeInfo() (Maintenance, error) {
 
 // DisableMaintenanceMode disables the maintenance mode.
 func (conf *client) DisableMaintenanceMode() error {
-	newClient := &client{}
-	if err := copier.CopyWithOption(newClient, conf, copier.Option{IgnoreEmpty: true, DeepCopy: true}); err != nil {
-		return err
-	}
+	newClient := conf.clone()
 
 	resp, err := newClient.httpClient.R().
 		SetHeaders(map[string]string{

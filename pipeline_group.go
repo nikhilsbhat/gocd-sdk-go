@@ -6,7 +6,6 @@ import (
 	"net/http"
 	"path/filepath"
 
-	"github.com/jinzhu/copier"
 	"github.com/nikhilsbhat/gocd-sdk-go/pkg/errors"
 )
 
@@ -15,10 +14,7 @@ type Groups []PipelineGroup
 
 // CreatePipelineGroup will create pipeline group with provided configurations.
 func (conf *client) CreatePipelineGroup(group PipelineGroup) error {
-	newClient := &client{}
-	if err := copier.CopyWithOption(newClient, conf, copier.Option{IgnoreEmpty: true, DeepCopy: true}); err != nil {
-		return err
-	}
+	newClient := conf.clone()
 
 	resp, err := newClient.httpClient.R().
 		SetHeaders(map[string]string{
@@ -41,10 +37,7 @@ func (conf *client) CreatePipelineGroup(group PipelineGroup) error {
 
 // GetPipelineGroups fetches information of backup configured in GoCD server.
 func (conf *client) GetPipelineGroups() ([]PipelineGroup, error) {
-	newClient := &client{}
-	if err := copier.CopyWithOption(newClient, conf, copier.Option{IgnoreEmpty: true, DeepCopy: true}); err != nil {
-		return nil, err
-	}
+	newClient := conf.clone()
 
 	var groupConf PipelineGroupsConfig
 
@@ -80,10 +73,7 @@ func (conf *client) GetPipelineGroups() ([]PipelineGroup, error) {
 
 // DeletePipelineGroup deletes the specified pipeline group present in GoCD.
 func (conf *client) DeletePipelineGroup(name string) error {
-	newClient := &client{}
-	if err := copier.CopyWithOption(newClient, conf, copier.Option{IgnoreEmpty: true, DeepCopy: true}); err != nil {
-		return err
-	}
+	newClient := conf.clone()
 
 	resp, err := newClient.httpClient.R().
 		SetHeaders(map[string]string{
@@ -115,10 +105,7 @@ func (conf Groups) Count() int {
 func (conf *client) GetPipelineGroup(name string) (PipelineGroup, error) {
 	var pipelineGroup PipelineGroup
 
-	newClient := &client{}
-	if err := copier.CopyWithOption(newClient, conf, copier.Option{IgnoreEmpty: true, DeepCopy: true}); err != nil {
-		return pipelineGroup, err
-	}
+	newClient := conf.clone()
 
 	resp, err := newClient.httpClient.R().
 		SetHeaders(map[string]string{
@@ -146,10 +133,7 @@ func (conf *client) GetPipelineGroup(name string) (PipelineGroup, error) {
 func (conf *client) UpdatePipelineGroup(group PipelineGroup) (PipelineGroup, error) {
 	var pipelineGroup PipelineGroup
 
-	newClient := &client{}
-	if err := copier.CopyWithOption(newClient, conf, copier.Option{IgnoreEmpty: true, DeepCopy: true}); err != nil {
-		return pipelineGroup, err
-	}
+	newClient := conf.clone()
 
 	resp, err := newClient.httpClient.R().
 		SetHeaders(map[string]string{

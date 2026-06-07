@@ -1,0 +1,19 @@
+{
+  "_embedded": {
+    "templates": [
+      {
+        "name": "template1",
+        "can_edit": true,
+        "can_administer": true,
+        "_embedded": {
+          "pipelines": [
+            {
+              "name": "up42",
+              "can_administer": true
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

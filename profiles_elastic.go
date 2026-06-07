@@ -6,15 +6,11 @@ import (
 	"net/http"
 	"path/filepath"
 
-	"github.com/jinzhu/copier"
 	"github.com/nikhilsbhat/gocd-sdk-go/pkg/errors"
 )
 
 func (conf *client) GetElasticAgentProfiles() (ProfilesConfig, error) {
-	newClient := &client{}
-	if err := copier.CopyWithOption(newClient, conf, copier.Option{IgnoreEmpty: true, DeepCopy: true}); err != nil {
-		return ProfilesConfig{}, err
-	}
+	newClient := conf.clone()
 
 	var elasticAgentCfg ProfilesConfigs
 
@@ -41,10 +37,7 @@ func (conf *client) GetElasticAgentProfiles() (ProfilesConfig, error) {
 }
 
 func (conf *client) GetElasticAgentProfile(name string) (CommonConfig, error) {
-	newClient := &client{}
-	if err := copier.CopyWithOption(newClient, conf, copier.Option{IgnoreEmpty: true, DeepCopy: true}); err != nil {
-		return CommonConfig{}, err
-	}
+	newClient := conf.clone()
 
 	var elasticAgentCfg CommonConfig
 
@@ -71,10 +64,7 @@ func (conf *client) GetElasticAgentProfile(name string) (CommonConfig, error) {
 }
 
 func (conf *client) CreateElasticAgentProfile(config CommonConfig) (CommonConfig, error) {
-	newClient := &client{}
-	if err := copier.CopyWithOption(newClient, conf, copier.Option{IgnoreEmpty: true, DeepCopy: true}); err != nil {
-		return CommonConfig{}, err
-	}
+	newClient := conf.clone()
 
 	var elasticAgentCfg CommonConfig
 
@@ -103,10 +93,7 @@ func (conf *client) CreateElasticAgentProfile(config CommonConfig) (CommonConfig
 }
 
 func (conf *client) UpdateElasticAgentProfile(config CommonConfig) (CommonConfig, error) {
-	newClient := &client{}
-	if err := copier.CopyWithOption(newClient, conf, copier.Option{IgnoreEmpty: true, DeepCopy: true}); err != nil {
-		return CommonConfig{}, err
-	}
+	newClient := conf.clone()
 
 	var elasticAgentCfg CommonConfig
 
@@ -136,10 +123,7 @@ func (conf *client) UpdateElasticAgentProfile(config CommonConfig) (CommonConfig
 }
 
 func (conf *client) DeleteElasticAgentProfile(name string) error {
-	newClient := &client{}
-	if err := copier.CopyWithOption(newClient, conf, copier.Option{IgnoreEmpty: true, DeepCopy: true}); err != nil {
-		return err
-	}
+	newClient := conf.clone()
 
 	resp, err := newClient.httpClient.R().
 		SetHeaders(map[string]string{
@@ -158,10 +142,7 @@ func (conf *client) DeleteElasticAgentProfile(name string) error {
 }
 
 func (conf *client) GetElasticAgentProfileUsage(profileID string) ([]ElasticProfileUsage, error) {
-	newClient := &client{}
-	if err := copier.CopyWithOption(newClient, conf, copier.Option{IgnoreEmpty: true, DeepCopy: true}); err != nil {
-		return nil, err
-	}
+	newClient := conf.clone()
 
 	var elasticProfileUsage []ElasticProfileUsage
 

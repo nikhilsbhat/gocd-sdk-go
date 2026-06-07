@@ -6,15 +6,11 @@ import (
 	"net/http"
 	"path/filepath"
 
-	"github.com/jinzhu/copier"
 	"github.com/nikhilsbhat/gocd-sdk-go/pkg/errors"
 )
 
 func (conf *client) GetUsers() ([]User, error) {
-	newClient := &client{}
-	if err := copier.CopyWithOption(newClient, conf, copier.Option{IgnoreEmpty: true, DeepCopy: true}); err != nil {
-		return nil, err
-	}
+	newClient := conf.clone()
 
 	var usersObj Users
 
@@ -39,10 +35,7 @@ func (conf *client) GetUsers() ([]User, error) {
 }
 
 func (conf *client) GetUser(user string) (User, error) {
-	newClient := &client{}
-	if err := copier.CopyWithOption(newClient, conf, copier.Option{IgnoreEmpty: true, DeepCopy: true}); err != nil {
-		return User{}, err
-	}
+	newClient := conf.clone()
 
 	var userObj User
 
@@ -67,10 +60,7 @@ func (conf *client) GetUser(user string) (User, error) {
 }
 
 func (conf *client) GetCurrentUser() (User, error) {
-	newClient := &client{}
-	if err := copier.CopyWithOption(newClient, conf, copier.Option{IgnoreEmpty: true, DeepCopy: true}); err != nil {
-		return User{}, err
-	}
+	newClient := conf.clone()
 
 	var userObj User
 
@@ -95,10 +85,7 @@ func (conf *client) GetCurrentUser() (User, error) {
 }
 
 func (conf *client) CreateUser(user User) (User, error) {
-	newClient := &client{}
-	if err := copier.CopyWithOption(newClient, conf, copier.Option{IgnoreEmpty: true, DeepCopy: true}); err != nil {
-		return User{}, err
-	}
+	newClient := conf.clone()
 
 	var userConfig User
 
@@ -125,10 +112,7 @@ func (conf *client) CreateUser(user User) (User, error) {
 }
 
 func (conf *client) UpdateUser(user User) (User, error) {
-	newClient := &client{}
-	if err := copier.CopyWithOption(newClient, conf, copier.Option{IgnoreEmpty: true, DeepCopy: true}); err != nil {
-		return User{}, err
-	}
+	newClient := conf.clone()
 
 	var userConfig User
 
@@ -155,10 +139,7 @@ func (conf *client) UpdateUser(user User) (User, error) {
 }
 
 func (conf *client) UpdateCurrentUser(user User) (User, error) {
-	newClient := &client{}
-	if err := copier.CopyWithOption(newClient, conf, copier.Option{IgnoreEmpty: true, DeepCopy: true}); err != nil {
-		return User{}, err
-	}
+	newClient := conf.clone()
 
 	var userObj User
 
@@ -185,10 +166,7 @@ func (conf *client) UpdateCurrentUser(user User) (User, error) {
 }
 
 func (conf *client) DeleteUser(user string) error {
-	newClient := &client{}
-	if err := copier.CopyWithOption(newClient, conf, copier.Option{IgnoreEmpty: true, DeepCopy: true}); err != nil {
-		return err
-	}
+	newClient := conf.clone()
 
 	resp, err := newClient.httpClient.R().
 		SetHeaders(map[string]string{
@@ -206,11 +184,8 @@ func (conf *client) DeleteUser(user string) error {
 	return nil
 }
 
-func (conf *client) BulkDeleteUsers(users map[string]interface{}) error {
-	newClient := &client{}
-	if err := copier.CopyWithOption(newClient, conf, copier.Option{IgnoreEmpty: true, DeepCopy: true}); err != nil {
-		return err
-	}
+func (conf *client) BulkDeleteUsers(users map[string]any) error {
+	newClient := conf.clone()
 
 	resp, err := newClient.httpClient.R().
 		SetHeaders(map[string]string{
@@ -230,11 +205,8 @@ func (conf *client) BulkDeleteUsers(users map[string]interface{}) error {
 	return nil
 }
 
-func (conf *client) BulkEnableDisableUsers(users map[string]interface{}) error {
-	newClient := &client{}
-	if err := copier.CopyWithOption(newClient, conf, copier.Option{IgnoreEmpty: true, DeepCopy: true}); err != nil {
-		return err
-	}
+func (conf *client) BulkEnableDisableUsers(users map[string]any) error {
+	newClient := conf.clone()
 
 	resp, err := newClient.httpClient.R().
 		SetHeaders(map[string]string{

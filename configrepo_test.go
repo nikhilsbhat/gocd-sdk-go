@@ -660,6 +660,31 @@ func Test_client_ConfigRepoPreflightCheck(t *testing.T) {
 		assert.False(t, actual)
 	})
 
+	t.Run("should error out while reading a pipeline file for preflight checks", func(t *testing.T) {
+		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
+
+		actual, err := client.ConfigRepoPreflightCheck(map[string]string{
+			"missing.gocd.yaml": "internal/fixtures/missing.gocd.yaml",
+		}, "yaml.config.plugin", "sample")
+		require.EqualError(t, err, "open internal/fixtures/missing.gocd.yaml: no such file or directory")
+		assert.False(t, actual)
+	})
+
+	t.Run("should return valid response when preflight response does not include errors", func(t *testing.T) {
+		server := mockServer([]byte(`{"valid" : false}`), http.StatusOK, correctPreflightHeader,
+			false, nil)
+		client := gocd.NewClient(server.URL, auth, "info", nil)
+
+		pipelineFiles, err := client.GetPipelineFiles("internal/fixtures", nil, "*_config.json")
+		require.NoError(t, err)
+
+		pipelineMap := client.SetPipelineFiles(pipelineFiles)
+
+		actual, err := client.ConfigRepoPreflightCheck(pipelineMap, "yaml.config.plugin", "sample")
+		require.NoError(t, err)
+		assert.False(t, actual)
+	})
+
 	t.Run("should error out while running config-repo preflight checks in GoCD as server is not reachable", func(t *testing.T) {
 		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
 
@@ -747,19 +772,19 @@ func Test_client_GetPipelineFiles(t *testing.T) {
 		expected := []gocd.PipelineFiles{
 			{
 				Name: "mail_server_config.json",
-				Path: "/Users/nikhil.bhat/my-opensource/gocd-sdk-go/internal/fixtures/mail_server_config.json",
+				Path: "/Users/nikhilbhat/my-opensource/gocd-sdk-go/internal/fixtures/mail_server_config.json",
 			},
 			{
 				Name: "role_config.json",
-				Path: "/Users/nikhil.bhat/my-opensource/gocd-sdk-go/internal/fixtures/role_config.json",
+				Path: "/Users/nikhilbhat/my-opensource/gocd-sdk-go/internal/fixtures/role_config.json",
 			},
 			{
 				Name: "roles_config.json",
-				Path: "/Users/nikhil.bhat/my-opensource/gocd-sdk-go/internal/fixtures/roles_config.json",
+				Path: "/Users/nikhilbhat/my-opensource/gocd-sdk-go/internal/fixtures/roles_config.json",
 			},
 			{
 				Name: "secrets_config.json",
-				Path: "/Users/nikhil.bhat/my-opensource/gocd-sdk-go/internal/fixtures/secrets_config.json",
+				Path: "/Users/nikhilbhat/my-opensource/gocd-sdk-go/internal/fixtures/secrets_config.json",
 			},
 		}
 
@@ -791,7 +816,7 @@ func Test_client_GetPipelineFiles(t *testing.T) {
 		expected := []gocd.PipelineFiles{
 			{
 				Name: "mail_server_config.json",
-				Path: "/Users/nikhil.bhat/my-opensource/gocd-sdk-go/internal/fixtures/mail_server_config.json",
+				Path: "/Users/nikhilbhat/my-opensource/gocd-sdk-go/internal/fixtures/mail_server_config.json",
 			},
 		}
 
@@ -806,6 +831,14 @@ func Test_client_GetPipelineFiles(t *testing.T) {
 		actual, err := client.GetPipelineFiles("", []string{"internal/fixture/mail_server_config.json"})
 		require.EqualError(t, err, "stat internal/fixture/mail_server_config.json: no such file or directory")
 		assert.Nil(t, actual)
+	})
+
+	t.Run("should skip files when pipeline file pattern is invalid", func(t *testing.T) {
+		client := gocd.NewClient("http://localhost:8156/go", auth, "debug", nil)
+
+		actual, err := client.GetPipelineFiles("internal/fixtures", nil, "[")
+		require.NoError(t, err)
+		assert.Empty(t, actual)
 	})
 }
 

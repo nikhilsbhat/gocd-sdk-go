@@ -9,17 +9,13 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/jinzhu/copier"
 	"github.com/nikhilsbhat/gocd-sdk-go/pkg/errors"
 )
 
 func (conf *client) EncryptText(value string) (Encrypted, error) {
 	var encryptedValue Encrypted
 
-	newClient := &client{}
-	if err := copier.CopyWithOption(newClient, conf, copier.Option{IgnoreEmpty: true, DeepCopy: true}); err != nil {
-		return encryptedValue, err
-	}
+	newClient := conf.clone()
 
 	valueObj := map[string]string{"value": value}
 
@@ -46,13 +42,6 @@ func (conf *client) EncryptText(value string) (Encrypted, error) {
 }
 
 func (conf *client) DecryptText(value, cipherKey string) (string, error) {
-	var decryptedValue string
-
-	newClient := &client{}
-	if err := copier.CopyWithOption(newClient, conf, copier.Option{IgnoreEmpty: true, DeepCopy: true}); err != nil {
-		return decryptedValue, err
-	}
-
 	if len(value) == 0 || len(cipherKey) == 0 {
 		return "", &errors.CipherError{}
 	}

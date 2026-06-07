@@ -1,6 +1,7 @@
 package plugin
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -57,7 +58,7 @@ func (cfg *Config) ValidatePlugin(pipelines []string) (bool, error) {
 
 	cmdArgs := append([]string{"-jar", cfg.Path, "syntax"}, pipelines...)
 
-	cmd := exec.Command("java", cmdArgs...)
+	cmd := exec.CommandContext(context.Background(), "java", cmdArgs...)
 
 	cfg.log.Debugf("command that would be executed to validate syntax is '%s'", cmd.String())
 
@@ -73,23 +74,6 @@ func (cfg *Config) ValidatePlugin(pipelines []string) (bool, error) {
 	cfg.log.Debugf("validating pipeline against plugin returned '%s'", string(out))
 
 	return true, nil
-}
-
-func (cfg *Config) exists(pipelines []string) ([]string, bool) {
-	missingPipelines := make([]string, 0)
-
-	for _, pipeline := range pipelines {
-		if _, err := os.Stat(pipeline); os.IsNotExist(err) {
-			cfg.log.Errorf("pipeline '%s' does not exits", pipeline)
-			missingPipelines = append(missingPipelines, pipeline)
-		}
-	}
-
-	if len(missingPipelines) != 0 {
-		return missingPipelines, false
-	}
-
-	return nil, true
 }
 
 func (cfg *Config) SetType(pipelines []string) error {
@@ -145,56 +129,6 @@ func (cfg *Config) GetLatestRelease(pluginURL string) (string, error) {
 	}
 
 	return tags[0].Name, nil
-}
-
-func (cfg *Config) setURL() error {
-	if len(cfg.URL) != 0 {
-		return nil
-	}
-
-	cfg.log.Debugf("plugin download url is not passed, setting it to default (github release) value")
-
-	switch cfg.PipelineType {
-	case "yaml":
-		if len(cfg.Version) == 0 {
-			version, err := cfg.GetLatestRelease(yamlPluginAPIURL)
-			if err != nil {
-				return err
-			}
-
-			cfg.Version = version
-		}
-
-		cfg.URL = fmt.Sprintf(yamlPluginURLTemplate, cfg.Version, cfg.Version)
-	case "json":
-		if len(cfg.Version) == 0 {
-			version, err := cfg.GetLatestRelease(jsonPluginAPIURL)
-			if err != nil {
-				return err
-			}
-
-			cfg.Version = version
-		}
-
-		cfg.URL = fmt.Sprintf(jsonPluginURLTemplate, cfg.Version, cfg.Version)
-	case "groovy":
-		if len(cfg.Version) == 0 {
-			version, err := cfg.GetLatestRelease(groovyPluginAPIURL)
-			if err != nil {
-				return err
-			}
-
-			cfg.Version = version[1:]
-		}
-
-		cfg.URL = fmt.Sprintf(groovyPluginURLTemplate, cfg.Version, cfg.Version)
-	default:
-		return &errors.PipelineValidationError{
-			Message: fmt.Sprintf("unknown filetype '%s', supported are yaml|json|groovy", cfg.PipelineType),
-		}
-	}
-
-	return nil
 }
 
 func (cfg *Config) Download() (string, error) {
@@ -268,4 +202,71 @@ func NewPluginConfig(version, path, url, loglevel string) Plugin {
 		Path:    path,
 		URL:     url,
 	}
+}
+
+func (cfg *Config) exists(pipelines []string) ([]string, bool) {
+	missingPipelines := make([]string, 0)
+
+	for _, pipeline := range pipelines {
+		if _, err := os.Stat(pipeline); os.IsNotExist(err) {
+			cfg.log.Errorf("pipeline '%s' does not exits", pipeline)
+			missingPipelines = append(missingPipelines, pipeline)
+		}
+	}
+
+	if len(missingPipelines) != 0 {
+		return missingPipelines, false
+	}
+
+	return nil, true
+}
+
+func (cfg *Config) setURL() error {
+	if len(cfg.URL) != 0 {
+		return nil
+	}
+
+	cfg.log.Debugf("plugin download url is not passed, setting it to default (github release) value")
+
+	switch cfg.PipelineType {
+	case "yaml":
+		if len(cfg.Version) == 0 {
+			version, err := cfg.GetLatestRelease(yamlPluginAPIURL)
+			if err != nil {
+				return err
+			}
+
+			cfg.Version = version
+		}
+
+		cfg.URL = fmt.Sprintf(yamlPluginURLTemplate, cfg.Version, cfg.Version)
+	case "json":
+		if len(cfg.Version) == 0 {
+			version, err := cfg.GetLatestRelease(jsonPluginAPIURL)
+			if err != nil {
+				return err
+			}
+
+			cfg.Version = version
+		}
+
+		cfg.URL = fmt.Sprintf(jsonPluginURLTemplate, cfg.Version, cfg.Version)
+	case "groovy":
+		if len(cfg.Version) == 0 {
+			version, err := cfg.GetLatestRelease(groovyPluginAPIURL)
+			if err != nil {
+				return err
+			}
+
+			cfg.Version = version[1:]
+		}
+
+		cfg.URL = fmt.Sprintf(groovyPluginURLTemplate, cfg.Version, cfg.Version)
+	default:
+		return &errors.PipelineValidationError{
+			Message: fmt.Sprintf("unknown filetype '%s', supported are yaml|json|groovy", cfg.PipelineType),
+		}
+	}
+
+	return nil
 }

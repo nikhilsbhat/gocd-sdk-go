@@ -6,7 +6,6 @@ import (
 	"net/http"
 	"path/filepath"
 
-	"github.com/jinzhu/copier"
 	"github.com/nikhilsbhat/gocd-sdk-go/pkg/errors"
 )
 
@@ -14,10 +13,7 @@ import (
 func (conf *client) GetAuthConfigs() ([]CommonConfig, error) {
 	var auth AuthConfigs
 
-	newClient := &client{}
-	if err := copier.CopyWithOption(newClient, conf, copier.Option{IgnoreEmpty: true, DeepCopy: true}); err != nil {
-		return nil, err
-	}
+	newClient := conf.clone()
 
 	resp, err := newClient.httpClient.R().
 		SetHeaders(map[string]string{
@@ -43,10 +39,7 @@ func (conf *client) GetAuthConfigs() ([]CommonConfig, error) {
 func (conf *client) GetAuthConfig(name string) (CommonConfig, error) {
 	var auth CommonConfig
 
-	newClient := &client{}
-	if err := copier.CopyWithOption(newClient, conf, copier.Option{IgnoreEmpty: true, DeepCopy: true}); err != nil {
-		return auth, err
-	}
+	newClient := conf.clone()
 
 	resp, err := newClient.httpClient.R().
 		SetHeaders(map[string]string{
@@ -74,10 +67,7 @@ func (conf *client) GetAuthConfig(name string) (CommonConfig, error) {
 func (conf *client) CreateAuthConfig(config CommonConfig) (CommonConfig, error) {
 	var auth CommonConfig
 
-	newClient := &client{}
-	if err := copier.CopyWithOption(newClient, conf, copier.Option{IgnoreEmpty: true, DeepCopy: true}); err != nil {
-		return auth, err
-	}
+	newClient := conf.clone()
 
 	resp, err := newClient.httpClient.R().
 		SetHeaders(map[string]string{
@@ -107,10 +97,7 @@ func (conf *client) CreateAuthConfig(config CommonConfig) (CommonConfig, error) 
 func (conf *client) UpdateAuthConfig(config CommonConfig) (CommonConfig, error) {
 	var auth CommonConfig
 
-	newClient := &client{}
-	if err := copier.CopyWithOption(newClient, conf, copier.Option{IgnoreEmpty: true, DeepCopy: true}); err != nil {
-		return auth, err
-	}
+	newClient := conf.clone()
 
 	resp, err := newClient.httpClient.R().
 		SetHeaders(map[string]string{
@@ -139,10 +126,7 @@ func (conf *client) UpdateAuthConfig(config CommonConfig) (CommonConfig, error) 
 
 // DeleteAuthConfig deletes the specified authorization configuration.
 func (conf *client) DeleteAuthConfig(name string) error {
-	newClient := &client{}
-	if err := copier.CopyWithOption(newClient, conf, copier.Option{IgnoreEmpty: true, DeepCopy: true}); err != nil {
-		return err
-	}
+	newClient := conf.clone()
 
 	resp, err := newClient.httpClient.R().
 		SetHeaders(map[string]string{

@@ -13,9 +13,9 @@ import (
 func TestGetGoCDMethodNames(t *testing.T) {
 	t.Run("should list all method names", func(t *testing.T) {
 		response := gocd.GetGoCDMethodNames()
-		assert.Len(t, response, 145)
+		assert.Len(t, response, 153)
 		assert.Equal(t, "AgentKillTask", response[0])
-		assert.Equal(t, "UpdatePipelineGroup", response[137])
+		assert.Equal(t, "ValidatePipelineSyntax", response[152])
 	})
 }
 

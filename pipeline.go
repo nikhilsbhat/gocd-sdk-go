@@ -11,16 +11,12 @@ import (
 	"strings"
 	"time"
 
-	"github.com/jinzhu/copier"
 	"github.com/nikhilsbhat/gocd-sdk-go/pkg/errors"
 )
 
 // GetPipelines fetches all pipelines configured in GoCD server.
 func (conf *client) GetPipelines() (PipelinesInfo, error) {
-	newClient := &client{}
-	if err := copier.CopyWithOption(newClient, conf, copier.Option{IgnoreEmpty: true, DeepCopy: true}); err != nil {
-		return PipelinesInfo{}, err
-	}
+	newClient := conf.clone()
 
 	var pipelinesInfo PipelinesInfo
 
@@ -43,10 +39,7 @@ func (conf *client) GetPipelines() (PipelinesInfo, error) {
 
 // GetPipelineState fetches status of selected pipelines.
 func (conf *client) GetPipelineState(pipeline string) (PipelineState, error) {
-	newClient := &client{}
-	if err := copier.CopyWithOption(newClient, conf, copier.Option{IgnoreEmpty: true, DeepCopy: true}); err != nil {
-		return PipelineState{}, err
-	}
+	newClient := conf.clone()
 
 	var pipelinesStatus PipelineState
 
@@ -76,8 +69,8 @@ func (conf *client) GetPipelineState(pipeline string) (PipelineState, error) {
 // This would be an expensive operation; make sure to run it during non-peak hours.
 func (conf *client) GetPipelineRunHistory(pipeline, pageSize string, delay time.Duration) ([]PipelineRunHistory, error) {
 	type runHistory struct {
-		Links     map[string]interface{} `json:"_links,omitempty" yaml:"_links,omitempty"`
-		Pipelines []PipelineRunHistory   `json:"pipelines,omitempty" yaml:"pipelines,omitempty"`
+		Links     map[string]any       `json:"_links,omitempty" yaml:"_links,omitempty"`
+		Pipelines []PipelineRunHistory `json:"pipelines,omitempty" yaml:"pipelines,omitempty"`
 	}
 
 	pipelineRunHistories := make([]PipelineRunHistory, 0)
@@ -85,10 +78,7 @@ func (conf *client) GetPipelineRunHistory(pipeline, pageSize string, delay time.
 	after := "0"
 
 	for {
-		newClient := &client{}
-		if err := copier.CopyWithOption(newClient, conf, copier.Option{IgnoreEmpty: true, DeepCopy: true}); err != nil {
-			return nil, err
-		}
+		newClient := conf.clone()
 
 		var pipelineRunHistory runHistory
 
@@ -120,7 +110,7 @@ func (conf *client) GetPipelineRunHistory(pipeline, pageSize string, delay time.
 			break
 		}
 
-		nextLink := pipelineRunHistory.Links["next"].(map[string]interface{})["href"].(string)
+		nextLink := pipelineRunHistory.Links["next"].(map[string]any)["href"].(string)
 		after = strings.Split(nextLink, "after=")[1]
 
 		pipelineRunHistories = append(pipelineRunHistories, pipelineRunHistory.Pipelines...)
@@ -138,10 +128,7 @@ func (conf *client) GetLimitedPipelineRunHistory(pipeline, pageSize, after strin
 		Pipelines []PipelineRunHistory `json:"pipelines,omitempty" yaml:"pipelines,omitempty"`
 	}
 
-	newClient := &client{}
-	if err := copier.CopyWithOption(newClient, conf, copier.Option{IgnoreEmpty: true, DeepCopy: true}); err != nil {
-		return nil, err
-	}
+	newClient := conf.clone()
 
 	var pipelineRunHistory runHistory
 
@@ -172,10 +159,7 @@ func (conf *client) GetLimitedPipelineRunHistory(pipeline, pageSize, after strin
 
 // GetPipelineSchedules fetches the last X schedules of the selected pipeline from GoCD server.
 func (conf *client) GetPipelineSchedules(pipeline, start, perPage string) (PipelineSchedules, error) {
-	newClient := &client{}
-	if err := copier.CopyWithOption(newClient, conf, copier.Option{IgnoreEmpty: true, DeepCopy: true}); err != nil {
-		return PipelineSchedules{}, err
-	}
+	newClient := conf.clone()
 
 	var pipelineSchedules PipelineSchedules
 
@@ -206,10 +190,7 @@ func (conf *client) GetPipelineSchedules(pipeline, start, perPage string) (Pipel
 
 // PipelinePause pauses specified pipeline with valid message passed.
 func (conf *client) PipelinePause(name string, message any) error {
-	newClient := &client{}
-	if err := copier.CopyWithOption(newClient, conf, copier.Option{IgnoreEmpty: true, DeepCopy: true}); err != nil {
-		return err
-	}
+	newClient := conf.clone()
 
 	msg := "pausing pipeline " + name
 	if message != nil {
@@ -238,10 +219,7 @@ func (conf *client) PipelinePause(name string, message any) error {
 
 // PipelineUnPause unpauses specified pipeline.
 func (conf *client) PipelineUnPause(name string) error {
-	newClient := &client{}
-	if err := copier.CopyWithOption(newClient, conf, copier.Option{IgnoreEmpty: true, DeepCopy: true}); err != nil {
-		return err
-	}
+	newClient := conf.clone()
 
 	resp, err := newClient.httpClient.R().
 		SetHeaders(map[string]string{
@@ -262,10 +240,7 @@ func (conf *client) PipelineUnPause(name string) error {
 
 // PipelineUnlock unlocks the specified locked pipeline.
 func (conf *client) PipelineUnlock(name string) error {
-	newClient := &client{}
-	if err := copier.CopyWithOption(newClient, conf, copier.Option{IgnoreEmpty: true, DeepCopy: true}); err != nil {
-		return err
-	}
+	newClient := conf.clone()
 
 	resp, err := newClient.httpClient.R().
 		SetHeaders(map[string]string{
@@ -286,10 +261,7 @@ func (conf *client) PipelineUnlock(name string) error {
 
 // SchedulePipeline schedules the specified pipeline with specified configurations.
 func (conf *client) SchedulePipeline(name string, schedule Schedule) error {
-	newClient := &client{}
-	if err := copier.CopyWithOption(newClient, conf, copier.Option{IgnoreEmpty: true, DeepCopy: true}); err != nil {
-		return err
-	}
+	newClient := conf.clone()
 
 	resp, err := newClient.httpClient.R().
 		SetHeaders(map[string]string{
@@ -325,10 +297,7 @@ func (conf *client) CommentOnPipeline(comment PipelineObject) error {
 		return &errors.GoCDError{Message: "comment message cannot be empty"}
 	}
 
-	newClient := &client{}
-	if err := copier.CopyWithOption(newClient, conf, copier.Option{IgnoreEmpty: true, DeepCopy: true}); err != nil {
-		return err
-	}
+	newClient := conf.clone()
 
 	resp, err := newClient.httpClient.R().
 		SetHeaders(map[string]string{
@@ -349,13 +318,10 @@ func (conf *client) CommentOnPipeline(comment PipelineObject) error {
 }
 
 // GetPipelineInstance fetches the instance of a selected pipeline with counter.
-func (conf *client) GetPipelineInstance(pipeline PipelineObject) (map[string]interface{}, error) {
-	var pipelineInstance map[string]interface{}
+func (conf *client) GetPipelineInstance(pipeline PipelineObject) (map[string]any, error) {
+	var pipelineInstance map[string]any
 
-	newClient := &client{}
-	if err := copier.CopyWithOption(newClient, conf, copier.Option{IgnoreEmpty: true, DeepCopy: true}); err != nil {
-		return pipelineInstance, err
-	}
+	newClient := conf.clone()
 
 	resp, err := newClient.httpClient.R().
 		SetHeaders(map[string]string{
@@ -378,10 +344,7 @@ func (conf *client) GetPipelineInstance(pipeline PipelineObject) (map[string]int
 }
 
 func (conf *client) ExportPipelineToConfigRepoFormat(pipelineName, pluginID string) (PipelineExport, error) {
-	newClient := &client{}
-	if err := copier.CopyWithOption(newClient, conf, copier.Option{IgnoreEmpty: true, DeepCopy: true}); err != nil {
-		return PipelineExport{}, err
-	}
+	newClient := conf.clone()
 
 	resp, err := newClient.httpClient.R().
 		SetHeaders(map[string]string{

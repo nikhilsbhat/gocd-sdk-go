@@ -107,4 +107,12 @@ func Test_client_DecryptText(t *testing.T) {
 		require.EqualError(t, err, "encoding/hex: odd length hex string")
 		assert.Equal(t, "", response)
 	})
+
+	t.Run("should error out while decrypting secret due to invalid AES key size", func(t *testing.T) {
+		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
+
+		response, err := client.DecryptText("AES:wSOqnltxM6Rp9j0Tb8uWpw==:4zVLtLx9msGleK+pLOOUHg==", "abcd")
+		require.EqualError(t, err, "crypto/aes: invalid key size 2")
+		assert.Equal(t, "", response)
+	})
 }

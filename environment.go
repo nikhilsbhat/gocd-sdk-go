@@ -7,16 +7,12 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/jinzhu/copier"
 	"github.com/nikhilsbhat/gocd-sdk-go/pkg/errors"
 )
 
 // GetEnvironments fetches information of backup configured in GoCD server.
 func (conf *client) GetEnvironments() ([]Environment, error) {
-	newClient := &client{}
-	if err := copier.CopyWithOption(newClient, conf, copier.Option{IgnoreEmpty: true, DeepCopy: true}); err != nil {
-		return nil, err
-	}
+	newClient := conf.clone()
 
 	var envConf EnvironmentInfo
 
@@ -44,10 +40,7 @@ func (conf *client) GetEnvironments() ([]Environment, error) {
 func (conf *client) GetEnvironment(name string) (Environment, error) {
 	var env Environment
 
-	newClient := &client{}
-	if err := copier.CopyWithOption(newClient, conf, copier.Option{IgnoreEmpty: true, DeepCopy: true}); err != nil {
-		return env, err
-	}
+	newClient := conf.clone()
 
 	resp, err := newClient.httpClient.R().
 		SetHeaders(map[string]string{
@@ -73,10 +66,7 @@ func (conf *client) GetEnvironment(name string) (Environment, error) {
 
 // CreateEnvironment creates GoCD environment with the specified configurations.
 func (conf *client) CreateEnvironment(environment Environment) error {
-	newClient := &client{}
-	if err := copier.CopyWithOption(newClient, conf, copier.Option{IgnoreEmpty: true, DeepCopy: true}); err != nil {
-		return err
-	}
+	newClient := conf.clone()
 
 	resp, err := newClient.httpClient.R().
 		SetHeaders(map[string]string{
@@ -102,10 +92,7 @@ func (conf *client) PatchEnvironment(environment any) (Environment, error) {
 
 	var env Environment
 
-	newClient := &client{}
-	if err := copier.CopyWithOption(newClient, conf, copier.Option{IgnoreEmpty: true, DeepCopy: true}); err != nil {
-		return env, err
-	}
+	newClient := conf.clone()
 
 	resp, err := newClient.httpClient.R().
 		SetHeaders(map[string]string{
@@ -133,10 +120,7 @@ func (conf *client) PatchEnvironment(environment any) (Environment, error) {
 func (conf *client) UpdateEnvironment(environment Environment) (Environment, error) {
 	var env Environment
 
-	newClient := &client{}
-	if err := copier.CopyWithOption(newClient, conf, copier.Option{IgnoreEmpty: true, DeepCopy: true}); err != nil {
-		return env, err
-	}
+	newClient := conf.clone()
 
 	resp, err := newClient.httpClient.R().
 		SetHeaders(map[string]string{
@@ -165,10 +149,7 @@ func (conf *client) UpdateEnvironment(environment Environment) (Environment, err
 
 // DeleteEnvironment deletes the specified GoCD environment.
 func (conf *client) DeleteEnvironment(name string) error {
-	newClient := &client{}
-	if err := copier.CopyWithOption(newClient, conf, copier.Option{IgnoreEmpty: true, DeepCopy: true}); err != nil {
-		return err
-	}
+	newClient := conf.clone()
 
 	resp, err := newClient.httpClient.R().
 		SetHeaders(map[string]string{
@@ -188,10 +169,7 @@ func (conf *client) DeleteEnvironment(name string) error {
 func (conf *client) GetEnvironmentsMerged(names []string) ([]Environment, error) {
 	var env EnvironmentInfo
 
-	newClient := &client{}
-	if err := copier.CopyWithOption(newClient, conf, copier.Option{IgnoreEmpty: true, DeepCopy: true}); err != nil {
-		return nil, err
-	}
+	newClient := conf.clone()
 
 	resp, err := newClient.httpClient.R().
 		SetHeaders(map[string]string{

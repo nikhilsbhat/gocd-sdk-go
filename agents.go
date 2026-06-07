@@ -6,16 +6,12 @@ import (
 	"net/http"
 	"path/filepath"
 
-	"github.com/jinzhu/copier"
 	"github.com/nikhilsbhat/gocd-sdk-go/pkg/errors"
 )
 
 // GetAgents implements method that fetches the details of all the agents present in GoCD server.
 func (conf *client) GetAgents() ([]Agent, error) {
-	newClient := &client{}
-	if err := copier.CopyWithOption(newClient, conf, copier.Option{IgnoreEmpty: true, DeepCopy: true}); err != nil {
-		return nil, err
-	}
+	newClient := conf.clone()
 
 	var agentsConf AgentsConfig
 
@@ -41,10 +37,7 @@ func (conf *client) GetAgents() ([]Agent, error) {
 
 // GetAgent implements method that fetches the details of a specific agent present in GoCD server.
 func (conf *client) GetAgent(agentID string) (Agent, error) {
-	newClient := &client{}
-	if err := copier.CopyWithOption(newClient, conf, copier.Option{IgnoreEmpty: true, DeepCopy: true}); err != nil {
-		return Agent{}, err
-	}
+	newClient := conf.clone()
 
 	var agentConf Agent
 
@@ -70,10 +63,7 @@ func (conf *client) GetAgent(agentID string) (Agent, error) {
 
 // GetAgentJobRunHistory implements method that fetches job run history from selected agents.
 func (conf *client) GetAgentJobRunHistory(agentID string) (AgentJobHistory, error) {
-	newClient := &client{}
-	if err := copier.CopyWithOption(newClient, conf, copier.Option{IgnoreEmpty: true, DeepCopy: true}); err != nil {
-		return AgentJobHistory{}, err
-	}
+	newClient := conf.clone()
 
 	var jobHistoryConf AgentJobHistory
 
@@ -100,10 +90,7 @@ func (conf *client) GetAgentJobRunHistory(agentID string) (AgentJobHistory, erro
 
 // UpdateAgent updates specific agent with updated configuration passed.
 func (conf *client) UpdateAgent(agent Agent) error {
-	newClient := &client{}
-	if err := copier.CopyWithOption(newClient, conf, copier.Option{IgnoreEmpty: true, DeepCopy: true}); err != nil {
-		return err
-	}
+	newClient := conf.clone()
 
 	resp, err := newClient.httpClient.R().
 		SetHeaders(map[string]string{
@@ -125,10 +112,7 @@ func (conf *client) UpdateAgent(agent Agent) error {
 
 // UpdateAgentBulk will bulk update the specified agents with updated configurations.
 func (conf *client) UpdateAgentBulk(agent Agent) error {
-	newClient := &client{}
-	if err := copier.CopyWithOption(newClient, conf, copier.Option{IgnoreEmpty: true, DeepCopy: true}); err != nil {
-		return err
-	}
+	newClient := conf.clone()
 
 	resp, err := newClient.httpClient.R().
 		SetHeaders(map[string]string{
@@ -150,10 +134,7 @@ func (conf *client) UpdateAgentBulk(agent Agent) error {
 
 // DeleteAgent deletes the specified agent.
 func (conf *client) DeleteAgent(agentID string) (string, error) {
-	newClient := &client{}
-	if err := copier.CopyWithOption(newClient, conf, copier.Option{IgnoreEmpty: true, DeepCopy: true}); err != nil {
-		return "", err
-	}
+	newClient := conf.clone()
 
 	resp, err := newClient.httpClient.R().
 		SetHeaders(map[string]string{
@@ -173,10 +154,7 @@ func (conf *client) DeleteAgent(agentID string) (string, error) {
 
 // DeleteAgentBulk bulk deletes the specified agents.
 func (conf *client) DeleteAgentBulk(agent Agent) (string, error) {
-	newClient := &client{}
-	if err := copier.CopyWithOption(newClient, conf, copier.Option{IgnoreEmpty: true, DeepCopy: true}); err != nil {
-		return "", err
-	}
+	newClient := conf.clone()
 
 	resp, err := newClient.httpClient.R().
 		SetHeaders(map[string]string{
@@ -197,10 +175,7 @@ func (conf *client) DeleteAgentBulk(agent Agent) (string, error) {
 
 // AgentKillTask will kill running tasks from an selected agent.
 func (conf *client) AgentKillTask(agent Agent) error {
-	newClient := &client{}
-	if err := copier.CopyWithOption(newClient, conf, copier.Option{IgnoreEmpty: true, DeepCopy: true}); err != nil {
-		return err
-	}
+	newClient := conf.clone()
 
 	resp, err := newClient.httpClient.R().
 		SetHeaders(map[string]string{

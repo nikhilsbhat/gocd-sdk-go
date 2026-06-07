@@ -6,15 +6,11 @@ import (
 	"net/http"
 	"path/filepath"
 
-	"github.com/jinzhu/copier"
 	"github.com/nikhilsbhat/gocd-sdk-go/pkg/errors"
 )
 
 func (conf *client) GetPackages() ([]Package, error) {
-	newClient := &client{}
-	if err := copier.CopyWithOption(newClient, conf, copier.Option{IgnoreEmpty: true, DeepCopy: true}); err != nil {
-		return nil, err
-	}
+	newClient := conf.clone()
 
 	var packagesCfg Packages
 
@@ -39,10 +35,7 @@ func (conf *client) GetPackages() ([]Package, error) {
 }
 
 func (conf *client) GetPackage(repoID string) (Package, error) {
-	newClient := &client{}
-	if err := copier.CopyWithOption(newClient, conf, copier.Option{IgnoreEmpty: true, DeepCopy: true}); err != nil {
-		return Package{}, err
-	}
+	newClient := conf.clone()
 
 	var packageCfg Package
 
@@ -69,10 +62,7 @@ func (conf *client) GetPackage(repoID string) (Package, error) {
 }
 
 func (conf *client) CreatePackage(config Package) (Package, error) {
-	newClient := &client{}
-	if err := copier.CopyWithOption(newClient, conf, copier.Option{IgnoreEmpty: true, DeepCopy: true}); err != nil {
-		return Package{}, err
-	}
+	newClient := conf.clone()
 
 	var packageCfg Package
 
@@ -101,10 +91,7 @@ func (conf *client) CreatePackage(config Package) (Package, error) {
 }
 
 func (conf *client) UpdatePackage(config Package) (Package, error) {
-	newClient := &client{}
-	if err := copier.CopyWithOption(newClient, conf, copier.Option{IgnoreEmpty: true, DeepCopy: true}); err != nil {
-		return Package{}, err
-	}
+	newClient := conf.clone()
 
 	var packageCfg Package
 
@@ -134,10 +121,7 @@ func (conf *client) UpdatePackage(config Package) (Package, error) {
 }
 
 func (conf *client) DeletePackage(repoID string) error {
-	newClient := &client{}
-	if err := copier.CopyWithOption(newClient, conf, copier.Option{IgnoreEmpty: true, DeepCopy: true}); err != nil {
-		return err
-	}
+	newClient := conf.clone()
 
 	resp, err := newClient.httpClient.R().
 		SetHeaders(map[string]string{

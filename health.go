@@ -4,16 +4,12 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"github.com/jinzhu/copier"
 	"github.com/nikhilsbhat/gocd-sdk-go/pkg/errors"
 )
 
 // GetServerHealthMessages implements method that fetches the details of all warning and errors.
 func (conf *client) GetServerHealthMessages() ([]ServerHealth, error) {
-	newClient := &client{}
-	if err := copier.CopyWithOption(newClient, conf, copier.Option{IgnoreEmpty: true, DeepCopy: true}); err != nil {
-		return nil, err
-	}
+	newClient := conf.clone()
 
 	var health []ServerHealth
 
@@ -38,10 +34,7 @@ func (conf *client) GetServerHealthMessages() ([]ServerHealth, error) {
 }
 
 func (conf *client) GetServerHealth() (map[string]string, error) {
-	newClient := &client{}
-	if err := copier.CopyWithOption(newClient, conf, copier.Option{IgnoreEmpty: true, DeepCopy: true}); err != nil {
-		return nil, err
-	}
+	newClient := conf.clone()
 
 	var health map[string]string
 

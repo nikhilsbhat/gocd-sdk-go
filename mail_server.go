@@ -4,17 +4,13 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"github.com/jinzhu/copier"
 	"github.com/nikhilsbhat/gocd-sdk-go/pkg/errors"
 )
 
 func (conf *client) GetMailServerConfig() (MailServerConfig, error) {
 	var mailConfig MailServerConfig
 
-	newClient := &client{}
-	if err := copier.CopyWithOption(newClient, conf, copier.Option{IgnoreEmpty: true, DeepCopy: true}); err != nil {
-		return mailConfig, err
-	}
+	newClient := conf.clone()
 
 	resp, err := newClient.httpClient.R().
 		SetHeaders(map[string]string{
@@ -39,10 +35,7 @@ func (conf *client) GetMailServerConfig() (MailServerConfig, error) {
 func (conf *client) CreateOrUpdateMailServerConfig(mailCfg MailServerConfig) (MailServerConfig, error) {
 	var mailConfig MailServerConfig
 
-	newClient := &client{}
-	if err := copier.CopyWithOption(newClient, conf, copier.Option{IgnoreEmpty: true, DeepCopy: true}); err != nil {
-		return mailConfig, err
-	}
+	newClient := conf.clone()
 
 	resp, err := newClient.httpClient.R().
 		SetHeaders(map[string]string{
@@ -67,10 +60,7 @@ func (conf *client) CreateOrUpdateMailServerConfig(mailCfg MailServerConfig) (Ma
 }
 
 func (conf *client) DeleteMailServerConfig() error {
-	newClient := &client{}
-	if err := copier.CopyWithOption(newClient, conf, copier.Option{IgnoreEmpty: true, DeepCopy: true}); err != nil {
-		return err
-	}
+	newClient := conf.clone()
 
 	resp, err := newClient.httpClient.R().
 		SetHeaders(map[string]string{

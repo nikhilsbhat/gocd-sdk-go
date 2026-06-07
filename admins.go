@@ -4,16 +4,12 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"github.com/jinzhu/copier"
 	"github.com/nikhilsbhat/gocd-sdk-go/pkg/errors"
 )
 
 // GetSystemAdmins fetches information of all system admins present in GoCD server.
 func (conf *client) GetSystemAdmins() (SystemAdmins, error) {
-	newClient := &client{}
-	if err := copier.CopyWithOption(newClient, conf, copier.Option{IgnoreEmpty: true, DeepCopy: true}); err != nil {
-		return SystemAdmins{}, err
-	}
+	newClient := conf.clone()
 
 	var adminsConf SystemAdmins
 
@@ -41,10 +37,7 @@ func (conf *client) GetSystemAdmins() (SystemAdmins, error) {
 func (conf *client) UpdateSystemAdmins(data SystemAdmins) (SystemAdmins, error) {
 	var admins SystemAdmins
 
-	newClient := &client{}
-	if err := copier.CopyWithOption(newClient, conf, copier.Option{IgnoreEmpty: true, DeepCopy: true}); err != nil {
-		return admins, err
-	}
+	newClient := conf.clone()
 
 	resp, err := newClient.httpClient.R().
 		SetHeaders(map[string]string{
@@ -74,10 +67,7 @@ func (conf *client) UpdateSystemAdmins(data SystemAdmins) (SystemAdmins, error) 
 func (conf *client) UpdateSystemAdminsBulk(data Operations) (SystemAdmins, error) {
 	var admins SystemAdmins
 
-	newClient := &client{}
-	if err := copier.CopyWithOption(newClient, conf, copier.Option{IgnoreEmpty: true, DeepCopy: true}); err != nil {
-		return admins, err
-	}
+	newClient := conf.clone()
 
 	resp, err := newClient.httpClient.R().
 		SetHeaders(map[string]string{

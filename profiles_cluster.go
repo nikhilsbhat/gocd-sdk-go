@@ -6,15 +6,11 @@ import (
 	"net/http"
 	"path/filepath"
 
-	"github.com/jinzhu/copier"
 	"github.com/nikhilsbhat/gocd-sdk-go/pkg/errors"
 )
 
 func (conf *client) GetClusterProfiles() (ProfilesConfig, error) {
-	newClient := &client{}
-	if err := copier.CopyWithOption(newClient, conf, copier.Option{IgnoreEmpty: true, DeepCopy: true}); err != nil {
-		return ProfilesConfig{}, err
-	}
+	newClient := conf.clone()
 
 	var profilesCfg ProfilesConfigs
 
@@ -41,10 +37,7 @@ func (conf *client) GetClusterProfiles() (ProfilesConfig, error) {
 }
 
 func (conf *client) GetClusterProfile(name string) (CommonConfig, error) {
-	newClient := &client{}
-	if err := copier.CopyWithOption(newClient, conf, copier.Option{IgnoreEmpty: true, DeepCopy: true}); err != nil {
-		return CommonConfig{}, err
-	}
+	newClient := conf.clone()
 
 	var profilesCfg CommonConfig
 
@@ -71,10 +64,7 @@ func (conf *client) GetClusterProfile(name string) (CommonConfig, error) {
 }
 
 func (conf *client) CreateClusterProfile(config CommonConfig) (CommonConfig, error) {
-	newClient := &client{}
-	if err := copier.CopyWithOption(newClient, conf, copier.Option{IgnoreEmpty: true, DeepCopy: true}); err != nil {
-		return CommonConfig{}, err
-	}
+	newClient := conf.clone()
 
 	var profileCfg CommonConfig
 
@@ -103,10 +93,7 @@ func (conf *client) CreateClusterProfile(config CommonConfig) (CommonConfig, err
 }
 
 func (conf *client) UpdateClusterProfile(config CommonConfig) (CommonConfig, error) {
-	newClient := &client{}
-	if err := copier.CopyWithOption(newClient, conf, copier.Option{IgnoreEmpty: true, DeepCopy: true}); err != nil {
-		return CommonConfig{}, err
-	}
+	newClient := conf.clone()
 
 	var storeCfg CommonConfig
 
@@ -136,10 +123,7 @@ func (conf *client) UpdateClusterProfile(config CommonConfig) (CommonConfig, err
 }
 
 func (conf *client) DeleteClusterProfile(name string) error {
-	newClient := &client{}
-	if err := copier.CopyWithOption(newClient, conf, copier.Option{IgnoreEmpty: true, DeepCopy: true}); err != nil {
-		return err
-	}
+	newClient := conf.clone()
 
 	resp, err := newClient.httpClient.R().
 		SetHeaders(map[string]string{
