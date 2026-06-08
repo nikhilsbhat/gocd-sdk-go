@@ -19,7 +19,7 @@ func Test_config_GetVersionInfo(t *testing.T) {
 	t.Run("should error out while fetching version information from server", func(t *testing.T) {
 		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
 		client.SetRetryCount(1)
-		client.SetRetryWaitTime(1)
+		client.SetRetryWaitTime(0)
 
 		actual, err := client.GetVersionInfo()
 		require.EqualError(t, err, "call made to get version information errored with: "+

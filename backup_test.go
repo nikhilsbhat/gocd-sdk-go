@@ -27,7 +27,7 @@ func TestConfig_GetBackupInfo(t *testing.T) {
 	t.Run("should error out while fetching latest backup configuration information from server", func(t *testing.T) {
 		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
 		client.SetRetryCount(1)
-		client.SetRetryWaitTime(1)
+		client.SetRetryWaitTime(0)
 
 		actual, err := client.GetBackupConfig()
 		require.EqualError(t, err, "call made to get backup information errored with: "+
@@ -145,7 +145,7 @@ func Test_client_CreateOrUpdateBackup(t *testing.T) {
 		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
 
 		client.SetRetryCount(1)
-		client.SetRetryWaitTime(1)
+		client.SetRetryWaitTime(0)
 
 		backupObj := gocd.BackupConfig{
 			EmailOnSuccess:   false,
@@ -185,7 +185,7 @@ func Test_client_DeleteBackupConfig(t *testing.T) {
 		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
 
 		client.SetRetryCount(1)
-		client.SetRetryWaitTime(1)
+		client.SetRetryWaitTime(0)
 
 		err := client.DeleteBackupConfig()
 		require.EqualError(t, err, "call made to delete backup configuration errored with: "+
@@ -258,7 +258,7 @@ func Test_client_GetBackup(t *testing.T) {
 		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
 
 		client.SetRetryCount(1)
-		client.SetRetryWaitTime(1)
+		client.SetRetryWaitTime(0)
 
 		expected := gocd.BackupStats{}
 
@@ -326,7 +326,7 @@ func Test_client_ScheduleBackup(t *testing.T) {
 		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
 
 		client.SetRetryCount(1)
-		client.SetRetryWaitTime(1)
+		client.SetRetryWaitTime(0)
 
 		actual, err := client.ScheduleBackup()
 		require.EqualError(t, err, "call made to schedule backup errored with: Post "+

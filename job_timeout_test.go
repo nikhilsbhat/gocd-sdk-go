@@ -56,7 +56,7 @@ func Test_client_GetDefaultJobTimeout(t *testing.T) {
 		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
 
 		client.SetRetryCount(1)
-		client.SetRetryWaitTime(1)
+		client.SetRetryWaitTime(0)
 
 		actual, err := client.GetDefaultJobTimeout()
 		require.EqualError(t, err, "call made to get default job timeout errored with: "+
@@ -99,7 +99,7 @@ func Test_client_UpdateDefaultJobTimeout(t *testing.T) {
 		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
 
 		client.SetRetryCount(1)
-		client.SetRetryWaitTime(1)
+		client.SetRetryWaitTime(0)
 
 		err := client.UpdateDefaultJobTimeout(10)
 		require.EqualError(t, err, "call made to update default job timeout errored with: "+

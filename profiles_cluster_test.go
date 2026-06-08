@@ -96,7 +96,7 @@ func Test_client_GetClusterProfiles(t *testing.T) {
 		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
 
 		client.SetRetryCount(1)
-		client.SetRetryWaitTime(1)
+		client.SetRetryWaitTime(0)
 
 		expected := gocd.ProfilesConfig{
 			CommonConfigs: nil,
@@ -179,7 +179,7 @@ func Test_client_GetClusterProfile(t *testing.T) {
 		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
 
 		client.SetRetryCount(1)
-		client.SetRetryWaitTime(1)
+		client.SetRetryWaitTime(0)
 
 		expected := gocd.CommonConfig{}
 
@@ -265,7 +265,7 @@ func Test_client_CreateClusterProfile(t *testing.T) {
 		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
 
 		client.SetRetryCount(1)
-		client.SetRetryWaitTime(1)
+		client.SetRetryWaitTime(0)
 
 		profileCfg := gocd.CommonConfig{ID: "prod-cluster"}
 		expected := gocd.CommonConfig{}
@@ -352,7 +352,7 @@ func Test_client_UpdateClusterProfile(t *testing.T) {
 		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
 
 		client.SetRetryCount(1)
-		client.SetRetryWaitTime(1)
+		client.SetRetryWaitTime(0)
 
 		profileCfg := gocd.CommonConfig{ID: "prod-cluster"}
 		expected := gocd.CommonConfig{}
@@ -403,7 +403,7 @@ func Test_client_DeleteClusterProfile(t *testing.T) {
 		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
 
 		client.SetRetryCount(1)
-		client.SetRetryWaitTime(1)
+		client.SetRetryWaitTime(0)
 
 		err := client.DeleteClusterProfile("prod-cluster")
 		require.EqualError(t, err, "call made to delete cluster profile 'prod-cluster' errored with: "+

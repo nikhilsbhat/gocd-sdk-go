@@ -30,7 +30,7 @@ func Test_client_GetEnvironmentInfo(t *testing.T) {
 	t.Run("should error out while fetching all config repos present from server", func(t *testing.T) {
 		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
 		client.SetRetryCount(1)
-		client.SetRetryWaitTime(1)
+		client.SetRetryWaitTime(0)
 
 		actual, err := client.GetEnvironments()
 		require.EqualError(t, err, "call made to get environments errored with: "+
@@ -168,7 +168,7 @@ func Test_client_CreateEnvironments(t *testing.T) {
 		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
 
 		client.SetRetryCount(1)
-		client.SetRetryWaitTime(1)
+		client.SetRetryWaitTime(0)
 
 		environment := gocd.Environment{Name: "test"}
 		err := client.CreateEnvironment(environment)
@@ -208,7 +208,7 @@ func Test_client_DeleteEnvironment(t *testing.T) {
 		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
 
 		client.SetRetryCount(1)
-		client.SetRetryWaitTime(1)
+		client.SetRetryWaitTime(0)
 
 		err := client.DeleteEnvironment("env1")
 		require.EqualError(t, err, "call made to delete environment 'env1' errored with: "+
@@ -282,7 +282,7 @@ func Test_client_UpdateEnvironment(t *testing.T) {
 		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
 
 		client.SetRetryCount(1)
-		client.SetRetryWaitTime(1)
+		client.SetRetryWaitTime(0)
 
 		environment := gocd.Environment{Name: "test"}
 
@@ -372,7 +372,7 @@ func Test_client_PatchEnvironment(t *testing.T) {
 		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
 
 		client.SetRetryCount(1)
-		client.SetRetryWaitTime(1)
+		client.SetRetryWaitTime(0)
 
 		patch := gocd.PatchEnvironment{Name: "test"}
 
@@ -445,7 +445,7 @@ func Test_client_GetEnvironment(t *testing.T) {
 		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
 
 		client.SetRetryCount(1)
-		client.SetRetryWaitTime(1)
+		client.SetRetryWaitTime(0)
 
 		actual, err := client.GetEnvironment(envName)
 		require.EqualError(t, err, "call made to get environment 'my_environment' errored with: "+
@@ -460,7 +460,7 @@ func Test_client_GetEnvironmentMappings(t *testing.T) {
 	t.Run("should error out while fetching all selected environment mappings from server", func(t *testing.T) {
 		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
 		client.SetRetryCount(1)
-		client.SetRetryWaitTime(1)
+		client.SetRetryWaitTime(0)
 
 		actual, err := client.GetEnvironmentsMerged([]string{"example_environment"})
 		require.EqualError(t, err, "call made to get environment mapping of 'example_environment' errored with: "+

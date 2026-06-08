@@ -19,7 +19,7 @@ func TestConfig_GetHealthInfo(t *testing.T) {
 	t.Run("should error out while fetching health status information from server", func(t *testing.T) {
 		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
 		client.SetRetryCount(1)
-		client.SetRetryWaitTime(1)
+		client.SetRetryWaitTime(0)
 
 		actual, err := client.GetServerHealthMessages()
 		require.EqualError(t, err, "call made to get health info errored with: "+
@@ -95,7 +95,7 @@ func Test_client_GetServerHealth(t *testing.T) {
 		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
 
 		client.SetRetryCount(1)
-		client.SetRetryWaitTime(1)
+		client.SetRetryWaitTime(0)
 
 		response, err := client.GetServerHealth()
 		require.EqualError(t, err, "call made to get server health errored with: "+

@@ -37,7 +37,7 @@ func Test_client_GetAgentsInfo(t *testing.T) {
 	t.Run("should error out as call made to server while fetching agents", func(t *testing.T) {
 		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
 		client.SetRetryCount(1)
-		client.SetRetryWaitTime(1)
+		client.SetRetryWaitTime(0)
 
 		actual, err := client.GetAgents()
 		require.EqualError(t, err, "call made to get agents information errored with: "+
@@ -170,7 +170,7 @@ func Test_client_GetAgent(t *testing.T) {
 		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
 
 		client.SetRetryCount(1)
-		client.SetRetryWaitTime(1)
+		client.SetRetryWaitTime(0)
 
 		expected := gocd.Agent{}
 
@@ -188,7 +188,7 @@ func Test_client_GetAgentJobRunHistory1(t *testing.T) {
 	t.Run("should error out as call made to server while fetching job run", func(t *testing.T) {
 		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
 		client.SetRetryCount(1)
-		client.SetRetryWaitTime(1)
+		client.SetRetryWaitTime(0)
 
 		actual, err := client.GetAgentJobRunHistory(agentID)
 		require.EqualError(t, err, "call made to get agent job run history errored with: "+
@@ -321,7 +321,7 @@ func Test_client_UpdateAgent(t *testing.T) {
 		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
 
 		client.SetRetryCount(1)
-		client.SetRetryWaitTime(1)
+		client.SetRetryWaitTime(0)
 
 		agentUpdateInfo := gocd.Agent{
 			ID:           agentID,
@@ -411,7 +411,7 @@ func Test_client_UpdateAgentBulk(t *testing.T) {
 		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
 
 		client.SetRetryCount(1)
-		client.SetRetryWaitTime(1)
+		client.SetRetryWaitTime(0)
 
 		agentUpdateInfo := gocd.Agent{
 			Name:         "agent02.example.com",
@@ -463,7 +463,7 @@ func Test_client_DeleteAgent(t *testing.T) {
 		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
 
 		client.SetRetryCount(1)
-		client.SetRetryWaitTime(1)
+		client.SetRetryWaitTime(0)
 
 		actual, err := client.DeleteAgent(agentID)
 		require.EqualError(t, err, "call made to delete agent adb9540a-b954-4571-9d9b-2f330739d4da errored with: "+
@@ -511,7 +511,7 @@ func Test_client_DeleteAgentBulk(t *testing.T) {
 		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
 
 		client.SetRetryCount(1)
-		client.SetRetryWaitTime(1)
+		client.SetRetryWaitTime(0)
 
 		actual, err := client.DeleteAgentBulk(agent)
 		require.EqualError(t, err, "call made to delete agents [adb9540a-b954-4571-9d9b-2f330739d4da adb9540a-5hfh-6453-9d9b-2f37467739d4da] errored with: "+
@@ -567,7 +567,7 @@ func Test_client_AgentKillTask(t *testing.T) {
 		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
 
 		client.SetRetryCount(1)
-		client.SetRetryWaitTime(1)
+		client.SetRetryWaitTime(0)
 
 		agent := gocd.Agent{ID: "adb9540a-5hfh-6453-9d9b-2f37467739d4da"}
 

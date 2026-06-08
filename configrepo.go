@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"sort"
 	"strings"
 
 	"github.com/nikhilsbhat/gocd-sdk-go/pkg/errors"
@@ -251,6 +252,24 @@ func (conf *client) ConfigRepoStatus(repo string) (map[string]bool, error) {
 // ConfigRepoPreflightCheck runs the pre-flight checks on the config-repo with the provided pipeline files.
 // Checks posted definition file(s) for syntax and merge errors without updating the current GoCD configuration.
 func (conf *client) ConfigRepoPreflightCheck(pipelines map[string]string, pluginID string, repoID string) (bool, error) {
+	pipelineFiles := make([]PipelineFiles, 0, len(pipelines))
+	pipelineNames := make([]string, 0, len(pipelines))
+
+	for name := range pipelines {
+		pipelineNames = append(pipelineNames, name)
+	}
+
+	sort.Strings(pipelineNames)
+
+	for _, name := range pipelineNames {
+		pipelineFiles = append(pipelineFiles, PipelineFiles{Name: name, Path: pipelines[name]})
+	}
+
+	return conf.ConfigRepoPreflightCheckFiles(pipelineFiles, pluginID, repoID)
+}
+
+// ConfigRepoPreflightCheckFiles runs pre-flight checks while preserving the order of the provided pipeline files.
+func (conf *client) ConfigRepoPreflightCheckFiles(pipelines []PipelineFiles, pluginID string, repoID string) (bool, error) {
 	newClient := conf.clone()
 
 	request := newClient.httpClient.R().
@@ -260,13 +279,13 @@ func (conf *client) ConfigRepoPreflightCheck(pipelines map[string]string, plugin
 		SetQueryParam("pluginId", pluginID).
 		SetQueryParam("repoId", repoID)
 
-	for name, path := range pipelines {
-		pipelineBytes, err := os.ReadFile(path)
+	for _, pipeline := range pipelines {
+		pipelineBytes, err := os.ReadFile(pipeline.Path)
 		if err != nil {
 			return false, err
 		}
 
-		request.SetFileReader("files[]", name, bytes.NewReader(pipelineBytes))
+		request.SetFileReader("files[]", pipeline.Name, bytes.NewReader(pipelineBytes))
 	}
 
 	resp, err := request.Post(PreflightCheckEndpoint)

@@ -48,7 +48,7 @@ func Test_client_EncryptText(t *testing.T) {
 	t.Run("should error out while encrypting a value as server is not reachable", func(t *testing.T) {
 		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
 		client.SetRetryCount(1)
-		client.SetRetryWaitTime(1)
+		client.SetRetryWaitTime(0)
 
 		actual, err := client.EncryptText("value_to_encrypt")
 		require.EqualError(t, err, "call made to encrypt a value errored with: "+

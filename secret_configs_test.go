@@ -104,7 +104,7 @@ func Test_client_GetSecretConfigs(t *testing.T) {
 		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
 
 		client.SetRetryCount(1)
-		client.SetRetryWaitTime(1)
+		client.SetRetryWaitTime(0)
 
 		expected := gocd.SecretsConfig{
 			CommonConfigs: nil,
@@ -194,7 +194,7 @@ func Test_client_GetSecretConfig(t *testing.T) {
 		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
 
 		client.SetRetryCount(1)
-		client.SetRetryWaitTime(1)
+		client.SetRetryWaitTime(0)
 
 		expected := gocd.CommonConfig{}
 
@@ -245,7 +245,7 @@ func Test_client_DeleteSecretConfig(t *testing.T) {
 		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
 
 		client.SetRetryCount(1)
-		client.SetRetryWaitTime(1)
+		client.SetRetryWaitTime(0)
 
 		err := client.DeleteSecretConfig(secretCfgID)
 		require.EqualError(t, err, "call made to delete secret config 'demo' errored with: "+
@@ -337,7 +337,7 @@ func Test_client_UpdateSecretConfig(t *testing.T) {
 		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
 
 		client.SetRetryCount(1)
-		client.SetRetryWaitTime(1)
+		client.SetRetryWaitTime(0)
 
 		profileCfg := gocd.CommonConfig{ID: secretCfgID}
 		expected := gocd.CommonConfig{}
@@ -432,7 +432,7 @@ func Test_client_CreateSecretConfig(t *testing.T) {
 		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
 
 		client.SetRetryCount(1)
-		client.SetRetryWaitTime(1)
+		client.SetRetryWaitTime(0)
 
 		profileCfg := gocd.CommonConfig{ID: secretCfgID}
 		expected := gocd.CommonConfig{}

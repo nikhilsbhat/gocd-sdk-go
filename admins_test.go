@@ -25,7 +25,7 @@ func Test_client_GetAdminsInfo(t *testing.T) {
 	t.Run("should error out while fetching system admins present from server", func(t *testing.T) {
 		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
 		client.SetRetryCount(1)
-		client.SetRetryWaitTime(1)
+		client.SetRetryWaitTime(0)
 
 		actual, err := client.GetSystemAdmins()
 		require.EqualError(t, err, "call made to get system admin errored with: "+
@@ -178,7 +178,7 @@ func Test_client_UpdateSystemAdmins(t *testing.T) {
 		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
 
 		client.SetRetryCount(1)
-		client.SetRetryWaitTime(1)
+		client.SetRetryWaitTime(0)
 
 		users := gocd.SystemAdmins{
 			Roles: []string{"manager"},
@@ -289,7 +289,7 @@ func Test_client_UpdateSystemAdminsBulk(t *testing.T) {
 		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
 
 		client.SetRetryCount(1)
-		client.SetRetryWaitTime(1)
+		client.SetRetryWaitTime(0)
 
 		input := gocd.Operations{}
 

@@ -76,7 +76,7 @@ func Test_client_GetMailServerConfig(t *testing.T) {
 		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
 
 		client.SetRetryCount(1)
-		client.SetRetryWaitTime(1)
+		client.SetRetryWaitTime(0)
 
 		expected := gocd.MailServerConfig{}
 
@@ -121,7 +121,7 @@ func Test_client_DeleteMailServerConfig(t *testing.T) {
 		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
 
 		client.SetRetryCount(1)
-		client.SetRetryWaitTime(1)
+		client.SetRetryWaitTime(0)
 
 		err := client.DeleteMailServerConfig()
 		require.EqualError(t, err, "call made to delete mail server config errored with: "+
@@ -197,7 +197,7 @@ func Test_client_CreateOrUpdateMailServerConfig(t *testing.T) {
 		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
 
 		client.SetRetryCount(1)
-		client.SetRetryWaitTime(1)
+		client.SetRetryWaitTime(0)
 
 		input := gocd.MailServerConfig{}
 		expected := input

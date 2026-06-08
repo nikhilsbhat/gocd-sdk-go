@@ -4,6 +4,7 @@ import (
 	_ "embed"
 	"encoding/json"
 	"fmt"
+	"io"
 	"log"
 	"net/http"
 	"net/http/httptest"
@@ -34,7 +35,7 @@ func TestConfig_GetConfigRepoInfo(t *testing.T) {
 	t.Run("should error out while fetching config repos information from server", func(t *testing.T) {
 		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
 		client.SetRetryCount(1)
-		client.SetRetryWaitTime(1)
+		client.SetRetryWaitTime(0)
 
 		actual, err := client.GetConfigRepos()
 		require.EqualError(t, err, "call made to get config-repos errored with: "+
@@ -114,7 +115,7 @@ func TestConfig_GetConfigReposInternal(t *testing.T) {
 	t.Run("should error out while fetching config repos information from server using GoCD's internal API", func(t *testing.T) {
 		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
 		client.SetRetryCount(1)
-		client.SetRetryWaitTime(1)
+		client.SetRetryWaitTime(0)
 
 		actual, err := client.GetConfigReposInternal()
 		require.EqualError(t, err, "call made to get config-repos using internal API errored with: "+
@@ -243,7 +244,7 @@ func Test_client_CreateConfigRepoInfo(t *testing.T) {
 		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
 
 		client.SetRetryCount(1)
-		client.SetRetryWaitTime(1)
+		client.SetRetryWaitTime(0)
 
 		err := client.CreateConfigRepo(gocd.ConfigRepo{})
 		require.EqualError(t, err, "call made to create config repo errored with: "+
@@ -266,7 +267,7 @@ func Test_client_DeleteConfigRepo(t *testing.T) {
 		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
 
 		client.SetRetryCount(1)
-		client.SetRetryWaitTime(1)
+		client.SetRetryWaitTime(0)
 
 		err := client.DeleteConfigRepo(repoName)
 		require.EqualError(t, err, "call made to delete config repo 'repo1' errored with: "+
@@ -316,7 +317,7 @@ func Test_client_GetConfigRepo(t *testing.T) {
 	t.Run("should error out while fetching config repo information from server since server is not reachable", func(t *testing.T) {
 		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
 		client.SetRetryCount(1)
-		client.SetRetryWaitTime(1)
+		client.SetRetryWaitTime(0)
 
 		actual, err := client.GetConfigRepo(repoName)
 		require.EqualError(t, err, "call made to get config-repo errored with: "+
@@ -376,7 +377,7 @@ func Test_client_UpdateConfigRepo(t *testing.T) {
 		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		client.SetRetryCount(1)
-		client.SetRetryWaitTime(1)
+		client.SetRetryWaitTime(0)
 		actual, err := client.UpdateConfigRepo(*configRepo)
 
 		require.EqualError(t, err, "got 500 from GoCD while making PUT call for "+server.URL+
@@ -387,7 +388,7 @@ func Test_client_UpdateConfigRepo(t *testing.T) {
 	t.Run("should error out while updating config repo since server is not reachable", func(t *testing.T) {
 		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
 		client.SetRetryCount(1)
-		client.SetRetryWaitTime(1)
+		client.SetRetryWaitTime(0)
 
 		actual, err := client.UpdateConfigRepo(*configRepo)
 		require.EqualError(t, err, "call made to call made to update config repo errored with: "+
@@ -402,7 +403,7 @@ func Test_client_UpdateConfigRepo(t *testing.T) {
 		client := gocd.NewClient(server.URL, auth, "info", nil)
 
 		client.SetRetryCount(1)
-		client.SetRetryWaitTime(1)
+		client.SetRetryWaitTime(0)
 
 		actual, err := client.UpdateConfigRepo(*newConfigRepo)
 		require.EqualError(t, err, "got 404 from GoCD while making PUT call for "+server.URL+
@@ -508,7 +509,7 @@ func Test_client_ConfigRepoTriggerUpdate(t *testing.T) {
 		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
 
 		client.SetRetryCount(1)
-		client.SetRetryWaitTime(1)
+		client.SetRetryWaitTime(0)
 
 		actual, err := client.ConfigRepoTriggerUpdate("config_repo_1")
 		require.EqualError(t, err, "call made to trigger update configrepo 'config_repo_1' errored with: "+
@@ -567,7 +568,7 @@ func Test_client_ConfigRepoStatus(t *testing.T) {
 		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
 
 		client.SetRetryCount(1)
-		client.SetRetryWaitTime(1)
+		client.SetRetryWaitTime(0)
 
 		actual, err := client.ConfigRepoStatus("config_repo_1")
 		require.EqualError(t, err, "call made to get status of configrepo 'config_repo_1' errored with: "+
@@ -685,11 +686,51 @@ func Test_client_ConfigRepoPreflightCheck(t *testing.T) {
 		assert.False(t, actual)
 	})
 
+	t.Run("should preserve pipeline file order while running config-repo preflight checks", func(t *testing.T) {
+		receivedFiles := make([]string, 0)
+		server := httptest.NewServer(http.HandlerFunc(func(writer http.ResponseWriter, req *http.Request) {
+			assert.Equal(t, gocd.HeaderVersionOne, req.Header.Get("Accept"))
+
+			reader, err := req.MultipartReader()
+			require.NoError(t, err)
+
+			for {
+				part, err := reader.NextPart()
+				if err == io.EOF {
+					break
+				}
+				require.NoError(t, err)
+
+				if part.FormName() == "files[]" {
+					receivedFiles = append(receivedFiles, part.FileName())
+				}
+			}
+
+			writer.WriteHeader(http.StatusOK)
+			_, err = writer.Write([]byte(preflightCheckJSON))
+			require.NoError(t, err)
+		}))
+		defer server.Close()
+
+		client := gocd.NewClient(server.URL, auth, "info", nil)
+
+		pipelineFiles := []gocd.PipelineFiles{
+			{Name: "environment.gocd.yaml", Path: "internal/fixtures/mail_server_config.json"},
+			{Name: "pipeline.gocd.yaml", Path: "internal/fixtures/role_config.json"},
+			{Name: "template.gocd.yaml", Path: "internal/fixtures/user.json"},
+		}
+
+		actual, err := client.ConfigRepoPreflightCheckFiles(pipelineFiles, "yaml.config.plugin", "sample")
+		require.NoError(t, err)
+		assert.True(t, actual)
+		assert.Equal(t, []string{"environment.gocd.yaml", "pipeline.gocd.yaml", "template.gocd.yaml"}, receivedFiles)
+	})
+
 	t.Run("should error out while running config-repo preflight checks in GoCD as server is not reachable", func(t *testing.T) {
 		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
 
 		client.SetRetryCount(1)
-		client.SetRetryWaitTime(1)
+		client.SetRetryWaitTime(0)
 
 		pipelineFiles, err := client.GetPipelineFiles("internal/fixtures", nil, "*_config.json")
 		require.NoError(t, err)
@@ -1014,7 +1055,7 @@ func Test_client_GetConfigRepoDefinitions(t *testing.T) {
 		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
 
 		client.SetRetryCount(1)
-		client.SetRetryWaitTime(1)
+		client.SetRetryWaitTime(0)
 
 		expected := gocd.ConfigRepo{}
 

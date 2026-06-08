@@ -35,7 +35,7 @@ func Test_client_EnableMaintenanceMode(t *testing.T) {
 		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
 
 		client.SetRetryCount(1)
-		client.SetRetryWaitTime(1)
+		client.SetRetryWaitTime(0)
 
 		err := client.EnableMaintenanceMode()
 		require.EqualError(t, err, "call made to enable maintenance mode errored with: "+
@@ -65,7 +65,7 @@ func Test_client_DisableMaintenanceMode(t *testing.T) {
 		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
 
 		client.SetRetryCount(1)
-		client.SetRetryWaitTime(1)
+		client.SetRetryWaitTime(0)
 
 		err := client.DisableMaintenanceMode()
 		require.EqualError(t, err, "call made to disable maintenance mode errored with: "+
@@ -111,7 +111,7 @@ func Test_client_GetMaintenanceModeInfo(t *testing.T) {
 		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
 
 		client.SetRetryCount(1)
-		client.SetRetryWaitTime(1)
+		client.SetRetryWaitTime(0)
 
 		actual, err := client.GetMaintenanceModeInfo()
 		require.EqualError(t, err, "call made to get maintenance mode information errored with: "+

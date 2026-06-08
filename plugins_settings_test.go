@@ -94,7 +94,7 @@ func Test_client_GetPluginSettings(t *testing.T) {
 		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
 
 		client.SetRetryCount(1)
-		client.SetRetryWaitTime(1)
+		client.SetRetryWaitTime(0)
 
 		expected := gocd.PluginSettings{}
 
@@ -187,7 +187,7 @@ func Test_client_CreatePluginSettings(t *testing.T) {
 		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
 
 		client.SetRetryCount(1)
-		client.SetRetryWaitTime(1)
+		client.SetRetryWaitTime(0)
 
 		pluginSettings := gocd.PluginSettings{ID: pluginName}
 		expected := gocd.PluginSettings{}
@@ -282,7 +282,7 @@ func Test_client_UpdatePluginSettings(t *testing.T) {
 		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
 
 		client.SetRetryCount(1)
-		client.SetRetryWaitTime(1)
+		client.SetRetryWaitTime(0)
 
 		pluginSettings := gocd.PluginSettings{ID: pluginName}
 		expected := gocd.PluginSettings{}

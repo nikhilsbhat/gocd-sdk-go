@@ -85,7 +85,7 @@ func Test_client_GetPipelines(t *testing.T) {
 	t.Run("should error out while fetching pipelines from server", func(t *testing.T) {
 		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
 		client.SetRetryCount(1)
-		client.SetRetryWaitTime(1)
+		client.SetRetryWaitTime(0)
 
 		actual, err := client.GetPipelines()
 		require.EqualError(t, err, "call made to get pipelines errored with: "+
@@ -126,7 +126,7 @@ func Test_client_GetPipelineSchedules(t *testing.T) {
 	t.Run("should error out while fetching pipeline schedules from server", func(t *testing.T) {
 		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
 		client.SetRetryCount(1)
-		client.SetRetryWaitTime(1)
+		client.SetRetryWaitTime(0)
 
 		actual, err := client.GetPipelineSchedules("helm-images", "0", "2")
 		require.EqualError(t, err, "call made to get pipeline schedules helm-images errored with: Get "+
@@ -194,7 +194,7 @@ func Test_client_GetPipelineHistory(t *testing.T) {
 	t.Run("should error out while fetching pipeline run history from server", func(t *testing.T) {
 		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
 		client.SetRetryCount(1)
-		client.SetRetryWaitTime(1)
+		client.SetRetryWaitTime(0)
 
 		actual, err := client.GetPipelineRunHistory("helm-images", "0", time.Duration(2)*time.Second)
 		require.EqualError(t, err, "call made to get pipeline history for 'helm-images' errored with: "+
@@ -266,7 +266,7 @@ func Test_client_GetLimitedPipelineRunHistory(t *testing.T) {
 	t.Run("should error out while fetching pipeline run history from server", func(t *testing.T) {
 		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
 		client.SetRetryCount(1)
-		client.SetRetryWaitTime(1)
+		client.SetRetryWaitTime(0)
 
 		actual, err := client.GetLimitedPipelineRunHistory("helm-images", "0", "0")
 		require.EqualError(t, err, "call made to get limited pipeline history for 'helm-images' errored with: "+
@@ -376,7 +376,7 @@ func Test_client_GetPipelineStatus(t *testing.T) {
 	t.Run("should error out while fetching pipeline statuses information from server", func(t *testing.T) {
 		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
 		client.SetRetryCount(1)
-		client.SetRetryWaitTime(1)
+		client.SetRetryWaitTime(0)
 
 		actual, err := client.GetPipelineState(pipeline)
 		require.EqualError(t, err, "call made to get pipeline state errored with:"+
@@ -458,7 +458,7 @@ func Test_client_PipelinePause(t *testing.T) {
 		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
 
 		client.SetRetryCount(1)
-		client.SetRetryWaitTime(1)
+		client.SetRetryWaitTime(0)
 
 		err := client.PipelinePause("first_pipeline", "pausing the pipeline")
 		require.EqualError(t, err, "call made to pause pipeline errored with: "+
@@ -502,7 +502,7 @@ func Test_client_PipelineUnPause(t *testing.T) {
 		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
 
 		client.SetRetryCount(1)
-		client.SetRetryWaitTime(1)
+		client.SetRetryWaitTime(0)
 
 		err := client.PipelineUnPause("first_pipeline")
 		require.EqualError(t, err, "call made to unpause pipeline errored with: "+
@@ -543,7 +543,7 @@ func Test_client_PipelineUnlock(t *testing.T) {
 		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
 
 		client.SetRetryCount(1)
-		client.SetRetryWaitTime(1)
+		client.SetRetryWaitTime(0)
 
 		err := client.PipelineUnlock("first_pipeline")
 		require.EqualError(t, err, "call made to unlock pipeline errored with: "+
@@ -597,7 +597,7 @@ func Test_client_SchedulePipeline(t *testing.T) {
 		client := gocd.NewClient("http://localhost:8156/go", auth, "debug", nil)
 
 		client.SetRetryCount(1)
-		client.SetRetryWaitTime(1)
+		client.SetRetryWaitTime(0)
 
 		schedule := gocd.Schedule{
 			EnvVars: []map[string]interface{}{
@@ -667,7 +667,7 @@ func Test_client_CommentOnPipeline(t *testing.T) {
 	t.Run("should error out while commenting on pipeline as server is not reachable", func(t *testing.T) {
 		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
 		client.SetRetryCount(1)
-		client.SetRetryWaitTime(1)
+		client.SetRetryWaitTime(0)
 
 		err := client.CommentOnPipeline(comment)
 		require.EqualError(t, err, "call made to comment on pipeline 'pipeline1' errored with: "+
@@ -726,7 +726,7 @@ func Test_client_GetPipelineInstance(t *testing.T) {
 	t.Run("should error out while fetching pipeline as server is not reachable", func(t *testing.T) {
 		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
 		client.SetRetryCount(1)
-		client.SetRetryWaitTime(1)
+		client.SetRetryWaitTime(0)
 
 		actual, err := client.GetPipelineInstance(pipelineObj)
 		require.EqualError(t, err, "call made to fetch pipeline instance 'pipeline1' errored with: "+
@@ -792,7 +792,7 @@ func Test_client_ExportPipelineToConfigRepoFormat(t *testing.T) {
 	t.Run("should error out while exporting pipeline to yaml format as server is not reachable", func(t *testing.T) {
 		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
 		client.SetRetryCount(1)
-		client.SetRetryWaitTime(1)
+		client.SetRetryWaitTime(0)
 
 		resp, err := client.ExportPipelineToConfigRepoFormat("action-movies", "json.config.plugin")
 		require.EqualError(t, err, "call made to export pipeline 'action-movies' to format 'json.config.plugin' errored with: Get "+

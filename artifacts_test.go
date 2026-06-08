@@ -72,7 +72,7 @@ func Test_client_GetArtifactConfig(t *testing.T) {
 		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
 
 		client.SetRetryCount(1)
-		client.SetRetryWaitTime(1)
+		client.SetRetryWaitTime(0)
 
 		actual, err := client.GetArtifactConfig()
 		require.EqualError(t, err, "call made to get artifacts info errored with: "+
@@ -152,7 +152,7 @@ func Test_client_UpdateArtifactConfig(t *testing.T) {
 		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
 
 		client.SetRetryCount(1)
-		client.SetRetryWaitTime(1)
+		client.SetRetryWaitTime(0)
 
 		actual, err := client.UpdateArtifactConfig(gocd.ArtifactInfo{})
 		require.EqualError(t, err, "call made to update artifacts info errored with: "+

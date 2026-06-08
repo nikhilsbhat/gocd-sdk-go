@@ -107,7 +107,7 @@ func Test_client_GetArtifactStores(t *testing.T) {
 		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
 
 		client.SetRetryCount(1)
-		client.SetRetryWaitTime(1)
+		client.SetRetryWaitTime(0)
 
 		expected := gocd.ArtifactStoresConfig{
 			CommonConfigs: nil,
@@ -206,7 +206,7 @@ func Test_client_GetArtifactStore(t *testing.T) {
 		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
 
 		client.SetRetryCount(1)
-		client.SetRetryWaitTime(1)
+		client.SetRetryWaitTime(0)
 
 		expected := gocd.CommonConfig{
 			Properties: nil,
@@ -301,7 +301,7 @@ func Test_client_CreateArtifactStore(t *testing.T) {
 		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
 
 		client.SetRetryCount(1)
-		client.SetRetryWaitTime(1)
+		client.SetRetryWaitTime(0)
 
 		storeCfg := gocd.CommonConfig{ID: "docker"}
 
@@ -394,7 +394,7 @@ func Test_client_UpdateArtifactStore(t *testing.T) {
 		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
 
 		client.SetRetryCount(1)
-		client.SetRetryWaitTime(1)
+		client.SetRetryWaitTime(0)
 
 		storeCfg := gocd.CommonConfig{ID: "docker"}
 
@@ -444,7 +444,7 @@ func Test_client_DeleteArtifactStore(t *testing.T) {
 		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
 
 		client.SetRetryCount(1)
-		client.SetRetryWaitTime(1)
+		client.SetRetryWaitTime(0)
 
 		err := client.DeleteArtifactStore("docker")
 		require.EqualError(t, err, "call made to delete artifact store docker errored with: "+

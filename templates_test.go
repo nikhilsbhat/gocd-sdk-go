@@ -331,7 +331,7 @@ func Test_client_TemplateConfigs_ShouldReturnMarshalErrors(t *testing.T) {
 func Test_client_TemplateConfigs_ShouldReturnAPIErrors(t *testing.T) {
 	client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
 	client.SetRetryCount(1)
-	client.SetRetryWaitTime(1)
+	client.SetRetryWaitTime(0)
 
 	tests := []struct {
 		name    string

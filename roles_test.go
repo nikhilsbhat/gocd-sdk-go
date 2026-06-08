@@ -122,7 +122,7 @@ func Test_client_GetRoles(t *testing.T) {
 		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
 
 		client.SetRetryCount(1)
-		client.SetRetryWaitTime(1)
+		client.SetRetryWaitTime(0)
 
 		expected := gocd.RolesConfig{}
 
@@ -212,7 +212,7 @@ func Test_client_GetRole(t *testing.T) {
 		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
 
 		client.SetRetryCount(1)
-		client.SetRetryWaitTime(1)
+		client.SetRetryWaitTime(0)
 
 		expected := gocd.Role{}
 
@@ -263,7 +263,7 @@ func Test_client_DeleteRole(t *testing.T) {
 		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
 
 		client.SetRetryCount(1)
-		client.SetRetryWaitTime(1)
+		client.SetRetryWaitTime(0)
 
 		err := client.DeleteRole(roleName)
 		require.EqualError(t, err, "call made to delete role 'blackbird' errored with: "+
@@ -350,7 +350,7 @@ func Test_client_GetRolesByType(t *testing.T) {
 		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
 
 		client.SetRetryCount(1)
-		client.SetRetryWaitTime(1)
+		client.SetRetryWaitTime(0)
 
 		expected := gocd.RolesConfig{}
 
@@ -443,7 +443,7 @@ func Test_client_CreateRole(t *testing.T) {
 		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
 
 		client.SetRetryCount(1)
-		client.SetRetryWaitTime(1)
+		client.SetRetryWaitTime(0)
 
 		role := gocd.Role{
 			Name: "blackbird",
@@ -540,7 +540,7 @@ func Test_client_UpdateRole(t *testing.T) {
 		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
 
 		client.SetRetryCount(1)
-		client.SetRetryWaitTime(1)
+		client.SetRetryWaitTime(0)
 
 		role := gocd.Role{
 			Name: "blackbird",

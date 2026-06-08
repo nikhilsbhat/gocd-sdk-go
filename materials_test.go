@@ -111,7 +111,7 @@ func Test_client_GetMaterials(t *testing.T) {
 		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
 
 		client.SetRetryCount(1)
-		client.SetRetryWaitTime(1)
+		client.SetRetryWaitTime(0)
 
 		var expected []gocd.Material
 
@@ -185,7 +185,7 @@ func Test_client_GetMaterialUsage(t *testing.T) {
 		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
 
 		client.SetRetryCount(1)
-		client.SetRetryWaitTime(1)
+		client.SetRetryWaitTime(0)
 
 		actual, err := client.GetMaterialUsage("2faa648612e02becba2b6809fb375f1810acec79498fe50908cebdc5ba0a0a5b")
 		require.EqualError(t, err, "call made to get material usage '2faa648612e02becba2b6809fb375f1810acec79498fe50908cebdc5ba0a0a5b' errored with: "+
@@ -253,7 +253,7 @@ func Test_client_NotifyMaterial(t *testing.T) {
 		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
 
 		client.SetRetryCount(1)
-		client.SetRetryWaitTime(1)
+		client.SetRetryWaitTime(0)
 
 		actual, err := client.NotifyMaterial(material)
 		require.EqualError(t, err, "call made to notify material 'https://github.com/nikhilsbhat/helm-images' of type git errored with: "+
@@ -320,7 +320,7 @@ func Test_client_MaterialTriggerUpdate(t *testing.T) {
 		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
 
 		client.SetRetryCount(1)
-		client.SetRetryWaitTime(1)
+		client.SetRetryWaitTime(0)
 
 		actual, err := client.MaterialTriggerUpdate(materialID)
 		require.EqualError(t, err, "call made to trigger update '5fc2198707d4e5b7dfa8cc5c6e398b9ea4bcb17d3aa54f0146ccb361cf03bbd4' errored with: "+

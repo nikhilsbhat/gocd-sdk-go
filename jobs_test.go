@@ -17,7 +17,7 @@ func Test_client_ScheduledJobs(t *testing.T) {
 	t.Run("should error out while fetching scheduled jobs from server", func(t *testing.T) {
 		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
 		client.SetRetryCount(1)
-		client.SetRetryWaitTime(1)
+		client.SetRetryWaitTime(0)
 
 		actual, err := client.GetScheduledJobs()
 		require.EqualError(t, err, "call made to get scheduled jobs errored with: "+
@@ -71,7 +71,7 @@ func Test_client_RunJobs(t *testing.T) {
 	t.Run("should error out while running selected jobs of a pipeline from server", func(t *testing.T) {
 		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
 		client.SetRetryCount(1)
-		client.SetRetryWaitTime(1)
+		client.SetRetryWaitTime(0)
 
 		actual, err := client.RunJobs(gocd.Stage{})
 		require.EqualError(t, err, "call made to run selected jobs errored with: "+
@@ -124,7 +124,7 @@ func Test_client_RunFailedJobs(t *testing.T) {
 	t.Run("should error out while running failed jobs from server", func(t *testing.T) {
 		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
 		client.SetRetryCount(1)
-		client.SetRetryWaitTime(1)
+		client.SetRetryWaitTime(0)
 
 		actual, err := client.RunFailedJobs(gocd.Stage{})
 		require.EqualError(t, err, "call made to run failed jobs errored with: "+

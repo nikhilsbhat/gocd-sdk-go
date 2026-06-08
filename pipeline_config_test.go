@@ -237,7 +237,7 @@ func Test_client_GetPipelineConfig(t *testing.T) {
 		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
 
 		client.SetRetryCount(1)
-		client.SetRetryWaitTime(1)
+		client.SetRetryWaitTime(0)
 
 		expected := gocd.PipelineConfig{}
 
@@ -281,7 +281,7 @@ func Test_client_DeletePipeline(t *testing.T) {
 		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
 
 		client.SetRetryCount(1)
-		client.SetRetryWaitTime(1)
+		client.SetRetryWaitTime(0)
 
 		err := client.DeletePipeline("pipeline_group_1")
 		require.EqualError(t, err, "call made to delete pipeline config 'pipeline_group_1' errored with: "+
@@ -335,7 +335,7 @@ func Test_client_ExtractTemplatePipeline(t *testing.T) {
 		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
 
 		client.SetRetryCount(1)
-		client.SetRetryWaitTime(1)
+		client.SetRetryWaitTime(0)
 
 		response, err := client.ExtractTemplatePipeline("pipeline_group_1", "my_template")
 		assert.NotNil(t, response)
@@ -576,7 +576,7 @@ func Test_client_UpdatePipelineConfig(t *testing.T) {
 		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
 
 		client.SetRetryCount(1)
-		client.SetRetryWaitTime(1)
+		client.SetRetryWaitTime(0)
 
 		expected := gocd.PipelineConfig{}
 		input := gocd.PipelineConfig{
@@ -689,7 +689,7 @@ func Test_client_CreatePipeline(t *testing.T) {
 		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
 
 		client.SetRetryCount(1)
-		client.SetRetryWaitTime(1)
+		client.SetRetryWaitTime(0)
 
 		input := gocd.PipelineConfig{
 			Name: "new_pipeline",

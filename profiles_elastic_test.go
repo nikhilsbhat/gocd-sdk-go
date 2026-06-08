@@ -114,7 +114,7 @@ func Test_client_GetElasticAgentProfiles(t *testing.T) {
 		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
 
 		client.SetRetryCount(1)
-		client.SetRetryWaitTime(1)
+		client.SetRetryWaitTime(0)
 
 		expected := gocd.ProfilesConfig{
 			CommonConfigs: nil,
@@ -201,7 +201,7 @@ func Test_client_GetElasticAgentProfile(t *testing.T) {
 		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
 
 		client.SetRetryCount(1)
-		client.SetRetryWaitTime(1)
+		client.SetRetryWaitTime(0)
 
 		expected := gocd.CommonConfig{}
 
@@ -252,7 +252,7 @@ func Test_client_DeleteElasticAgentProfile(t *testing.T) {
 		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
 
 		client.SetRetryCount(1)
-		client.SetRetryWaitTime(1)
+		client.SetRetryWaitTime(0)
 
 		err := client.DeleteElasticAgentProfile(profileName)
 		require.EqualError(t, err, "call made to delete elastic agent profile 'prod-cluster' errored with: "+
@@ -339,7 +339,7 @@ func Test_client_UpdateElasticAgentProfile(t *testing.T) {
 		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
 
 		client.SetRetryCount(1)
-		client.SetRetryWaitTime(1)
+		client.SetRetryWaitTime(0)
 
 		profileCfg := gocd.CommonConfig{ID: "unit-tests"}
 		expected := gocd.CommonConfig{}
@@ -430,7 +430,7 @@ func Test_client_CreateElasticAgentProfile(t *testing.T) {
 		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
 
 		client.SetRetryCount(1)
-		client.SetRetryWaitTime(1)
+		client.SetRetryWaitTime(0)
 
 		profileCfg := gocd.CommonConfig{ID: "unit-tests"}
 		expected := gocd.CommonConfig{}
@@ -509,7 +509,7 @@ func Test_client_GetElasticAgentProfileUsage(t *testing.T) {
 		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
 
 		client.SetRetryCount(1)
-		client.SetRetryWaitTime(1)
+		client.SetRetryWaitTime(0)
 
 		actual, err := client.GetElasticAgentProfileUsage(profileName)
 		require.EqualError(t, err, "call made to get elastic agent profile usage 'prod-cluster' errored with: "+

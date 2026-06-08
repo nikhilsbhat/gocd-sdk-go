@@ -79,7 +79,7 @@ func Test_client_GetAuthConfigs(t *testing.T) {
 		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
 
 		client.SetRetryCount(1)
-		client.SetRetryWaitTime(1)
+		client.SetRetryWaitTime(0)
 
 		expected := []gocd.CommonConfig(nil)
 
@@ -159,7 +159,7 @@ func Test_client_GetAuthConfig(t *testing.T) {
 		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
 
 		client.SetRetryCount(1)
-		client.SetRetryWaitTime(1)
+		client.SetRetryWaitTime(0)
 
 		expected := gocd.CommonConfig{}
 
@@ -243,7 +243,7 @@ func Test_client_CreateAuthConfig(t *testing.T) {
 		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
 
 		client.SetRetryCount(1)
-		client.SetRetryWaitTime(1)
+		client.SetRetryWaitTime(0)
 
 		expected := gocd.CommonConfig{}
 
@@ -328,7 +328,7 @@ func Test_client_UpdateAuthConfig(t *testing.T) {
 		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
 
 		client.SetRetryCount(1)
-		client.SetRetryWaitTime(1)
+		client.SetRetryWaitTime(0)
 
 		expected := gocd.CommonConfig{}
 
@@ -372,7 +372,7 @@ func Test_client_DeleteAuthConfig(t *testing.T) {
 		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
 
 		client.SetRetryCount(1)
-		client.SetRetryWaitTime(1)
+		client.SetRetryWaitTime(0)
 
 		err := client.DeleteAuthConfig("ldap")
 		require.EqualError(t, err, "call made to delete auth config 'ldap' errored with: "+

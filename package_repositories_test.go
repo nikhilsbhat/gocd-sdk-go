@@ -101,7 +101,7 @@ func Test_client_GetPackageRepositories(t *testing.T) {
 		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
 
 		client.SetRetryCount(1)
-		client.SetRetryWaitTime(1)
+		client.SetRetryWaitTime(0)
 
 		var expected []gocd.PackageRepository
 
@@ -196,7 +196,7 @@ func Test_client_GetPackageRepository(t *testing.T) {
 		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
 
 		client.SetRetryCount(1)
-		client.SetRetryWaitTime(1)
+		client.SetRetryWaitTime(0)
 
 		expected := gocd.PackageRepository{}
 
@@ -295,7 +295,7 @@ func Test_client_CreatePackageRepository(t *testing.T) {
 		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
 
 		client.SetRetryCount(1)
-		client.SetRetryWaitTime(1)
+		client.SetRetryWaitTime(0)
 
 		repositoryCfg := gocd.PackageRepository{ID: "dd8926c0-3b4a-4c9e-8012-957b179cec5b"}
 		expected := gocd.PackageRepository{}
@@ -397,7 +397,7 @@ func Test_client_UpdatePackageRepository(t *testing.T) {
 		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
 
 		client.SetRetryCount(1)
-		client.SetRetryWaitTime(1)
+		client.SetRetryWaitTime(0)
 
 		repositoryCfg := gocd.PackageRepository{ID: repositoryID}
 		expected := gocd.PackageRepository{}
@@ -449,7 +449,7 @@ func Test_client_DeletePackageRepository(t *testing.T) {
 		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
 
 		client.SetRetryCount(1)
-		client.SetRetryWaitTime(1)
+		client.SetRetryWaitTime(0)
 
 		err := client.DeletePackageRepository(repositoryID)
 		require.EqualError(t, err, "call made to delete package repository 'dd8926c0-3b4a-4c9e-8012-957b179cec5b' errored with: "+

@@ -74,7 +74,7 @@ func Test_client_GetPipelineVSM(t *testing.T) {
 		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
 
 		client.SetRetryCount(1)
-		client.SetRetryWaitTime(1)
+		client.SetRetryWaitTime(0)
 
 		actual, err := client.GetPipelineVSM("helm-images", "20")
 		require.EqualError(t, err, "call made to get vsm information for pipeline 'helm-images' of instance '20' errored with: "+

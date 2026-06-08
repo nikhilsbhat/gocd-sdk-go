@@ -60,7 +60,7 @@ func Test_client_DeleteUser(t *testing.T) {
 		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
 
 		client.SetRetryCount(1)
-		client.SetRetryWaitTime(1)
+		client.SetRetryWaitTime(0)
 
 		err := client.DeleteUser("sample-user")
 		require.EqualError(t, err, "call made to delete user 'sample-user' errored with: "+
@@ -119,7 +119,7 @@ func Test_client_BulkDeleteUsers(t *testing.T) {
 		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
 
 		client.SetRetryCount(1)
-		client.SetRetryWaitTime(1)
+		client.SetRetryWaitTime(0)
 
 		usersToDelete := map[string]interface{}{
 			"users": []string{"jez", "tez"},
@@ -176,7 +176,7 @@ func Test_client_BulkEnableDisableUsers(t *testing.T) {
 		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
 
 		client.SetRetryCount(1)
-		client.SetRetryWaitTime(1)
+		client.SetRetryWaitTime(0)
 
 		err := client.BulkEnableDisableUsers(nil)
 		require.EqualError(t, err, "call made to bulk enable/disable users errored with: Patch "+
@@ -254,7 +254,7 @@ func Test_client_GetUser(t *testing.T) {
 		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
 
 		client.SetRetryCount(1)
-		client.SetRetryWaitTime(1)
+		client.SetRetryWaitTime(0)
 
 		expected := gocd.User{}
 
@@ -327,7 +327,7 @@ func Test_client_GetCurrentUser(t *testing.T) {
 		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
 
 		client.SetRetryCount(1)
-		client.SetRetryWaitTime(1)
+		client.SetRetryWaitTime(0)
 
 		expected := gocd.User{}
 
@@ -400,7 +400,7 @@ func Test_client_GetUsers(t *testing.T) {
 		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
 
 		client.SetRetryCount(1)
-		client.SetRetryWaitTime(1)
+		client.SetRetryWaitTime(0)
 
 		actual, err := client.GetUsers()
 		require.EqualError(t, err, "call made to get all users errored with: "+
@@ -483,7 +483,7 @@ func Test_client_CreateUser(t *testing.T) {
 		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
 
 		client.SetRetryCount(1)
-		client.SetRetryWaitTime(1)
+		client.SetRetryWaitTime(0)
 
 		user := gocd.User{Name: "jdoe"}
 		expected := gocd.User{}
@@ -569,7 +569,7 @@ func Test_client_UpdateUser(t *testing.T) {
 		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
 
 		client.SetRetryCount(1)
-		client.SetRetryWaitTime(1)
+		client.SetRetryWaitTime(0)
 
 		user := gocd.User{Name: "jdoe"}
 		expected := gocd.User{}
@@ -660,7 +660,7 @@ func Test_client_UpdateCurrentUser(t *testing.T) {
 		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
 
 		client.SetRetryCount(1)
-		client.SetRetryWaitTime(1)
+		client.SetRetryWaitTime(0)
 
 		expected := gocd.User{}
 		user := gocd.User{}

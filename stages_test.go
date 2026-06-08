@@ -15,7 +15,7 @@ func Test_client_RunStage(t *testing.T) {
 	t.Run("should error out while running stage from server", func(t *testing.T) {
 		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
 		client.SetRetryCount(1)
-		client.SetRetryWaitTime(1)
+		client.SetRetryWaitTime(0)
 
 		actual, err := client.RunStage(gocd.Stage{})
 		require.EqualError(t, err, "call made to run stage errored with: "+
@@ -67,7 +67,7 @@ func Test_client_CancelStage(t *testing.T) {
 	t.Run("should error out while cancelling stage from server", func(t *testing.T) {
 		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
 		client.SetRetryCount(1)
-		client.SetRetryWaitTime(1)
+		client.SetRetryWaitTime(0)
 
 		actual, err := client.CancelStage(gocd.Stage{})
 		require.EqualError(t, err, "call made to cancel stage errored with: "+

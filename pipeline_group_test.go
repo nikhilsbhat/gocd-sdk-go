@@ -25,7 +25,7 @@ func Test_client_GetPipelineGroupInfo(t *testing.T) {
 	t.Run("should error out while fetching all pipeline groups information from server", func(t *testing.T) {
 		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
 		client.SetRetryCount(1)
-		client.SetRetryWaitTime(1)
+		client.SetRetryWaitTime(0)
 
 		actual, err := client.GetPipelineGroups()
 		require.EqualError(t, err, "call made to get pipeline groups information errored with: "+
@@ -146,7 +146,7 @@ func Test_client_DeletePipelineGroup(t *testing.T) {
 		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
 
 		client.SetRetryCount(1)
-		client.SetRetryWaitTime(1)
+		client.SetRetryWaitTime(0)
 
 		err := client.DeletePipelineGroup("pipeline_group_1")
 		require.EqualError(t, err, "call made to delete pipeline group errored with:"+
@@ -221,7 +221,7 @@ func Test_client_GetPipelineGroup(t *testing.T) {
 		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
 
 		client.SetRetryCount(1)
-		client.SetRetryWaitTime(1)
+		client.SetRetryWaitTime(0)
 
 		expected := gocd.PipelineGroup{}
 
@@ -281,7 +281,7 @@ func Test_client_CreatePipelineGroup(t *testing.T) {
 		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
 
 		client.SetRetryCount(1)
-		client.SetRetryWaitTime(1)
+		client.SetRetryWaitTime(0)
 
 		group := gocd.PipelineGroup{Name: "first"}
 
@@ -403,7 +403,7 @@ func Test_client_UpdatePipelineGroup(t *testing.T) {
 		client := gocd.NewClient("http://localhost:8156/go", auth, "info", nil)
 
 		client.SetRetryCount(1)
-		client.SetRetryWaitTime(1)
+		client.SetRetryWaitTime(0)
 
 		group := gocd.PipelineGroup{Name: "first"}
 		expected := gocd.PipelineGroup{}
